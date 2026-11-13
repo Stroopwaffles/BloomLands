@@ -5,7 +5,7 @@ import { applyAction } from '../src/engine/actions'
 import { ensureSpot } from '../src/engine/gathering'
 import { helperCapacity } from '../src/engine/modifiers'
 import { stateRandom } from '../src/engine/rng'
-import { createNewGame, type GameState } from '../src/engine/state'
+import { createNewGame, type GameState, type TravelState } from '../src/engine/state'
 import { advance } from '../src/engine/tick'
 
 const START = 1_700_000_000_000
@@ -23,6 +23,9 @@ function atCamp(): GameState {
   state.inventory = { 'component-sweet-bait': 5, 'component-sun-salve': 5 }
   return state
 }
+
+/** Reads the flight through a function so TypeScript doesn't narrow it after a reset. */
+const currentTravel = (state: GameState): TravelState | null => state.player.travel
 
 const parley = (state: GameState) =>
   applyAction(state, { type: 'spell/cast', spellId: 'spell-parley' })
@@ -59,11 +62,15 @@ describe('winning over the Dandelion Drifters', () => {
     const state = atCamp()
     state.crews[DRIFTERS] = { trust: 3, won: true }
     state.player.place = 'home'
+    const kinds = new Set<string>()
     for (let i = 0; i < 200; i++) {
       state.player.travel = null
       applyAction(state, { type: 'travel/go', to: 'buttercup-rise' })
-      expect(state.player.travel?.event?.kind).not.toBe('ambush')
+      const travel = currentTravel(state)
+      if (travel?.event) kinds.add(travel.event.kind)
     }
+    expect(kinds.has('ambush')).toBe(false)
+    expect(kinds.size).toBeGreaterThan(0)
   })
 
   it('reformed pirates are recruited in Thimblewick and gather like gatherers', () => {
