@@ -1,16 +1,19 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import Art from '../../art/Art.svelte'
+  import SceneBackdrop from '../../art/SceneBackdrop.svelte'
   import { CREATURES, CREWS } from '../../data/challenges'
   import { itemName } from '../../data/items'
+  import { DEFAULT_SCENE, SCENES } from '../../data/scenes'
   import { SPOTS } from '../../data/world'
   import type { GameEvent } from '../../engine/events'
   import { isNight } from '../../engine/environment'
   import { campBlocksSlot, satchelFull } from '../../engine/gathering'
   import { bloomLevel } from '../../engine/modifiers'
+  import { wildMountAt } from '../../engine/mounts'
   import BloomMeter from '../components/BloomMeter.svelte'
   import Destinations from '../components/Destinations.svelte'
-  import PlantSlot from '../components/PlantSlot.svelte'
+  import ScenePlant from '../components/ScenePlant.svelte'
   import SpellButtons from '../components/SpellButtons.svelte'
   import WildMount from '../components/WildMount.svelte'
   import { runtime } from '../game'
@@ -20,12 +23,15 @@
   const spotId = $derived($game.player.place)
   const spotDef = $derived(SPOTS[spotId])
   const spot = $derived($game.spots[spotId])
+  const layout = $derived(SCENES[spotId] ?? DEFAULT_SCENE)
   const full = $derived(satchelFull($game))
   const creature = $derived($game.challenges.creatures[spotId])
   const campCrew = $derived($game.challenges.camps[spotId])
+  const wildMount = $derived(wildMountAt($game, spotId))
   const night = $derived(isNight($game))
   /** Low bloom looks faded and grey; full bloom is in full color (design doc 7.3). */
   const saturation = $derived(0.55 + bloomLevel($game, spotDef?.regionId ?? 'meadow') * 0.09)
+
   let creatureWiggle = $state(0)
   let message = $state('')
   let messageTimer: ReturnType<typeof setTimeout> | undefined
@@ -84,86 +90,102 @@
   function tap(slot: number) {
     runtime.dispatch({ type: 'gather/tap', spotId, slot })
   }
+
+  function shoo(event: PointerEvent) {
+    event.preventDefault()
+    runtime.dispatch({ type: 'creature/tap', spotId })
+  }
 </script>
 
 {#if spotDef && spot}
   <div class="spot" class:night>
     <header>
-      <div class="me"><Art id="char-fairy" size={72} /></div>
+      <div class="me"><Art id="char-fairy" size={64} /></div>
       <div class="title">
         <h2>{spotDef.name}</h2>
-        <p>{spotDef.description}</p>
         <div class="meter"><BloomMeter regionId={spotDef.regionId} compact /></div>
       </div>
       <Destinations />
     </header>
 
-    {#if full}
-      <p class="full" role="status">Your satchel is full! Fly home to put things in storage.</p>
-    {/if}
-    {#if message}<p class="message" role="status">{message}</p>{/if}
+    <div class="scene" class:night style:--saturation={saturation}>
+      <SceneBackdrop {spotId} {night} weather={$game.weather[spotDef.regionId]?.kind} />
 
-    {#if creature || campCrew}
-      <div class="trouble">
-        {#if creature}
-          {@const def = CREATURES[creature.creatureId]}
-          <section class="card">
-            <button
-              type="button"
-              class="creature"
-              aria-label={`Shoo the ${def.name.toLowerCase()}`}
-              onpointerdown={(e) => {
-                e.preventDefault()
-                runtime.dispatch({ type: 'creature/tap', spotId })
-              }}
-            >
-              {#key creatureWiggle}
-                <span class:wiggle={creatureWiggle > 0}
-                  ><Art id={`creature-${creature.creatureId}`} size={72} /></span
-                >
-              {/key}
-            </button>
-            <div class="about">
-              <strong>A {def.name.toLowerCase()} is munching the plants!</strong>
-              <span>Tap it to shoo it away ({creature.tapsLeft} more), or calm it.</span>
-              <div class="bar">
-                <div style:width="{(1 - creature.tapsLeft / def.taps) * 100}%"></div>
-              </div>
-            </div>
-          </section>
-        {/if}
-        {#if campCrew}
-          <section class="card">
-            <Art id={`crew-${campCrew}`} size={64} />
-            <div class="about">
-              <strong>{CREWS[campCrew].name} have camped here.</strong>
-              <span
-                >They've taken over part of the spot, and helpers in the Meadow bring back less.</span
-              >
-            </div>
-          </section>
-        {/if}
-      </div>
-    {/if}
+      {#if campCrew}
+        <div class="camp" style:left="{layout.camp.x}%" style:top="{layout.camp.y}%">
+          <Art id="camp-dandelion-drifters" size={160} />
+        </div>
+      {/if}
 
-    <div class="magic"><SpellButtons targets={['pests', 'creature', 'camp', 'parley']} /></div>
-    <div class="wild-mount"><WildMount {spotId} /></div>
-
-    <div class="field" style:filter="saturate({saturation})">
       {#each spot.slots as slot, i (i)}
-        <div class="cell">
-          <PlantSlot
+        {#if !campBlocksSlot($game, spotId, i)}
+          <ScenePlant
             {slot}
+            at={layout.slots[i]}
             wiggle={wiggles[i] ?? 0}
             disabled={full && !slot.pests}
-            camp={campBlocksSlot($game, spotId, i)}
             onTap={() => tap(i)}
           />
-          {#each popups.filter((p) => p.slot === i) as popup (popup.id)}
-            <span class="popup" class:special={popup.special}>{popup.text}</span>
-          {/each}
-        </div>
+        {/if}
+        {#each popups.filter((p) => p.slot === i) as popup (popup.id)}
+          <span
+            class="popup"
+            class:special={popup.special}
+            style:left="{layout.slots[i].x}%"
+            style:top="{layout.slots[i].y - 18}%">{popup.text}</span
+          >
+        {/each}
       {/each}
+
+      {#if wildMount}
+        <div class="mount" style:left="{layout.mount.x}%" style:top="{layout.mount.y}%">
+          <Art id={`${wildMount}-wild`} size={90} />
+        </div>
+      {/if}
+
+      {#if creature}
+        {@const def = CREATURES[creature.creatureId]}
+        <button
+          type="button"
+          class="creature"
+          style:left="{layout.creature.x}%"
+          style:top="{layout.creature.y}%"
+          aria-label={`Shoo the ${def.name.toLowerCase()} (${creature.tapsLeft} more taps)`}
+          onpointerdown={shoo}
+        >
+          {#key creatureWiggle}
+            <span class="art" class:hop={creatureWiggle > 0}
+              ><Art id={`creature-${creature.creatureId}`} size={120} /></span
+            >
+          {/key}
+          <span class="taps" aria-hidden="true">
+            <span style:width="{(1 - creature.tapsLeft / def.taps) * 100}%"></span>
+          </span>
+        </button>
+      {/if}
+    </div>
+
+    <div class="below">
+      {#if full}
+        <p class="note full" role="status">
+          Your satchel is full! Fly home to put things in storage.
+        </p>
+      {/if}
+      {#if message}<p class="note message" role="status">{message}</p>{/if}
+      {#if creature}
+        <p class="note trouble">
+          A {CREATURES[creature.creatureId].name.toLowerCase()} is munching the plants! Tap it to shoo
+          it away ({creature.tapsLeft} more), or calm it.
+        </p>
+      {/if}
+      {#if campCrew}
+        <p class="note trouble">
+          {CREWS[campCrew].name} have camped here, taking over part of the spot. Helpers in the Meadow
+          bring back less until they leave.
+        </p>
+      {/if}
+      <SpellButtons targets={['pests', 'creature', 'camp', 'parley']} />
+      <WildMount {spotId} />
     </div>
   </div>
 {/if}
@@ -171,32 +193,22 @@
 <style>
   .spot {
     min-height: calc(100vh - 70px);
-    padding: 16px;
-    background: linear-gradient(#fff3c4, #d8efc8);
+    padding: 12px 16px 24px;
+    background: linear-gradient(#f3f9e8, #e4f1d6);
+  }
+
+  .spot.night {
+    background: linear-gradient(#2a2763, #3d4f7a);
+    color: #f5f0ff;
   }
 
   header {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
     gap: 12px;
     max-width: 1100px;
-    margin: 0 auto 16px;
-  }
-
-  h2 {
-    margin: 0;
-  }
-
-  header p {
-    margin: 4px 0 0;
-    opacity: 0.8;
-  }
-
-  .spot.night {
-    background: linear-gradient(#2a2763, #3d4f7a);
-    color: #f5f0ff;
+    margin: 0 auto 10px;
   }
 
   .me {
@@ -205,137 +217,126 @@
 
   .title {
     flex: 1;
-    min-width: 200px;
+    min-width: 180px;
+  }
+
+  h2 {
+    margin: 0;
   }
 
   .meter {
-    margin-top: 6px;
+    margin-top: 4px;
     max-width: 280px;
   }
 
-  .message {
-    max-width: 1100px;
-    margin: 0 auto 12px;
-    padding: 8px 16px;
-    border-radius: 14px;
-    background: #ede7ff;
-    color: #4c3a99;
-    font-weight: 700;
-    text-align: center;
+  .scene {
+    position: relative;
+    /* Fill the width, but never so tall that the controls below fall off a tablet screen. */
+    width: min(100%, 1100px, calc((100vh - 200px) * 1.6));
+    margin: 0 auto;
+    aspect-ratio: 16 / 10;
+    border-radius: 28px;
+    overflow: hidden;
+    border: 3px solid #cfe3b8;
+    box-shadow: 0 8px 24px rgb(80 110 60 / 0.18);
+    filter: saturate(var(--saturation));
+    touch-action: manipulation;
   }
 
-  .trouble {
-    max-width: 1100px;
-    margin: 0 auto 12px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 12px;
+  .scene.night {
+    border-color: #4c3a99;
   }
 
-  .card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
-    border-radius: 18px;
-    background: rgb(255 255 255 / 0.85);
-    border: 2px solid #c97a8c;
-    color: var(--ink);
+  .scene.night :global(.plant-spot) {
+    filter: brightness(0.8) saturate(0.9);
+  }
+
+  .camp {
+    position: absolute;
+    width: 30%;
+    transform: translate(-50%, -80%);
+    pointer-events: none;
+  }
+
+  .camp :global(svg),
+  .mount :global(svg),
+  .creature :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+
+  .mount {
+    position: absolute;
+    width: 11%;
+    transform: translate(-50%, -50%);
+    animation: hover 2.4s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes hover {
+    50% {
+      transform: translate(-50%, -62%);
+    }
   }
 
   .creature {
-    flex: none;
-    padding: 4px;
+    position: absolute;
+    width: 15%;
+    min-width: 56px;
+    padding: 0;
+    transform: translate(-50%, -92%);
     border: none;
-    border-radius: 16px;
-    background: #fde3ec;
+    background: transparent;
     cursor: pointer;
     touch-action: manipulation;
   }
 
-  .creature .wiggle {
-    display: inline-block;
+  .creature .art {
+    display: block;
+    filter: drop-shadow(0 3px 2px rgb(60 60 40 / 0.25));
+  }
+
+  .hop {
     animation: hop 0.25s ease-out;
   }
 
   @keyframes hop {
     50% {
-      transform: translateY(-8px) rotate(6deg);
+      transform: translateY(-10%) rotate(5deg);
     }
   }
 
-  .about {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    font-size: 0.9rem;
-  }
-
-  .bar {
-    height: 8px;
-    margin-top: 4px;
+  .taps {
+    display: block;
+    height: 6px;
+    margin: 2px 15% 0;
     border-radius: 999px;
-    background: rgb(0 0 0 / 0.08);
+    background: rgb(255 255 255 / 0.85);
     overflow: hidden;
   }
 
-  .bar div {
+  .taps span {
+    display: block;
     height: 100%;
     background: var(--petal-deep);
   }
 
-  .wild-mount {
-    max-width: 1100px;
-    margin: 0 auto 12px;
-  }
-
-  .magic {
-    max-width: 1100px;
-    margin: 0 auto 12px;
-  }
-
-  .full {
-    max-width: 1100px;
-    margin: 0 auto 16px;
-    padding: 10px 16px;
-    border-radius: 14px;
-    background: var(--petal);
-    font-weight: 700;
-    text-align: center;
-  }
-
-  .field {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .cell {
-    position: relative;
-  }
-
-  .cell :global(.slot) {
-    width: 100%;
-  }
-
   .popup {
     position: absolute;
-    left: 50%;
-    top: 30%;
     transform: translateX(-50%);
     pointer-events: none;
     white-space: nowrap;
     font-weight: 700;
     color: var(--leaf-deep);
-    text-shadow: 0 1px 0 white;
+    text-shadow:
+      0 1px 0 white,
+      0 0 6px white;
     animation: float-up 1.1s ease-out forwards;
+    z-index: 2;
   }
 
   .popup.special {
     color: var(--petal-deep);
-    top: 50%;
   }
 
   @keyframes float-up {
@@ -345,13 +346,48 @@
     }
     to {
       opacity: 0;
-      transform: translate(-50%, -60px);
+      transform: translate(-50%, -50px);
     }
   }
 
-  @media (max-width: 600px) {
-    .field {
-      grid-template-columns: repeat(2, 1fr);
+  .below {
+    max-width: 1100px;
+    margin: 12px auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .note {
+    margin: 0;
+    padding: 8px 14px;
+    border-radius: 14px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .full {
+    background: var(--petal);
+    text-align: center;
+  }
+
+  .message {
+    background: #ede7ff;
+    color: #4c3a99;
+    text-align: center;
+  }
+
+  .trouble {
+    background: rgb(255 255 255 / 0.85);
+    border: 2px solid #c97a8c;
+    font-weight: 400;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mount,
+    .hop,
+    .popup {
+      animation: none;
     }
   }
 </style>
