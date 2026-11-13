@@ -1,10 +1,19 @@
+import { ITEMS } from '../data/items'
 import { PLANTS, RARITY_WEIGHT } from '../data/plants'
 import type { ItemStack } from '../data/types'
 import { SPOTS } from '../data/world'
 import type { GameEvent } from './events'
+import {
+  clickPower,
+  hasQol,
+  luck,
+  satchelCapacity,
+  storageCapacity,
+  storageUsed,
+} from './modifiers'
 import { pickWeighted, type Random } from './rng'
-import { clickPower, luck, satchelCapacity } from './buffs'
 import { addItems, countItems, type GameState, type SlotState, type SpotState } from './state'
+import { startTravel } from './travel'
 
 /** Chance a harvest gives one extra of each material. Starting value for balancing. */
 export const BONUS_MATERIAL_CHANCE = 0.1
@@ -95,22 +104,39 @@ export function tapPlant(
   slot.regrowMs = SPOTS[spotId].regrowMs
   state.stats.plantsHarvested++
 
-  return [{ type: 'harvest', spotId, slot: slotIndex, plantId, items, bonus, trinketId }]
+  const events: GameEvent[] = [
+    { type: 'harvest', spotId, slot: slotIndex, plantId, items, bonus, trinketId },
+  ]
+  // Homing Instinct: head home as soon as the satchel fills up.
+  if (satchelFull(state) && hasQol(state, 'auto-return')) {
+    events.push(...startTravel(state, 'home', true))
+  }
+  return events
 }
 
-/** Moves everything in the satchel into home storage. Only works at home. */
+/**
+ * Moves the satchel into home storage, as much as fits. Trinkets take no space. Whatever
+ * doesn't fit stays in the satchel. Only works at home.
+ */
 export function depositSatchel(state: GameState): GameEvent[] {
   const { player } = state
   if (player.travel) return [{ type: 'blocked', reason: 'flying' }]
   if (player.place !== 'home') return [{ type: 'blocked', reason: 'not-here' }]
+  if (countItems(player.satchel) === 0) return []
 
-  const items: ItemStack[] = Object.entries(player.satchel).map(([itemId, amount]) => ({
-    itemId,
-    amount,
-  }))
-  for (const { itemId, amount } of items) addItems(state.inventory, itemId, amount)
-  player.satchel = {}
-  return items.length > 0 ? [{ type: 'deposit', items }] : []
+  let free = Math.max(0, storageCapacity(state) - storageUsed(state))
+  const moved: ItemStack[] = []
+  for (const [itemId, amount] of Object.entries(player.satchel)) {
+    const isTrinket = ITEMS[itemId]?.category === 'trinket'
+    const take = isTrinket ? amount : Math.min(amount, free)
+    if (take <= 0) continue
+    if (!isTrinket) free -= take
+    addItems(state.inventory, itemId, take)
+    addItems(player.satchel, itemId, -take)
+    moved.push({ itemId, amount: take })
+  }
+  if (moved.length === 0) return [{ type: 'blocked', reason: 'storage-full' }]
+  return [{ type: 'deposit', items: moved, leftOver: countItems(player.satchel) }]
 }
 
 /** Advances regrowth in every visited spot (also while the player is away or offline). */

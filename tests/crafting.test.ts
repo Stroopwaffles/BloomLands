@@ -3,7 +3,7 @@ import { ITEMS } from '../src/data/items'
 import { POTIONS, RECIPES } from '../src/data/recipes'
 import { RESEARCH } from '../src/data/research'
 import { applyAction } from '../src/engine/actions'
-import { clickPower, luck, satchelCapacity, wingSpeed } from '../src/engine/buffs'
+import { clickPower, luck, satchelCapacity, wingSpeed } from '../src/engine/modifiers'
 import { canAfford, pay } from '../src/engine/costs'
 import { checkCraft, unlockedRecipes } from '../src/engine/crafting'
 import { ensureSpot, rollPlant, tapPlant } from '../src/engine/gathering'
@@ -148,10 +148,18 @@ describe('crafting', () => {
     expect(applyAction(state, { type: 'craft/start', recipeId: 'refined-petal-paste' })).toEqual([
       { type: 'blocked', reason: 'station-busy' },
     ])
-    state.stations.mortar.slots = 2
-    expect(
-      applyAction(state, { type: 'craft/start', recipeId: 'refined-petal-paste' })[0].type,
-    ).toBe('craft-start')
+  })
+
+  it('needs the station built, and a second cauldron runs two brews', () => {
+    const state = gameWith({ 'refined-petal-paste': 5, 'refined-dew-water': 5 }, [
+      'research-salves',
+    ])
+    expect(checkCraft(state, 'component-sun-salve')).toBe('not-built')
+    state.upgrades.push('lodging-cauldron')
+    applyAction(state, { type: 'craft/start', recipeId: 'component-sun-salve' })
+    expect(checkCraft(state, 'component-sun-salve')).toBe('station-busy')
+    state.upgrades.push('lodging-cauldron-2')
+    expect(checkCraft(state, 'component-sun-salve')).toBe('ok')
   })
 
   it('can make a potion all the way from raw plants', () => {
@@ -160,6 +168,7 @@ describe('crafting', () => {
       { 'raw-daisy-petals': 8, 'raw-dewdrops': 2, 'raw-clover-leaves': 4 },
       allResearch,
     )
+    state.upgrades.push('lodging-press', 'lodging-cauldron')
     const craft = (recipeId: string) => {
       expect(applyAction(state, { type: 'craft/start', recipeId })[0].type).toBe('craft-start')
       advance(state, state.meta.lastTickAt + 60_000)

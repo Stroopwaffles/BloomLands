@@ -33,9 +33,9 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'potion-lucky-dew', name: 'Lucky Dew', category: 'potion' },
 
   // Meadow trinkets
-  { id: 'trinket-lost-button', name: 'Lost button', category: 'trinket' },
-  { id: 'trinket-glass-bead', name: 'Glass bead', category: 'trinket' },
-  { id: 'trinket-thimble', name: 'Thimble', category: 'trinket' },
+  { id: 'trinket-lost-button', name: 'Lost button', category: 'trinket', tags: ['trinket'] },
+  { id: 'trinket-glass-bead', name: 'Glass bead', category: 'trinket', tags: ['trinket'] },
+  { id: 'trinket-thimble', name: 'Thimble', category: 'trinket', tags: ['trinket'] },
 ]
 
 export const ITEMS: Readonly<Record<string, ItemDef>> = Object.fromEntries(
@@ -58,4 +58,5 @@ export const TAG_NAMES: Readonly<Record<string, string>> = {
   fruit: 'Fruit',
   fluff: 'Fluff',
   stalks: 'Stalks',
+  trinket: 'Trinkets',
 }

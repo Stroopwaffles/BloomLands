@@ -1,4 +1,4 @@
-import type { StationId } from '../data/types'
+import type { ItemStack, StationId } from '../data/types'
 import { HOME } from '../data/world'
 import { GAME_VERSION, SAVE_VERSION } from './version'
 
@@ -22,11 +22,11 @@ export interface JobState {
   id: string
   totalMs: number
   remainingMs: number
+  /** Batch size for crafting (Big Batches). Missing means 1. */
+  count?: number
 }
 
 export interface StationState {
-  /** How many jobs can run here at once (the cauldron's slots can be upgraded later). */
-  slots: number
   jobs: JobState[]
 }
 
@@ -39,6 +39,19 @@ export interface BuffState {
 export interface TravelState {
   to: string
   totalMs: number
+  remainingMs: number
+  /** True for a flight home started by Homing Instinct (so Round Trips can fly back after). */
+  auto?: boolean
+}
+
+/** A visiting trader's request: bring these items, get this reward. */
+export interface TradeRequest {
+  id: number
+  traderId: string
+  wants: ItemStack[]
+  glimmers: number
+  trinketId: string | null
+  /** Time until the trader moves on. */
   remainingMs: number
 }
 
@@ -64,23 +77,27 @@ export interface GameState {
     place: string
     /** Set while flying somewhere. */
     travel: TravelState | null
+    /** The last harvesting spot visited (for Round Trips). */
+    lastSpot: string | null
     /** Items carried on the current trip. */
     satchel: Record<string, number>
+    /** Base satchel space, before gear and potions. */
     satchelCapacity: number
-    /** Damage per tap. */
+    /** Base damage per tap, before gear and potions. */
     clickPower: number
-    /** Multiplies flight speed (mounts multiply it further, later). */
+    /** Base flight speed, before gear, potions and (later) mounts. */
     wingSpeed: number
   }
   resources: {
     glimmers: number
-    trinkets: number
   }
-  /** Home storage: item stock by item ID, e.g. { 'raw-clover-leaves': 12 }. */
+  /** Home storage: item stock by item ID, e.g. { 'raw-clover-leaves': 12 }. Trinkets live here. */
   inventory: Record<string, number>
+  /** Base storage space, before lodging upgrades. */
+  storageCapacity: number
   /** Harvesting spots the player has visited, by spot ID. */
   spots: Record<string, SpotState>
-  /** Home crafting stations, by station ID. */
+  /** Home crafting stations, by station ID. Only built stations can be used. */
   stations: Record<StationId, StationState>
   research: {
     /** IDs of finished research. */
@@ -89,6 +106,14 @@ export interface GameState {
   }
   /** Active potion effects. */
   buffs: BuffState[]
+  /** IDs of bought upgrades (lodging, gear and comforts). */
+  upgrades: string[]
+  traders: {
+    requests: TradeRequest[]
+    /** Time until the next trader arrives (while there's room for one). */
+    nextArrivalMs: number
+    nextRequestId: number
+  }
   /** Permanent or run bonuses that engine rules read. Filled in by later systems. */
   bonuses: {
     /** Extra offline progress allowed on top of the base 4 hours. */
@@ -103,10 +128,13 @@ export interface GameState {
     taps: number
     itemsCrafted: number
     potionsDrunk: number
+    requestsFilled: number
+    glimmersEarned: number
   }
 }
 
 export const BASE_SATCHEL_CAPACITY = 20
+export const BASE_STORAGE_CAPACITY = 100
 
 export function createNewGame(now: number): GameState {
   return {
@@ -121,6 +149,7 @@ export function createNewGame(now: number): GameState {
     player: {
       place: HOME,
       travel: null,
+      lastSpot: null,
       satchel: {},
       satchelCapacity: BASE_SATCHEL_CAPACITY,
       clickPower: 1,
@@ -128,22 +157,28 @@ export function createNewGame(now: number): GameState {
     },
     resources: {
       glimmers: 0,
-      trinkets: 0,
     },
     inventory: {},
+    storageCapacity: BASE_STORAGE_CAPACITY,
     spots: {},
     stations: {
-      mortar: { slots: 1, jobs: [] },
-      press: { slots: 1, jobs: [] },
-      'drying-rack': { slots: 1, jobs: [] },
-      'spinning-wheel': { slots: 1, jobs: [] },
-      cauldron: { slots: 1, jobs: [] },
+      mortar: { jobs: [] },
+      press: { jobs: [] },
+      'drying-rack': { jobs: [] },
+      'spinning-wheel': { jobs: [] },
+      cauldron: { jobs: [] },
     },
     research: {
       completed: [],
       current: null,
     },
     buffs: [],
+    upgrades: [],
+    traders: {
+      requests: [],
+      nextArrivalMs: 20_000,
+      nextRequestId: 1,
+    },
     bonuses: {
       offlineCapMs: 0,
     },
@@ -154,6 +189,8 @@ export function createNewGame(now: number): GameState {
       taps: 0,
       itemsCrafted: 0,
       potionsDrunk: 0,
+      requestsFilled: 0,
+      glimmersEarned: 0,
     },
   }
 }

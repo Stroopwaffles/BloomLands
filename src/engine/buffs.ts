@@ -1,43 +1,10 @@
 import { POTIONS } from '../data/recipes'
-import type { PotionEffect } from '../data/types'
 import type { GameEvent } from './events'
 import { addItems, type GameState } from './state'
 
-function effects(state: GameState): PotionEffect[] {
-  return state.buffs.flatMap((buff) =>
-    POTIONS[buff.potionId] ? [POTIONS[buff.potionId].effect] : [],
-  )
-}
-
-/** Click power including potions. Every rule that needs click power reads it from here. */
-export function clickPower(state: GameState): number {
-  let power = state.player.clickPower
-  for (const effect of effects(state)) if (effect.kind === 'clickPower') power += effect.amount
-  return power
-}
-
-export function wingSpeed(state: GameState): number {
-  let speed = state.player.wingSpeed
-  for (const effect of effects(state)) if (effect.kind === 'wingSpeed') speed *= effect.multiplier
-  return speed
-}
-
-export function satchelCapacity(state: GameState): number {
-  let capacity = state.player.satchelCapacity
-  for (const effect of effects(state)) if (effect.kind === 'satchel') capacity += effect.amount
-  return capacity
-}
-
-/** Multiplies how often uncommon and rarer plants grow. */
-export function luck(state: GameState): number {
-  let value = 1
-  for (const effect of effects(state)) if (effect.kind === 'luck') value *= effect.multiplier
-  return value
-}
-
 /**
  * Drinks a potion from storage. Drinking one that's already active adds its duration to the
- * time left instead of stacking the effect.
+ * time left instead of stacking the effect. (Effects are applied in modifiers.ts.)
  */
 export function drinkPotion(state: GameState, potionId: string): GameEvent[] {
   const potion = POTIONS[potionId]

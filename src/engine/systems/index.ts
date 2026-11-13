@@ -1,4 +1,4 @@
-import { buffsSystem, researchSystem, stationsSystem } from './home'
+import { buffsSystem, researchSystem, stationsSystem, tradersSystem } from './home'
 import { statsSystem } from './stats'
 import type { System } from './types'
 import { regrowthSystem, travelSystem } from './world'
@@ -13,6 +13,7 @@ export const SYSTEMS: readonly System[] = [
   travelSystem,
   stationsSystem,
   researchSystem,
+  tradersSystem,
   buffsSystem,
 ]
 

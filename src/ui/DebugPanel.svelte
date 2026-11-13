@@ -113,6 +113,16 @@
         <button type="button" onclick={() => runtime.dispatch({ type: 'debug/completeResearch' })}>
           Finish research
         </button>
+        <button type="button" onclick={() => runtime.dispatch({ type: 'debug/traderNow' })}>
+          Trader now
+        </button>
+        <button
+          type="button"
+          onclick={() =>
+            runtime.dispatch({ type: 'debug/addItem', itemId: 'trinket-thimble', amount: 3 })}
+        >
+          +3 trinkets
+        </button>
       </div>
 
       <h3>Time</h3>

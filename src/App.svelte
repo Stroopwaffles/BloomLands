@@ -3,7 +3,8 @@
   import Art from './art/Art.svelte'
   import { HOME } from './data/world'
   import { formatNumber } from './engine/format'
-  import { satchelCapacity } from './engine/buffs'
+  import { COURT_RANKS } from './data/economy'
+  import { courtRank, satchelCapacity, trinketCount } from './engine/modifiers'
   import { countItems } from './engine/state'
   import BuffBar from './ui/components/BuffBar.svelte'
   import DebugPanel from './ui/DebugPanel.svelte'
@@ -32,6 +33,11 @@
       <Art id="icon-glimmers" size={28} />
       <span>{formatNumber($game.resources.glimmers)}</span>
     </div>
+    <div class="counter" aria-label="Trinkets">
+      <Art id="icon-trinkets" size={28} />
+      <span>{formatNumber(trinketCount($game))}</span>
+    </div>
+    <div class="rank" aria-label="Court rank">{COURT_RANKS[courtRank($game)].name}</div>
   </div>
 </header>
 
@@ -74,6 +80,16 @@
   .counters {
     display: flex;
     gap: 20px;
+  }
+
+  .rank {
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: var(--leaf);
+    color: white;
+    font-family: var(--font-heading);
+    font-weight: 500;
+    align-self: center;
   }
 
   .counter {

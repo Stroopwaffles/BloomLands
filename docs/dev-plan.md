@@ -108,6 +108,13 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - Lodging upgrades; court ranks 1–2 (Wanderer, Hearthling).
 - QoL upgrade framework (permanent unlocks), with the first few QoL upgrades.
 - *Done when:* you can fill requests, earn Glimmers and grow your court a rank.
+- *Status:* complete.
+  - **Trinkets** are the rare currency: the trinket items you find, spent by count (any kind). They take no storage space.
+  - **Traders:** Tumble the snail peddler. Up to 2 requests at once, a new one every 2 minutes, each lasting 15 minutes. Requests ask for raw plants plus anything you can currently craft, and pay 1.5× the items' value in Glimmers, with a 15% chance of a bonus trinket.
+  - **Upgrades tab:** Lodging (Storeroom ×3, Press Nook, Spinning Corner, Hearth and Cauldron, Second Cauldron), Gear (gloves, satchel and wing upgrades, 3 tiers each), Comforts (Homing Instinct, Tidy Habits, Round Trips, Big Batches).
+  - **Stations:** the mortar and drying rack come with the starting home; the press, spinning wheel and cauldron are built.
+  - **Storage:** 100 base space; trinkets are free.
+  - **Court ranks:** all seven defined; lodging gives court points (Hearthling at 6). Helpers add points in M5.
 
 **M5. Helpers**
 - Recruiting at Thimblewick; field-mouse gatherer and supply helpers.

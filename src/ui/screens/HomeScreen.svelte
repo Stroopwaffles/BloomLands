@@ -5,18 +5,28 @@
   import ItemList from '../components/ItemList.svelte'
   import PotionShelf from '../components/PotionShelf.svelte'
   import { runtime } from '../game'
+  import { COURT_RANKS } from '../../data/economy'
+  import { formatNumber } from '../../engine/format'
+  import { courtPoints, courtRank, storageCapacity, storageUsed } from '../../engine/modifiers'
+  import TraderRequests from '../components/TraderRequests.svelte'
   import ResearchTab from './ResearchTab.svelte'
+  import UpgradesTab from './UpgradesTab.svelte'
   import WorkshopTab from './WorkshopTab.svelte'
 
   const { game } = runtime
   const carrying = $derived(countItems($game.player.satchel))
 
-  type Tab = 'court' | 'workshop' | 'research'
+  type Tab = 'court' | 'workshop' | 'research' | 'upgrades'
   const TABS: { id: Tab; label: string }[] = [
     { id: 'court', label: 'Court' },
     { id: 'workshop', label: 'Workshop' },
     { id: 'research', label: 'Research' },
+    { id: 'upgrades', label: 'Upgrades' },
   ]
+
+  const rank = $derived(courtRank($game))
+  const points = $derived(courtPoints($game))
+  const nextRank = $derived(COURT_RANKS[rank + 1])
   let tab = $state<Tab>('court')
 
   const busyStations = $derived(
@@ -36,6 +46,9 @@
         {t.label}
         {#if t.id === 'workshop' && busyStations > 0}<span class="dot">{busyStations}</span>{/if}
         {#if t.id === 'research' && $game.research.current}<span class="dot">1</span>{/if}
+        {#if t.id === 'court' && $game.traders.requests.length > 0}
+          <span class="dot visitors">{$game.traders.requests.length}</span>
+        {/if}
       </button>
     {/each}
   </nav>
@@ -45,10 +58,26 @@
       <section class="court panel">
         <h2>Your court</h2>
         <Art id="char-fairy" size={180} />
-        <p class="hint">A humble start. One day this will be a grand court.</p>
+        <p class="rank">{COURT_RANKS[rank].name}</p>
+        {#if nextRank}
+          <div class="rank-bar" aria-label="Progress to next court rank">
+            <div style:width="{Math.min(100, (points / nextRank.points) * 100)}%"></div>
+          </div>
+          <p class="hint">
+            {points} / {nextRank.points} court points to become {nextRank.name}. Build rooms to grow
+            your court.
+          </p>
+        {:else}
+          <p class="hint">Your court is complete!</p>
+        {/if}
       </section>
 
       <div class="side">
+        <section class="panel">
+          <h2>Visitors</h2>
+          <TraderRequests />
+        </section>
+
         <section class="panel">
           <h2>Satchel</h2>
           {#if carrying > 0}
@@ -76,15 +105,22 @@
         </section>
 
         <section class="panel">
-          <h2>Storage</h2>
+          <h2>
+            Storage
+            <span class="capacity">
+              {formatNumber(storageUsed($game))} / {formatNumber(storageCapacity($game))}
+            </span>
+          </h2>
           <ItemList items={$game.inventory} empty="Your storeroom is empty." />
         </section>
       </div>
     </div>
   {:else if tab === 'workshop'}
     <WorkshopTab />
-  {:else}
+  {:else if tab === 'research'}
     <ResearchTab />
+  {:else}
+    <UpgradesTab />
   {/if}
 </div>
 
@@ -132,6 +168,43 @@
     color: white;
     font-size: 0.75rem;
     line-height: 22px;
+  }
+
+  .dot.visitors {
+    background: var(--petal-deep);
+  }
+
+  .rank {
+    margin: 8px 0 0;
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    color: var(--leaf-deep);
+  }
+
+  .rank-bar {
+    width: 80%;
+    height: 10px;
+    margin-top: 6px;
+    border-radius: 999px;
+    background: white;
+    border: 2px solid var(--leaf);
+    overflow: hidden;
+  }
+
+  .rank-bar div {
+    height: 100%;
+    background: var(--leaf);
+  }
+
+  .capacity {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 400;
+    opacity: 0.75;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
   }
 
   .court-layout {
@@ -185,6 +258,43 @@
   }
 
   @media (max-width: 700px) {
+    .dot.visitors {
+      background: var(--petal-deep);
+    }
+
+    .rank {
+      margin: 8px 0 0;
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
+      color: var(--leaf-deep);
+    }
+
+    .rank-bar {
+      width: 80%;
+      height: 10px;
+      margin-top: 6px;
+      border-radius: 999px;
+      background: white;
+      border: 2px solid var(--leaf);
+      overflow: hidden;
+    }
+
+    .rank-bar div {
+      height: 100%;
+      background: var(--leaf);
+    }
+
+    .capacity {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      font-weight: 400;
+      opacity: 0.75;
+    }
+
+    .tabs {
+      flex-wrap: wrap;
+    }
+
     .court-layout {
       grid-template-columns: 1fr;
     }

@@ -56,7 +56,7 @@ describe('serialize / deserialize', () => {
     })
     const loaded = deserialize(text)
     expect(loaded.resources.glimmers).toBe(42)
-    expect(loaded.resources.trinkets).toBe(0)
+    expect(loaded.upgrades).toEqual([])
     expect(loaded.inventory).toEqual({})
     expect(loaded.bonuses.offlineCapMs).toBe(0)
   })

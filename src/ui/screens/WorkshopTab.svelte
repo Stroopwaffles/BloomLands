@@ -3,7 +3,8 @@
   import { itemName } from '../../data/items'
   import { RECIPES, STATION_ORDER, STATIONS } from '../../data/recipes'
   import { formatDuration } from '../../engine/format'
-  import { checkCraft, unlockedRecipes } from '../../engine/crafting'
+  import { batchSizes, checkCraft, unlockedRecipes } from '../../engine/crafting'
+  import { stationBuilt, stationSlots } from '../../engine/modifiers'
   import CostList from '../components/CostList.svelte'
   import ProgressBar from '../components/ProgressBar.svelte'
   import { runtime } from '../game'
@@ -30,23 +31,28 @@
       <header>
         <Art id={`station-${stationId}`} size={44} />
         <h3>{STATIONS[stationId].name}</h3>
-        <span class="slots">{station.jobs.length}/{station.slots} in use</span>
+        {#if stationBuilt($game, stationId)}
+          <span class="slots">{station.jobs.length}/{stationSlots($game, stationId)} in use</span>
+        {/if}
       </header>
 
       {#each station.jobs as job, i (i)}
         <ProgressBar
-          label={`${STATIONS[stationId].verb}ing ${itemName(RECIPES[job.id].output.itemId)}`}
+          label={`${STATIONS[stationId].verb}ing ${itemName(RECIPES[job.id].output.itemId)}${
+            (job.count ?? 1) > 1 ? ` ×${job.count}` : ''
+          }`}
           totalMs={job.totalMs}
           remainingMs={job.remainingMs}
         />
       {/each}
 
-      {#if recipes.length === 0}
+      {#if !stationBuilt($game, stationId)}
+        <p class="hint">Not built yet. Build it from the Upgrades tab.</p>
+      {:else if recipes.length === 0}
         <p class="hint">No recipes yet. Research unlocks them.</p>
       {:else}
         <ul class="recipes">
           {#each recipes as recipe (recipe.id)}
-            {@const check = checkCraft($game, recipe.id)}
             <li>
               <div class="output">
                 <Art id={recipe.output.itemId} size={36} />
@@ -57,14 +63,20 @@
                 </div>
               </div>
               <CostList cost={recipe.inputs} stock={$game.inventory} />
-              <button
-                type="button"
-                disabled={check !== 'ok'}
-                title={check === 'ok' ? undefined : BLOCKED_TEXT[check]}
-                onclick={() => runtime.dispatch({ type: 'craft/start', recipeId: recipe.id })}
-              >
-                {STATIONS[stationId].verb}
-              </button>
+              <div class="buttons">
+                {#each batchSizes($game) as count (count)}
+                  {@const check = checkCraft($game, recipe.id, count)}
+                  <button
+                    type="button"
+                    disabled={check !== 'ok'}
+                    title={check === 'ok' ? undefined : BLOCKED_TEXT[check]}
+                    onclick={() =>
+                      runtime.dispatch({ type: 'craft/start', recipeId: recipe.id, count })}
+                  >
+                    {count === 1 ? STATIONS[stationId].verb : `×${count}`}
+                  </button>
+                {/each}
+              </div>
             </li>
           {/each}
         </ul>
@@ -146,9 +158,15 @@
     grid-column: 1;
   }
 
-  button {
+  .buttons {
     grid-column: 2;
     grid-row: 1 / span 2;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  button {
     min-height: 44px;
     min-width: 80px;
     padding: 0 14px;
