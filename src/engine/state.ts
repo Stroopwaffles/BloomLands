@@ -205,6 +205,8 @@ export interface GameState {
   bloom: Record<string, number>
   /** Curios found this run. */
   curios: string[]
+  /** Spirits of the land, by spirit ID (this run). */
+  spirits: Record<string, { awakened: boolean }>
   /** Story progress by story ID (missing = not started). */
   stories: Record<string, StoryProgress>
   /** Villager requests, by settlement ID. */
@@ -299,6 +301,7 @@ export function createNewGame(now: number): GameState {
     bloom: { meadow: 0 },
     curios: [],
     stories: {},
+    spirits: {},
     settlements: {
       thimblewick: { requests: [], nextArrivalMs: 60_000, filled: 0 },
     },

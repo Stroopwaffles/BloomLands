@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import Art from './art/Art.svelte'
-  import { HOME, isSettlement } from './data/world'
+  import { HOME, isSettlement, isSpiritPlace } from './data/world'
   import { formatNumber } from './engine/format'
   import { COURT_RANKS } from './data/economy'
   import { courtRank, satchelCapacity, trinketCount } from './engine/modifiers'
@@ -13,6 +13,7 @@
   import { debugEnabled, runtime } from './ui/game'
   import HomeScreen from './ui/screens/HomeScreen.svelte'
   import SettlementScreen from './ui/screens/SettlementScreen.svelte'
+  import SpiritScreen from './ui/screens/SpiritScreen.svelte'
   import SpotScreen from './ui/screens/SpotScreen.svelte'
   import TravelScreen from './ui/screens/TravelScreen.svelte'
   import WelcomeBack from './ui/WelcomeBack.svelte'
@@ -53,6 +54,8 @@
     <HomeScreen />
   {:else if isSettlement($game.player.place)}
     <SettlementScreen />
+  {:else if isSpiritPlace($game.player.place)}
+    <SpiritScreen />
   {:else}
     <SpotScreen />
   {/if}

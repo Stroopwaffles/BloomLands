@@ -1,4 +1,4 @@
-import { baseTravelMs, HOME, isSettlement, isSpot } from '../data/world'
+import { baseTravelMs, HOME, isSettlement, isSpiritPlace, isSpot } from '../data/world'
 import { weatherFlightFactor } from './environment'
 import type { GameEvent } from './events'
 import { applyInstantEvents, rollFlightEvent, settleFlightEvent } from './flightEvents'
@@ -28,7 +28,7 @@ export function startTravel(
 ): GameEvent[] {
   const { player } = state
   if (player.travel) return [{ type: 'blocked', reason: 'flying' }]
-  if (to !== HOME && !isSpot(to) && !isSettlement(to)) {
+  if (to !== HOME && !isSpot(to) && !isSettlement(to) && !isSpiritPlace(to)) {
     return [{ type: 'blocked', reason: 'not-here' }]
   }
   const totalMs = travelMs(state, player.place, to)

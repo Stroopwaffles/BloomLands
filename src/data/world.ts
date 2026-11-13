@@ -47,18 +47,44 @@ export const SETTLEMENTS: Readonly<Record<string, SettlementDef>> = {
   },
 }
 
+export interface SpiritPlaceDef {
+  id: string
+  name: string
+  regionId: string
+  description: string
+  spiritId: string
+}
+
+export const SPIRIT_PLACES: Readonly<Record<string, SpiritPlaceDef>> = {
+  'sunstone-hill': {
+    id: 'sunstone-hill',
+    name: 'Sunstone Hill',
+    regionId: 'meadow',
+    description: 'A warm flat stone at the top of the meadow, where the spirit rests.',
+    spiritId: 'spirit-sorrel',
+  },
+}
+
 export const REGIONS: Readonly<Record<string, RegionDef>> = {
   meadow: {
     id: 'meadow',
     name: 'Meadow',
     settlement: 'thimblewick',
+    spiritPlace: 'sunstone-hill',
     spots: ['buttercup-rise', 'dandelion-drift'],
   },
 }
 
 /** Every place you can fly to, in display order. */
 export function allPlaces(): string[] {
-  return [HOME, ...Object.values(REGIONS).flatMap((region) => [region.settlement, ...region.spots])]
+  return [
+    HOME,
+    ...Object.values(REGIONS).flatMap((region) => [
+      region.settlement,
+      ...region.spots,
+      region.spiritPlace,
+    ]),
+  ]
 }
 
 export function isSpot(placeId: string): boolean {
@@ -67,6 +93,10 @@ export function isSpot(placeId: string): boolean {
 
 export function isSettlement(placeId: string): boolean {
   return placeId in SETTLEMENTS
+}
+
+export function isSpiritPlace(placeId: string): boolean {
+  return placeId in SPIRIT_PLACES
 }
 
 /**
@@ -80,6 +110,10 @@ const ROUTES: Record<string, number> = {
   'home|thimblewick': 6_000,
   'thimblewick|buttercup-rise': 5_000,
   'thimblewick|dandelion-drift': 7_000,
+  'home|sunstone-hill': 10_000,
+  'thimblewick|sunstone-hill': 8_000,
+  'buttercup-rise|sunstone-hill': 5_000,
+  'dandelion-drift|sunstone-hill': 7_000,
 }
 
 export function baseTravelMs(from: string, to: string): number | null {
@@ -89,5 +123,7 @@ export function baseTravelMs(from: string, to: string): number | null {
 
 export function placeName(placeId: string): string {
   if (placeId === HOME) return 'Home'
-  return SPOTS[placeId]?.name ?? SETTLEMENTS[placeId]?.name ?? placeId
+  return (
+    SPOTS[placeId]?.name ?? SETTLEMENTS[placeId]?.name ?? SPIRIT_PLACES[placeId]?.name ?? placeId
+  )
 }

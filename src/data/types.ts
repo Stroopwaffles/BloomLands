@@ -110,6 +110,8 @@ export interface RegionDef {
   id: string
   name: string
   settlement: string
+  /** Where the region's spirit of the land rests. */
+  spiritPlace: string
   /** Harvesting spots, in display order. */
   spots: string[]
 }

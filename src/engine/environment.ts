@@ -1,6 +1,6 @@
 import { WEATHER, WEATHER_RULES, type WeatherDef, type WeatherKind } from '../data/challenges'
 import { DAY_MS, NIGHTFALL_MS, PHASE_STARTS, type DayPhase } from '../data/time'
-import { HOME, SPOTS } from '../data/world'
+import { HOME, SETTLEMENTS, SPIRIT_PLACES, SPOTS } from '../data/world'
 import { pickWeighted, type Random } from './rng'
 import type { GameState } from './state'
 
@@ -38,7 +38,12 @@ export function turnSky(state: GameState, to: 'day' | 'night'): void {
 /** The region a place belongs to. Home sits at the edge of the Meadow. */
 export function regionOf(placeId: string): string {
   if (placeId === HOME) return 'meadow'
-  return SPOTS[placeId]?.regionId ?? 'meadow'
+  return (
+    SPOTS[placeId]?.regionId ??
+    SETTLEMENTS[placeId]?.regionId ??
+    SPIRIT_PLACES[placeId]?.regionId ??
+    'meadow'
+  )
 }
 
 export function weatherIn(state: GameState, regionId: string): WeatherDef {
