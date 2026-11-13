@@ -117,6 +117,19 @@ const RECIPE_LIST: RecipeDef[] = [
     durationMs: 20 * SEC,
   },
 
+  {
+    // Content doc lists Leaf Tea + Spore Dust; Spore Dust is a Forest material, so the Meadow
+    // version uses Petal Paste (bitter flower smoke) to avoid needing a later region.
+    id: 'component-pest-smudge',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'refined-leaf-tea', amount: 1 },
+      { itemId: 'refined-petal-paste', amount: 1 },
+    ],
+    output: { itemId: 'component-pest-smudge', amount: 1 },
+    durationMs: 20 * SEC,
+  },
+
   // Potions (brewed in the cauldron)
   {
     id: 'potion-greenthumb-brew',

@@ -1,7 +1,9 @@
+import { CAMP_RULES } from '../data/challenges'
 import { ITEMS } from '../data/items'
 import { PLANTS, RARITY_WEIGHT } from '../data/plants'
 import type { ItemStack } from '../data/types'
 import { SPOTS } from '../data/world'
+import { morningPlantsGrow, weatherIn } from './environment'
 import type { GameEvent } from './events'
 import {
   clickPower,
@@ -20,11 +22,20 @@ export const BONUS_MATERIAL_CHANCE = 0.1
 /** Chance a harvest turns up a trinket. Starting value for balancing. */
 export const TRINKET_CHANCE = 0.02
 
-/** Picks a plant for a spot, weighted by rarity. Luck makes every non-common plant likelier. */
-export function rollPlant(spotId: string, random: Random, luckMultiplier = 1): string {
+/**
+ * Picks a plant for a spot, weighted by rarity. Luck makes every non-common plant likelier.
+ * Morning-only plants (like morning dew) are left out when `morningOk` is false.
+ */
+export function rollPlant(
+  spotId: string,
+  random: Random,
+  luckMultiplier = 1,
+  morningOk = true,
+): string {
   const spot = SPOTS[spotId]
+  const plants = spot.plants.filter((id) => morningOk || !PLANTS[id].morningOnly)
   return pickWeighted(
-    spot.plants.map((id) => {
+    plants.map((id) => {
       const { rarity } = PLANTS[id]
       const weight = RARITY_WEIGHT[rarity] * (rarity === 'common' ? 1 : luckMultiplier)
       return [id, weight] as const
@@ -33,11 +44,19 @@ export function rollPlant(spotId: string, random: Random, luckMultiplier = 1): s
   )
 }
 
-function growSlot(slot: SlotState, spotId: string, random: Random, luckMultiplier = 1): void {
-  const plantId = rollPlant(spotId, random, luckMultiplier)
+function growSlot(state: GameState, slot: SlotState, spotId: string, random: Random): void {
+  const morningOk = morningPlantsGrow(state, SPOTS[spotId].regionId)
+  const plantId = rollPlant(spotId, random, luck(state), morningOk)
   slot.plantId = plantId
   slot.hp = PLANTS[plantId].toughness
   slot.regrowMs = 0
+  slot.pests = 0
+}
+
+/** Slots a pirate camp has taken over (the last few in the spot). */
+export function campBlocksSlot(state: GameState, spotId: string, slotIndex: number): boolean {
+  if (!state.challenges.camps[spotId]) return false
+  return slotIndex >= SPOTS[spotId].slots - CAMP_RULES.slotsTaken
 }
 
 /** Creates a spot's state the first time it's visited, with every slot in bloom. */
@@ -48,7 +67,7 @@ export function ensureSpot(state: GameState, spotId: string, random: Random): Sp
   const spot: SpotState = { slots: [] }
   for (let i = 0; i < def.slots; i++) {
     const slot: SlotState = { plantId: null, hp: 0, regrowMs: 0 }
-    growSlot(slot, spotId, random, luck(state))
+    growSlot(state, slot, spotId, random)
     spot.slots.push(slot)
   }
   state.spots[spotId] = spot
@@ -76,6 +95,16 @@ export function tapPlant(
 
   const slot = state.spots[spotId]?.slots[slotIndex]
   if (!slot?.plantId) return [{ type: 'blocked', reason: 'no-plant' }]
+  if (campBlocksSlot(state, spotId, slotIndex)) return [{ type: 'blocked', reason: 'camp' }]
+
+  // Pests come off first, one per tap. Clearing them is tending, so it works with a full satchel.
+  if ((slot.pests ?? 0) > 0) {
+    state.stats.taps++
+    slot.pests = (slot.pests ?? 0) - 1
+    state.stats.pestsCleared++
+    return [{ type: 'pest-cleared', spotId, slot: slotIndex, pestsLeft: slot.pests }]
+  }
+
   if (satchelFull(state)) return [{ type: 'blocked', reason: 'satchel-full' }]
 
   state.stats.taps++
@@ -101,6 +130,7 @@ export function tapPlant(
 
   slot.plantId = null
   slot.hp = 0
+  slot.pests = 0
   slot.regrowMs = SPOTS[spotId].regrowMs
   state.stats.plantsHarvested++
 
@@ -139,14 +169,34 @@ export function depositSatchel(state: GameState): GameEvent[] {
   return [{ type: 'deposit', items: moved, leftOver: countItems(player.satchel) }]
 }
 
-/** Advances regrowth in every visited spot (also while the player is away or offline). */
+/**
+ * Advances regrowth in every visited spot (also while the player is away or offline).
+ * Sunshine makes plants regrow faster.
+ */
 export function regrowSpots(state: GameState, dtMs: number, random: Random): void {
   for (const [spotId, spot] of Object.entries(state.spots)) {
     if (!SPOTS[spotId]) continue
+    const growth = dtMs * weatherIn(state, SPOTS[spotId].regionId).regrowth
     for (const slot of spot.slots) {
       if (slot.plantId) continue
-      slot.regrowMs -= dtMs
-      if (slot.regrowMs <= 0) growSlot(slot, spotId, random, luck(state))
+      slot.regrowMs -= growth
+      if (slot.regrowMs <= 0) growSlot(state, slot, spotId, random)
     }
   }
+}
+
+/** Tidies a spot: removes plants a creature ate (they regrow as usual). */
+export function eatPlant(state: GameState, spotId: string, random: Random): number | null {
+  const spot = state.spots[spotId]
+  if (!spot) return null
+  const growing = spot.slots
+    .map((slot, i) => [slot, i] as const)
+    .filter(([slot, i]) => slot.plantId && !campBlocksSlot(state, spotId, i))
+  if (growing.length === 0) return null
+  const [slot, index] = growing[Math.floor(random() * growing.length)]
+  slot.plantId = null
+  slot.hp = 0
+  slot.pests = 0
+  slot.regrowMs = SPOTS[spotId].regrowMs
+  return index
 }

@@ -25,6 +25,7 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'component-thistle-twine', name: 'Thistle Twine', category: 'component' },
   { id: 'component-calming-tea', name: 'Calming Tea', category: 'component' },
   { id: 'component-sweet-bait', name: 'Sweet Bait', category: 'component' },
+  { id: 'component-pest-smudge', name: 'Pest Smudge', category: 'component' },
 
   // Potions
   { id: 'potion-greenthumb-brew', name: 'Greenthumb Brew', category: 'potion' },

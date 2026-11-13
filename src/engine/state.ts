@@ -1,4 +1,6 @@
+import type { FlightEventKind, WeatherKind } from '../data/challenges'
 import type { HelperType } from '../data/helpers'
+import { START_OF_DAY_MS } from '../data/time'
 import type { ItemStack, StationId } from '../data/types'
 import { HOME } from '../data/world'
 import { GAME_VERSION, SAVE_VERSION } from './version'
@@ -11,10 +13,41 @@ export interface SlotState {
   hp: number
   /** Time left until an empty slot grows a new plant. */
   regrowMs: number
+  /** Pests on this plant; each tap clears one before the plant itself can be tapped. */
+  pests?: number
 }
 
 export interface SpotState {
   slots: SlotState[]
+  /** Time until this spot next checks for pests. */
+  pestCheckMs?: number
+}
+
+export interface WeatherState {
+  kind: WeatherKind
+  remainingMs: number
+}
+
+/** A large creature visiting a harvesting spot. */
+export interface CreatureState {
+  creatureId: string
+  tapsLeft: number
+  /** Time until it wanders off by itself. */
+  remainingMs: number
+  /** Time until it eats another plant. */
+  eatMs: number
+}
+
+/** Something happening mid-flight (design doc 3.15). */
+export interface FlightEventState {
+  kind: FlightEventKind
+  /** The event shows up once the flight has this much time left. */
+  showAtMs: number
+  /** Taps so far (shooing pirates, catching seeds). */
+  taps: number
+  resolved: boolean
+  /** Gusts: true if it was a tailwind. */
+  tailwind?: boolean
 }
 
 /** A timed job: crafting at a station, or research. */
@@ -43,6 +76,7 @@ export interface TravelState {
   remainingMs: number
   /** True for a flight home started by Homing Instinct (so Round Trips can fly back after). */
   auto?: boolean
+  event?: FlightEventState
 }
 
 export type HelperPhase = 'idle' | 'outbound' | 'gathering' | 'returning' | 'unloading'
@@ -93,6 +127,20 @@ export interface GameState {
   }
   /** Random number generator state, saved so results are reproducible. */
   rng: number
+  /** Position in the in-game day (0 = dawn), in ms. */
+  time: {
+    dayMs: number
+  }
+  /** Weather by region ID. */
+  weather: Record<string, WeatherState>
+  challenges: {
+    /** Large creatures, by the spot they're visiting. */
+    creatures: Record<string, CreatureState>
+    /** Pirate camps, by spot: crew ID. */
+    camps: Record<string, string>
+    nextCreatureMs: number
+    nextCampMs: number
+  }
   player: {
     /** Where the player is, or where they took off from while flying. 'home' or a spot ID. */
     place: string
@@ -162,6 +210,12 @@ export interface GameState {
     requestsFilled: number
     glimmersEarned: number
     helperTrips: number
+    pestsCleared: number
+    creaturesShooed: number
+    campsCleared: number
+    ambushesFoiled: number
+    spellsCast: number
+    ritualsPerformed: number
   }
 }
 
@@ -178,6 +232,18 @@ export function createNewGame(now: number): GameState {
       lastSavedAt: null,
     },
     rng: now >>> 0,
+    time: {
+      dayMs: START_OF_DAY_MS,
+    },
+    weather: {
+      meadow: { kind: 'sunshine', remainingMs: 10 * 60_000 },
+    },
+    challenges: {
+      creatures: {},
+      camps: {},
+      nextCreatureMs: 5 * 60_000,
+      nextCampMs: 15 * 60_000,
+    },
     player: {
       place: HOME,
       travel: null,
@@ -232,6 +298,12 @@ export function createNewGame(now: number): GameState {
       requestsFilled: 0,
       glimmersEarned: 0,
       helperTrips: 0,
+      pestsCleared: 0,
+      creaturesShooed: 0,
+      campsCleared: 0,
+      ambushesFoiled: 0,
+      spellsCast: 0,
+      ritualsPerformed: 0,
     },
   }
 }

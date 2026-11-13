@@ -8,6 +8,7 @@
   import { stationBuilt, stationSlots } from '../../engine/modifiers'
   import CostList from '../components/CostList.svelte'
   import ProgressBar from '../components/ProgressBar.svelte'
+  import RitualCircle from '../components/RitualCircle.svelte'
   import SatchelLock from '../components/SatchelLock.svelte'
   import { runtime } from '../game'
   import { BLOCKED_TEXT } from '../messages'
@@ -89,7 +90,13 @@
   {/each}
 </div>
 
+<div class="rituals"><RitualCircle /></div>
+
 <style>
+  .rituals {
+    margin-top: 16px;
+  }
+
   .lock-bar {
     margin-bottom: 12px;
     padding: 6px 14px;

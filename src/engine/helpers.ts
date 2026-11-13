@@ -9,6 +9,8 @@ import { ITEMS } from '../data/items'
 import { PLANTS } from '../data/plants'
 import type { ItemStack } from '../data/types'
 import { baseTravelMs, HOME, isSettlement, SPOTS } from '../data/world'
+import { CAMP_RULES } from '../data/challenges'
+import { piratesInRegion } from './challenges'
 import type { GameEvent } from './events'
 import { rollPlant } from './gathering'
 import { helperCapacity, helperCount, storageCapacity, storageUsed } from './modifiers'
@@ -136,13 +138,17 @@ function nextShortage(state: GameState): string | null {
 // ---------------------------------------------------------------------------------------------
 // Trips
 
-function gather(helper: HelperState, random: Random): ItemStack[] {
+/** What a helper brings back. Pirates camped in the region mean a smaller haul. */
+function gather(state: GameState, helper: HelperState, random: Random): ItemStack[] {
   const spotId = helper.tripSpot!
-  if (helper.tripItem) return [{ itemId: helper.tripItem, amount: supplyHaul(helper.tripItem) }]
-  const found: ItemStack[] = []
-  for (let i = 0; i < HELPER_RULES.plantsPerTrip; i++) {
-    found.push(...PLANTS[rollPlant(spotId, random)].yields)
+  const share = piratesInRegion(state, SPOTS[spotId].regionId) ? CAMP_RULES.helperYield : 1
+  if (helper.tripItem) {
+    const amount = Math.max(1, Math.round(supplyHaul(helper.tripItem) * share))
+    return [{ itemId: helper.tripItem, amount }]
   }
+  const found: ItemStack[] = []
+  const plants = Math.max(1, Math.round(HELPER_RULES.plantsPerTrip * share))
+  for (let i = 0; i < plants; i++) found.push(...PLANTS[rollPlant(spotId, random)].yields)
   return found
 }
 
@@ -198,7 +204,9 @@ function stepHelper(state: GameState, helper: HelperState, dtMs: number, random:
       helper.phase = 'gathering'
       helper.remainingMs = HELPER_RULES.gatherMs
     } else if (helper.phase === 'gathering') {
-      for (const { itemId, amount } of gather(helper, random)) addItems(helper.bag, itemId, amount)
+      for (const { itemId, amount } of gather(state, helper, random)) {
+        addItems(helper.bag, itemId, amount)
+      }
       helper.phase = 'returning'
       helper.remainingMs = baseTravelMs(HOME, helper.tripSpot!) ?? 0
     } else if (helper.phase === 'returning') {

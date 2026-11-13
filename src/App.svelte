@@ -7,6 +7,7 @@
   import { courtRank, satchelCapacity, trinketCount } from './engine/modifiers'
   import { countItems } from './engine/state'
   import BuffBar from './ui/components/BuffBar.svelte'
+  import SkyBadge from './ui/components/SkyBadge.svelte'
   import DebugPanel from './ui/DebugPanel.svelte'
   import { debugEnabled, runtime } from './ui/game'
   import HomeScreen from './ui/screens/HomeScreen.svelte'
@@ -24,6 +25,7 @@
 
 <header>
   <h1>Bloom Lands</h1>
+  <SkyBadge />
   <div class="buffs"><BuffBar /></div>
   <div class="counters">
     <div class="counter" aria-label="Satchel">
@@ -61,6 +63,7 @@
 <style>
   header {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
@@ -73,6 +76,7 @@
     margin: 0;
     font-size: 1.6rem;
     color: var(--leaf-deep);
+    white-space: nowrap;
   }
 
   .buffs {

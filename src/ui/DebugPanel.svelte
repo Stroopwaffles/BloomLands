@@ -116,6 +116,9 @@
         <button type="button" onclick={() => runtime.dispatch({ type: 'debug/traderNow' })}>
           Trader now
         </button>
+        <button type="button" onclick={() => runtime.dispatch({ type: 'debug/challengesNow' })}>
+          Challenges now
+        </button>
         <button
           type="button"
           onclick={() =>

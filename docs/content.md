@@ -642,7 +642,7 @@ Made in the cauldron from refined materials.
 |---|---|---|---|
 | **Sun Salve** | Petal Paste + Dew Water | Meadow | Growth and gathering; early rituals |
 | **Lucky Charm Dust** | Lucky Essence + Petal Paste | Meadow | Rare-chance potions and rituals |
-| **Pest Smudge** | Leaf Tea + Spore Dust | Forest | Clearing pests |
+| **Pest Smudge** | Leaf Tea + Petal Paste *(was Spore Dust; changed in M6 so the Meadow can make it)* | Meadow | Clearing pests |
 | **Earth Loam** | Acorn Flour + Spore Dust | Forest | Land rituals, pirate camps |
 | **Thistle Twine** | Fluff Thread + Leaf Tea | Meadow | Wind spells, satchel potions |
 | **Calming Tea** | Leaf Tea + Dew Water | Meadow | Calming creatures |
@@ -705,7 +705,7 @@ Made in the cauldron from refined materials.
 | **Lullaby** | Calming Tea | Calms a large creature (rabbit, owl, badger, moth swarm) |
 | **Hush Step** | Calming Tea + Thistle Twine | Sneak past a watching creature (owl, heron, hawk) |
 | **Gust** | Thistle Twine | Blows away a mid-flight pirate ambush |
-| **Tanglevine** | Earth Loam + Thistle Twine | Drives pirates out of a camp |
+| **Tanglevine** | Thistle Twine + Sun Salve *(was Earth Loam; changed in M6 so the Meadow camp can be cleared)* | Drives pirates out of a camp |
 | **Parley** | Sweet Bait + the crew's region signature component | Advances a pirate crew's storyline toward winning them over |
 | **Kindred Call** | Sweet Bait + the creature's region signature component | Final step of taming a befriended mount. **Exception:** the blue jay uses Moon Draught + Starlight Lens (see Gaps below) |
 | **Web Unweave** | Glow Ink | Clears spider webs in the Caves |

@@ -26,6 +26,7 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'component-thistle-twine': 30,
   'component-sweet-bait': 32,
   'component-lucky-charm-dust': 55,
+  'component-pest-smudge': 28,
   // Potions
   'potion-greenthumb-brew': 45,
   'potion-quickwing-tonic': 50,

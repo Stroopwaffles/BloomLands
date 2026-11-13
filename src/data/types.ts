@@ -61,6 +61,10 @@ export interface ResearchDef {
   requires: string[]
   /** Recipe IDs this research unlocks. */
   unlocks: string[]
+  /** Spell IDs this research teaches. */
+  spells?: string[]
+  /** Ritual IDs this research teaches. */
+  rituals?: string[]
 }
 
 export interface PlantDef {
@@ -72,6 +76,10 @@ export interface PlantDef {
   rarity: Rarity
   /** What a full harvest gives. */
   yields: ItemStack[]
+  /** Only grows in the morning (or any time it rains). */
+  morningOnly?: boolean
+  /** Pests that can infest it (material tag the pests like). */
+  tags?: string[]
 }
 
 export interface SpotDef {

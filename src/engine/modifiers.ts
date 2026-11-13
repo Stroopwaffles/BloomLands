@@ -81,6 +81,10 @@ export function stationSlots(state: GameState, station: StationId): number {
   return slots
 }
 
+export function hasFeature(state: GameState, feature: 'ritual-circle'): boolean {
+  return upgradeEffects(state).some((e) => e.kind === 'feature' && e.feature === feature)
+}
+
 export function hasQol(state: GameState, qol: QolId): boolean {
   return upgradeEffects(state).some((e) => e.kind === 'qol' && e.qol === qol)
 }

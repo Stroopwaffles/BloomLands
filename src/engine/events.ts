@@ -16,6 +16,9 @@ export type BlockedReason =
   | 'missing-glimmers'
   | 'already-done'
   | 'no-room'
+  | 'camp'
+  | 'no-target'
+  | 'no-circle'
 
 /**
  * Things that just happened, returned by actions so the screen can react (floating numbers,
@@ -41,3 +44,10 @@ export type GameEvent =
   | { type: 'trade-filled'; requestId: number; glimmers: number; trinketId: string | null }
   | { type: 'upgrade-bought'; upgradeId: string; rankUp: boolean }
   | { type: 'recruited'; helperId: number; helperType: HelperType }
+  | { type: 'pest-cleared'; spotId: string; slot: number; pestsLeft: number }
+  | { type: 'creature-tap'; spotId: string; tapsLeft: number }
+  | { type: 'creature-gone'; spotId: string; creatureId: string; how: 'shooed' | 'calmed' }
+  | { type: 'camp-cleared'; spotId: string; crewId: string }
+  | { type: 'flight-event'; result: string }
+  | { type: 'spell-cast'; spellId: string }
+  | { type: 'ritual-performed'; ritualId: string }

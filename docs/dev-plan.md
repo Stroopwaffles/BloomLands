@@ -133,6 +133,15 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - Pests (aphids), the rabbit, the Dandelion Drifters (camp and mid-flight ambush), other mid-flight events.
 - Spells (Bugbane Whisper, Lullaby, Gust, Tanglevine, Parley) and rituals, cast from components.
 - *Done when:* every Meadow challenge appears, can be handled by tapping or a spell, and never causes real loss.
+- *Status:* complete.
+  - **Day/night:** one in-game day is about 1 real hour (dawn, morning, afternoon, dusk, night). Morning dew only grows in the morning or in rain. Spots look different at night.
+  - **Meadow weather** changes every 8–15 minutes: sunshine (plants regrow 1.5× faster), breeze (flights home 25% quicker, flights out 25% slower), light rain (flights 25% slower, dew all day).
+  - **Aphids** infest petal plants (3 per plant); each tap clears one before the plant can be tapped.
+  - **The rabbit** visits every 8–14 minutes and eats a plant every 15 seconds for up to 3 minutes; 8 taps shoo it.
+  - **The Dandelion Drifters** camp at a spot every 20–30 minutes, taking 3 of its 6 slots and halving helper hauls in the Meadow.
+  - **Flight events** (35% of player-started flights): ambush (6 taps or Gust, otherwise up to 3 satchel items stolen, never trinkets), dandelion seeds to catch, a lost beetle (+15 Glimmers), gusts (tail- or headwind).
+  - **Spells** (Spellcraft branch): Bugbane Whisper, Lullaby, Gust, Tanglevine. **Ritual Circle** (lodging) and the **Rite of Turning** (Rites branch).
+  - **Content changes:** Pest Smudge and Tanglevine now use Meadow ingredients (noted in the content doc). **Parley** moves to M7 with the storylines.
 
 **M7. Bloom, story and mounts**
 - Bloom meter for the Meadow; settlement requests at Thimblewick.

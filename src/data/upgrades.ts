@@ -12,6 +12,7 @@ export type UpgradeEffect =
   | { kind: 'wingSpeed'; amount: number }
   | { kind: 'qol'; qol: QolId }
   | { kind: 'helpers'; helper: HelperType; amount: number }
+  | { kind: 'feature'; feature: 'ritual-circle' }
 
 export type UpgradeCategory = 'lodging' | 'gear' | 'comfort'
 
@@ -111,6 +112,17 @@ const UPGRADE_LIST: UpgradeDef[] = [
     requires: ['lodging-cauldron'],
     effect: { kind: 'stationSlot', station: 'cauldron' },
     courtPoints: 3,
+  },
+  {
+    id: 'lodging-ritual-circle',
+    name: 'Ritual Circle',
+    category: 'lodging',
+    description: 'A ring of smooth stones in the garden, for performing rites.',
+    glimmers: 100,
+    items: [{ tag: 'petals', amount: 12 }],
+    requires: [],
+    effect: { kind: 'feature', feature: 'ritual-circle' },
+    courtPoints: 2,
   },
   {
     id: 'lodging-mouse-bunks',

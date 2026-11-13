@@ -12,6 +12,7 @@ const PLANT_LIST: PlantDef[] = [
   },
   {
     id: 'plant-daisy',
+    tags: ['petals'],
     name: 'Daisy',
     toughness: 2,
     rarity: 'common',
@@ -19,6 +20,7 @@ const PLANT_LIST: PlantDef[] = [
   },
   {
     id: 'plant-buttercup',
+    tags: ['petals'],
     name: 'Buttercup',
     toughness: 2,
     rarity: 'common',
@@ -44,6 +46,7 @@ const PLANT_LIST: PlantDef[] = [
     toughness: 1,
     rarity: 'uncommon',
     yields: [{ itemId: 'raw-dewdrops', amount: 1 }],
+    morningOnly: true,
   },
   {
     id: 'plant-four-leaf-clover',

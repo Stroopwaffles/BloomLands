@@ -1,7 +1,7 @@
 import { buffsSystem, helpersSystem, researchSystem, stationsSystem, tradersSystem } from './home'
 import { statsSystem } from './stats'
 import type { System } from './types'
-import { regrowthSystem, travelSystem } from './world'
+import { challengesSystem, environmentSystem, regrowthSystem, travelSystem } from './world'
 
 /**
  * All systems, in the order they run each tick. Later milestones add to this list.
@@ -9,7 +9,9 @@ import { regrowthSystem, travelSystem } from './world'
  */
 export const SYSTEMS: readonly System[] = [
   statsSystem,
+  environmentSystem,
   regrowthSystem,
+  challengesSystem,
   travelSystem,
   stationsSystem,
   researchSystem,

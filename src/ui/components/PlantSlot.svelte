@@ -8,8 +8,17 @@
     slot,
     wiggle,
     disabled,
+    camp = false,
     onTap,
-  }: { slot: SlotState; wiggle: number; disabled: boolean; onTap: () => void } = $props()
+  }: {
+    slot: SlotState
+    wiggle: number
+    disabled: boolean
+    camp?: boolean
+    onTap: () => void
+  } = $props()
+
+  const pests = $derived(slot.pests ?? 0)
 
   const plant = $derived(slot.plantId ? PLANTS[slot.plantId] : null)
   const hpFraction = $derived(plant ? slot.hp / plant.toughness : 0)
@@ -21,12 +30,17 @@
   }
 </script>
 
-{#if plant}
+{#if camp}
+  <div class="slot camp" aria-label="Pirate camp">
+    <Art id="camp-dandelion-drifters" size={72} />
+    <span class="name">Pirate camp</span>
+  </div>
+{:else if plant}
   <button
     type="button"
     class="slot"
     class:disabled
-    aria-label={`Tap ${plant.name}`}
+    aria-label={pests > 0 ? `Tap aphids off ${plant.name}` : `Tap ${plant.name}`}
     onpointerdown={onPointerDown}
     onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && !disabled && onTap()}
   >
@@ -34,6 +48,15 @@
       <span class="plant" class:wiggle={wiggle > 0}><Art id={plant.id} size={84} /></span>
     {/key}
     <span class="name">{plant.name}</span>
+    {#if pests > 0}
+      <span class="pests">
+        {#each Array.from({ length: pests }, (_, i) => i) as i (i)}<Art
+            id="pest-aphid"
+            size={22}
+          />{/each}
+        <span>Tap off aphids</span>
+      </span>
+    {/if}
     {#if plant.toughness > 1}
       <span class="hp" aria-hidden="true"><span style:width="{hpFraction * 100}%"></span></span>
     {/if}
@@ -62,6 +85,21 @@
     font: inherit;
     cursor: pointer;
     touch-action: manipulation;
+  }
+
+  .camp {
+    border-style: dashed;
+    border-color: #c97a8c;
+    background: rgb(247 183 200 / 0.35);
+  }
+
+  .pests {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #b0413e;
   }
 
   .slot:active:not(.empty) {

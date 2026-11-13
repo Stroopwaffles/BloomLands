@@ -1,5 +1,7 @@
 import { baseTravelMs, HOME, isSettlement, isSpot } from '../data/world'
+import { weatherFlightFactor } from './environment'
 import type { GameEvent } from './events'
+import { applyInstantEvents, rollFlightEvent, settleFlightEvent } from './flightEvents'
 import { depositSatchel, ensureSpot } from './gathering'
 import { hasQol, wingSpeed } from './modifiers'
 import type { Random } from './rng'
@@ -9,11 +11,19 @@ import { countItems, type GameState } from './state'
 export function travelMs(state: GameState, from: string, to: string): number | null {
   const base = baseTravelMs(from, to)
   if (base === null) return null
-  return Math.ceil(base / wingSpeed(state))
+  return Math.ceil((base / wingSpeed(state)) * weatherFlightFactor(state, from, to))
 }
 
-/** Starts a flight. `auto` marks a flight home started by Homing Instinct. */
-export function startTravel(state: GameState, to: string, auto = false): GameEvent[] {
+/**
+ * Starts a flight. `auto` marks a flight home started by Homing Instinct. Passing `random` lets the
+ * flight roll a mid-flight event (only flights the player starts themselves get events).
+ */
+export function startTravel(
+  state: GameState,
+  to: string,
+  auto = false,
+  random?: Random,
+): GameEvent[] {
   const { player } = state
   if (player.travel) return [{ type: 'blocked', reason: 'flying' }]
   if (to !== HOME && !isSpot(to) && !isSettlement(to)) {
@@ -23,6 +33,7 @@ export function startTravel(state: GameState, to: string, auto = false): GameEve
   if (totalMs === null) return [{ type: 'blocked', reason: 'not-here' }]
 
   player.travel = { to, totalMs, remainingMs: totalMs, ...(auto ? { auto: true } : {}) }
+  if (random && !auto) rollFlightEvent(player.travel, random)
   return [{ type: 'depart', to, totalMs, auto }]
 }
 
@@ -34,8 +45,10 @@ export function advanceTravel(state: GameState, dtMs: number, random: Random): v
   const { player } = state
   if (!player.travel) return
   player.travel.remainingMs -= dtMs
+  applyInstantEvents(state, random)
   if (player.travel.remainingMs > 0) return
 
+  settleFlightEvent(state, player.travel, random)
   const wasAuto = player.travel.auto === true
   player.place = player.travel.to
   player.travel = null

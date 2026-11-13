@@ -209,7 +209,12 @@ describe('travel', () => {
     const state = createNewGame(START)
     applyAction(state, { type: 'travel/go', to: 'buttercup-rise' })
     const loaded = deserialize(serialize(state, START))
-    expect(loaded.player.travel).toEqual({ to: 'buttercup-rise', totalMs: 8000, remainingMs: 8000 })
+    expect(loaded.player.travel).toMatchObject({
+      to: 'buttercup-rise',
+      totalMs: 8000,
+      remainingMs: 8000,
+    })
+    expect(loaded.player.travel).toEqual(state.player.travel)
   })
 })
 

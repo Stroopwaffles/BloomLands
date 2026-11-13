@@ -3,8 +3,8 @@ import type { ResearchBranch, ResearchDef } from './types'
 export const BRANCHES: readonly { id: ResearchBranch; name: string; note?: string }[] = [
   { id: 'refining', name: 'Refining' },
   { id: 'brewing', name: 'Brewing' },
-  { id: 'spellcraft', name: 'Spellcraft', note: 'Spells arrive in a later update.' },
-  { id: 'rites', name: 'Rites', note: 'Rituals arrive in a later update.' },
+  { id: 'spellcraft', name: 'Spellcraft' },
+  { id: 'rites', name: 'Rites', note: 'Rituals are performed at the Ritual Circle.' },
 ]
 
 const SEC = 1000
@@ -134,6 +134,19 @@ const RESEARCH_LIST: ResearchDef[] = [
     unlocks: ['component-lucky-charm-dust'],
   },
   {
+    id: 'research-smudges',
+    name: 'Smudges',
+    branch: 'brewing',
+    description: 'Blend leaf tea and petal paste into a bitter Pest Smudge.',
+    cost: [
+      { itemId: 'refined-leaf-tea', amount: 2 },
+      { itemId: 'refined-petal-paste', amount: 1 },
+    ],
+    durationMs: 1 * MIN,
+    requires: ['research-drying', 'research-grinding'],
+    unlocks: ['component-pest-smudge'],
+  },
+  {
     id: 'research-greenthumb',
     name: 'Greenthumb Brew',
     branch: 'brewing',
@@ -180,6 +193,73 @@ const RESEARCH_LIST: ResearchDef[] = [
     unlocks: ['potion-lucky-dew'],
   },
 ]
+
+// Spellcraft
+RESEARCH_LIST.push(
+  {
+    id: 'research-bugbane',
+    name: 'Bugbane Whisper',
+    branch: 'spellcraft',
+    description: 'A whispered charm that shoos every pest from a spot.',
+    cost: [{ itemId: 'component-pest-smudge', amount: 2 }],
+    durationMs: 2 * MIN,
+    requires: ['research-smudges'],
+    unlocks: [],
+    spells: ['spell-bugbane'],
+  },
+  {
+    id: 'research-lullaby',
+    name: 'Lullaby',
+    branch: 'spellcraft',
+    description: 'A soft song that calms large creatures.',
+    cost: [{ itemId: 'component-calming-tea', amount: 2 }],
+    durationMs: 2 * MIN,
+    requires: ['research-teas'],
+    unlocks: [],
+    spells: ['spell-lullaby'],
+  },
+  {
+    id: 'research-gust',
+    name: 'Gust',
+    branch: 'spellcraft',
+    description: 'Call up a puff of wind to blow away ambushing pirates.',
+    cost: [{ itemId: 'component-thistle-twine', amount: 2 }],
+    durationMs: 2 * MIN,
+    requires: ['research-twine'],
+    unlocks: [],
+    spells: ['spell-gust'],
+  },
+  {
+    id: 'research-tanglevine',
+    name: 'Tanglevine',
+    branch: 'spellcraft',
+    description: 'Gentle vines that persuade a pirate camp to move on.',
+    cost: [
+      { itemId: 'component-thistle-twine', amount: 1 },
+      { itemId: 'component-sun-salve', amount: 1 },
+    ],
+    durationMs: 3 * MIN,
+    requires: ['research-gust', 'research-salves'],
+    unlocks: [],
+    spells: ['spell-tanglevine'],
+  },
+)
+
+// Rites
+RESEARCH_LIST.push({
+  id: 'research-turning',
+  name: 'Rite of Turning',
+  branch: 'rites',
+  description: 'A short rite that turns the sky between day and night.',
+  cost: [
+    { itemId: 'component-sun-salve', amount: 1 },
+    { itemId: 'component-calming-tea', amount: 1 },
+  ],
+  durationMs: 2 * MIN,
+  requires: ['research-salves', 'research-teas'],
+  unlocks: [],
+  rituals: ['ritual-turning-day', 'ritual-turning-night'],
+})
 
 export const RESEARCH: Readonly<Record<string, ResearchDef>> = Object.fromEntries(
   RESEARCH_LIST.map((node) => [node.id, node]),

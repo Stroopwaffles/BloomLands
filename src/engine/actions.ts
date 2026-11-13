@@ -3,7 +3,10 @@ import { startCraft } from './crafting'
 import type { HelperType } from '../data/helpers'
 import type { GameEvent } from './events'
 import { depositSatchel, tapPlant } from './gathering'
+import { tapCreature } from './challenges'
+import { tapFlightEvent } from './flightEvents'
 import { assignHelper, recruitHelper, setMinimum } from './helpers'
+import { castSpell, performRitual } from './magic'
 import { startResearch } from './research'
 import { stateRandom, type Random } from './rng'
 import { addItems, type GameState } from './state'
@@ -29,12 +32,17 @@ export type Action =
   | { type: 'helpers/recruit'; helperType: HelperType }
   | { type: 'helpers/assign'; helperId: number; spotId: string | null }
   | { type: 'supply/setMinimum'; itemId: string; amount: number }
+  | { type: 'creature/tap'; spotId: string }
+  | { type: 'flight/tap' }
+  | { type: 'spell/cast'; spellId: string }
+  | { type: 'ritual/perform'; ritualId: string }
   | { type: 'debug/addGlimmers'; amount: number }
   | { type: 'debug/addItem'; itemId: string; amount: number }
   | { type: 'debug/skipTime'; ms: number }
   | { type: 'debug/setClickPower'; value: number }
   | { type: 'debug/completeResearch' }
   | { type: 'debug/traderNow' }
+  | { type: 'debug/challengesNow' }
 
 /** Applies an action and returns what happened, for the screen to show. */
 export function applyAction(
@@ -44,7 +52,7 @@ export function applyAction(
 ): GameEvent[] {
   switch (action.type) {
     case 'travel/go':
-      return startTravel(state, action.to)
+      return startTravel(state, action.to, false, random)
     case 'gather/tap':
       return tapPlant(state, action.spotId, action.slot, random)
     case 'satchel/deposit':
@@ -70,6 +78,14 @@ export function applyAction(
       return assignHelper(state, action.helperId, action.spotId)
     case 'supply/setMinimum':
       return setMinimum(state, action.itemId, action.amount)
+    case 'creature/tap':
+      return tapCreature(state, action.spotId)
+    case 'flight/tap':
+      return tapFlightEvent(state)
+    case 'spell/cast':
+      return castSpell(state, action.spellId)
+    case 'ritual/perform':
+      return performRitual(state, action.ritualId)
 
     case 'debug/addGlimmers':
       state.resources.glimmers = Math.max(0, state.resources.glimmers + action.amount)
@@ -92,6 +108,11 @@ export function applyAction(
       return []
     case 'debug/traderNow':
       state.traders.nextArrivalMs = 0
+      return []
+    case 'debug/challengesNow':
+      state.challenges.nextCreatureMs = 0
+      state.challenges.nextCampMs = 0
+      for (const spot of Object.values(state.spots)) spot.pestCheckMs = 0
       return []
   }
 }
