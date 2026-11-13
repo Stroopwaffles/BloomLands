@@ -101,6 +101,8 @@ export interface CrewDef {
   name: string
   regionId: string
   description: string
+  /** What the crew says after each Parley; the last one wins them over. */
+  parleyLines: string[]
 }
 
 export const CREWS: Readonly<Record<string, CrewDef>> = {
@@ -109,6 +111,11 @@ export const CREWS: Readonly<Record<string, CrewDef>> = {
     name: 'The Dandelion Drifters',
     regionId: 'meadow',
     description: 'Pirate fairies who ride dandelion seeds and swoop down on gatherers.',
+    parleyLines: [
+      '"A treat? For us? ...We\'re not falling for that. Probably." They eat it anyway.',
+      '"You keep coming back. And the Meadow keeps getting greener. Why do you care so much?"',
+      '"Fine. FINE. The Drifters will drift with you. Got any hammocks at that court of yours?"',
+    ],
   },
 }
 

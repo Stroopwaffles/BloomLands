@@ -1,6 +1,6 @@
 import { BLOOM_LEVELS, BLOOM_PER_LEVEL, CURIOS, type CurioDef } from '../data/bloom'
 import { COURT_RANKS } from '../data/economy'
-import { HELPER_RULES, type HelperType } from '../data/helpers'
+import { HELPER_RULES, PIRATES_PER_CREW, type HelperType } from '../data/helpers'
 import { itemHasTag } from '../data/items'
 import { POTIONS } from '../data/recipes'
 import type { PotionEffect, StationId } from '../data/types'
@@ -179,6 +179,9 @@ export function trinketCount(state: GameState): number {
 
 /** How many helpers of a type the lodging has room for (0 = that type isn't unlocked yet). */
 export function helperCapacity(state: GameState, type: HelperType): number {
+  if (type === 'pirate') {
+    return Object.values(state.crews).filter((c) => c.won).length * PIRATES_PER_CREW
+  }
   let capacity = 0
   for (const e of upgradeEffects(state)) {
     if (e.kind === 'helpers' && e.helper === type) capacity += e.amount

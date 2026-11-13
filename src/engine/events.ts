@@ -62,3 +62,4 @@ export type GameEvent =
   | { type: 'mount-level'; mountId: string; level: number }
   | { type: 'secret'; spotId: string; found: 'unlocked' | 'visited' }
   | { type: 'outfit'; outfitId: string }
+  | { type: 'crew-won'; crewId: string }

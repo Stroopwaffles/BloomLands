@@ -125,7 +125,7 @@ export function advanceCamps(state: GameState, dtMs: number, random: Random): vo
   challenges.nextCampMs = between(random, CAMP_RULES.minMs, CAMP_RULES.maxMs)
   for (const crew of Object.values(CREWS)) {
     const alreadyCamped = Object.values(challenges.camps).includes(crew.id)
-    if (alreadyCamped) continue
+    if (alreadyCamped || state.crews[crew.id]?.won) continue
     const spots = visitedSpots(state, crew.regionId)
     if (spots.length === 0) continue
     challenges.camps[spots[Math.floor(random() * spots.length)]] = crew.id
@@ -141,6 +141,31 @@ export function clearCamp(state: GameState, spotId: string): GameEvent[] {
   return [
     { type: 'camp-cleared', spotId, crewId },
     ...addBloom(state, SPOTS[spotId].regionId, BLOOM_REWARDS.campCleared),
+  ]
+}
+
+/**
+ * Parley: a treat and a kind word for the crew camped here. Each one builds trust; enough of them
+ * wins the crew over for the rest of the run (camp gone, no more ambushes, pirates can be
+ * recruited as helpers).
+ */
+export function parley(state: GameState, spotId: string): GameEvent[] {
+  const crewId = state.challenges.camps[spotId]
+  if (!crewId) return [{ type: 'blocked', reason: 'no-target' }]
+  const crew = CREWS[crewId]
+  const progress = state.crews[crewId] ?? { trust: 0, won: false }
+  progress.trust++
+  state.crews[crewId] = progress
+  const line = crew.parleyLines[Math.min(progress.trust, crew.parleyLines.length) - 1]
+  if (progress.trust < crew.parleyLines.length) {
+    return [{ type: 'story', text: line, complete: false }]
+  }
+  progress.won = true
+  delete state.challenges.camps[spotId]
+  return [
+    { type: 'story', text: line, complete: true },
+    { type: 'crew-won', crewId },
+    ...addBloom(state, crew.regionId, BLOOM_REWARDS.crewWonOver),
   ]
 }
 

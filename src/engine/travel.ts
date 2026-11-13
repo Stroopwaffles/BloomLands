@@ -37,7 +37,9 @@ export function startTravel(
   if (totalMs === null) return [{ type: 'blocked', reason: 'not-here' }]
 
   player.travel = { to, totalMs, remainingMs: totalMs, ...(auto ? { auto: true } : {}) }
-  if (random && !auto) rollFlightEvent(player.travel, random)
+  if (random && !auto) {
+    rollFlightEvent(player.travel, random, state.crews['dandelion-drifters']?.won === true)
+  }
   return [{ type: 'depart', to, totalMs, auto }]
 }
 

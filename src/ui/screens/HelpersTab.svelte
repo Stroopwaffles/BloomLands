@@ -1,6 +1,6 @@
 <script lang="ts">
   import Art from '../../art/Art.svelte'
-  import { HELPER_RULES, HELPER_TYPES } from '../../data/helpers'
+  import { gathersAtSpot, HELPER_RULES, HELPER_TYPES } from '../../data/helpers'
   import { itemName } from '../../data/items'
   import { baseTravelMs, HOME, placeName, REGIONS } from '../../data/world'
   import { formatDuration, formatNumber } from '../../engine/format'
@@ -21,7 +21,7 @@
     const fetching = helper.tripItem ? ` for ${itemName(helper.tripItem)}` : ''
     switch (helper.phase) {
       case 'idle':
-        if (helper.type === 'gatherer') return helper.task ? 'Getting ready' : 'Resting at home'
+        if (gathersAtSpot(helper.type)) return helper.task ? 'Getting ready' : 'Resting at home'
         return 'Resting: all stock is above its minimum'
       case 'outbound':
         return `Flying to ${where}${fetching}`
@@ -78,7 +78,7 @@
                 <div class="bag"><ItemList items={helper.bag} /></div>
               {/if}
             </div>
-            {#if helper.type === 'gatherer'}
+            {#if gathersAtSpot(helper.type)}
               <label class="task">
                 <span>Works at</span>
                 <select

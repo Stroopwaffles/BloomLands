@@ -44,6 +44,8 @@
               true,
             ]
           : [`You found ${placeName(event.spotId)}!`, true]
+      case 'crew-won':
+        return ['The pirates are your friends now!', true]
       case 'outfit':
         return ['A new outfit for your wardrobe!', false]
       case 'mount-tamed':

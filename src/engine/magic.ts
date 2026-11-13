@@ -1,6 +1,6 @@
 import { RITUALS, SPELLS } from '../data/magic'
 import { RESEARCH } from '../data/research'
-import { clearCamp, clearPests, pestsAt, sendCreatureAway } from './challenges'
+import { clearCamp, clearPests, parley, pestsAt, sendCreatureAway } from './challenges'
 import { canPay, payCost } from './costs'
 import { isMorning, turnSky } from './environment'
 import type { BlockedReason, GameEvent } from './events'
@@ -33,6 +33,8 @@ function hasTarget(state: GameState, spellId: string): boolean {
       return activeFlightEvent(state)?.kind === 'ambush'
     case 'tame':
       return canTameHere(state)
+    case 'parley':
+      return !travel && !!state.challenges.camps[place]
   }
 }
 
@@ -63,6 +65,8 @@ export function castSpell(state: GameState, spellId: string): GameEvent[] {
       return [cast, ...foilAmbush(state)]
     case 'tame':
       return [cast, ...tameMountHere(state)]
+    case 'parley':
+      return [cast, ...parley(state, place)]
   }
 }
 

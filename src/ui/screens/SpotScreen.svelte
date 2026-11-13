@@ -145,7 +145,7 @@
       </div>
     {/if}
 
-    <div class="magic"><SpellButtons targets={['pests', 'creature', 'camp']} /></div>
+    <div class="magic"><SpellButtons targets={['pests', 'creature', 'camp', 'parley']} /></div>
     <div class="wild-mount"><WildMount {spotId} /></div>
 
     <div class="field" style:filter="saturate({saturation})">

@@ -44,7 +44,7 @@
               <span>{def.description}</span>
               <span class="room">
                 {#if capacity === 0}
-                  Needs lodging first (see Upgrades at home).
+                  {def.unlockHint}
                 {:else}
                   {helperCount($game, type)} / {capacity} rooms filled
                 {/if}

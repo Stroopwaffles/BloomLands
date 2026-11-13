@@ -10,10 +10,16 @@ import { addItems, type GameState, type TravelState } from './state'
  * a lost traveler, gusts. Only flights the player starts get events.
  */
 
-export function rollFlightEvent(travel: TravelState, random: Random): void {
+export function rollFlightEvent(
+  travel: TravelState,
+  random: Random,
+  piratesFriendly = false,
+): void {
   if (random() >= FLIGHT_EVENT_RULES.chance) return
   const kind = pickWeighted(
-    Object.entries(FLIGHT_EVENT_RULES.weights) as [FlightEventKind, number][],
+    (Object.entries(FLIGHT_EVENT_RULES.weights) as [FlightEventKind, number][]).filter(
+      ([k]) => !(piratesFriendly && k === 'ambush'),
+    ),
     random,
   )
   travel.event = {

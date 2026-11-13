@@ -222,6 +222,8 @@ export interface GameState {
   secretsVisited: string[]
   /** Outfits unlocked (kept forever, for the wardrobe). */
   outfits: string[]
+  /** Pirate crews by crew ID: Parleys so far, and whether they've been won over (this run). */
+  crews: Record<string, { trust: number; won: boolean }>
   /** Spirits of the land, by spirit ID (this run). */
   spirits: Record<string, { awakened: boolean }>
   /** Story progress by story ID (missing = not started). */
@@ -323,6 +325,7 @@ export function createNewGame(now: number): GameState {
     secretsVisited: [],
     outfits: [],
     spirits: {},
+    crews: {},
     mounts: { friendship: {}, owned: {}, riding: null },
     settlements: {
       thimblewick: { requests: [], nextArrivalMs: 60_000, filled: 0 },

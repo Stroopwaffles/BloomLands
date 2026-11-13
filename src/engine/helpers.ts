@@ -1,4 +1,5 @@
 import {
+  gathersAtSpot,
   HELPER_NAMES,
   HELPER_RULES,
   HELPER_TYPES,
@@ -48,7 +49,7 @@ export function recruitHelper(state: GameState, type: HelperType): GameEvent[] {
     id,
     type,
     name: HELPER_NAMES[(id - 1) % HELPER_NAMES.length],
-    task: type === 'gatherer' ? (state.player.lastSpot ?? Object.keys(SPOTS)[0]) : null,
+    task: gathersAtSpot(type) ? (state.player.lastSpot ?? Object.keys(SPOTS)[0]) : null,
     phase: 'idle',
     remainingMs: 0,
     tripSpot: null,
@@ -66,7 +67,7 @@ export function assignHelper(
   spotId: string | null,
 ): GameEvent[] {
   const helper = state.helpers.list.find((h) => h.id === helperId)
-  if (!helper || helper.type !== 'gatherer') return [{ type: 'blocked', reason: 'locked' }]
+  if (!helper || !gathersAtSpot(helper.type)) return [{ type: 'blocked', reason: 'locked' }]
   if (spotId !== null && !SPOTS[spotId]) return [{ type: 'blocked', reason: 'not-here' }]
   helper.task = spotId
   return []
@@ -181,8 +182,11 @@ export function helperFlightMs(state: GameState, helper: HelperState, spotId: st
 /** Picks the next trip for an idle helper. Returns false if there's nothing to do. */
 function startTrip(state: GameState, helper: HelperState): boolean {
   const itemId = helper.type === 'supply' ? nextShortage(state) : null
-  const spotId =
-    helper.type === 'gatherer' ? helper.task : itemId ? sourcesOf(itemId)[0].spotId : null
+  const spotId = gathersAtSpot(helper.type)
+    ? helper.task
+    : itemId
+      ? sourcesOf(itemId)[0].spotId
+      : null
   if (!spotId) return false
   helper.tripSpot = spotId
   helper.tripItem = itemId

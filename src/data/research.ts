@@ -257,6 +257,21 @@ RESEARCH_LIST.push({
   spells: ['spell-kindred-call'],
 })
 
+RESEARCH_LIST.push({
+  id: 'research-parley',
+  name: 'Parley',
+  branch: 'spellcraft',
+  description: 'The art of talking a pirate round. Sweets help.',
+  cost: [
+    { itemId: 'component-sweet-bait', amount: 1 },
+    { itemId: 'component-sun-salve', amount: 1 },
+  ],
+  durationMs: 3 * MIN,
+  requires: ['research-baits', 'research-salves'],
+  unlocks: [],
+  spells: ['spell-parley'],
+})
+
 // Rites
 RESEARCH_LIST.push({
   id: 'research-turning',
