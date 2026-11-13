@@ -150,6 +150,15 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - Bumblebee: befriend, Kindred Call, riding, stable, mount levels.
 - The Fairy Ring secret area (Rite of Dawn).
 - *Done when:* the Meadow can be brought to full bloom through its stories, settlement and spirit.
+- *Status:* complete.
+  - **Bloom:** six levels (Wilted → Waking 10 → Sprouting 30 → Budding 60 → Blooming 100 → Flourishing 150). Each level: +10% regrowth, +10% rare chance; spots get more colorful. Sources: villager requests (+3), story chapters (+3) and endings (+10), clearing a camp (+2), winning over a crew (+10), awakening the spirit (+15).
+  - **Thimblewick villagers** (Hob, Wisteria, Old Tumbleweed) ask for items; filled in person.
+  - **Stories:** Pip's lost maps (→ Pip's Compass, flights −10%) and Marigold's festival tart (→ Festival Ribbon, trader pay +10%), 4 chapters each.
+  - **Sorrel** at Sunstone Hill: this run needs Sprouting bloom, Pip's story, and 3 Sun Salve. Relics come with prestige (M14).
+  - **Bumblebee:** befriend at Buttercup Rise (5 feedings of 5 clover leaves, 2 min apart), tame with Kindred Call, house in the Bumblebee Roost. Riding: flights ×1.25, +10 satchel in the Meadow; levels to 5. Spare mounts are lent to helpers.
+  - **The Fairy Ring:** opened by the Rite of Dawn (morning only); Ringcap mushroom; first visit gives the Pocket Sundial (potions +20%) and the Dewdrop outfit (for M8).
+  - **Parley:** 3 Parleys win over the Dandelion Drifters (no more camps or ambushes this run, +2 reformed pirate helpers).
+  - Built with local checkpoint commits, pushed at the end.
 
 **M8. Character and wardrobe**
 - Character creator (male/female, wings, hair, skin, eyes).
