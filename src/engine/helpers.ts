@@ -105,10 +105,10 @@ function sourcesOf(itemId: string, state?: GameState): { spotId: string; plantId
   return sources
 }
 
-/** Raw materials supply helpers know how to fetch. */
-export function supplyableItems(): string[] {
+/** Raw materials supply helpers know how to fetch (with a state: only from opened regions). */
+export function supplyableItems(state?: GameState): string[] {
   return Object.values(ITEMS)
-    .filter((item) => item.category === 'raw' && sourcesOf(item.id).length > 0)
+    .filter((item) => item.category === 'raw' && sourcesOf(item.id, state).length > 0)
     .map((item) => item.id)
 }
 

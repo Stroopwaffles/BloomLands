@@ -76,7 +76,15 @@
   </g>
 
   <!-- A cloak hangs behind the body -->
-  {#if outfit === 'piece-dewdrop-cloak'}
+  {#if outfit === 'piece-leaf-cloak'}
+    <g fill={outfitColor} stroke={shade(outfitColor)} stroke-width="1.2" stroke-linejoin="round">
+      {#each [[-1, 0], [1, 0], [0, 4]] as [side, drop] (`${side}${drop}`)}
+        <path
+          d={`M50 ${64 + drop} C${50 + side * 22 - (side === 0 ? 14 : 0)} ${72 + drop} ${50 + side * 26} ${96 + drop} ${50 + side * 12} ${106 + drop} C${50 + side * 4} ${96 + drop} ${50 + side * 2} ${80 + drop} 50 ${64 + drop} Z`}
+        />
+      {/each}
+    </g>
+  {:else if outfit === 'piece-dewdrop-cloak'}
     <path
       d={`M${37 - w} 64 Q50 60 ${63 + w} 64 L${73 + w} 102 Q50 108 ${27 - w} 102 Z`}
       fill={outfitColor}
@@ -118,6 +126,23 @@
         <circle cx="48" cy="99" r="1.3" />
         <circle cx="60" cy="80" r="1.2" />
       </g>
+    {:else if outfit === 'piece-moss-robe'}
+      <path d={`M${39 - w} 66 Q50 62 ${61 + w} 66 L69 106 Q50 111 31 106 Z`} />
+      <path d="M50 66 L50 108" fill="none" />
+      <g fill="#9ccc72" stroke="none" opacity="0.8">
+        <circle cx="38" cy="102" r="2.4" />
+        <circle cx="45" cy="105" r="2" />
+        <circle cx="58" cy="104" r="2.4" />
+        <circle cx="64" cy="100" r="2" />
+      </g>
+      <rect x="53" y="76" width="7" height="9" rx="1" fill="#c23a4c" stroke="#8f2636" />
+    {:else if outfit === 'piece-leaf-cloak'}
+      <path
+        d={`M${41 - w} 67 Q50 64 ${59 + w} 67 L62 94 Q50 98 38 94 Z`}
+        fill="#8fbf66"
+        stroke={shade('#8fbf66')}
+      />
+      <circle cx="50" cy="69" r="2.4" fill="#8a6a44" />
     {:else if outfit === 'piece-dewdrop-cloak'}
       <path
         d={`M${41 - w} 67 Q50 64 ${59 + w} 67 L62 94 Q50 98 38 94 Z`}
@@ -207,6 +232,14 @@
     {/if}
   </g>
 
+  {#if wardrobe.accessory.pieceId === 'piece-reading-glasses'}
+    <g fill="#ffffff" fill-opacity="0.25" stroke={wardrobe.accessory.color} stroke-width="1.3">
+      <circle cx="43" cy="48" r="5" />
+      <circle cx="57" cy="48" r="5" />
+      <path d="M48 48 L52 48 M38 47 L31 45 M62 47 L69 45" fill="none" />
+    </g>
+  {/if}
+
   <!-- Headpiece -->
   {#if wardrobe.headpiece.pieceId === 'piece-flower-crown'}
     <g fill={wardrobe.headpiece.color} stroke={shade(wardrobe.headpiece.color)} stroke-width="1">
@@ -214,6 +247,12 @@
         <circle {cx} {cy} r="3.6" />
         <circle {cx} {cy} r="1.3" fill="#ffe59e" stroke="none" />
       {/each}
+    </g>
+  {:else if wardrobe.headpiece.pieceId === 'piece-acorn-cap'}
+    <g stroke={shade(wardrobe.headpiece.color)} stroke-width="1.2">
+      <path d="M28 40 Q28 20 50 18 Q72 20 72 40 Q50 34 28 40 Z" fill={wardrobe.headpiece.color} />
+      <path d="M34 34 L66 34 M31 38 L69 38 M38 28 L62 28" stroke-dasharray="2 2" fill="none" />
+      <path d="M50 18 Q51 12 55 10" fill="none" stroke-width="2.2" stroke-linecap="round" />
     </g>
   {:else if wardrobe.headpiece.pieceId === 'piece-dewdrop-circlet'}
     <g fill={wardrobe.headpiece.color} stroke={shade(wardrobe.headpiece.color)} stroke-width="1">

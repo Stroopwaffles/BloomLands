@@ -101,7 +101,7 @@
               Put everything in storage
             </button>
           {:else}
-            <p class="hint">Empty. Fly out to the Meadow to gather.</p>
+            <p class="hint">Empty. Fly out to gather.</p>
           {/if}
           <div class="lock-row"><SatchelLock /></div>
         </section>
@@ -113,7 +113,9 @@
 
         <section class="panel">
           <h2>The land</h2>
-          <BloomMeter regionId="meadow" />
+          {#each $game.unlockedRegions as regionId (regionId)}
+            <BloomMeter {regionId} />
+          {/each}
         </section>
 
         <section class="panel">

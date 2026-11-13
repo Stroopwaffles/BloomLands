@@ -2,7 +2,8 @@
   import Art from '../../art/Art.svelte'
   import { gathersAtSpot, HELPER_RULES, HELPER_TYPES } from '../../data/helpers'
   import { itemName } from '../../data/items'
-  import { baseTravelMs, HOME, placeName, REGIONS } from '../../data/world'
+  import { baseTravelMs, HOME, placeName, REGION_ORDER, REGIONS } from '../../data/world'
+  import { placeOpen } from '../../engine/regions'
   import { formatDuration, formatNumber } from '../../engine/format'
   import { supplyableItems, supplyHaul } from '../../engine/helpers'
   import { helperCapacity } from '../../engine/modifiers'
@@ -11,8 +12,10 @@
   import { runtime } from '../game'
 
   const { game } = runtime
-  const spots = Object.values(REGIONS).flatMap((r) => r.spots)
-  const supplyItems = supplyableItems()
+  const spots = $derived(
+    REGION_ORDER.flatMap((id) => REGIONS[id].spots).filter((id) => placeOpen($game, id)),
+  )
+  const supplyItems = $derived(supplyableItems($game))
 
   const hasSupply = $derived(helperCapacity($game, 'supply') > 0)
 

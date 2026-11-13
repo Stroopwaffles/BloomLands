@@ -14,7 +14,10 @@
   const current = $derived($game.research.current)
 
   function nodesIn(branch: string) {
-    return RESEARCH_ORDER.map((id) => RESEARCH[id]).filter((node) => node.branch === branch)
+    return RESEARCH_ORDER.map((id) => RESEARCH[id]).filter(
+      (node) =>
+        node.branch === branch && (!node.region || $game.unlockedRegions.includes(node.region)),
+    )
   }
 </script>
 

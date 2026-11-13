@@ -44,6 +44,8 @@
               true,
             ]
           : [`You found ${placeName(event.spotId)}!`, true]
+      case 'region-unlocked':
+        return [`The way to the ${REGIONS[event.regionId]?.name} is open!`, true]
       case 'crew-won':
         return ['The pirates are your friends now!', true]
       case 'outfit':

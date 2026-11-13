@@ -10,6 +10,7 @@
   import { DEFAULT_LOOK, defaultWardrobe } from '../../data/appearance'
   import { BLOOM_LEVELS } from '../../data/bloom'
   import { COURT_RANKS } from '../../data/economy'
+  import { REGIONS } from '../../data/world'
   import { formatDuration } from '../../engine/format'
   import { bloomLevel, courtRank } from '../../engine/modifiers'
   import { GAME_VERSION } from '../../engine/version'
@@ -79,7 +80,7 @@
 
   <div class="layout">
     <div class="brand">
-      <span class="tag">Release {GAME_VERSION.split('.').slice(0, 2).join('.')} · The Meadow</span>
+      <span class="tag">Release {GAME_VERSION.split('.').slice(0, 2).join('.')} · The Forest</span>
       <h1 class="logo">Bloom<br />Lands</h1>
       <p class="tagline">a cozy fairy court</p>
 
@@ -123,7 +124,9 @@
         <FairyFigure look={$game.character.look} wardrobe={$game.character.wardrobe} size={250} />
         <div class="save-card">
           <strong>{COURT_RANKS[courtRank($game)].name}</strong>
-          <span>Meadow: {BLOOM_LEVELS[bloomLevel($game, 'meadow')].name}</span>
+          {#each $game.unlockedRegions as regionId (regionId)}
+            <span>{REGIONS[regionId].name}: {BLOOM_LEVELS[bloomLevel($game, regionId)].name}</span>
+          {/each}
           <span>
             Played {formatDuration($game.stats.activePlayMs + $game.stats.offlineMs)}
           </span>
