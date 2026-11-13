@@ -76,6 +76,7 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - Scaffold Svelte + Vite + TypeScript; add Vitest, formatting and linting.
 - Set the `/BloomLands/` base path; add the Pages deploy workflow.
 - *Done when:* a "Hello, Bloom Lands" page builds, passes checks and is live on GitHub Pages.
+- *Status:* complete; live at https://stroopwaffles.github.io/BloomLands/.
 
 **M1. Engine foundations**
 - Game-state object, tick loop, action system.
@@ -84,6 +85,7 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - Number formatting; asset-ID lookup with placeholder art.
 - A debug panel (dev only) to inspect state and skip time.
 - *Done when:* state survives reloads, offline time is applied correctly, and tests pass.
+- *Status:* complete. The debug panel shows in local development, or on the live site with `?debug` added to the URL.
 
 **M2. Core gathering loop**
 - Meadow harvesting spots (Buttercup Rise, Dandelion Drift) with the 7 Meadow plants.
