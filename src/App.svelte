@@ -11,6 +11,7 @@
   import SkyBadge from './ui/components/SkyBadge.svelte'
   import DebugPanel from './ui/DebugPanel.svelte'
   import { debugEnabled, runtime } from './ui/game'
+  import CharacterCreator from './ui/screens/CharacterCreator.svelte'
   import HomeScreen from './ui/screens/HomeScreen.svelte'
   import SettlementScreen from './ui/screens/SettlementScreen.svelte'
   import SpiritScreen from './ui/screens/SpiritScreen.svelte'
@@ -48,7 +49,9 @@
 </header>
 
 <main>
-  {#if $game.player.travel}
+  {#if !$game.character.created}
+    <CharacterCreator />
+  {:else if $game.player.travel}
     <TravelScreen />
   {:else if $game.player.place === HOME}
     <HomeScreen />

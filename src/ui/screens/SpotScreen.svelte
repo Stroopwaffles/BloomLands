@@ -89,7 +89,8 @@
 {#if spotDef && spot}
   <div class="spot" class:night>
     <header>
-      <div>
+      <div class="me"><Art id="char-fairy" size={72} /></div>
+      <div class="title">
         <h2>{spotDef.name}</h2>
         <p>{spotDef.description}</p>
         <div class="meter"><BloomMeter regionId={spotDef.regionId} compact /></div>
@@ -196,6 +197,15 @@
   .spot.night {
     background: linear-gradient(#2a2763, #3d4f7a);
     color: #f5f0ff;
+  }
+
+  .me {
+    flex: none;
+  }
+
+  .title {
+    flex: 1;
+    min-width: 200px;
   }
 
   .meter {

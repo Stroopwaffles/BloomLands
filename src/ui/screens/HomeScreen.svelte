@@ -16,18 +16,20 @@
   import HelpersTab from './HelpersTab.svelte'
   import ResearchTab from './ResearchTab.svelte'
   import UpgradesTab from './UpgradesTab.svelte'
+  import WardrobeTab from './WardrobeTab.svelte'
   import WorkshopTab from './WorkshopTab.svelte'
 
   const { game } = runtime
   const carrying = $derived(countItems($game.player.satchel))
 
-  type Tab = 'court' | 'workshop' | 'research' | 'helpers' | 'upgrades'
+  type Tab = 'court' | 'workshop' | 'research' | 'helpers' | 'upgrades' | 'wardrobe'
   const TABS: { id: Tab; label: string }[] = [
     { id: 'court', label: 'Court' },
     { id: 'workshop', label: 'Workshop' },
     { id: 'research', label: 'Research' },
     { id: 'helpers', label: 'Helpers' },
     { id: 'upgrades', label: 'Upgrades' },
+    { id: 'wardrobe', label: 'Wardrobe' },
   ]
 
   const rank = $derived(courtRank($game))
@@ -146,8 +148,10 @@
     <ResearchTab />
   {:else if tab === 'helpers'}
     <HelpersTab />
-  {:else}
+  {:else if tab === 'upgrades'}
     <UpgradesTab />
+  {:else}
+    <WardrobeTab />
   {/if}
 </div>
 

@@ -164,6 +164,11 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - Character creator (male/female, wings, hair, skin, eyes).
 - Wardrobe with the four slots, recoloring, starter set and the Dewdrop outfit.
 - *Done when:* you can create and dress your fairy, and it shows large at home and small while gathering.
+- *Status:* complete.
+  - **Character creator** on a new game: female/male, 10 skin tones (including fantasy tones), 6 hair styles × 10 colors, 3 eye shapes × 8 colors, 4 wing shapes × 8 colors. Changeable any time from the **Wardrobe** tab at home.
+  - **Outfits:** four slots (headpiece, outfit, shoes, accessory), each recolorable from 12 colors or left empty. Starter set: flower crown, petal dress, petal tunic, leaf slippers, small satchel. **Dewdrop set** (from the Fairy Ring): circlet, gown, cloak.
+  - **The fairy is a layered drawing** built from these choices (placeholder-quality shapes, structured so M9 only redraws them). It's shown large at home, on the flight screen, and small on harvesting spots.
+  - Colors come from curated palettes so every combination stays in the storybook style.
 
 **M9. Art and polish: Release 0.1 "Meadow"**
 - Replace placeholders with the ~120 P1 SVG assets in the soft storybook style.
