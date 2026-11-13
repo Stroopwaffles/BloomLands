@@ -1,0 +1,47 @@
+:root {
+  /* Shared UI palette (design doc 7.3) */
+  --cream: #fff7e8;
+  --cream-deep: #fdebd0;
+  --leaf: #8cc084;
+  --leaf-deep: #4f8a4a;
+  --petal: #f7b7c8;
+  --petal-deep: #c97a8c;
+  --honey: #f2b45c;
+  --ink: #5a4352;
+
+  /* Typography (design doc 7.6): change fonts here only */
+  --font-heading: 'Fredoka', 'Nunito', system-ui, sans-serif;
+  --font-body: 'Nunito', system-ui, sans-serif;
+
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--cream);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  /* Touch-first rules (design doc Section 8): no double-tap zoom, no text selection while tapping */
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
+  font-weight: 500;
+}
