@@ -8,6 +8,8 @@ export interface MountDef {
   /** Where the wild creature can be found and befriended. */
   homeSpot: string
   description: string
+  /** How it moves about in the wild ("is buzzing about."). */
+  wildLine: string
   /** Its favorite food: fed once per visit to befriend it, and to level it up. */
   food: ItemStack
   feedingsToBefriend: number
@@ -31,6 +33,7 @@ export const MOUNTS: Readonly<Record<string, MountDef>> = {
     regionId: 'meadow',
     homeSpot: 'buttercup-rise',
     description: 'Fuzzy, sturdy and kind. Carries extra in the Meadow.',
+    wildLine: 'is buzzing about.',
     food: { itemId: 'raw-clover-leaves', amount: 5 },
     feedingsToBefriend: 5,
     feedCooldownMs: 2 * 60_000,
@@ -45,6 +48,7 @@ export const MOUNTS: Readonly<Record<string, MountDef>> = {
     regionId: 'forest',
     homeSpot: 'mossy-stump-ring',
     description: 'Glides from tree to tree. Hops around the Forest in a flash.',
+    wildLine: 'is gliding between the trees.',
     food: { itemId: 'raw-acorns', amount: 4 },
     feedingsToBefriend: 5,
     feedCooldownMs: 2 * 60_000,

@@ -210,6 +210,20 @@ Each region milestone adds that region's content, art, mount, creature, pirate c
 | **M17. The captain and the ending** | Captain Mallow's full arc, the ending sequence after the 5th prestige, the bonus run, the hard ending and new game |
 | **M18. Balancing and release 1.0** | Full balancing across five runs, playtesting, performance, remaining QoL upgrades, final art pass |
 
+#### M10 status: complete — Release 0.2 "Forest" (version 0.2.0)
+
+- **Regions are now general.** Each region opens with a court rank plus its rite (the Forest: a Hearthling court and the Rite of the Open Path, 2 Sun Salve). Weather, pests, large creatures, pirate crews, mount bonuses and research are all per region. Closed regions show what they need in the flight list.
+- **Travel:** short hops (5s) inside a region, long flights (18s per region) between regions.
+- **Forest content:** 7 plants plus 2 secret-area plants, 3 trinkets, Spore Dust, Acorn Flour, Golden Spore, Earth Loam, Swiftroot Elixir (+50% regrowth), Rite of Plenty (+50% regrowth everywhere for 10 minutes), Hush Step. Six new research nodes appear once the Forest is open.
+- **Challenges:** the owl *watches* a spot: no gathering there and helpers stay away, until it's calmed with Lullaby or you sneak with Hush Step (2 minutes). Beetles infest mushrooms. The Bramble Corsairs camp and ambush in the Forest.
+- **Magic costs:** Parley and Kindred Call use the local region's signature component (Earth Loam in the Forest), as in the content doc.
+- **People:** Hazel Quickpaw (Forgotten Acorn: trinkets 50% more often) and Old Burdock (Burdock's Field Guide: +1 cap per mushroom); Bramblebeard; three Acornhollow villagers.
+- **Mount:** the flying squirrel (befriended with acorns at Mossy Stump Ring) makes hops inside the Forest 40% quicker instead of adding satchel space.
+- **Secret areas:** the Hollow Log Library (finish Old Burdock's story; Pressed-Flower Bookmark: research 15% faster; Scholar's set) and the Lost Grove (Forest bloom Budding; Heartwood Charm: +25% Forest bloom; Acorn set).
+- **Lodging:** Squirrel Drey (+1 mount), Root Cellar (+300 storage), Hedgehog Hollow (+2 gatherers), Second Mortar Bench.
+- **Art:** Forest backdrops for all four spots, mist, rain and falling-leaf weather, squirrels and hedgehogs, Bramblebeard, the owl, beetles, the Corsairs and their thorn camp, the flying squirrel, curios, Hush Step and the new outfits.
+- *Simplification to review:* the Rite of Plenty speeds up every open region rather than one chosen region.
+
 ---
 
 ## 4. How We Work Each Milestone

@@ -137,7 +137,7 @@
     </g>
   {:else if weather === 'mist'}
     <g class="mist" fill="#ffffff">
-      <rect width="160" height="100" opacity="0.18" />
+      <rect width="160" height="100" opacity="0.1" />
       <ellipse cx="40" cy="70" rx="60" ry="8" opacity="0.5" />
       <ellipse cx="120" cy="56" rx="56" ry="7" opacity="0.45" />
       <ellipse cx="80" cy="88" rx="70" ry="9" opacity="0.4" />

@@ -34,7 +34,7 @@ export const HELPER_TYPES: Readonly<Record<HelperType, HelperTypeDef>> = {
   pirate: {
     id: 'pirate',
     name: 'Reformed pirate',
-    description: 'A former Drifter, now a friend. Gathers at a spot you choose, like a gatherer.',
+    description: 'A former pirate, now a friend. Gathers at a spot you choose, like a gatherer.',
     accessory: 'bandana',
     baseCost: 40,
     unlockHint: 'Win over a pirate crew first.',

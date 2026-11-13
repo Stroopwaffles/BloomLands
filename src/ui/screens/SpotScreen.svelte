@@ -35,6 +35,8 @@
   const sneaking = $derived($game.player.sneakMs > 0)
   /** A watching creature (the owl) stops gathering here unless you sneak with Hush Step. */
   const blocked = $derived(watching && !sneaking)
+  /** "a rabbit", "an owl" */
+  const aName = (name: string) => `${/^[aeiou]/i.test(name) ? 'An' : 'A'} ${name.toLowerCase()}`
   /** Low bloom looks faded and grey; full bloom is in full color (design doc 7.3). */
   const saturation = $derived(0.55 + bloomLevel($game, spotDef?.regionId ?? 'meadow') * 0.09)
 
@@ -122,7 +124,7 @@
       } else if (event.type === 'spell-cast' && event.spellId === 'spell-hush-step') {
         say('You step as softly as a falling seed...')
       } else if (event.type === 'blocked' && event.reason === 'watching') {
-        say('The owl is watching. Calm it, or sneak with Hush Step.')
+        say('You are being watched. Calm it, or sneak with Hush Step.')
       } else if (event.type === 'harvest') {
         burst(event.slot, 'petals', PETAL_COLORS[event.plantId] ?? '#f7b7c8')
         for (const { itemId, amount } of event.items) {
@@ -253,14 +255,14 @@
             Sneaking past the {CREATURES[creature.creatureId].name.toLowerCase()}... gather quietly
             ({Math.ceil($game.player.sneakMs / 1000)}s left).
           {:else}
-            A {CREATURES[creature.creatureId].name.toLowerCase()} is watching this spot. Nobody can gather
-            here (helpers stay home) until you calm it, or sneak past with Hush Step.
+            {aName(CREATURES[creature.creatureId].name)} is watching this spot. Nobody can gather here
+            (helpers stay home) until you calm it, or sneak past with Hush Step.
           {/if}
         </p>
       {:else if creature}
         <p class="note trouble">
-          A {CREATURES[creature.creatureId].name.toLowerCase()} is munching the plants! Tap it to shoo
-          it away ({creature.tapsLeft} more), or calm it.
+          {aName(CREATURES[creature.creatureId].name)} is munching the plants! Tap it to shoo it away
+          ({creature.tapsLeft} more), or calm it.
         </p>
       {/if}
       {#if campCrew}

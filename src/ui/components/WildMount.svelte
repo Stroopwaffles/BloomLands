@@ -25,7 +25,7 @@
   <section class="wild">
     <Art id={`${mountId}-wild`} size={72} />
     <div class="about">
-      <strong>A wild {mount.name.toLowerCase()} is buzzing about.</strong>
+      <strong>A wild {mount.name.toLowerCase()} {mount.wildLine}</strong>
       <span class="hearts" aria-label={`Friendship ${f.feedings} of ${mount.feedingsToBefriend}`}>
         {#each Array.from({ length: mount.feedingsToBefriend }, (_, i) => i) as i (i)}
           <span class="heart" class:full={i < f.feedings}></span>
