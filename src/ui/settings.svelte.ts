@@ -1,3 +1,4 @@
+import { setMix } from '../audio/engine'
 import { setNumberStyle } from '../engine/format'
 import { runtime } from './game'
 import { parseSettings, SETTINGS_KEY, type Settings } from './settingsData'
@@ -31,4 +32,9 @@ export function applySettings(): void {
   root.style.setProperty('--ui-scale', String(settings.uiScale / 100))
   setNumberStyle(settings.numberStyle)
   runtime.setAutosaveMs(settings.autosaveSeconds * 1000)
+  setMix({
+    music: settings.musicVolume / 100,
+    sfx: settings.soundVolume / 100,
+    muted: settings.muted,
+  })
 }

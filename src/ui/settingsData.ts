@@ -15,6 +15,12 @@ export interface Settings {
   numberStyle: NumberStyle
   /** Petal bursts, sparkles and weather particles. */
   particles: boolean
+  /** Background music volume, in percent. */
+  musicVolume: 0 | 25 | 50 | 75 | 100
+  /** Sound effects volume, in percent. */
+  soundVolume: 0 | 25 | 50 | 75 | 100
+  /** Quick mute (the speaker button in the header). */
+  muted: boolean
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -23,6 +29,9 @@ export const DEFAULT_SETTINGS: Settings = {
   autosaveSeconds: 30,
   numberStyle: 'short',
   particles: true,
+  musicVolume: 50,
+  soundVolume: 75,
+  muted: false,
 }
 
 export const SETTINGS_KEY = 'bloomlands.settings'
@@ -33,6 +42,9 @@ export const SETTING_CHOICES = {
   autosaveSeconds: [15, 30, 60, 120],
   numberStyle: ['short', 'scientific'],
   particles: [true, false],
+  musicVolume: [0, 25, 50, 75, 100],
+  soundVolume: [0, 25, 50, 75, 100],
+  muted: [true, false],
 } as const satisfies { [K in keyof Settings]: readonly Settings[K][] }
 
 /** Reads settings from stored text, keeping only valid values and filling in defaults. */

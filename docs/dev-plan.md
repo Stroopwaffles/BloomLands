@@ -194,6 +194,16 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - **Settings** (stored separately from the save): reduced motion, particle effects, interface size, autosave interval, number style (1.2K / 1.2E3).
 - Footer: "This game was made entirely with AI."
 
+**Sound (v0.2.1):** every sound is synthesized in the browser (Web Audio), so there are no audio files.
+- **Sound effects** in a music-box style, all in the same key as the music: taps climb a little scale, harvests chime (rarer plants get a longer chime), plus trinkets, deposits, crafting, coins, spells, rituals, fanfares for big moments, flights, creatures and button clicks. Repeats are rate-limited so offline catch-up never floods.
+- **Background music** composed as it plays (pads, bass and a repeating music-box melody). Each region has its own key, chords and pace, with a calmer night version; it crossfades as you travel. The menu plays the newest unlocked region's music.
+- **Settings:** music volume and sound volume (Off–100%), plus a mute button in the game header. Audio starts on the first tap (browser rule) and pauses while the tab is hidden.
+
+### Backlog (asked for, not scheduled yet)
+
+- **Menu background by region:** the title screen's background changes to the newest region the player has unlocked in their save.
+- **Fix: butterfly and dragonfly wings** on the player's fairy draw wrong; their individual wing parts look upside down.
+
 ### Phase 2: The Full Game
 
 Each region milestone adds that region's content, art, mount, creature, pirate crew, characters, secret areas, recipes and unlock ritual, all following the content doc.

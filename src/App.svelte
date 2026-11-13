@@ -1,7 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte'
+  import { music, themeFor } from './audio/music'
+  import { isNight } from './engine/environment'
+  import { startSound } from './ui/sound'
   import Art from './art/Art.svelte'
-  import { HOME, isSettlement, isSpiritPlace } from './data/world'
+  import { HOME, isSettlement, isSpiritPlace, placeRegion, REGION_ORDER } from './data/world'
   import { formatNumber } from './engine/format'
   import { COURT_RANKS } from './data/economy'
   import { courtRank, satchelCapacity, trinketCount } from './engine/modifiers'
@@ -18,7 +21,7 @@
   import SpotScreen from './ui/screens/SpotScreen.svelte'
   import TravelScreen from './ui/screens/TravelScreen.svelte'
   import WelcomeBack from './ui/WelcomeBack.svelte'
-  import { applySettings, settings } from './ui/settings.svelte'
+  import { applySettings, settings, updateSettings } from './ui/settings.svelte'
   import TitleScreen from './ui/title/TitleScreen.svelte'
 
   const { game } = runtime
@@ -35,8 +38,25 @@
 
   onMount(() => {
     applySettings()
-    return runtime.start()
+    const stopSound = startSound()
+    const stopGame = runtime.start()
+    return () => {
+      stopSound()
+      stopGame()
+    }
   })
+
+  /** The newest region the player has opened (the menu plays its music). */
+  const latestRegion = $derived(
+    [...REGION_ORDER].reverse().find((id) => $game.unlockedRegions.includes(id)) ?? 'meadow',
+  )
+  /** Music follows where you are (or where you're flying to), and day or night. */
+  const musicTheme = $derived(
+    screen === 'title'
+      ? themeFor(latestRegion, false)
+      : themeFor(placeRegion($game.player.travel?.to ?? $game.player.place), isNight($game)),
+  )
+  $effect(() => music.play(musicTheme))
 </script>
 
 {#if screen === 'title'}
@@ -48,6 +68,16 @@
       >
       <h1>Bloom Lands</h1>
       <SkyBadge />
+      <button
+        type="button"
+        class="mute-button"
+        aria-pressed={settings.muted}
+        aria-label={settings.muted ? 'Turn sound on' : 'Mute sound'}
+        title={settings.muted ? 'Turn sound on' : 'Mute sound'}
+        onclick={() => updateSettings({ muted: !settings.muted })}
+      >
+        {settings.muted ? '🔇' : '🔊'}
+      </button>
       <div class="buffs"><BuffBar /></div>
       <div class="counters">
         <div class="counter" aria-label="Satchel">
@@ -110,6 +140,16 @@
     color: var(--ink);
     font: inherit;
     font-family: var(--font-heading);
+    cursor: pointer;
+  }
+
+  .mute-button {
+    min-width: 44px;
+    min-height: 44px;
+    border: 2px solid var(--honey);
+    border-radius: 12px;
+    background: white;
+    font-size: 1.2rem;
     cursor: pointer;
   }
 

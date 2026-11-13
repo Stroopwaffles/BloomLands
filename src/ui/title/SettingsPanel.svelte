@@ -2,10 +2,30 @@
   import Choices from '../components/Choices.svelte'
   import { settings, updateSettings } from '../settings.svelte'
   import type { Settings } from '../settingsData'
+
+  const VOLUMES = [0, 25, 50, 75, 100]
 </script>
 
 <h2>Settings</h2>
 <div class="settings">
+  <section>
+    <h3>Music</h3>
+    <Choices
+      label="Music volume"
+      options={VOLUMES.map((n) => ({ id: String(n), name: n === 0 ? 'Off' : `${n}%` }))}
+      value={String(settings.musicVolume)}
+      onPick={(id) => updateSettings({ musicVolume: Number(id) as Settings['musicVolume'] })}
+    />
+  </section>
+  <section>
+    <h3>Sound effects</h3>
+    <Choices
+      label="Sound effects volume"
+      options={VOLUMES.map((n) => ({ id: String(n), name: n === 0 ? 'Off' : `${n}%` }))}
+      value={String(settings.soundVolume)}
+      onPick={(id) => updateSettings({ soundVolume: Number(id) as Settings['soundVolume'] })}
+    />
+  </section>
   <section>
     <h3>Reduced motion</h3>
     <Choices
