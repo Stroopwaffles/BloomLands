@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Art from '../../art/Art.svelte'
+  import CourtScene from '../../art/CourtScene.svelte'
   import { countItems } from '../../engine/state'
   import Destinations from '../components/Destinations.svelte'
   import ItemList from '../components/ItemList.svelte'
@@ -68,7 +68,7 @@
     <div class="court-layout">
       <section class="court panel">
         <h2>Your court</h2>
-        <Art id="char-fairy" size={180} />
+        <CourtScene {rank} helperTypes={$game.helpers.list.map((h) => h.type)} size={260} />
         <p class="rank">{COURT_RANKS[rank].name}</p>
         {#if nextRank}
           <div class="rank-bar" aria-label="Progress to next court rank">

@@ -45,3 +45,46 @@ h3 {
   font-family: var(--font-heading);
   font-weight: 500;
 }
+
+/* ------------------------------------------------------------------------------------------- */
+/* Natural touches (design doc 7.5): clean panels with a small leafy sprig on the corner.      */
+/* Panels keep their own colors; this only adds the decoration.                               */
+
+.panel {
+  position: relative;
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -8px;
+  width: 44px;
+  height: 30px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 30'%3E%3Cpath d='M4 26 Q16 22 26 10' fill='none' stroke='%234f8a4a' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M10 22 C4 14 8 8 14 10 C18 12 16 20 10 22 Z' fill='%239dd28f' stroke='%234f8a4a' stroke-width='1.4'/%3E%3Cpath d='M18 16 C20 6 28 4 30 8 C32 14 24 18 18 16 Z' fill='%23b8e6a2' stroke='%234f8a4a' stroke-width='1.4'/%3E%3Ccircle cx='30' cy='20' r='4' fill='%23f7b7c8' stroke='%23c97a8c' stroke-width='1.2'/%3E%3Ccircle cx='30' cy='20' r='1.4' fill='%23ffe59e'/%3E%3C/svg%3E")
+    no-repeat center / contain;
+  pointer-events: none;
+}
+
+/* Buttons feel soft and press in a little. */
+button {
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+button:not(:disabled):active {
+  transform: translateY(1px) scale(0.98);
+}
+
+button:focus-visible {
+  outline: 3px solid var(--leaf-deep);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
+  }
+}

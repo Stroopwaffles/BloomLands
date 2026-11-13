@@ -49,6 +49,33 @@
     special: boolean
   }
 
+  /** Little particle bursts: petals when a plant is harvested, sparkles on each tap. */
+  interface Burst {
+    id: number
+    slot: number
+    kind: 'petals' | 'sparkle'
+    color: string
+  }
+
+  const PETAL_COLORS: Record<string, string> = {
+    'plant-clover': '#8cc97f',
+    'plant-four-leaf-clover': '#7fd17a',
+    'plant-daisy': '#ffffff',
+    'plant-buttercup': '#ffd94f',
+    'plant-dandelion': '#ffffff',
+    'plant-wild-strawberry': '#f05a6a',
+    'plant-morning-dew': '#cdeeff',
+    'plant-ringcap': '#f08a9e',
+  }
+
+  let bursts = $state<Burst[]>([])
+
+  function burst(slot: number, kind: Burst['kind'], color: string) {
+    const id = nextPopupId++
+    bursts.push({ id, slot, kind, color })
+    setTimeout(() => (bursts = bursts.filter((b) => b.id !== id)), kind === 'petals' ? 900 : 450)
+  }
+
   let popups = $state<Popup[]>([])
   let wiggles = $state<Record<number, number>>({})
   let nextPopupId = 0
@@ -63,6 +90,7 @@
     for (const event of events) {
       if (event.type === 'hit' || event.type === 'pest-cleared') {
         wiggles[event.slot] = (wiggles[event.slot] ?? 0) + 1
+        burst(event.slot, 'sparkle', '#fff3b0')
         if (event.type === 'pest-cleared') addPopup(event.slot, 'Shoo!')
       } else if (event.type === 'creature-tap') {
         creatureWiggle++
@@ -77,6 +105,7 @@
       } else if (event.type === 'spell-cast' && event.spellId === 'spell-bugbane') {
         say('The aphids scatter!')
       } else if (event.type === 'harvest') {
+        burst(event.slot, 'petals', PETAL_COLORS[event.plantId] ?? '#f7b7c8')
         for (const { itemId, amount } of event.items) {
           addPopup(event.slot, `+${amount} ${itemName(itemId)}${event.bonus ? '!' : ''}`)
         }
@@ -127,6 +156,19 @@
             onTap={() => tap(i)}
           />
         {/if}
+        {#each bursts.filter((b) => b.slot === i) as b (b.id)}
+          <span
+            class="burst {b.kind}"
+            style:left="{layout.slots[i].x}%"
+            style:top="{layout.slots[i].y - 10}%"
+            aria-hidden="true"
+          >
+            {#each Array.from({ length: b.kind === 'petals' ? 8 : 4 }, (_, k) => k) as k (k)}
+              <span style:--a="{k * (b.kind === 'petals' ? 45 : 90) + 20}deg" style:--c={b.color}
+              ></span>
+            {/each}
+          </span>
+        {/each}
         {#each popups.filter((p) => p.slot === i) as popup (popup.id)}
           <span
             class="popup"
@@ -321,6 +363,45 @@
     background: var(--petal-deep);
   }
 
+  .burst {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .burst span {
+    position: absolute;
+    left: -5px;
+    top: -5px;
+    width: 10px;
+    height: 14px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    background: var(--c);
+    border: 1px solid rgb(90 67 82 / 0.25);
+    animation: fly 0.9s ease-out forwards;
+  }
+
+  .burst.sparkle span {
+    width: 8px;
+    height: 8px;
+    border: none;
+    clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+    animation-duration: 0.45s;
+  }
+
+  @keyframes fly {
+    from {
+      opacity: 1;
+      transform: rotate(var(--a)) translateY(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: rotate(var(--a)) translateY(-46px) scale(0.6);
+    }
+  }
+
   .popup {
     position: absolute;
     transform: translateX(-50%);
@@ -388,6 +469,10 @@
     .hop,
     .popup {
       animation: none;
+    }
+
+    .burst {
+      display: none;
     }
   }
 </style>
