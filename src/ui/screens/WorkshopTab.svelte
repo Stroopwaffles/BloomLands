@@ -3,7 +3,7 @@
   import { itemName } from '../../data/items'
   import { RECIPES, STATION_ORDER, STATIONS } from '../../data/recipes'
   import { formatDuration } from '../../engine/format'
-  import { batchSizes, checkCraft, unlockedRecipes } from '../../engine/crafting'
+  import { batchSizes, checkCraft, craftingStock, unlockedRecipes } from '../../engine/crafting'
   import { stationBuilt, stationSlots } from '../../engine/modifiers'
   import CostList from '../components/CostList.svelte'
   import ProgressBar from '../components/ProgressBar.svelte'
@@ -62,7 +62,7 @@
                   <span class="time">{formatDuration(recipe.durationMs)}</span>
                 </div>
               </div>
-              <CostList cost={recipe.inputs} stock={$game.inventory} />
+              <CostList cost={recipe.inputs} stock={craftingStock($game)} />
               <div class="buttons">
                 {#each batchSizes($game) as count (count)}
                   {@const check = checkCraft($game, recipe.id, count)}

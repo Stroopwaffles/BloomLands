@@ -142,6 +142,33 @@ describe('crafting', () => {
     expect(state.stats.itemsCrafted).toBe(1)
   })
 
+  it('uses the satchel and storage together, satchel first', () => {
+    const state = gameWith({ 'raw-daisy-petals': 3 }, ['research-grinding'])
+    state.player.satchel = { 'raw-buttercup-petals': 2 }
+    expect(checkCraft(state, 'refined-petal-paste')).toBe('ok')
+    applyAction(state, { type: 'craft/start', recipeId: 'refined-petal-paste' })
+    expect(state.player.satchel).toEqual({})
+    expect(state.inventory).toEqual({ 'raw-daisy-petals': 1 })
+  })
+
+  it("doesn't touch storage when the satchel has enough", () => {
+    const state = gameWith({ 'raw-daisy-petals': 5 }, ['research-grinding'])
+    state.player.satchel = { 'raw-buttercup-petals': 6 }
+    applyAction(state, { type: 'craft/start', recipeId: 'refined-petal-paste' })
+    expect(state.player.satchel).toEqual({ 'raw-buttercup-petals': 2 })
+    expect(state.inventory).toEqual({ 'raw-daisy-petals': 5 })
+  })
+
+  it('still refuses when satchel and storage together fall short', () => {
+    const state = gameWith({ 'raw-daisy-petals': 1 }, ['research-grinding'])
+    state.player.satchel = { 'raw-buttercup-petals': 2 }
+    expect(applyAction(state, { type: 'craft/start', recipeId: 'refined-petal-paste' })).toEqual([
+      { type: 'blocked', reason: 'missing-items' },
+    ])
+    expect(state.player.satchel).toEqual({ 'raw-buttercup-petals': 2 })
+    expect(state.inventory).toEqual({ 'raw-daisy-petals': 1 })
+  })
+
   it('runs one job per station slot', () => {
     const state = gameWith({ 'raw-daisy-petals': 20 }, ['research-grinding'])
     applyAction(state, { type: 'craft/start', recipeId: 'refined-petal-paste' })

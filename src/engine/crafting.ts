@@ -2,7 +2,7 @@ import { RECIPES } from '../data/recipes'
 import { RESEARCH } from '../data/research'
 import type { CostEntry } from '../data/types'
 import { BULK_CRAFT_COUNT } from '../data/upgrades'
-import { canAfford, pay } from './costs'
+import { canAffordFrom, mergeStocks, payFrom } from './costs'
 import type { GameEvent } from './events'
 import { hasQol, stationBuilt, stationSlots } from './modifiers'
 import { addItems, type GameState } from './state'
@@ -25,6 +25,19 @@ export function scaledInputs(recipeId: string, count: number): CostEntry[] {
   return RECIPES[recipeId].inputs.map((entry) => ({ ...entry, amount: entry.amount * count }))
 }
 
+/**
+ * Where recipe inputs come from: the satchel first (freeing it up), then storage.
+ * Crafting happens at home, so the satchel is right there.
+ */
+function craftingStocks(state: GameState): Record<string, number>[] {
+  return [state.player.satchel, state.inventory]
+}
+
+/** Satchel and storage together, for showing have/need counts on recipes. */
+export function craftingStock(state: GameState): Record<string, number> {
+  return mergeStocks(...craftingStocks(state))
+}
+
 export type CraftCheck =
   'ok' | 'locked' | 'not-home' | 'not-built' | 'station-busy' | 'missing-items'
 
@@ -37,19 +50,19 @@ export function checkCraft(state: GameState, recipeId: string, count = 1): Craft
   if (state.stations[recipe.station].jobs.length >= stationSlots(state, recipe.station)) {
     return 'station-busy'
   }
-  if (!canAfford(state.inventory, scaledInputs(recipeId, count))) return 'missing-items'
+  if (!canAffordFrom(craftingStocks(state), scaledInputs(recipeId, count))) return 'missing-items'
   return 'ok'
 }
 
 /**
- * Starts a recipe (or a batch of `count`): inputs are taken from storage now; the results arrive
- * when it finishes. A batch takes `count` times as long.
+ * Starts a recipe (or a batch of `count`). Inputs are taken now, from the satchel first and then
+ * storage; the results arrive in storage when it finishes. A batch takes `count` times as long.
  */
 export function startCraft(state: GameState, recipeId: string, count = 1): GameEvent[] {
   const check = checkCraft(state, recipeId, count)
   if (check !== 'ok') return [{ type: 'blocked', reason: check }]
   const recipe = RECIPES[recipeId]
-  pay(state.inventory, scaledInputs(recipeId, count))
+  payFrom(craftingStocks(state), scaledInputs(recipeId, count))
   const totalMs = recipe.durationMs * count
   state.stations[recipe.station].jobs.push({ id: recipeId, totalMs, remainingMs: totalMs, count })
   return [{ type: 'craft-start', recipeId, count }]
