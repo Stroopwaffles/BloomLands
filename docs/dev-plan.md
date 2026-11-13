@@ -100,6 +100,7 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - Material tags; refined materials; components; potions with timed buffs.
 - Research tree (four branches) with real-time research.
 - *Done when:* Meadow plants can be refined, combined and brewed into a working potion, all unlocked through research.
+- *Status:* complete. 14 research nodes (Refining and Brewing; Spellcraft and Rites wait for M6), 15 recipes (6 refined, 5 components, 4 potions). Early research costs raw materials so the tree can start. All five stations are available from the start for now; M4 moves them behind lodging upgrades. Potions: Greenthumb Brew (+1 click power), Quickwing Tonic (flights 50% faster), Deep Pockets Draught (+10 satchel), Lucky Dew (rarer plants twice as often). Drinking an active potion again adds to its time.
 
 **M4. Home economy**
 - Glimmers, trinkets.

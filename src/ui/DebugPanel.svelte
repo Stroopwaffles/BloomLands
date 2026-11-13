@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { ITEMS } from '../data/items'
   import { formatDuration, formatNumber } from '../engine/format'
   import { SaveError } from '../engine/save'
   import { offlineCapMs } from '../engine/tick'
@@ -15,6 +16,14 @@
 
   function say(text: string) {
     message = text
+  }
+
+  function addMeadowMaterials() {
+    for (const item of Object.values(ITEMS)) {
+      if (item.category === 'raw')
+        runtime.dispatch({ type: 'debug/addItem', itemId: item.id, amount: 10 })
+    }
+    say('Added 10 of each Meadow material to storage.')
   }
 
   function simulateAway(ms: number) {
@@ -99,6 +108,10 @@
           onclick={() => runtime.dispatch({ type: 'debug/addGlimmers', amount: 1_000_000 })}
         >
           +1M Glimmers
+        </button>
+        <button type="button" onclick={addMeadowMaterials}>+10 each Meadow material</button>
+        <button type="button" onclick={() => runtime.dispatch({ type: 'debug/completeResearch' })}>
+          Finish research
         </button>
       </div>
 

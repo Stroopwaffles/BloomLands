@@ -1,4 +1,5 @@
 import { baseTravelMs, HOME, SPOTS } from '../data/world'
+import { wingSpeed } from './buffs'
 import type { GameEvent } from './events'
 import { ensureSpot } from './gathering'
 import type { Random } from './rng'
@@ -8,7 +9,7 @@ import type { GameState } from './state'
 export function travelMs(state: GameState, from: string, to: string): number | null {
   const base = baseTravelMs(from, to)
   if (base === null) return null
-  return Math.ceil(base / state.player.wingSpeed)
+  return Math.ceil(base / wingSpeed(state))
 }
 
 export function startTravel(state: GameState, to: string): GameEvent[] {

@@ -3,7 +3,9 @@
   import Art from './art/Art.svelte'
   import { HOME } from './data/world'
   import { formatNumber } from './engine/format'
+  import { satchelCapacity } from './engine/buffs'
   import { countItems } from './engine/state'
+  import BuffBar from './ui/components/BuffBar.svelte'
   import DebugPanel from './ui/DebugPanel.svelte'
   import { debugEnabled, runtime } from './ui/game'
   import HomeScreen from './ui/screens/HomeScreen.svelte'
@@ -20,10 +22,11 @@
 
 <header>
   <h1>Bloom Lands</h1>
+  <div class="buffs"><BuffBar /></div>
   <div class="counters">
     <div class="counter" aria-label="Satchel">
       <Art id="icon-satchel" size={28} />
-      <span>{formatNumber(satchelCount)} / {formatNumber($game.player.satchelCapacity)}</span>
+      <span>{formatNumber(satchelCount)} / {formatNumber(satchelCapacity($game))}</span>
     </div>
     <div class="counter" aria-label="Glimmers">
       <Art id="icon-glimmers" size={28} />
@@ -60,6 +63,12 @@
     margin: 0;
     font-size: 1.6rem;
     color: var(--leaf-deep);
+  }
+
+  .buffs {
+    flex: 1;
+    display: flex;
+    justify-content: center;
   }
 
   .counters {

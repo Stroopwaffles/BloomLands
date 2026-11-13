@@ -3,6 +3,7 @@ import type { ItemStack } from '../data/types'
 import { SPOTS } from '../data/world'
 import type { GameEvent } from './events'
 import { pickWeighted, type Random } from './rng'
+import { clickPower, luck, satchelCapacity } from './buffs'
 import { addItems, countItems, type GameState, type SlotState, type SpotState } from './state'
 
 /** Chance a harvest gives one extra of each material. Starting value for balancing. */
@@ -10,17 +11,21 @@ export const BONUS_MATERIAL_CHANCE = 0.1
 /** Chance a harvest turns up a trinket. Starting value for balancing. */
 export const TRINKET_CHANCE = 0.02
 
-/** Picks a plant for a spot, weighted by rarity. */
-export function rollPlant(spotId: string, random: Random): string {
+/** Picks a plant for a spot, weighted by rarity. Luck makes every non-common plant likelier. */
+export function rollPlant(spotId: string, random: Random, luckMultiplier = 1): string {
   const spot = SPOTS[spotId]
   return pickWeighted(
-    spot.plants.map((id) => [id, RARITY_WEIGHT[PLANTS[id].rarity]] as const),
+    spot.plants.map((id) => {
+      const { rarity } = PLANTS[id]
+      const weight = RARITY_WEIGHT[rarity] * (rarity === 'common' ? 1 : luckMultiplier)
+      return [id, weight] as const
+    }),
     random,
   )
 }
 
-function growSlot(slot: SlotState, spotId: string, random: Random): void {
-  const plantId = rollPlant(spotId, random)
+function growSlot(slot: SlotState, spotId: string, random: Random, luckMultiplier = 1): void {
+  const plantId = rollPlant(spotId, random, luckMultiplier)
   slot.plantId = plantId
   slot.hp = PLANTS[plantId].toughness
   slot.regrowMs = 0
@@ -34,7 +39,7 @@ export function ensureSpot(state: GameState, spotId: string, random: Random): Sp
   const spot: SpotState = { slots: [] }
   for (let i = 0; i < def.slots; i++) {
     const slot: SlotState = { plantId: null, hp: 0, regrowMs: 0 }
-    growSlot(slot, spotId, random)
+    growSlot(slot, spotId, random, luck(state))
     spot.slots.push(slot)
   }
   state.spots[spotId] = spot
@@ -42,7 +47,7 @@ export function ensureSpot(state: GameState, spotId: string, random: Random): Sp
 }
 
 export function satchelFull(state: GameState): boolean {
-  return countItems(state.player.satchel) >= state.player.satchelCapacity
+  return countItems(state.player.satchel) >= satchelCapacity(state)
 }
 
 /**
@@ -65,7 +70,7 @@ export function tapPlant(
   if (satchelFull(state)) return [{ type: 'blocked', reason: 'satchel-full' }]
 
   state.stats.taps++
-  const damage = player.clickPower
+  const damage = clickPower(state)
   slot.hp -= damage
   if (slot.hp > 0) return [{ type: 'hit', spotId, slot: slotIndex, damage, hpLeft: slot.hp }]
 
@@ -115,7 +120,7 @@ export function regrowSpots(state: GameState, dtMs: number, random: Random): voi
     for (const slot of spot.slots) {
       if (slot.plantId) continue
       slot.regrowMs -= dtMs
-      if (slot.regrowMs <= 0) growSlot(slot, spotId, random)
+      if (slot.regrowMs <= 0) growSlot(slot, spotId, random, luck(state))
     }
   }
 }

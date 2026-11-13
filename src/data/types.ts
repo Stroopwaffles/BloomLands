@@ -1,6 +1,6 @@
 export type Rarity = 'common' | 'uncommon' | 'rare' | 'very-rare'
 
-export type ItemCategory = 'raw' | 'trinket'
+export type ItemCategory = 'raw' | 'refined' | 'component' | 'potion' | 'trinket'
 
 export interface ItemDef {
   /** Stable ID, also used as the art ID for the item's icon. */
@@ -14,6 +14,53 @@ export interface ItemDef {
 export interface ItemStack {
   itemId: string
   amount: number
+}
+
+/** A cost or recipe input: a specific item, or any items with a tag (e.g. any petals). */
+export type CostEntry = { itemId: string; amount: number } | { tag: string; amount: number }
+
+export type StationId = 'mortar' | 'press' | 'drying-rack' | 'spinning-wheel' | 'cauldron'
+
+export interface StationDef {
+  id: StationId
+  name: string
+  verb: string
+}
+
+export interface RecipeDef {
+  id: string
+  station: StationId
+  inputs: CostEntry[]
+  output: ItemStack
+  durationMs: number
+}
+
+export type PotionEffect =
+  | { kind: 'clickPower'; amount: number }
+  | { kind: 'wingSpeed'; multiplier: number }
+  | { kind: 'satchel'; amount: number }
+  | { kind: 'luck'; multiplier: number }
+
+export interface PotionDef {
+  /** The potion's item ID. */
+  id: string
+  effect: PotionEffect
+  durationMs: number
+  description: string
+}
+
+export type ResearchBranch = 'refining' | 'brewing' | 'spellcraft' | 'rites'
+
+export interface ResearchDef {
+  id: string
+  name: string
+  branch: ResearchBranch
+  description: string
+  cost: CostEntry[]
+  durationMs: number
+  requires: string[]
+  /** Recipe IDs this research unlocks. */
+  unlocks: string[]
 }
 
 export interface PlantDef {

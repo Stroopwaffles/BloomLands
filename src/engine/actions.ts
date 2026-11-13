@@ -1,5 +1,8 @@
+import { drinkPotion } from './buffs'
+import { startCraft } from './crafting'
 import type { GameEvent } from './events'
 import { depositSatchel, tapPlant } from './gathering'
+import { startResearch } from './research'
 import { stateRandom, type Random } from './rng'
 import { addItems, type GameState } from './state'
 import { simulate } from './tick'
@@ -12,10 +15,14 @@ export type Action =
   | { type: 'travel/go'; to: string }
   | { type: 'gather/tap'; spotId: string; slot: number }
   | { type: 'satchel/deposit' }
+  | { type: 'craft/start'; recipeId: string }
+  | { type: 'research/start'; researchId: string }
+  | { type: 'potion/drink'; potionId: string }
   | { type: 'debug/addGlimmers'; amount: number }
   | { type: 'debug/addItem'; itemId: string; amount: number }
   | { type: 'debug/skipTime'; ms: number }
   | { type: 'debug/setClickPower'; value: number }
+  | { type: 'debug/completeResearch' }
 
 /** Applies an action and returns what happened, for the screen to show. */
 export function applyAction(
@@ -30,6 +37,12 @@ export function applyAction(
       return tapPlant(state, action.spotId, action.slot, random)
     case 'satchel/deposit':
       return depositSatchel(state)
+    case 'craft/start':
+      return startCraft(state, action.recipeId)
+    case 'research/start':
+      return startResearch(state, action.researchId)
+    case 'potion/drink':
+      return drinkPotion(state, action.potionId)
 
     case 'debug/addGlimmers':
       state.resources.glimmers = Math.max(0, state.resources.glimmers + action.amount)
@@ -43,6 +56,12 @@ export function applyAction(
       return []
     case 'debug/setClickPower':
       state.player.clickPower = Math.max(1, Math.floor(action.value))
+      return []
+    case 'debug/completeResearch':
+      if (state.research.current) {
+        state.research.completed.push(state.research.current.id)
+        state.research.current = null
+      }
       return []
   }
 }

@@ -11,6 +11,27 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'raw-dewdrops', name: 'Dewdrops', category: 'raw' },
   { id: 'raw-lucky-leaf', name: 'Lucky leaf', category: 'raw' },
 
+  // Refined materials (content doc → Recipe Tree → Tier 1)
+  { id: 'refined-petal-paste', name: 'Petal Paste', category: 'refined' },
+  { id: 'refined-leaf-tea', name: 'Leaf Tea', category: 'refined' },
+  { id: 'refined-berry-juice', name: 'Berry Juice', category: 'refined' },
+  { id: 'refined-fluff-thread', name: 'Fluff Thread', category: 'refined' },
+  { id: 'refined-dew-water', name: 'Dew Water', category: 'refined' },
+  { id: 'refined-lucky-essence', name: 'Lucky Essence', category: 'refined' },
+
+  // Components (Tier 2)
+  { id: 'component-sun-salve', name: 'Sun Salve', category: 'component' },
+  { id: 'component-lucky-charm-dust', name: 'Lucky Charm Dust', category: 'component' },
+  { id: 'component-thistle-twine', name: 'Thistle Twine', category: 'component' },
+  { id: 'component-calming-tea', name: 'Calming Tea', category: 'component' },
+  { id: 'component-sweet-bait', name: 'Sweet Bait', category: 'component' },
+
+  // Potions
+  { id: 'potion-greenthumb-brew', name: 'Greenthumb Brew', category: 'potion' },
+  { id: 'potion-quickwing-tonic', name: 'Quickwing Tonic', category: 'potion' },
+  { id: 'potion-deep-pockets-draught', name: 'Deep Pockets Draught', category: 'potion' },
+  { id: 'potion-lucky-dew', name: 'Lucky Dew', category: 'potion' },
+
   // Meadow trinkets
   { id: 'trinket-lost-button', name: 'Lost button', category: 'trinket' },
   { id: 'trinket-glass-bead', name: 'Glass bead', category: 'trinket' },
@@ -23,4 +44,18 @@ export const ITEMS: Readonly<Record<string, ItemDef>> = Object.fromEntries(
 
 export function itemName(id: string): string {
   return ITEMS[id]?.name ?? id
+}
+
+export function itemHasTag(id: string, tag: string): boolean {
+  return ITEMS[id]?.tags?.includes(tag) ?? false
+}
+
+/** Display names for material tags, e.g. "any petals". */
+export const TAG_NAMES: Readonly<Record<string, string>> = {
+  petals: 'Petals',
+  leaves: 'Leaves',
+  caps: 'Caps',
+  fruit: 'Fruit',
+  fluff: 'Fluff',
+  stalks: 'Stalks',
 }

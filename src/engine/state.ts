@@ -1,3 +1,4 @@
+import type { StationId } from '../data/types'
 import { HOME } from '../data/world'
 import { GAME_VERSION, SAVE_VERSION } from './version'
 
@@ -13,6 +14,26 @@ export interface SlotState {
 
 export interface SpotState {
   slots: SlotState[]
+}
+
+/** A timed job: crafting at a station, or research. */
+export interface JobState {
+  /** Recipe ID (stations) or research ID (research). */
+  id: string
+  totalMs: number
+  remainingMs: number
+}
+
+export interface StationState {
+  /** How many jobs can run here at once (the cauldron's slots can be upgraded later). */
+  slots: number
+  jobs: JobState[]
+}
+
+export interface BuffState {
+  /** The potion that gave this buff. */
+  potionId: string
+  remainingMs: number
 }
 
 export interface TravelState {
@@ -59,6 +80,15 @@ export interface GameState {
   inventory: Record<string, number>
   /** Harvesting spots the player has visited, by spot ID. */
   spots: Record<string, SpotState>
+  /** Home crafting stations, by station ID. */
+  stations: Record<StationId, StationState>
+  research: {
+    /** IDs of finished research. */
+    completed: string[]
+    current: JobState | null
+  }
+  /** Active potion effects. */
+  buffs: BuffState[]
   /** Permanent or run bonuses that engine rules read. Filled in by later systems. */
   bonuses: {
     /** Extra offline progress allowed on top of the base 4 hours. */
@@ -71,6 +101,8 @@ export interface GameState {
     offlineMs: number
     plantsHarvested: number
     taps: number
+    itemsCrafted: number
+    potionsDrunk: number
   }
 }
 
@@ -100,6 +132,18 @@ export function createNewGame(now: number): GameState {
     },
     inventory: {},
     spots: {},
+    stations: {
+      mortar: { slots: 1, jobs: [] },
+      press: { slots: 1, jobs: [] },
+      'drying-rack': { slots: 1, jobs: [] },
+      'spinning-wheel': { slots: 1, jobs: [] },
+      cauldron: { slots: 1, jobs: [] },
+    },
+    research: {
+      completed: [],
+      current: null,
+    },
+    buffs: [],
     bonuses: {
       offlineCapMs: 0,
     },
@@ -108,6 +152,8 @@ export function createNewGame(now: number): GameState {
       offlineMs: 0,
       plantsHarvested: 0,
       taps: 0,
+      itemsCrafted: 0,
+      potionsDrunk: 0,
     },
   }
 }
