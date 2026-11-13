@@ -176,6 +176,13 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - Tablet and desktop layout pass; tap and performance testing.
 - First balancing pass for the Meadow.
 - *Done when:* the Meadow plays start to finish, looks finished, and is live on GitHub Pages.
+- *Status:* complete — **Release 0.1 "Meadow"** (version 0.1.0).
+  - **Living gathering scene:** painted backdrops for Buttercup Rise, Dandelion Drift and the Fairy Ring with hand-placed plants; the rabbit, camp and wild bumblebee live in the scene; sunshine/breeze/rain/night looks; petal bursts and tap sparkles. Kept short enough for tablets.
+  - **Art:** all Meadow plants, every item (template families: bottles, jars, pouches, bowls, cups, spools), trinkets, field-mouse folk (helpers, Pip, Marigold, villagers), Tumble, Sorrel, rabbit, aphids, the Drifters and their camp, the bumblebee, stations, spell sigils, curios and UI icons. Art is SVG stored as data by asset ID (`src/art/library`).
+  - **UI:** leafy sprig accents on panels, soft button feedback, a home court scene that grows with rank.
+  - **Balancing:** rabbit eats every 30s (was 15s); camps leave on their own after 20 min and first appear at 25 min; morning lasts until 40% of the day; base storage 150.
+  - **Checked** at desktop, landscape tablet (1024×768) and phone (375px: usable, no sideways scroll, plant tap targets ≥ 61px).
+  - **Not yet art:** upgrade-specific icons (they share family icons), region-to-region map, title screen.
 
 ### Phase 2: The Full Game
 
