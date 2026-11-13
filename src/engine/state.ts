@@ -1,3 +1,9 @@
+import {
+  DEFAULT_LOOK,
+  defaultWardrobe,
+  type CharacterLook,
+  type Wardrobe,
+} from '../data/appearance'
 import type { FlightEventKind, WeatherKind } from '../data/challenges'
 import type { HelperType } from '../data/helpers'
 import { START_OF_DAY_MS } from '../data/time'
@@ -142,6 +148,13 @@ export interface GameState {
   }
   /** Random number generator state, saved so results are reproducible. */
   rng: number
+  /** The player's fairy (design doc 3.13). Kept through prestige. */
+  character: {
+    /** False until the player finishes the character creator. */
+    created: boolean
+    look: CharacterLook
+    wardrobe: Wardrobe
+  }
   /** Position in the in-game day (0 = dawn), in ms. */
   time: {
     dayMs: number
@@ -276,6 +289,11 @@ export function createNewGame(now: number): GameState {
       lastSavedAt: null,
     },
     rng: now >>> 0,
+    character: {
+      created: false,
+      look: { ...DEFAULT_LOOK },
+      wardrobe: defaultWardrobe(DEFAULT_LOOK.body),
+    },
     time: {
       dayMs: START_OF_DAY_MS,
     },

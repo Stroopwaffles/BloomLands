@@ -1,5 +1,7 @@
 import { drinkPotion } from './buffs'
+import { equipPiece, finishCreating, recolorSlot, setLook } from './character'
 import { startCraft } from './crafting'
+import type { CharacterLook, OutfitSlot } from '../data/appearance'
 import type { HelperType } from '../data/helpers'
 import type { GameEvent } from './events'
 import { depositSatchel, tapPlant } from './gathering'
@@ -47,6 +49,10 @@ export type Action =
   | { type: 'mount/feed'; mountId: string }
   | { type: 'mount/ride'; mountId: string | null }
   | { type: 'mount/levelUp'; mountId: string }
+  | { type: 'character/look'; patch: Partial<CharacterLook> }
+  | { type: 'character/finish' }
+  | { type: 'wardrobe/equip'; slot: OutfitSlot; pieceId: string | null }
+  | { type: 'wardrobe/recolor'; slot: OutfitSlot; color: string }
   | { type: 'debug/addGlimmers'; amount: number }
   | { type: 'debug/addItem'; itemId: string; amount: number }
   | { type: 'debug/skipTime'; ms: number }
@@ -111,6 +117,14 @@ export function applyAction(
       return rideMount(state, action.mountId)
     case 'mount/levelUp':
       return levelUpMount(state, action.mountId)
+    case 'character/look':
+      return setLook(state, action.patch)
+    case 'character/finish':
+      return finishCreating(state)
+    case 'wardrobe/equip':
+      return equipPiece(state, action.slot, action.pieceId)
+    case 'wardrobe/recolor':
+      return recolorSlot(state, action.slot, action.color)
 
     case 'debug/addGlimmers':
       state.resources.glimmers = Math.max(0, state.resources.glimmers + action.amount)
