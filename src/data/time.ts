@@ -7,7 +7,7 @@ export type DayPhase = 'dawn' | 'morning' | 'afternoon' | 'dusk' | 'night'
 export const PHASE_STARTS: readonly { phase: DayPhase; at: number; name: string }[] = [
   { phase: 'dawn', at: 0, name: 'Dawn' },
   { phase: 'morning', at: 0.08, name: 'Morning' },
-  { phase: 'afternoon', at: 0.3, name: 'Afternoon' },
+  { phase: 'afternoon', at: 0.4, name: 'Afternoon' },
   { phase: 'dusk', at: 0.55, name: 'Dusk' },
   { phase: 'night', at: 0.62, name: 'Night' },
 ]

@@ -120,6 +120,17 @@ export function sendCreatureAway(
 
 export function advanceCamps(state: GameState, dtMs: number, random: Random): void {
   const { challenges } = state
+  // Camps eventually pack up by themselves (a setback, never permanent).
+  for (const spotId of Object.keys(challenges.camps)) {
+    const left = (challenges.campMs[spotId] ?? CAMP_RULES.staysMs) - dtMs
+    if (left > 0) {
+      challenges.campMs[spotId] = left
+    } else {
+      delete challenges.camps[spotId]
+      delete challenges.campMs[spotId]
+    }
+  }
+
   challenges.nextCampMs -= dtMs
   if (challenges.nextCampMs > 0) return
   challenges.nextCampMs = between(random, CAMP_RULES.minMs, CAMP_RULES.maxMs)
@@ -128,7 +139,9 @@ export function advanceCamps(state: GameState, dtMs: number, random: Random): vo
     if (alreadyCamped || state.crews[crew.id]?.won) continue
     const spots = visitedSpots(state, crew.regionId)
     if (spots.length === 0) continue
-    challenges.camps[spots[Math.floor(random() * spots.length)]] = crew.id
+    const spotId = spots[Math.floor(random() * spots.length)]
+    challenges.camps[spotId] = crew.id
+    challenges.campMs[spotId] = CAMP_RULES.staysMs
   }
 }
 
@@ -137,6 +150,7 @@ export function clearCamp(state: GameState, spotId: string): GameEvent[] {
   const crewId = state.challenges.camps[spotId]
   if (!crewId) return [{ type: 'blocked', reason: 'no-target' }]
   delete state.challenges.camps[spotId]
+  delete state.challenges.campMs[spotId]
   state.stats.campsCleared++
   return [
     { type: 'camp-cleared', spotId, crewId },
@@ -162,6 +176,7 @@ export function parley(state: GameState, spotId: string): GameEvent[] {
   }
   progress.won = true
   delete state.challenges.camps[spotId]
+  delete state.challenges.campMs[spotId]
   return [
     { type: 'story', text: line, complete: true },
     { type: 'crew-won', crewId },

@@ -322,3 +322,16 @@ describe('magic', () => {
     expect(state.stats.ritualsPerformed).toBe(2)
   })
 })
+
+describe('camps over time', () => {
+  it('pack up on their own after a while', () => {
+    const state = atButtercup()
+    state.challenges.nextCampMs = 0
+    advance(state, START + 100)
+    state.challenges.nextCampMs = 1e12
+    expect(state.challenges.camps['buttercup-rise']).toBe('dandelion-drifters')
+    advance(state, START + 100 + CAMP_RULES.staysMs)
+    expect(state.challenges.camps).toEqual({})
+    expect(state.stats.campsCleared).toBe(0) // leaving on their own isn't driving them out
+  })
+})

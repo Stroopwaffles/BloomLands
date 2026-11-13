@@ -162,7 +162,7 @@ describe('upgrades', () => {
     expect(clickPower(state)).toBe(2)
     expect(satchelCapacity(state)).toBe(30)
     expect(wingSpeed(state)).toBe(1.25)
-    expect(storageCapacity(state)).toBe(200)
+    expect(storageCapacity(state)).toBe(250)
   })
 
   it('grow the court through its ranks', () => {
@@ -183,7 +183,7 @@ describe('upgrades', () => {
 
 describe('storage', () => {
   it('only takes what fits; trinkets take no space', () => {
-    const state = home({ inventory: { 'raw-clover-leaves': 95 } })
+    const state = home({ inventory: { 'raw-clover-leaves': 145 } })
     state.player.satchel = { 'raw-daisy-petals': 10, 'trinket-thimble': 1 }
     const [event] = applyAction(state, { type: 'satchel/deposit' })
     expect(event).toMatchObject({ type: 'deposit', leftOver: 5 })

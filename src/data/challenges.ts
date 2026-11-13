@@ -85,7 +85,7 @@ export const CREATURES: Readonly<Record<string, CreatureDef>> = {
     name: 'Rabbit',
     regionId: 'meadow',
     taps: 8,
-    eatEveryMs: 15_000,
+    eatEveryMs: 30_000,
     staysMs: 3 * 60_000,
   },
 }
@@ -120,7 +120,9 @@ export const CREWS: Readonly<Record<string, CrewDef>> = {
 }
 
 export const CAMP_RULES = {
-  firstMs: 15 * 60_000,
+  firstMs: 25 * 60_000,
+  /** Camps pack up on their own after this long (or sooner with Tanglevine). */
+  staysMs: 20 * 60_000,
   minMs: 20 * 60_000,
   maxMs: 30 * 60_000,
   /** A camp takes over this many of a spot's plant slots (the last ones). */

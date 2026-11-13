@@ -166,6 +166,8 @@ export interface GameState {
     creatures: Record<string, CreatureState>
     /** Pirate camps, by spot: crew ID. */
     camps: Record<string, string>
+    /** Time until each camp packs up on its own, by spot. */
+    campMs: Record<string, number>
     nextCreatureMs: number
     nextCampMs: number
   }
@@ -277,7 +279,7 @@ export interface GameState {
 }
 
 export const BASE_SATCHEL_CAPACITY = 20
-export const BASE_STORAGE_CAPACITY = 100
+export const BASE_STORAGE_CAPACITY = 150
 
 export function createNewGame(now: number): GameState {
   return {
@@ -303,8 +305,9 @@ export function createNewGame(now: number): GameState {
     challenges: {
       creatures: {},
       camps: {},
+      campMs: {},
       nextCreatureMs: 5 * 60_000,
-      nextCampMs: 15 * 60_000,
+      nextCampMs: 25 * 60_000,
     },
     player: {
       place: HOME,

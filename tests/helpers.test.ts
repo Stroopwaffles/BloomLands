@@ -106,7 +106,7 @@ describe('gatherers', () => {
 
   it('wait at home with their haul when storage is full, then unpack when there is room', () => {
     const state = inThimblewick()
-    state.inventory = { 'raw-clover-leaves': 100 } // storage full
+    state.inventory = { 'raw-clover-leaves': 150 } // storage full
     applyAction(state, { type: 'helpers/recruit', helperType: 'gatherer' })
     advance(state, START + FULL_TRIP + 1000)
     const helper = state.helpers.list[0]
@@ -115,7 +115,7 @@ describe('gatherers', () => {
     state.upgrades.push('lodging-storeroom-1')
     advance(state, START + FULL_TRIP + 1100)
     expect(countItems(helper.bag)).toBe(0)
-    expect(countItems(state.inventory)).toBe(100 + carried)
+    expect(countItems(state.inventory)).toBe(150 + carried)
   })
 })
 
