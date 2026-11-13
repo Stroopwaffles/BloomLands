@@ -87,6 +87,7 @@ export function setMinimum(state: GameState, itemId: string, amount: number): Ga
 function sourcesOf(itemId: string): { spotId: string; plantId: string }[] {
   const sources: { spotId: string; plantId: string }[] = []
   for (const spot of Object.values(SPOTS)) {
+    if (spot.secret) continue
     for (const plantId of spot.plants) {
       if (PLANTS[plantId].yields.some((y) => y.itemId === itemId)) {
         sources.push({ spotId: spot.id, plantId })

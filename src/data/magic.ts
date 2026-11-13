@@ -56,7 +56,7 @@ export const SPELLS: Readonly<Record<string, SpellDef>> = {
   },
 }
 
-export type RitualEffect = 'turn-to-day' | 'turn-to-night'
+export type RitualEffect = 'turn-to-day' | 'turn-to-night' | 'open-fairy-ring'
 
 export interface RitualDef {
   id: string
@@ -64,6 +64,8 @@ export interface RitualDef {
   description: string
   effect: RitualEffect
   cost: CostEntry[]
+  /** Only works in the morning. */
+  morningOnly?: boolean
 }
 
 /** Rituals are performed at the Ritual Circle at home. */
@@ -74,6 +76,17 @@ export const RITUALS: Readonly<Record<string, RitualDef>> = {
     description: 'Turns the sky to dawn.',
     effect: 'turn-to-day',
     cost: [{ itemId: 'component-sun-salve', amount: 1 }],
+  },
+  'ritual-dawn': {
+    id: 'ritual-dawn',
+    name: 'Rite of Dawn',
+    description: 'Performed in the morning, it reveals the Fairy Ring for this run.',
+    effect: 'open-fairy-ring',
+    morningOnly: true,
+    cost: [
+      { itemId: 'component-sun-salve', amount: 1 },
+      { itemId: 'component-lucky-charm-dust', amount: 1 },
+    ],
   },
   'ritual-turning-night': {
     id: 'ritual-turning-night',

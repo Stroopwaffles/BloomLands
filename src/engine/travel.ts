@@ -1,7 +1,8 @@
-import { baseTravelMs, HOME, isSettlement, isSpiritPlace, isSpot } from '../data/world'
+import { baseTravelMs, HOME, isSecret, isSettlement, isSpiritPlace, isSpot } from '../data/world'
 import { weatherFlightFactor } from './environment'
 import type { GameEvent } from './events'
 import { applyInstantEvents, rollFlightEvent, settleFlightEvent } from './flightEvents'
+import { discoverSecret } from './secrets'
 import { depositSatchel, ensureSpot } from './gathering'
 import { hasQol, travelMultiplier, wingSpeed } from './modifiers'
 import type { Random } from './rng'
@@ -31,6 +32,7 @@ export function startTravel(
   if (to !== HOME && !isSpot(to) && !isSettlement(to) && !isSpiritPlace(to)) {
     return [{ type: 'blocked', reason: 'not-here' }]
   }
+  if (isSecret(to) && !state.secrets.includes(to)) return [{ type: 'blocked', reason: 'locked' }]
   const totalMs = travelMs(state, player.place, to)
   if (totalMs === null) return [{ type: 'blocked', reason: 'not-here' }]
 
@@ -58,6 +60,7 @@ export function advanceTravel(state: GameState, dtMs: number, random: Random): v
   if (isSpot(player.place)) {
     player.lastSpot = player.place
     ensureSpot(state, player.place, random)
+    state.inbox.push(...discoverSecret(state, player.place))
     return
   }
   if (player.place !== HOME) return

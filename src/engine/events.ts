@@ -20,6 +20,7 @@ export type BlockedReason =
   | 'no-target'
   | 'no-circle'
   | 'not-ready'
+  | 'not-morning'
 
 /**
  * Things that just happened, returned by actions so the screen can react (floating numbers,
@@ -59,3 +60,5 @@ export type GameEvent =
   | { type: 'mount-fed'; mountId: string; feedings: number }
   | { type: 'mount-tamed'; mountId: string }
   | { type: 'mount-level'; mountId: string; level: number }
+  | { type: 'secret'; spotId: string; found: 'unlocked' | 'visited' }
+  | { type: 'outfit'; outfitId: string }

@@ -13,6 +13,7 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'raw-wild-berries': 5,
   'raw-dewdrops': 4,
   'raw-lucky-leaf': 25,
+  'raw-ringcap': 30,
   // Refined
   'refined-petal-paste': 10,
   'refined-leaf-tea': 10,

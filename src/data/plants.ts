@@ -55,6 +55,14 @@ const PLANT_LIST: PlantDef[] = [
     rarity: 'rare',
     yields: [{ itemId: 'raw-lucky-leaf', amount: 1 }],
   },
+  // Meadow secret: The Fairy Ring
+  {
+    id: 'plant-ringcap',
+    name: 'Ringcap mushroom',
+    toughness: 3,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-ringcap', amount: 1 }],
+  },
 ]
 
 export const PLANTS: Readonly<Record<string, PlantDef>> = Object.fromEntries(

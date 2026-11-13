@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { allPlaces, HOME, placeName } from '../../data/world'
+  import { allPlaces, HOME, isSecret, placeName } from '../../data/world'
   import { formatDuration } from '../../engine/format'
   import { travelMs } from '../../engine/travel'
   import { runtime } from '../game'
@@ -9,7 +9,10 @@
   /** Everywhere the player could fly from here. */
   const places = $derived(
     allPlaces().filter(
-      (id) => id !== $game.player.place && travelMs($game, $game.player.place, id) !== null,
+      (id) =>
+        id !== $game.player.place &&
+        (!isSecret(id) || $game.secrets.includes(id)) &&
+        travelMs($game, $game.player.place, id) !== null,
     ),
   )
 </script>

@@ -2,11 +2,12 @@ import { RITUALS, SPELLS } from '../data/magic'
 import { RESEARCH } from '../data/research'
 import { clearCamp, clearPests, pestsAt, sendCreatureAway } from './challenges'
 import { canPay, payCost } from './costs'
-import { turnSky } from './environment'
+import { isMorning, turnSky } from './environment'
 import type { BlockedReason, GameEvent } from './events'
 import { activeFlightEvent, foilAmbush } from './flightEvents'
 import { hasFeature } from './modifiers'
 import { canTameHere, tameMountHere } from './mounts'
+import { unlockSecret } from './secrets'
 import type { GameState } from './state'
 
 /** Spells the player has researched. */
@@ -69,6 +70,8 @@ export function checkRitual(state: GameState, ritualId: string): 'ok' | BlockedR
   if (!RITUALS[ritualId] || !knownRituals(state).includes(ritualId)) return 'locked'
   if (!hasFeature(state, 'ritual-circle')) return 'no-circle'
   if (state.player.travel || state.player.place !== 'home') return 'not-home'
+  if (RITUALS[ritualId].morningOnly && !isMorning(state)) return 'not-morning'
+  if (ritualId === 'ritual-dawn' && state.secrets.includes('fairy-ring')) return 'already-done'
   if (!canPay(state, RITUALS[ritualId].cost)) return 'missing-items'
   return 'ok'
 }
@@ -87,6 +90,8 @@ export function performRitual(state: GameState, ritualId: string): GameEvent[] {
     case 'turn-to-night':
       turnSky(state, 'night')
       break
+    case 'open-fairy-ring':
+      return [{ type: 'ritual-performed', ritualId }, ...unlockSecret(state, 'fairy-ring')]
   }
   return [{ type: 'ritual-performed', ritualId }]
 }

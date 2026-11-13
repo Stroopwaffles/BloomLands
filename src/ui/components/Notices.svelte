@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { BLOOM_LEVELS, CURIOS } from '../../data/bloom'
-  import { REGIONS } from '../../data/world'
+  import { placeName, REGIONS, SPOTS } from '../../data/world'
   import type { GameEvent } from '../../engine/events'
   import { bloomLevel } from '../../engine/modifiers'
   import { runtime } from '../game'
@@ -37,6 +37,19 @@
         return [`You found a curio: ${CURIOS[event.curioId]?.name}!`, true]
       case 'story':
         return [event.text, event.complete]
+      case 'secret':
+        return event.found === 'unlocked'
+          ? [
+              `Something stirs in the ${REGIONS[SPOTS[event.spotId]?.regionId]?.name ?? 'land'}... a secret place has opened!`,
+              true,
+            ]
+          : [`You found ${placeName(event.spotId)}!`, true]
+      case 'outfit':
+        return ['A new outfit for your wardrobe!', false]
+      case 'mount-tamed':
+        return ['A new friend joins your court!', true]
+      case 'mount-level':
+        return [`Your mount reached level ${event.level}!`, false]
       default:
         return null
     }

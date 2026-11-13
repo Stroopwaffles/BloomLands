@@ -2,6 +2,7 @@ import type { FlightEventKind, WeatherKind } from '../data/challenges'
 import type { HelperType } from '../data/helpers'
 import { START_OF_DAY_MS } from '../data/time'
 import type { ItemStack, StationId } from '../data/types'
+import type { GameEvent } from './events'
 import { HOME } from '../data/world'
 import { GAME_VERSION, SAVE_VERSION } from './version'
 
@@ -213,6 +214,14 @@ export interface GameState {
     /** The mount the player is riding, if any. */
     riding: string | null
   }
+  /** Events from game ticks (not player actions) waiting to be shown on screen. */
+  inbox: GameEvent[]
+  /** Secret areas unlocked this run (they re-lock on prestige). */
+  secrets: string[]
+  /** Secret areas visited this run (their curio is found on the first visit). */
+  secretsVisited: string[]
+  /** Outfits unlocked (kept forever, for the wardrobe). */
+  outfits: string[]
   /** Spirits of the land, by spirit ID (this run). */
   spirits: Record<string, { awakened: boolean }>
   /** Story progress by story ID (missing = not started). */
@@ -309,6 +318,10 @@ export function createNewGame(now: number): GameState {
     bloom: { meadow: 0 },
     curios: [],
     stories: {},
+    inbox: [],
+    secrets: [],
+    secretsVisited: [],
+    outfits: [],
     spirits: {},
     mounts: { friendship: {}, owned: {}, riding: null },
     settlements: {

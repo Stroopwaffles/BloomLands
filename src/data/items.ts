@@ -10,6 +10,7 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'raw-wild-berries', name: 'Wild berries', category: 'raw', tags: ['fruit'] },
   { id: 'raw-dewdrops', name: 'Dewdrops', category: 'raw' },
   { id: 'raw-lucky-leaf', name: 'Lucky leaf', category: 'raw' },
+  { id: 'raw-ringcap', name: 'Ringcap', category: 'raw', tags: ['caps'] },
 
   // Refined materials (content doc → Recipe Tree → Tier 1)
   { id: 'refined-petal-paste', name: 'Petal Paste', category: 'refined' },

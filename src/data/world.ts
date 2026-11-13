@@ -36,6 +36,22 @@ export const SPOTS: Readonly<Record<string, SpotDef>> = Object.fromEntries(
   SPOT_LIST.map((spot) => [spot.id, spot]),
 )
 
+// Secret areas (content doc → each region's Secret Areas)
+const SECRET_SPOTS: SpotDef[] = [
+  {
+    id: 'fairy-ring',
+    name: 'The Fairy Ring',
+    regionId: 'meadow',
+    description: 'A circle of mushrooms that only shows itself after a rite performed at dawn.',
+    plants: ['plant-ringcap', 'plant-clover', 'plant-daisy', 'plant-morning-dew'],
+    slots: 6,
+    regrowMs: 30_000,
+    trinkets: ['trinket-glass-bead', 'trinket-thimble'],
+    secret: { curioId: 'curio-pocket-sundial', outfitId: 'outfit-dewdrop' },
+  },
+]
+for (const spot of SECRET_SPOTS) (SPOTS as Record<string, SpotDef>)[spot.id] = spot
+
 export const SETTLEMENTS: Readonly<Record<string, SettlementDef>> = {
   thimblewick: {
     id: 'thimblewick',
@@ -71,6 +87,7 @@ export const REGIONS: Readonly<Record<string, RegionDef>> = {
     name: 'Meadow',
     settlement: 'thimblewick',
     spiritPlace: 'sunstone-hill',
+    secretSpots: ['fairy-ring'],
     spots: ['buttercup-rise', 'dandelion-drift'],
   },
 }
@@ -83,12 +100,17 @@ export function allPlaces(): string[] {
       region.settlement,
       ...region.spots,
       region.spiritPlace,
+      ...region.secretSpots,
     ]),
   ]
 }
 
 export function isSpot(placeId: string): boolean {
   return placeId in SPOTS
+}
+
+export function isSecret(placeId: string): boolean {
+  return SPOTS[placeId]?.secret !== undefined
 }
 
 export function isSettlement(placeId: string): boolean {
@@ -114,6 +136,11 @@ const ROUTES: Record<string, number> = {
   'thimblewick|sunstone-hill': 8_000,
   'buttercup-rise|sunstone-hill': 5_000,
   'dandelion-drift|sunstone-hill': 7_000,
+  'home|fairy-ring': 9_000,
+  'buttercup-rise|fairy-ring': 4_000,
+  'dandelion-drift|fairy-ring': 6_000,
+  'thimblewick|fairy-ring': 7_000,
+  'sunstone-hill|fairy-ring': 6_000,
 }
 
 export function baseTravelMs(from: string, to: string): number | null {

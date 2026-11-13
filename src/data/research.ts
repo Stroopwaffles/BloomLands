@@ -273,6 +273,21 @@ RESEARCH_LIST.push({
   rituals: ['ritual-turning-day', 'ritual-turning-night'],
 })
 
+RESEARCH_LIST.push({
+  id: 'research-rite-of-dawn',
+  name: 'Rite of Dawn',
+  branch: 'rites',
+  description: 'An old rite whispered at sunrise. Something in the Meadow answers it.',
+  cost: [
+    { itemId: 'component-lucky-charm-dust', amount: 1 },
+    { itemId: 'component-sun-salve', amount: 1 },
+  ],
+  durationMs: 3 * MIN,
+  requires: ['research-turning', 'research-charms'],
+  unlocks: [],
+  rituals: ['ritual-dawn'],
+})
+
 export const RESEARCH: Readonly<Record<string, ResearchDef>> = Object.fromEntries(
   RESEARCH_LIST.map((node) => [node.id, node]),
 )

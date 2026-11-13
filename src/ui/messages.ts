@@ -20,4 +20,5 @@ export const BLOCKED_TEXT: Record<BlockedReason, string> = {
   'no-target': 'Nothing here for that.',
   'no-circle': 'Build a Ritual Circle first.',
   'not-ready': 'Not ready yet. Try again soon.',
+  'not-morning': 'This rite only works in the morning.',
 }

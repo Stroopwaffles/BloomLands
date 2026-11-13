@@ -61,6 +61,13 @@ export function createRuntime(storage: Storage | null, clock: () => number = Dat
 
   const publish = () => game.set(state)
 
+  /** Passes events that happened during ticks (arrivals, discoveries) to the screen. */
+  function drainInbox() {
+    if (state.inbox.length === 0) return
+    const events = state.inbox.splice(0)
+    for (const listener of listeners) listener(events)
+  }
+
   function catchUp() {
     const report = advance(state, clock())
     if (report.offline && report.elapsedMs >= WELCOME_BACK_MIN_MS) {
@@ -71,6 +78,7 @@ export function createRuntime(storage: Storage | null, clock: () => number = Dat
       })
     }
     publish()
+    drainInbox()
   }
 
   function save() {
@@ -97,6 +105,7 @@ export function createRuntime(storage: Storage | null, clock: () => number = Dat
       const events = applyAction(state, action)
       publish()
       if (events.length > 0) for (const listener of listeners) listener(events)
+      drainInbox()
       return events
     },
 

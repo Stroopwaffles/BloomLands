@@ -95,6 +95,13 @@ export interface SpotDef {
   regrowMs: number
   /** Trinkets that can turn up as bonus drops here. */
   trinkets: string[]
+  /** Secret areas stay hidden until unlocked (design doc 3.12). */
+  secret?: {
+    /** Curio found on the first visit each run. */
+    curioId: string
+    /** Unique outfit unlocked on the first visit (kept forever). */
+    outfitId: string
+  }
 }
 
 export interface SettlementDef {
@@ -112,6 +119,8 @@ export interface RegionDef {
   settlement: string
   /** Where the region's spirit of the land rests. */
   spiritPlace: string
+  /** Secret areas, shown once unlocked. */
+  secretSpots: string[]
   /** Harvesting spots, in display order. */
   spots: string[]
 }
