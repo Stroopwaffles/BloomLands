@@ -3,6 +3,8 @@
   import { countItems } from '../../engine/state'
   import Destinations from '../components/Destinations.svelte'
   import ItemList from '../components/ItemList.svelte'
+  import BloomMeter from '../components/BloomMeter.svelte'
+  import CurioShelf from '../components/CurioShelf.svelte'
   import PotionShelf from '../components/PotionShelf.svelte'
   import SatchelLock from '../components/SatchelLock.svelte'
   import { runtime } from '../game'
@@ -107,8 +109,18 @@
         </section>
 
         <section class="panel">
+          <h2>The land</h2>
+          <BloomMeter regionId="meadow" />
+        </section>
+
+        <section class="panel">
           <h2>Potions</h2>
           <PotionShelf />
+        </section>
+
+        <section class="panel">
+          <h2>Curios</h2>
+          <CurioShelf />
         </section>
 
         <section class="panel">

@@ -5,7 +5,7 @@ import type { ItemStack } from '../data/types'
 import { canPay, payCost } from './costs'
 import { unlockedRecipes } from './crafting'
 import type { GameEvent } from './events'
-import { stationBuilt } from './modifiers'
+import { stationBuilt, traderPayMultiplier } from './modifiers'
 import type { Random } from './rng'
 import { addItems, type GameState, type TradeRequest } from './state'
 
@@ -39,7 +39,8 @@ function amountFor(itemId: string, random: Random): number {
   }
 }
 
-export function makeRequest(state: GameState, random: Random): TradeRequest {
+/** One or two things to ask for, and what they're worth in Glimmers. */
+export function rollWants(state: GameState, random: Random): { wants: ItemStack[]; value: number } {
   const pool = requestableItems(state)
   const wants: ItemStack[] = []
   const kinds = random() < 0.4 ? 2 : 1
@@ -49,6 +50,11 @@ export function makeRequest(state: GameState, random: Random): TradeRequest {
     wants.push({ itemId, amount: amountFor(itemId, random) })
   }
   const value = wants.reduce((sum, w) => sum + ITEM_VALUES[w.itemId] * w.amount, 0)
+  return { wants, value }
+}
+
+export function makeRequest(state: GameState, random: Random): TradeRequest {
+  const { wants, value } = rollWants(state, random)
   const trinkets = Object.values(ITEMS).filter((item) => item.category === 'trinket')
   const trinketId =
     random() < TRADER_RULES.trinketChance
@@ -93,19 +99,13 @@ export function fulfillRequest(state: GameState, requestId: number): GameEvent[]
   if (check !== 'ok') return [{ type: 'blocked', reason: check }]
   const request = state.traders.requests.find((r) => r.id === requestId)!
   payCost(state, request.wants)
-  state.resources.glimmers += request.glimmers
+  const glimmers = Math.round(request.glimmers * traderPayMultiplier(state))
+  state.resources.glimmers += glimmers
   if (request.trinketId) addItems(state.inventory, request.trinketId, 1)
   state.traders.requests = state.traders.requests.filter((r) => r.id !== requestId)
   state.stats.requestsFilled++
-  state.stats.glimmersEarned += request.glimmers
-  return [
-    {
-      type: 'trade-filled',
-      requestId,
-      glimmers: request.glimmers,
-      trinketId: request.trinketId,
-    },
-  ]
+  state.stats.glimmersEarned += glimmers
+  return [{ type: 'trade-filled', requestId, glimmers, trinketId: request.trinketId }]
 }
 
 export function dismissRequest(state: GameState, requestId: number): GameEvent[] {

@@ -3,7 +3,7 @@ import { weatherFlightFactor } from './environment'
 import type { GameEvent } from './events'
 import { applyInstantEvents, rollFlightEvent, settleFlightEvent } from './flightEvents'
 import { depositSatchel, ensureSpot } from './gathering'
-import { hasQol, wingSpeed } from './modifiers'
+import { hasQol, travelMultiplier, wingSpeed } from './modifiers'
 import type { Random } from './rng'
 import { countItems, type GameState } from './state'
 
@@ -11,7 +11,9 @@ import { countItems, type GameState } from './state'
 export function travelMs(state: GameState, from: string, to: string): number | null {
   const base = baseTravelMs(from, to)
   if (base === null) return null
-  return Math.ceil((base / wingSpeed(state)) * weatherFlightFactor(state, from, to))
+  return Math.ceil(
+    (base / wingSpeed(state)) * weatherFlightFactor(state, from, to) * travelMultiplier(state),
+  )
 }
 
 /**

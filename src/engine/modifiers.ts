@@ -1,3 +1,4 @@
+import { BLOOM_LEVELS, BLOOM_PER_LEVEL, CURIOS, type CurioDef } from '../data/bloom'
 import { COURT_RANKS } from '../data/economy'
 import { HELPER_RULES, type HelperType } from '../data/helpers'
 import { itemHasTag } from '../data/items'
@@ -47,6 +48,47 @@ export function luck(state: GameState): number {
   let value = 1
   for (const e of potionEffects(state)) if (e.kind === 'luck') value *= e.multiplier
   return value
+}
+
+function curioEffects(state: GameState): CurioDef['effect'][] {
+  return state.curios.flatMap((id) => (CURIOS[id] ? [CURIOS[id].effect] : []))
+}
+
+/** Curios that shorten flights. */
+export function travelMultiplier(state: GameState): number {
+  let value = 1
+  for (const e of curioEffects(state)) if (e.kind === 'travel') value *= e.multiplier
+  return value
+}
+
+export function traderPayMultiplier(state: GameState): number {
+  let value = 1
+  for (const e of curioEffects(state)) if (e.kind === 'traderPay') value *= e.multiplier
+  return value
+}
+
+export function potionDurationMultiplier(state: GameState): number {
+  let value = 1
+  for (const e of curioEffects(state)) if (e.kind === 'potionDuration') value *= e.multiplier
+  return value
+}
+
+/** Index into BLOOM_LEVELS for a region. */
+export function bloomLevel(state: GameState, regionId: string): number {
+  const points = state.bloom[regionId] ?? 0
+  let level = 0
+  for (let i = 0; i < BLOOM_LEVELS.length; i++) if (points >= BLOOM_LEVELS[i].points) level = i
+  return level
+}
+
+/** Regrowth speed from a region's bloom. */
+export function bloomRegrowth(state: GameState, regionId: string): number {
+  return 1 + bloomLevel(state, regionId) * BLOOM_PER_LEVEL.regrowth
+}
+
+/** Rarer plants grow more often in a region with more bloom. */
+export function bloomLuck(state: GameState, regionId: string): number {
+  return 1 + bloomLevel(state, regionId) * BLOOM_PER_LEVEL.luck
 }
 
 export function storageCapacity(state: GameState): number {

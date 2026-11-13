@@ -7,6 +7,8 @@
   import type { GameEvent } from '../../engine/events'
   import { isNight } from '../../engine/environment'
   import { campBlocksSlot, satchelFull } from '../../engine/gathering'
+  import { bloomLevel } from '../../engine/modifiers'
+  import BloomMeter from '../components/BloomMeter.svelte'
   import Destinations from '../components/Destinations.svelte'
   import PlantSlot from '../components/PlantSlot.svelte'
   import SpellButtons from '../components/SpellButtons.svelte'
@@ -21,6 +23,8 @@
   const creature = $derived($game.challenges.creatures[spotId])
   const campCrew = $derived($game.challenges.camps[spotId])
   const night = $derived(isNight($game))
+  /** Low bloom looks faded and grey; full bloom is in full color (design doc 7.3). */
+  const saturation = $derived(0.55 + bloomLevel($game, spotDef?.regionId ?? 'meadow') * 0.09)
   let creatureWiggle = $state(0)
   let message = $state('')
   let messageTimer: ReturnType<typeof setTimeout> | undefined
@@ -87,6 +91,7 @@
       <div>
         <h2>{spotDef.name}</h2>
         <p>{spotDef.description}</p>
+        <div class="meter"><BloomMeter regionId={spotDef.regionId} compact /></div>
       </div>
       <Destinations />
     </header>
@@ -141,7 +146,7 @@
 
     <div class="magic"><SpellButtons targets={['pests', 'creature', 'camp']} /></div>
 
-    <div class="field">
+    <div class="field" style:filter="saturate({saturation})">
       {#each spot.slots as slot, i (i)}
         <div class="cell">
           <PlantSlot
@@ -189,6 +194,11 @@
   .spot.night {
     background: linear-gradient(#2a2763, #3d4f7a);
     color: #f5f0ff;
+  }
+
+  .meter {
+    margin-top: 6px;
+    max-width: 280px;
   }
 
   .message {

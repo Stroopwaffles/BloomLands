@@ -1,5 +1,6 @@
 import { POTIONS } from '../data/recipes'
 import type { GameEvent } from './events'
+import { potionDurationMultiplier } from './modifiers'
 import { addItems, type GameState } from './state'
 
 /**
@@ -12,9 +13,10 @@ export function drinkPotion(state: GameState, potionId: string): GameEvent[] {
   if ((state.inventory[potionId] ?? 0) < 1) return [{ type: 'blocked', reason: 'missing-items' }]
 
   addItems(state.inventory, potionId, -1)
+  const duration = Math.round(potion.durationMs * potionDurationMultiplier(state))
   const active = state.buffs.find((buff) => buff.potionId === potionId)
-  if (active) active.remainingMs += potion.durationMs
-  else state.buffs.push({ potionId, remainingMs: potion.durationMs })
+  if (active) active.remainingMs += duration
+  else state.buffs.push({ potionId, remainingMs: duration })
   state.stats.potionsDrunk++
   return [{ type: 'drink', potionId }]
 }

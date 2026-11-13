@@ -5,7 +5,9 @@
   import { formatNumber } from '../../engine/format'
   import { checkRecruit, recruitCost } from '../../engine/helpers'
   import { helperCapacity, helperCount } from '../../engine/modifiers'
+  import BloomMeter from '../components/BloomMeter.svelte'
   import Destinations from '../components/Destinations.svelte'
+  import VillagerRequests from '../components/VillagerRequests.svelte'
   import { runtime } from '../game'
   import { BLOCKED_TEXT } from '../messages'
 
@@ -68,12 +70,13 @@
       </ul>
     </section>
 
-    <section class="panel soon">
-      <h3>Village life</h3>
-      <p class="note">
-        Villager requests and stories arrive in a later update. For now, Thimblewick is where you
-        find helpers.
-      </p>
+    <section class="panel">
+      <div class="village-head">
+        <h3>Villagers in need</h3>
+        <BloomMeter regionId={settlement.regionId} compact />
+      </div>
+      <p class="note">Helping the village makes it thrive, and the whole region blooms.</p>
+      <VillagerRequests settlementId={settlement.id} />
     </section>
   </div>
 {/if}
@@ -122,8 +125,12 @@
     opacity: 0.8;
   }
 
-  .soon {
-    opacity: 0.75;
+  .village-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
   }
 
   ul {

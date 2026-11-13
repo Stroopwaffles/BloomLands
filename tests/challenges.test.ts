@@ -211,7 +211,8 @@ describe('pirate camps', () => {
     state.research.completed.push(...ALL_SPELLS)
     state.player.satchel = { 'component-thistle-twine': 1, 'component-sun-salve': 1 }
     const events = applyAction(state, { type: 'spell/cast', spellId: 'spell-tanglevine' })
-    expect(events.map((e) => e.type)).toEqual(['spell-cast', 'camp-cleared'])
+    expect(events.map((e) => e.type)).toEqual(['spell-cast', 'camp-cleared', 'bloom'])
+    expect(state.bloom.meadow).toBe(2)
     expect(state.challenges.camps).toEqual({})
     expect(state.player.satchel).toEqual({})
     expect(state.stats.campsCleared).toBe(1)

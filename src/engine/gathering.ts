@@ -6,6 +6,8 @@ import { SPOTS } from '../data/world'
 import { morningPlantsGrow, weatherIn } from './environment'
 import type { GameEvent } from './events'
 import {
+  bloomLuck,
+  bloomRegrowth,
   clickPower,
   hasQol,
   luck,
@@ -45,8 +47,9 @@ export function rollPlant(
 }
 
 function growSlot(state: GameState, slot: SlotState, spotId: string, random: Random): void {
-  const morningOk = morningPlantsGrow(state, SPOTS[spotId].regionId)
-  const plantId = rollPlant(spotId, random, luck(state), morningOk)
+  const regionId = SPOTS[spotId].regionId
+  const morningOk = morningPlantsGrow(state, regionId)
+  const plantId = rollPlant(spotId, random, luck(state) * bloomLuck(state, regionId), morningOk)
   slot.plantId = plantId
   slot.hp = PLANTS[plantId].toughness
   slot.regrowMs = 0
@@ -176,7 +179,8 @@ export function depositSatchel(state: GameState): GameEvent[] {
 export function regrowSpots(state: GameState, dtMs: number, random: Random): void {
   for (const [spotId, spot] of Object.entries(state.spots)) {
     if (!SPOTS[spotId]) continue
-    const growth = dtMs * weatherIn(state, SPOTS[spotId].regionId).regrowth
+    const regionId = SPOTS[spotId].regionId
+    const growth = dtMs * weatherIn(state, regionId).regrowth * bloomRegrowth(state, regionId)
     for (const slot of spot.slots) {
       if (slot.plantId) continue
       slot.regrowMs -= growth

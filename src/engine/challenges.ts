@@ -1,6 +1,8 @@
 import { CAMP_RULES, CREATURE_RULES, CREATURES, CREWS, PEST_RULES } from '../data/challenges'
 import { PLANTS } from '../data/plants'
 import { SPOTS } from '../data/world'
+import { BLOOM_REWARDS } from '../data/bloom'
+import { addBloom } from './bloom'
 import type { GameEvent } from './events'
 import { campBlocksSlot, eatPlant } from './gathering'
 import type { Random } from './rng'
@@ -136,7 +138,10 @@ export function clearCamp(state: GameState, spotId: string): GameEvent[] {
   if (!crewId) return [{ type: 'blocked', reason: 'no-target' }]
   delete state.challenges.camps[spotId]
   state.stats.campsCleared++
-  return [{ type: 'camp-cleared', spotId, crewId }]
+  return [
+    { type: 'camp-cleared', spotId, crewId },
+    ...addBloom(state, SPOTS[spotId].regionId, BLOOM_REWARDS.campCleared),
+  ]
 }
 
 /** True if a pirate crew is camped anywhere in the region (helpers bring back less). */

@@ -7,6 +7,7 @@
   import { courtRank, satchelCapacity, trinketCount } from './engine/modifiers'
   import { countItems } from './engine/state'
   import BuffBar from './ui/components/BuffBar.svelte'
+  import Notices from './ui/components/Notices.svelte'
   import SkyBadge from './ui/components/SkyBadge.svelte'
   import DebugPanel from './ui/DebugPanel.svelte'
   import { debugEnabled, runtime } from './ui/game'
@@ -58,6 +59,7 @@
 </main>
 
 <WelcomeBack />
+<Notices />
 {#if debugEnabled}<DebugPanel />{/if}
 
 <style>

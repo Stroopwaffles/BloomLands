@@ -110,6 +110,13 @@ export interface TradeRequest {
   remainingMs: number
 }
 
+export interface SettlementState {
+  requests: TradeRequest[]
+  nextArrivalMs: number
+  /** Requests fulfilled here this run. */
+  filled: number
+}
+
 /**
  * The complete game state. Everything a save needs lives here, and it must stay
  * plain JSON (no classes, Maps, Dates or functions) so it can be saved and loaded.
@@ -187,6 +194,12 @@ export interface GameState {
     /** Minimum stock levels by item ID. Supply helpers fetch anything below its minimum. */
     minimums: Record<string, number>
   }
+  /** Bloom points by region ID (design doc 3.9). */
+  bloom: Record<string, number>
+  /** Curios found this run. */
+  curios: string[]
+  /** Villager requests, by settlement ID. */
+  settlements: Record<string, SettlementState>
   traders: {
     requests: TradeRequest[]
     /** Time until the next trader arrives (while there's room for one). */
@@ -273,6 +286,11 @@ export function createNewGame(now: number): GameState {
     },
     buffs: [],
     upgrades: [],
+    bloom: { meadow: 0 },
+    curios: [],
+    settlements: {
+      thimblewick: { requests: [], nextArrivalMs: 60_000, filled: 0 },
+    },
     helpers: {
       list: [],
       nextId: 1,
