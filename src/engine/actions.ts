@@ -1,29 +1,48 @@
-import type { GameState } from './state'
+import type { GameEvent } from './events'
+import { depositSatchel, tapPlant } from './gathering'
+import { stateRandom, type Random } from './rng'
+import { addItems, type GameState } from './state'
 import { simulate } from './tick'
+import { startTravel } from './travel'
 
 /**
  * Everything the player (or the debug panel) can do to the game goes through an action.
- * Later milestones add actions such as tapping a plant or starting a brew.
  */
 export type Action =
+  | { type: 'travel/go'; to: string }
+  | { type: 'gather/tap'; spotId: string; slot: number }
+  | { type: 'satchel/deposit' }
   | { type: 'debug/addGlimmers'; amount: number }
   | { type: 'debug/addItem'; itemId: string; amount: number }
   | { type: 'debug/skipTime'; ms: number }
+  | { type: 'debug/setClickPower'; value: number }
 
-export function applyAction(state: GameState, action: Action): void {
+/** Applies an action and returns what happened, for the screen to show. */
+export function applyAction(
+  state: GameState,
+  action: Action,
+  random: Random = stateRandom(state),
+): GameEvent[] {
   switch (action.type) {
+    case 'travel/go':
+      return startTravel(state, action.to)
+    case 'gather/tap':
+      return tapPlant(state, action.spotId, action.slot, random)
+    case 'satchel/deposit':
+      return depositSatchel(state)
+
     case 'debug/addGlimmers':
       state.resources.glimmers = Math.max(0, state.resources.glimmers + action.amount)
-      return
-    case 'debug/addItem': {
-      const next = (state.inventory[action.itemId] ?? 0) + action.amount
-      if (next > 0) state.inventory[action.itemId] = next
-      else delete state.inventory[action.itemId]
-      return
-    }
+      return []
+    case 'debug/addItem':
+      addItems(state.inventory, action.itemId, action.amount)
+      return []
     case 'debug/skipTime':
       // Fast-forward game time as if the player kept playing (no offline cap).
       if (action.ms > 0) simulate(state, action.ms, { offline: false })
-      return
+      return []
+    case 'debug/setClickPower':
+      state.player.clickPower = Math.max(1, Math.floor(action.value))
+      return []
   }
 }

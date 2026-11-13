@@ -66,6 +66,10 @@
         <dd>{formatDuration(offlineCapMs($game))}</dd>
         <dt>Glimmers</dt>
         <dd>{formatNumber($game.resources.glimmers)}</dd>
+        <dt>Click power</dt>
+        <dd>{$game.player.clickPower}</dd>
+        <dt>Taps / harvests</dt>
+        <dd>{formatNumber($game.stats.taps)} / {formatNumber($game.stats.plantsHarvested)}</dd>
         <dt>Last saved</dt>
         <dd>
           {$game.meta.lastSavedAt ? new Date($game.meta.lastSavedAt).toLocaleTimeString() : 'never'}
@@ -74,6 +78,16 @@
 
       <h3>Resources</h3>
       <div class="row">
+        <button
+          type="button"
+          onclick={() =>
+            runtime.dispatch({
+              type: 'debug/setClickPower',
+              value: $game.player.clickPower >= 5 ? 1 : $game.player.clickPower + 1,
+            })}
+        >
+          Click power {$game.player.clickPower >= 5 ? '→ 1' : '+1'}
+        </button>
         <button
           type="button"
           onclick={() => runtime.dispatch({ type: 'debug/addGlimmers', amount: 100 })}

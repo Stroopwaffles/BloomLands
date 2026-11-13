@@ -93,6 +93,7 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - Satchel capacity; travel timer (home ↔ spot, between spots).
 - Home: deposit into storage.
 - *Done when:* you can fly out, tap plants, fill the satchel, fly home and see your stock.
+- *Status:* complete. Starting balance values: satchel 20, click power 1, 6 plants per spot, regrowth 20–25s, flights 4–12s, 10% bonus-material chance, 2% trinket chance. Storage has no limit yet (capacity comes with lodging upgrades in M4).
 
 **M3. Crafting and research**
 - Stations: mortar, press, drying rack, spinning wheel, cauldron (with slots).

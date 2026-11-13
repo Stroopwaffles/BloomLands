@@ -7,6 +7,7 @@ import {
   loadFromStorage,
   saveToStorage,
 } from '../engine/save'
+import type { GameEvent } from '../engine/events'
 import { createNewGame, type GameState } from '../engine/state'
 import { advance } from '../engine/tick'
 
@@ -27,7 +28,10 @@ export interface Runtime {
   /** Set when offline progress was applied; the UI shows a welcome-back message. */
   welcomeBack: Readable<WelcomeBack | null>
   dismissWelcomeBack(): void
-  dispatch(action: Action): void
+  /** Applies a player action. Returns what happened (also sent to `onEvents` listeners). */
+  dispatch(action: Action): GameEvent[]
+  /** Listen for game events (harvests, hits, ...) to animate them. Returns an unsubscribe. */
+  onEvents(listener: (events: GameEvent[]) => void): () => void
   /** Saves now. Returns false if the browser blocked saving. */
   save(): boolean
   exportText(): string
@@ -46,9 +50,14 @@ export interface Runtime {
  * tab being hidden, shown or closed. Screens only talk to the game through this.
  */
 export function createRuntime(storage: Storage | null, clock: () => number = Date.now): Runtime {
-  let state: GameState = loadFromStorage(storage) ?? createNewGame(clock())
+  // Deeply reactive: when the engine changes any part of the state, exactly the parts of the
+  // screen that show it update. The engine itself stays plain TypeScript.
+  let state: GameState = $state(loadFromStorage(storage) ?? createNewGame(clock()))
   const game = writable(state)
   const welcomeBack = writable<WelcomeBack | null>(null)
+  // Event listeners are plain callbacks, not screen state, so this Set doesn't need reactivity.
+  // eslint-disable-next-line svelte/prefer-svelte-reactivity
+  const listeners = new Set<(events: GameEvent[]) => void>()
 
   const publish = () => game.set(state)
 
@@ -85,8 +94,15 @@ export function createRuntime(storage: Storage | null, clock: () => number = Dat
 
     dispatch(action) {
       advance(state, clock())
-      applyAction(state, action)
+      const events = applyAction(state, action)
       publish()
+      if (events.length > 0) for (const listener of listeners) listener(events)
+      return events
+    },
+
+    onEvents(listener) {
+      listeners.add(listener)
+      return () => listeners.delete(listener)
     },
 
     save,

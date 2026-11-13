@@ -1,31 +1,45 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import Art from './art/Art.svelte'
+  import { HOME } from './data/world'
   import { formatNumber } from './engine/format'
-  import { GAME_VERSION } from './engine/version'
+  import { countItems } from './engine/state'
   import DebugPanel from './ui/DebugPanel.svelte'
   import { debugEnabled, runtime } from './ui/game'
+  import HomeScreen from './ui/screens/HomeScreen.svelte'
+  import SpotScreen from './ui/screens/SpotScreen.svelte'
+  import TravelScreen from './ui/screens/TravelScreen.svelte'
   import WelcomeBack from './ui/WelcomeBack.svelte'
 
   const { game } = runtime
+
+  const satchelCount = $derived(countItems($game.player.satchel))
 
   onMount(() => runtime.start())
 </script>
 
 <header>
   <h1>Bloom Lands</h1>
-  <div class="counter" aria-label="Glimmers">
-    <Art id="icon-glimmers" size={32} />
-    <span>{formatNumber($game.resources.glimmers)}</span>
+  <div class="counters">
+    <div class="counter" aria-label="Satchel">
+      <Art id="icon-satchel" size={28} />
+      <span>{formatNumber(satchelCount)} / {formatNumber($game.player.satchelCapacity)}</span>
+    </div>
+    <div class="counter" aria-label="Glimmers">
+      <Art id="icon-glimmers" size={28} />
+      <span>{formatNumber($game.resources.glimmers)}</span>
+    </div>
   </div>
 </header>
 
 <main>
-  <div class="card">
-    <Art id="char-fairy" size={160} />
-    <p>Your court begins here.</p>
-    <p class="status">Gathering arrives in the next update · v{GAME_VERSION}</p>
-  </div>
+  {#if $game.player.travel}
+    <TravelScreen />
+  {:else if $game.player.place === HOME}
+    <HomeScreen />
+  {:else}
+    <SpotScreen />
+  {/if}
 </main>
 
 <WelcomeBack />
@@ -48,39 +62,16 @@
     color: var(--leaf-deep);
   }
 
+  .counters {
+    display: flex;
+    gap: 20px;
+  }
+
   .counter {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: 700;
-  }
-
-  main {
-    min-height: calc(100vh - 64px);
-    display: grid;
-    place-items: center;
-    padding: 16px;
-  }
-
-  .card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: var(--cream-deep);
-    border: 2px solid var(--honey);
-    border-radius: 24px;
-    padding: 32px 40px;
-    text-align: center;
-  }
-
-  p {
-    margin: 4px 0;
-  }
-
-  .status {
-    margin-top: 12px;
-    font-size: 0.9rem;
-    opacity: 0.75;
   }
 </style>

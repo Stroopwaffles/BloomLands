@@ -161,6 +161,7 @@ function fillDefaults(loaded: unknown, defaults: unknown): unknown {
     }
     return result
   }
-  if (defaults === null) return loaded === null || typeof loaded === 'number' ? loaded : null
+  // Fields that default to null (like an in-progress flight) keep whatever was saved.
+  if (defaults === null) return loaded === undefined ? null : loaded
   return typeof loaded === typeof defaults ? loaded : defaults
 }

@@ -1,5 +1,5 @@
 import { getStorage } from '../engine/save'
-import { createRuntime } from './runtime'
+import { createRuntime } from './runtime.svelte'
 
 /** The one running game. */
 export const runtime = createRuntime(getStorage())
