@@ -1,5 +1,5 @@
 import { UPGRADES } from '../data/upgrades'
-import { canAfford, pay } from './costs'
+import { canPay, payCost } from './costs'
 import type { GameEvent } from './events'
 import { courtRank } from './modifiers'
 import type { GameState } from './state'
@@ -14,7 +14,7 @@ export function checkUpgrade(state: GameState, id: string): UpgradeCheck {
   if (!upgrade.requires.every((req) => state.upgrades.includes(req))) return 'locked'
   if (state.player.travel || state.player.place !== 'home') return 'not-home'
   if (state.resources.glimmers < upgrade.glimmers) return 'missing-glimmers'
-  if (!canAfford(state.inventory, upgrade.items)) return 'missing-items'
+  if (!canPay(state, upgrade.items)) return 'missing-items'
   return 'ok'
 }
 
@@ -24,7 +24,7 @@ export function buyUpgrade(state: GameState, id: string): GameEvent[] {
   const upgrade = UPGRADES[id]
   const rankBefore = courtRank(state)
   state.resources.glimmers -= upgrade.glimmers
-  pay(state.inventory, upgrade.items)
+  payCost(state, upgrade.items)
   state.upgrades.push(id)
   return [{ type: 'upgrade-bought', upgradeId: id, rankUp: courtRank(state) > rankBefore }]
 }

@@ -17,6 +17,7 @@ export type Action =
   | { type: 'travel/go'; to: string }
   | { type: 'gather/tap'; spotId: string; slot: number }
   | { type: 'satchel/deposit' }
+  | { type: 'satchel/setLocked'; locked: boolean }
   | { type: 'craft/start'; recipeId: string; count?: number }
   | { type: 'research/start'; researchId: string }
   | { type: 'potion/drink'; potionId: string }
@@ -43,6 +44,9 @@ export function applyAction(
       return tapPlant(state, action.spotId, action.slot, random)
     case 'satchel/deposit':
       return depositSatchel(state)
+    case 'satchel/setLocked':
+      state.player.satchelLocked = action.locked
+      return []
     case 'craft/start':
       return startCraft(state, action.recipeId, action.count ?? 1)
     case 'research/start':

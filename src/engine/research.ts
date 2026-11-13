@@ -1,5 +1,5 @@
 import { RESEARCH } from '../data/research'
-import { canAfford, pay } from './costs'
+import { canPay, payCost } from './costs'
 import type { GameEvent } from './events'
 import type { GameState } from './state'
 
@@ -22,16 +22,16 @@ export function checkResearch(state: GameState, id: string): ResearchCheck {
   if (status === 'done') return 'already-done'
   if (status === 'locked') return 'locked'
   if (state.research.current) return 'research-busy'
-  if (!canAfford(state.inventory, RESEARCH[id].cost)) return 'missing-items'
+  if (!canPay(state, RESEARCH[id].cost)) return 'missing-items'
   return 'ok'
 }
 
-/** Starts research. One at a time; the cost is paid from storage when it starts. */
+/** Starts research. One at a time; the cost is paid when it starts (see payingStocks). */
 export function startResearch(state: GameState, id: string): GameEvent[] {
   const check = checkResearch(state, id)
   if (check !== 'ok') return [{ type: 'blocked', reason: check }]
   const node = RESEARCH[id]
-  pay(state.inventory, node.cost)
+  payCost(state, node.cost)
   state.research.current = { id, totalMs: node.durationMs, remainingMs: node.durationMs }
   return [{ type: 'research-start', researchId: id }]
 }

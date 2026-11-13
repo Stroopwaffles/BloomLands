@@ -2,7 +2,7 @@ import { ITEM_VALUES, TRADER_RULES, TRADERS } from '../data/economy'
 import { ITEMS } from '../data/items'
 import { RECIPES } from '../data/recipes'
 import type { ItemStack } from '../data/types'
-import { canAfford, pay } from './costs'
+import { canPay, payCost } from './costs'
 import { unlockedRecipes } from './crafting'
 import type { GameEvent } from './events'
 import { stationBuilt } from './modifiers'
@@ -84,7 +84,7 @@ export function checkTrade(state: GameState, requestId: number): TradeCheck {
   const request = state.traders.requests.find((r) => r.id === requestId)
   if (!request) return 'locked'
   if (state.player.travel || state.player.place !== 'home') return 'not-home'
-  if (!canAfford(state.inventory, request.wants)) return 'missing-items'
+  if (!canPay(state, request.wants)) return 'missing-items'
   return 'ok'
 }
 
@@ -92,7 +92,7 @@ export function fulfillRequest(state: GameState, requestId: number): GameEvent[]
   const check = checkTrade(state, requestId)
   if (check !== 'ok') return [{ type: 'blocked', reason: check }]
   const request = state.traders.requests.find((r) => r.id === requestId)!
-  pay(state.inventory, request.wants)
+  payCost(state, request.wants)
   state.resources.glimmers += request.glimmers
   if (request.trinketId) addItems(state.inventory, request.trinketId, 1)
   state.traders.requests = state.traders.requests.filter((r) => r.id !== requestId)

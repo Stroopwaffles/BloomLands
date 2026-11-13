@@ -1,6 +1,6 @@
 import { itemHasTag } from '../data/items'
 import type { CostEntry } from '../data/types'
-import { addItems } from './state'
+import { addItems, type GameState } from './state'
 
 type Stock = Record<string, number>
 
@@ -36,6 +36,28 @@ export function canAfford(stock: Stock, cost: readonly CostEntry[]): boolean {
 /** Removes the cost from stock. Returns false (and changes nothing) if it can't be paid. */
 export function pay(stock: Stock, cost: readonly CostEntry[]): boolean {
   return payFrom([stock], cost)
+}
+
+/**
+ * Where the player's costs (recipes, research, upgrades, trades) are paid from: the satchel first
+ * (freeing it up), then storage. If the satchel is locked, storage only.
+ */
+export function payingStocks(state: GameState): Stock[] {
+  return state.player.satchelLocked ? [state.inventory] : [state.player.satchel, state.inventory]
+}
+
+/** Everything that can currently pay costs, added together (for have/need counts). */
+export function payingStock(state: GameState): Stock {
+  return mergeStocks(...payingStocks(state))
+}
+
+export function canPay(state: GameState, cost: readonly CostEntry[]): boolean {
+  return canAffordFrom(payingStocks(state), cost)
+}
+
+/** Pays a cost from the paying stocks. Returns false (and changes nothing) if it can't. */
+export function payCost(state: GameState, cost: readonly CostEntry[]): boolean {
+  return payFrom(payingStocks(state), cost)
 }
 
 /** True if the stocks together can pay the cost. */

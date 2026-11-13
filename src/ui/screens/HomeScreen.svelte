@@ -4,6 +4,7 @@
   import Destinations from '../components/Destinations.svelte'
   import ItemList from '../components/ItemList.svelte'
   import PotionShelf from '../components/PotionShelf.svelte'
+  import SatchelLock from '../components/SatchelLock.svelte'
   import { runtime } from '../game'
   import { COURT_RANKS } from '../../data/economy'
   import { formatNumber } from '../../engine/format'
@@ -92,6 +93,7 @@
           {:else}
             <p class="hint">Empty. Fly out to the Meadow to gather.</p>
           {/if}
+          <div class="lock-row"><SatchelLock /></div>
         </section>
 
         <section class="panel">
@@ -168,6 +170,12 @@
     color: white;
     font-size: 0.75rem;
     line-height: 22px;
+  }
+
+  .lock-row {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--honey);
   }
 
   .dot.visitors {
@@ -258,6 +266,12 @@
   }
 
   @media (max-width: 700px) {
+    .lock-row {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--honey);
+    }
+
     .dot.visitors {
       background: var(--petal-deep);
     }

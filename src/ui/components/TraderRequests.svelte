@@ -2,6 +2,7 @@
   import Art from '../../art/Art.svelte'
   import { TRADERS } from '../../data/economy'
   import { itemName } from '../../data/items'
+  import { payingStock } from '../../engine/costs'
   import { formatDuration, formatNumber } from '../../engine/format'
   import { checkTrade } from '../../engine/traders'
   import CostList from './CostList.svelte'
@@ -32,7 +33,7 @@
         <p class="greeting">“{trader?.greeting}”</p>
         <div class="row">
           <span class="label">Wants</span>
-          <CostList cost={request.wants} stock={$game.inventory} />
+          <CostList cost={request.wants} stock={payingStock($game)} />
         </div>
         <div class="row">
           <span class="label">Pays</span>

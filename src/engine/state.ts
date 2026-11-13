@@ -81,6 +81,8 @@ export interface GameState {
     lastSpot: string | null
     /** Items carried on the current trip. */
     satchel: Record<string, number>
+    /** When true, costs are paid from storage only and the satchel is left alone. */
+    satchelLocked: boolean
     /** Base satchel space, before gear and potions. */
     satchelCapacity: number
     /** Base damage per tap, before gear and potions. */
@@ -151,6 +153,7 @@ export function createNewGame(now: number): GameState {
       travel: null,
       lastSpot: null,
       satchel: {},
+      satchelLocked: false,
       satchelCapacity: BASE_SATCHEL_CAPACITY,
       clickPower: 1,
       wingSpeed: 1,

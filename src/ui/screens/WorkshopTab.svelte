@@ -3,10 +3,12 @@
   import { itemName } from '../../data/items'
   import { RECIPES, STATION_ORDER, STATIONS } from '../../data/recipes'
   import { formatDuration } from '../../engine/format'
-  import { batchSizes, checkCraft, craftingStock, unlockedRecipes } from '../../engine/crafting'
+  import { payingStock } from '../../engine/costs'
+  import { batchSizes, checkCraft, unlockedRecipes } from '../../engine/crafting'
   import { stationBuilt, stationSlots } from '../../engine/modifiers'
   import CostList from '../components/CostList.svelte'
   import ProgressBar from '../components/ProgressBar.svelte'
+  import SatchelLock from '../components/SatchelLock.svelte'
   import { runtime } from '../game'
   import { BLOCKED_TEXT } from '../messages'
 
@@ -22,6 +24,8 @@
     ),
   )
 </script>
+
+<div class="lock-bar"><SatchelLock /></div>
 
 <div class="stations">
   {#each STATION_ORDER as stationId (stationId)}
@@ -62,7 +66,7 @@
                   <span class="time">{formatDuration(recipe.durationMs)}</span>
                 </div>
               </div>
-              <CostList cost={recipe.inputs} stock={craftingStock($game)} />
+              <CostList cost={recipe.inputs} stock={payingStock($game)} />
               <div class="buttons">
                 {#each batchSizes($game) as count (count)}
                   {@const check = checkCraft($game, recipe.id, count)}
@@ -86,6 +90,15 @@
 </div>
 
 <style>
+  .lock-bar {
+    margin-bottom: 12px;
+    padding: 6px 14px;
+    background: var(--cream-deep);
+    border: 2px solid var(--honey);
+    border-radius: 16px;
+    width: fit-content;
+  }
+
   .stations {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));

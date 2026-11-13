@@ -2,6 +2,7 @@
   import { itemName } from '../../data/items'
   import { RECIPES } from '../../data/recipes'
   import { BRANCHES, RESEARCH, RESEARCH_ORDER } from '../../data/research'
+  import { payingStock } from '../../engine/costs'
   import { formatDuration } from '../../engine/format'
   import { checkResearch, researchStatus } from '../../engine/research'
   import CostList from '../components/CostList.svelte'
@@ -58,7 +59,7 @@
                     .join(', ')}
                 </p>
               {:else if status === 'available'}
-                <CostList cost={node.cost} stock={$game.inventory} />
+                <CostList cost={node.cost} stock={payingStock($game)} />
                 <button
                   type="button"
                   disabled={check !== 'ok'}

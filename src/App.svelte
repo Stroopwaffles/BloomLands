@@ -28,6 +28,7 @@
     <div class="counter" aria-label="Satchel">
       <Art id="icon-satchel" size={28} />
       <span>{formatNumber(satchelCount)} / {formatNumber(satchelCapacity($game))}</span>
+      {#if $game.player.satchelLocked}<span class="locked-tag">locked</span>{/if}
     </div>
     <div class="counter" aria-label="Glimmers">
       <Art id="icon-glimmers" size={28} />
@@ -80,6 +81,14 @@
   .counters {
     display: flex;
     gap: 20px;
+  }
+
+  .locked-tag {
+    padding: 0 8px;
+    border-radius: 999px;
+    background: var(--petal-deep);
+    color: white;
+    font-size: 0.75rem;
   }
 
   .rank {

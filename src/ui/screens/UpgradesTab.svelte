@@ -1,6 +1,7 @@
 <script lang="ts">
   import Art from '../../art/Art.svelte'
   import { UPGRADE_CATEGORIES, UPGRADE_ORDER, UPGRADES } from '../../data/upgrades'
+  import { payingStock } from '../../engine/costs'
   import { formatNumber } from '../../engine/format'
   import { checkUpgrade } from '../../engine/upgrades'
   import CostList from '../components/CostList.svelte'
@@ -49,7 +50,7 @@
                   {formatNumber(upgrade.glimmers)}
                 </span>
                 {#if upgrade.items.length > 0}
-                  <CostList cost={upgrade.items} stock={$game.inventory} />
+                  <CostList cost={upgrade.items} stock={payingStock($game)} />
                 {/if}
               </div>
               <button

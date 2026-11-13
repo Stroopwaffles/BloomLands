@@ -5,6 +5,7 @@ import { PLANTS } from '../src/data/plants'
 import { RECIPES } from '../src/data/recipes'
 import { UPGRADES } from '../src/data/upgrades'
 import { applyAction } from '../src/engine/actions'
+import { payingStock } from '../src/engine/costs'
 import { ensureSpot } from '../src/engine/gathering'
 import {
   clickPower,
@@ -250,5 +251,54 @@ describe('comforts', () => {
     expect(state.stations.mortar.jobs[0]).toMatchObject({ count: 5, totalMs: 50_000 })
     advance(state, START + 50_000)
     expect(state.inventory['refined-petal-paste']).toBe(5)
+  })
+})
+
+describe('paying from the satchel', () => {
+  it('research, upgrades and trades use the satchel first, then storage', () => {
+    const research = home({ inventory: { 'raw-daisy-petals': 4 } })
+    research.player.satchel = { 'raw-buttercup-petals': 3 }
+    applyAction(research, { type: 'research/start', researchId: 'research-grinding' })
+    expect(research.player.satchel).toEqual({})
+    expect(research.inventory).toEqual({ 'raw-daisy-petals': 1 })
+
+    const upgrade = home({ inventory: { 'raw-daisy-petals': 10 } })
+    upgrade.resources.glimmers = 100
+    upgrade.player.satchel = { 'raw-buttercup-petals': 4 }
+    applyAction(upgrade, { type: 'upgrade/buy', upgradeId: 'lodging-press' })
+    expect(upgrade.player.satchel).toEqual({})
+    expect(upgrade.inventory).toEqual({ 'raw-daisy-petals': 4 })
+
+    const trade = home()
+    trade.player.satchel = { 'raw-daisy-petals': 6 }
+    trade.traders.requests.push({
+      id: 1,
+      traderId: 'trader-snail-peddler',
+      wants: [{ itemId: 'raw-daisy-petals', amount: 6 }],
+      glimmers: 18,
+      trinketId: null,
+      remainingMs: 60_000,
+    })
+    expect(applyAction(trade, { type: 'trade/fulfill', requestId: 1 })[0].type).toBe('trade-filled')
+    expect(trade.player.satchel).toEqual({})
+  })
+
+  it('a locked satchel is left alone; costs use storage only', () => {
+    const state = home({ inventory: { 'raw-daisy-petals': 4 } })
+    state.player.satchel = { 'raw-buttercup-petals': 6 }
+    applyAction(state, { type: 'satchel/setLocked', locked: true })
+    expect(payingStock(state)).toEqual({ 'raw-daisy-petals': 4 })
+
+    state.research.completed.push('research-grinding')
+    applyAction(state, { type: 'craft/start', recipeId: 'refined-petal-paste' })
+    expect(state.player.satchel).toEqual({ 'raw-buttercup-petals': 6 })
+    expect(state.inventory).toEqual({})
+
+    // With only the satchel holding enough, a locked satchel can't pay.
+    expect(applyAction(state, { type: 'research/start', researchId: 'research-drying' })).toEqual([
+      { type: 'blocked', reason: 'missing-items' },
+    ])
+    applyAction(state, { type: 'satchel/setLocked', locked: false })
+    expect(payingStock(state)).toEqual({ 'raw-buttercup-petals': 6 })
   })
 })
