@@ -1,4 +1,5 @@
 import { COURT_RANKS } from '../data/economy'
+import { HELPER_RULES, type HelperType } from '../data/helpers'
 import { itemHasTag } from '../data/items'
 import { POTIONS } from '../data/recipes'
 import type { PotionEffect, StationId } from '../data/types'
@@ -93,9 +94,23 @@ export function trinketCount(state: GameState): number {
   return count
 }
 
-/** Court points: how grand the court is (lodging now; helpers add to it later). */
+/** How many helpers of a type the lodging has room for (0 = that type isn't unlocked yet). */
+export function helperCapacity(state: GameState, type: HelperType): number {
+  let capacity = 0
+  for (const e of upgradeEffects(state)) {
+    if (e.kind === 'helpers' && e.helper === type) capacity += e.amount
+  }
+  return capacity
+}
+
+export function helperCount(state: GameState, type: HelperType): number {
+  return state.helpers.list.filter((h) => h.type === type).length
+}
+
+/** Court points: how grand the court is. Lodging and helpers both count. */
 export function courtPoints(state: GameState): number {
-  return state.upgrades.reduce((sum, id) => sum + (UPGRADES[id]?.courtPoints ?? 0), 0)
+  const lodging = state.upgrades.reduce((sum, id) => sum + (UPGRADES[id]?.courtPoints ?? 0), 0)
+  return lodging + state.helpers.list.length * HELPER_RULES.courtPoints
 }
 
 /** Index into COURT_RANKS of the court's current rank. */

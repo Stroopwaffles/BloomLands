@@ -1,3 +1,4 @@
+import type { HelperType } from './helpers'
 import type { CostEntry, StationId } from './types'
 
 export type QolId = 'auto-deposit' | 'auto-return' | 'return-trip' | 'bulk-craft'
@@ -10,6 +11,7 @@ export type UpgradeEffect =
   | { kind: 'satchel'; amount: number }
   | { kind: 'wingSpeed'; amount: number }
   | { kind: 'qol'; qol: QolId }
+  | { kind: 'helpers'; helper: HelperType; amount: number }
 
 export type UpgradeCategory = 'lodging' | 'gear' | 'comfort'
 
@@ -109,6 +111,50 @@ const UPGRADE_LIST: UpgradeDef[] = [
     requires: ['lodging-cauldron'],
     effect: { kind: 'stationSlot', station: 'cauldron' },
     courtPoints: 3,
+  },
+  {
+    id: 'lodging-mouse-bunks',
+    name: 'Mouse Bunks',
+    category: 'lodging',
+    description: 'Room for 2 gatherers. Recruit them at Thimblewick.',
+    glimmers: 80,
+    items: [{ tag: 'leaves', amount: 10 }],
+    requires: [],
+    effect: { kind: 'helpers', helper: 'gatherer', amount: 2 },
+    courtPoints: 2,
+  },
+  {
+    id: 'lodging-supply-nook',
+    name: 'Supply Nook',
+    category: 'lodging',
+    description: 'Room for 1 supply helper, who keeps your stock topped up.',
+    glimmers: 150,
+    items: [{ tag: 'petals', amount: 10 }],
+    requires: ['lodging-mouse-bunks'],
+    effect: { kind: 'helpers', helper: 'supply', amount: 1 },
+    courtPoints: 2,
+  },
+  {
+    id: 'lodging-mouse-bunks-2',
+    name: 'Bigger Bunkroom',
+    category: 'lodging',
+    description: 'Room for 2 more gatherers.',
+    glimmers: 300,
+    items: [trinkets(1)],
+    requires: ['lodging-mouse-bunks'],
+    effect: { kind: 'helpers', helper: 'gatherer', amount: 2 },
+    courtPoints: 2,
+  },
+  {
+    id: 'lodging-supply-nook-2',
+    name: 'Supply Loft',
+    category: 'lodging',
+    description: 'Room for 2 more supply helpers.',
+    glimmers: 450,
+    items: [trinkets(2)],
+    requires: ['lodging-supply-nook'],
+    effect: { kind: 'helpers', helper: 'supply', amount: 2 },
+    courtPoints: 2,
   },
   {
     id: 'lodging-storeroom-3',

@@ -1,7 +1,9 @@
 import { drinkPotion } from './buffs'
 import { startCraft } from './crafting'
+import type { HelperType } from '../data/helpers'
 import type { GameEvent } from './events'
 import { depositSatchel, tapPlant } from './gathering'
+import { assignHelper, recruitHelper, setMinimum } from './helpers'
 import { startResearch } from './research'
 import { stateRandom, type Random } from './rng'
 import { addItems, type GameState } from './state'
@@ -24,6 +26,9 @@ export type Action =
   | { type: 'trade/fulfill'; requestId: number }
   | { type: 'trade/dismiss'; requestId: number }
   | { type: 'upgrade/buy'; upgradeId: string }
+  | { type: 'helpers/recruit'; helperType: HelperType }
+  | { type: 'helpers/assign'; helperId: number; spotId: string | null }
+  | { type: 'supply/setMinimum'; itemId: string; amount: number }
   | { type: 'debug/addGlimmers'; amount: number }
   | { type: 'debug/addItem'; itemId: string; amount: number }
   | { type: 'debug/skipTime'; ms: number }
@@ -59,6 +64,12 @@ export function applyAction(
       return dismissRequest(state, action.requestId)
     case 'upgrade/buy':
       return buyUpgrade(state, action.upgradeId)
+    case 'helpers/recruit':
+      return recruitHelper(state, action.helperType)
+    case 'helpers/assign':
+      return assignHelper(state, action.helperId, action.spotId)
+    case 'supply/setMinimum':
+      return setMinimum(state, action.itemId, action.amount)
 
     case 'debug/addGlimmers':
       state.resources.glimmers = Math.max(0, state.resources.glimmers + action.amount)

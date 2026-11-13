@@ -10,6 +10,7 @@
   import { formatNumber } from '../../engine/format'
   import { courtPoints, courtRank, storageCapacity, storageUsed } from '../../engine/modifiers'
   import TraderRequests from '../components/TraderRequests.svelte'
+  import HelpersTab from './HelpersTab.svelte'
   import ResearchTab from './ResearchTab.svelte'
   import UpgradesTab from './UpgradesTab.svelte'
   import WorkshopTab from './WorkshopTab.svelte'
@@ -17,11 +18,12 @@
   const { game } = runtime
   const carrying = $derived(countItems($game.player.satchel))
 
-  type Tab = 'court' | 'workshop' | 'research' | 'upgrades'
+  type Tab = 'court' | 'workshop' | 'research' | 'helpers' | 'upgrades'
   const TABS: { id: Tab; label: string }[] = [
     { id: 'court', label: 'Court' },
     { id: 'workshop', label: 'Workshop' },
     { id: 'research', label: 'Research' },
+    { id: 'helpers', label: 'Helpers' },
     { id: 'upgrades', label: 'Upgrades' },
   ]
 
@@ -47,6 +49,9 @@
         {t.label}
         {#if t.id === 'workshop' && busyStations > 0}<span class="dot">{busyStations}</span>{/if}
         {#if t.id === 'research' && $game.research.current}<span class="dot">1</span>{/if}
+        {#if t.id === 'helpers' && $game.helpers.list.length > 0}
+          <span class="dot">{$game.helpers.list.length}</span>
+        {/if}
         {#if t.id === 'court' && $game.traders.requests.length > 0}
           <span class="dot visitors">{$game.traders.requests.length}</span>
         {/if}
@@ -121,6 +126,8 @@
     <WorkshopTab />
   {:else if tab === 'research'}
     <ResearchTab />
+  {:else if tab === 'helpers'}
+    <HelpersTab />
   {:else}
     <UpgradesTab />
   {/if}

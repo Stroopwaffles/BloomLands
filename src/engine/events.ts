@@ -1,3 +1,4 @@
+import type { HelperType } from '../data/helpers'
 import type { ItemStack } from '../data/types'
 
 export type BlockedReason =
@@ -14,6 +15,7 @@ export type BlockedReason =
   | 'missing-items'
   | 'missing-glimmers'
   | 'already-done'
+  | 'no-room'
 
 /**
  * Things that just happened, returned by actions so the screen can react (floating numbers,
@@ -38,3 +40,4 @@ export type GameEvent =
   | { type: 'drink'; potionId: string }
   | { type: 'trade-filled'; requestId: number; glimmers: number; trinketId: string | null }
   | { type: 'upgrade-bought'; upgradeId: string; rankUp: boolean }
+  | { type: 'recruited'; helperId: number; helperType: HelperType }

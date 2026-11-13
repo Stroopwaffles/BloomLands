@@ -1,4 +1,4 @@
-import type { RegionDef, SpotDef } from './types'
+import type { RegionDef, SettlementDef, SpotDef } from './types'
 
 /** The player's home. Not a harvesting spot, but a place you can fly to. */
 export const HOME = 'home'
@@ -36,8 +36,37 @@ export const SPOTS: Readonly<Record<string, SpotDef>> = Object.fromEntries(
   SPOT_LIST.map((spot) => [spot.id, spot]),
 )
 
+export const SETTLEMENTS: Readonly<Record<string, SettlementDef>> = {
+  thimblewick: {
+    id: 'thimblewick',
+    name: 'Thimblewick',
+    regionId: 'meadow',
+    description:
+      'A village of field mice living in burrows and old thimbles under the roots of a hawthorn.',
+    folk: 'field mice',
+  },
+}
+
 export const REGIONS: Readonly<Record<string, RegionDef>> = {
-  meadow: { id: 'meadow', name: 'Meadow', spots: ['buttercup-rise', 'dandelion-drift'] },
+  meadow: {
+    id: 'meadow',
+    name: 'Meadow',
+    settlement: 'thimblewick',
+    spots: ['buttercup-rise', 'dandelion-drift'],
+  },
+}
+
+/** Every place you can fly to, in display order. */
+export function allPlaces(): string[] {
+  return [HOME, ...Object.values(REGIONS).flatMap((region) => [region.settlement, ...region.spots])]
+}
+
+export function isSpot(placeId: string): boolean {
+  return placeId in SPOTS
+}
+
+export function isSettlement(placeId: string): boolean {
+  return placeId in SETTLEMENTS
 }
 
 /**
@@ -48,6 +77,9 @@ const ROUTES: Record<string, number> = {
   'home|buttercup-rise': 8_000,
   'home|dandelion-drift': 12_000,
   'buttercup-rise|dandelion-drift': 4_000,
+  'home|thimblewick': 6_000,
+  'thimblewick|buttercup-rise': 5_000,
+  'thimblewick|dandelion-drift': 7_000,
 }
 
 export function baseTravelMs(from: string, to: string): number | null {
@@ -56,5 +88,6 @@ export function baseTravelMs(from: string, to: string): number | null {
 }
 
 export function placeName(placeId: string): string {
-  return placeId === HOME ? 'Home' : (SPOTS[placeId]?.name ?? placeId)
+  if (placeId === HOME) return 'Home'
+  return SPOTS[placeId]?.name ?? SETTLEMENTS[placeId]?.name ?? placeId
 }

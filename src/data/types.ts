@@ -89,9 +89,19 @@ export interface SpotDef {
   trinkets: string[]
 }
 
+export interface SettlementDef {
+  id: string
+  name: string
+  regionId: string
+  description: string
+  /** Who lives here (the folk helpers recruited here belong to). */
+  folk: string
+}
+
 export interface RegionDef {
   id: string
   name: string
+  settlement: string
   /** Harvesting spots, in display order. */
   spots: string[]
 }

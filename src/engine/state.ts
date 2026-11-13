@@ -1,3 +1,4 @@
+import type { HelperType } from '../data/helpers'
 import type { ItemStack, StationId } from '../data/types'
 import { HOME } from '../data/world'
 import { GAME_VERSION, SAVE_VERSION } from './version'
@@ -42,6 +43,26 @@ export interface TravelState {
   remainingMs: number
   /** True for a flight home started by Homing Instinct (so Round Trips can fly back after). */
   auto?: boolean
+}
+
+export type HelperPhase = 'idle' | 'outbound' | 'gathering' | 'returning' | 'unloading'
+
+/** One recruited helper and what they're doing. */
+export interface HelperState {
+  id: number
+  type: HelperType
+  name: string
+  /** Gatherers: the spot they work (null = resting at home). Supply helpers choose their own. */
+  task: string | null
+  phase: HelperPhase
+  /** Time left in the current phase. */
+  remainingMs: number
+  /** Spot of the current trip. */
+  tripSpot: string | null
+  /** Supply helpers: the item this trip is fetching. */
+  tripItem: string | null
+  /** What they're carrying home. */
+  bag: Record<string, number>
 }
 
 /** A visiting trader's request: bring these items, get this reward. */
@@ -110,6 +131,14 @@ export interface GameState {
   buffs: BuffState[]
   /** IDs of bought upgrades (lodging, gear and comforts). */
   upgrades: string[]
+  helpers: {
+    list: HelperState[]
+    nextId: number
+  }
+  supply: {
+    /** Minimum stock levels by item ID. Supply helpers fetch anything below its minimum. */
+    minimums: Record<string, number>
+  }
   traders: {
     requests: TradeRequest[]
     /** Time until the next trader arrives (while there's room for one). */
@@ -132,6 +161,7 @@ export interface GameState {
     potionsDrunk: number
     requestsFilled: number
     glimmersEarned: number
+    helperTrips: number
   }
 }
 
@@ -177,6 +207,13 @@ export function createNewGame(now: number): GameState {
     },
     buffs: [],
     upgrades: [],
+    helpers: {
+      list: [],
+      nextId: 1,
+    },
+    supply: {
+      minimums: {},
+    },
     traders: {
       requests: [],
       nextArrivalMs: 20_000,
@@ -194,6 +231,7 @@ export function createNewGame(now: number): GameState {
       potionsDrunk: 0,
       requestsFilled: 0,
       glimmersEarned: 0,
+      helperTrips: 0,
     },
   }
 }

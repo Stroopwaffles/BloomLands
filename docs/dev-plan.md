@@ -120,6 +120,12 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - Recruiting at Thimblewick; field-mouse gatherer and supply helpers.
 - Helper trips, minimum stock levels, offline helper work.
 - *Done when:* helpers keep gathering and restocking while you play and while the game is closed.
+- *Status:* complete.
+  - **Thimblewick** is a destination (6s from home); helpers are recruited there with Glimmers (gatherer 50, supply 90, each further one ×1.6).
+  - **Lodging:** Mouse Bunks (2 gatherers), Bigger Bunkroom (+2), Supply Nook (1 supply helper), Supply Loft (+2).
+  - **Gatherers** work a chosen spot: fly out, gather 4 plants for 45s, fly home, unpack. **Supply helpers** fetch whatever is furthest below its minimum (rarer plants yield less per trip) and don't double up on the same item.
+  - Helpers wait at home with their haul if storage is full. Each helper adds 2 court points.
+  - Helper flights use base route times; mounts for helpers arrive with M7.
 
 **M6. Challenges, magic and time**
 - Day/night cycle; Rite of Turning.

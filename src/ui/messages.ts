@@ -15,4 +15,5 @@ export const BLOCKED_TEXT: Record<BlockedReason, string> = {
   'missing-items': 'Not enough materials.',
   'missing-glimmers': 'Not enough Glimmers.',
   'already-done': 'Already done.',
+  'no-room': 'No room for more. Build more lodging.',
 }

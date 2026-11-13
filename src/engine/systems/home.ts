@@ -1,5 +1,6 @@
 import { advanceBuffs } from '../buffs'
 import { advanceStations } from '../crafting'
+import { advanceHelpers } from '../helpers'
 import { advanceResearch } from '../research'
 import { stateRandom } from '../rng'
 import { advanceTraders } from '../traders'
@@ -20,6 +21,12 @@ export const researchSystem: System = {
 export const tradersSystem: System = {
   id: 'traders',
   update: (state, dtMs) => advanceTraders(state, dtMs, stateRandom(state)),
+}
+
+/** Helpers go on their trips and bring things home (also while offline). */
+export const helpersSystem: System = {
+  id: 'helpers',
+  update: (state, dtMs) => advanceHelpers(state, dtMs, stateRandom(state)),
 }
 
 /** Potion effects count down and wear off. */

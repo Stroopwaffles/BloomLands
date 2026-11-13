@@ -1,4 +1,4 @@
-import { baseTravelMs, HOME, SPOTS } from '../data/world'
+import { baseTravelMs, HOME, isSettlement, isSpot } from '../data/world'
 import type { GameEvent } from './events'
 import { depositSatchel, ensureSpot } from './gathering'
 import { hasQol, wingSpeed } from './modifiers'
@@ -16,7 +16,9 @@ export function travelMs(state: GameState, from: string, to: string): number | n
 export function startTravel(state: GameState, to: string, auto = false): GameEvent[] {
   const { player } = state
   if (player.travel) return [{ type: 'blocked', reason: 'flying' }]
-  if (to !== HOME && !SPOTS[to]) return [{ type: 'blocked', reason: 'not-here' }]
+  if (to !== HOME && !isSpot(to) && !isSettlement(to)) {
+    return [{ type: 'blocked', reason: 'not-here' }]
+  }
   const totalMs = travelMs(state, player.place, to)
   if (totalMs === null) return [{ type: 'blocked', reason: 'not-here' }]
 
@@ -38,11 +40,12 @@ export function advanceTravel(state: GameState, dtMs: number, random: Random): v
   player.place = player.travel.to
   player.travel = null
 
-  if (player.place !== HOME) {
+  if (isSpot(player.place)) {
     player.lastSpot = player.place
     ensureSpot(state, player.place, random)
     return
   }
+  if (player.place !== HOME) return
 
   if (hasQol(state, 'auto-deposit')) depositSatchel(state)
   if (
