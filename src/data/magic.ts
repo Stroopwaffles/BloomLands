@@ -1,7 +1,7 @@
 import type { CostEntry } from './types'
 
 /** What a spell is cast at (design doc 3.5: spells are for encounters). */
-export type SpellTarget = 'pests' | 'creature' | 'ambush' | 'camp'
+export type SpellTarget = 'pests' | 'creature' | 'ambush' | 'camp' | 'tame'
 
 export interface SpellDef {
   id: string
@@ -33,6 +33,16 @@ export const SPELLS: Readonly<Record<string, SpellDef>> = {
     description: 'Blows away a pirate ambush mid-flight.',
     target: 'ambush',
     cost: [{ itemId: 'component-thistle-twine', amount: 1 }],
+  },
+  'spell-kindred-call': {
+    id: 'spell-kindred-call',
+    name: 'Kindred Call',
+    description: 'Invites a befriended creature to join your court as a mount.',
+    target: 'tame',
+    cost: [
+      { itemId: 'component-sweet-bait', amount: 1 },
+      { itemId: 'component-sun-salve', amount: 1 },
+    ],
   },
   'spell-tanglevine': {
     id: 'spell-tanglevine',

@@ -6,6 +6,7 @@
   import BloomMeter from '../components/BloomMeter.svelte'
   import CurioShelf from '../components/CurioShelf.svelte'
   import PotionShelf from '../components/PotionShelf.svelte'
+  import Roost from '../components/Roost.svelte'
   import SatchelLock from '../components/SatchelLock.svelte'
   import { runtime } from '../game'
   import { COURT_RANKS } from '../../data/economy'
@@ -116,6 +117,11 @@
         <section class="panel">
           <h2>Potions</h2>
           <PotionShelf />
+        </section>
+
+        <section class="panel">
+          <h2>Roost</h2>
+          <Roost />
         </section>
 
         <section class="panel">

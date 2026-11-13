@@ -12,6 +12,7 @@
   import Destinations from '../components/Destinations.svelte'
   import PlantSlot from '../components/PlantSlot.svelte'
   import SpellButtons from '../components/SpellButtons.svelte'
+  import WildMount from '../components/WildMount.svelte'
   import { runtime } from '../game'
 
   const { game } = runtime
@@ -145,6 +146,7 @@
     {/if}
 
     <div class="magic"><SpellButtons targets={['pests', 'creature', 'camp']} /></div>
+    <div class="wild-mount"><WildMount {spotId} /></div>
 
     <div class="field" style:filter="saturate({saturation})">
       {#each spot.slots as slot, i (i)}
@@ -270,6 +272,11 @@
   .bar div {
     height: 100%;
     background: var(--petal-deep);
+  }
+
+  .wild-mount {
+    max-width: 1100px;
+    margin: 0 auto 12px;
   }
 
   .magic {

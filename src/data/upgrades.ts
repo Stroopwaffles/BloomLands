@@ -13,6 +13,7 @@ export type UpgradeEffect =
   | { kind: 'qol'; qol: QolId }
   | { kind: 'helpers'; helper: HelperType; amount: number }
   | { kind: 'feature'; feature: 'ritual-circle' }
+  | { kind: 'stable'; amount: number }
 
 export type UpgradeCategory = 'lodging' | 'gear' | 'comfort'
 
@@ -122,6 +123,17 @@ const UPGRADE_LIST: UpgradeDef[] = [
     items: [{ tag: 'petals', amount: 12 }],
     requires: [],
     effect: { kind: 'feature', feature: 'ritual-circle' },
+    courtPoints: 2,
+  },
+  {
+    id: 'lodging-roost',
+    name: 'Bumblebee Roost',
+    category: 'lodging',
+    description: 'A cozy roost for a mount. Needed before you can tame one.',
+    glimmers: 120,
+    items: [{ tag: 'fluff', amount: 10 }],
+    requires: [],
+    effect: { kind: 'stable', amount: 1 },
     courtPoints: 2,
   },
   {

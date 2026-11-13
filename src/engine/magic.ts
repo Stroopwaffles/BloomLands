@@ -6,6 +6,7 @@ import { turnSky } from './environment'
 import type { BlockedReason, GameEvent } from './events'
 import { activeFlightEvent, foilAmbush } from './flightEvents'
 import { hasFeature } from './modifiers'
+import { canTameHere, tameMountHere } from './mounts'
 import type { GameState } from './state'
 
 /** Spells the player has researched. */
@@ -29,6 +30,8 @@ function hasTarget(state: GameState, spellId: string): boolean {
       return !travel && !!state.challenges.camps[place]
     case 'ambush':
       return activeFlightEvent(state)?.kind === 'ambush'
+    case 'tame':
+      return canTameHere(state)
   }
 }
 
@@ -57,6 +60,8 @@ export function castSpell(state: GameState, spellId: string): GameEvent[] {
       return [cast, ...clearCamp(state, place)]
     case 'ambush':
       return [cast, ...foilAmbush(state)]
+    case 'tame':
+      return [cast, ...tameMountHere(state)]
   }
 }
 

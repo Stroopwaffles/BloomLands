@@ -4,8 +4,21 @@ import { HELPER_RULES, type HelperType } from '../data/helpers'
 import { itemHasTag } from '../data/items'
 import { POTIONS } from '../data/recipes'
 import type { PotionEffect, StationId } from '../data/types'
+import { MOUNTS } from '../data/mounts'
 import { STARTING_STATIONS, UPGRADES, type QolId, type UpgradeEffect } from '../data/upgrades'
+import { HOME, SETTLEMENTS, SPIRIT_PLACES, SPOTS } from '../data/world'
 import type { GameState } from './state'
+
+/** The region a place belongs to (home sits at the edge of the Meadow). */
+function placeRegion(placeId: string): string {
+  if (placeId === HOME) return 'meadow'
+  return (
+    SPOTS[placeId]?.regionId ??
+    SETTLEMENTS[placeId]?.regionId ??
+    SPIRIT_PLACES[placeId]?.regionId ??
+    'meadow'
+  )
+}
 
 /**
  * The player's effective stats: base values plus upgrades plus active potions.
@@ -29,9 +42,19 @@ export function clickPower(state: GameState): number {
   return power
 }
 
+/** Speed of the mount being ridden (1 if none). */
+function ridingSpeed(state: GameState): number {
+  const id = state.mounts.riding
+  const mount = id ? MOUNTS[id] : null
+  if (!id || !mount) return 1
+  const level = state.mounts.owned[id]?.level ?? 1
+  return mount.speed + (level - 1) * mount.speedPerLevel
+}
+
 export function wingSpeed(state: GameState): number {
   let speed = state.player.wingSpeed
   for (const e of upgradeEffects(state)) if (e.kind === 'wingSpeed') speed += e.amount
+  speed *= ridingSpeed(state)
   for (const e of potionEffects(state)) if (e.kind === 'wingSpeed') speed *= e.multiplier
   return speed
 }
@@ -39,6 +62,13 @@ export function wingSpeed(state: GameState): number {
 export function satchelCapacity(state: GameState): number {
   let capacity = state.player.satchelCapacity
   for (const e of upgradeEffects(state)) if (e.kind === 'satchel') capacity += e.amount
+  // Riding a mount in its home region carries extra.
+  const id = state.mounts.riding
+  const mount = id ? MOUNTS[id] : null
+  if (id && mount && placeRegion(state.player.place) === mount.regionId) {
+    const level = state.mounts.owned[id]?.level ?? 1
+    capacity += mount.regionSatchel + (level - 1) * mount.satchelPerLevel
+  }
   for (const e of potionEffects(state)) if (e.kind === 'satchel') capacity += e.amount
   return capacity
 }
@@ -89,6 +119,13 @@ export function bloomRegrowth(state: GameState, regionId: string): number {
 /** Rarer plants grow more often in a region with more bloom. */
 export function bloomLuck(state: GameState, regionId: string): number {
   return 1 + bloomLevel(state, regionId) * BLOOM_PER_LEVEL.luck
+}
+
+/** How many mounts the roosts can house. */
+export function stableCapacity(state: GameState): number {
+  let capacity = 0
+  for (const e of upgradeEffects(state)) if (e.kind === 'stable') capacity += e.amount
+  return capacity
 }
 
 export function storageCapacity(state: GameState): number {

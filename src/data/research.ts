@@ -245,6 +245,18 @@ RESEARCH_LIST.push(
   },
 )
 
+RESEARCH_LIST.push({
+  id: 'research-kindred-call',
+  name: 'Kindred Call',
+  branch: 'spellcraft',
+  description: 'A warm call that invites a befriended creature to stay.',
+  cost: [{ itemId: 'component-sweet-bait', amount: 2 }],
+  durationMs: 3 * MIN,
+  requires: ['research-baits', 'research-salves'],
+  unlocks: [],
+  spells: ['spell-kindred-call'],
+})
+
 // Rites
 RESEARCH_LIST.push({
   id: 'research-turning',

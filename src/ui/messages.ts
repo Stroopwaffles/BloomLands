@@ -19,4 +19,5 @@ export const BLOCKED_TEXT: Record<BlockedReason, string> = {
   camp: 'Pirates have camped here.',
   'no-target': 'Nothing here for that.',
   'no-circle': 'Build a Ritual Circle first.',
+  'not-ready': 'Not ready yet. Try again soon.',
 }

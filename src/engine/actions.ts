@@ -8,6 +8,7 @@ import { tapFlightEvent } from './flightEvents'
 import { assignHelper, recruitHelper, setMinimum } from './helpers'
 import { castSpell, performRitual } from './magic'
 import { dismissVillagerRequest, fulfillVillagerRequest } from './settlements'
+import { feedMount, levelUpMount, rideMount } from './mounts'
 import { awakenSpirit } from './spirits'
 import { advanceStory } from './stories'
 import { startResearch } from './research'
@@ -43,6 +44,9 @@ export type Action =
   | { type: 'villager/dismiss'; settlementId: string; requestId: number }
   | { type: 'story/advance'; storyId: string }
   | { type: 'spirit/awaken'; spiritId: string }
+  | { type: 'mount/feed'; mountId: string }
+  | { type: 'mount/ride'; mountId: string | null }
+  | { type: 'mount/levelUp'; mountId: string }
   | { type: 'debug/addGlimmers'; amount: number }
   | { type: 'debug/addItem'; itemId: string; amount: number }
   | { type: 'debug/skipTime'; ms: number }
@@ -101,6 +105,12 @@ export function applyAction(
       return advanceStory(state, action.storyId)
     case 'spirit/awaken':
       return awakenSpirit(state, action.spiritId)
+    case 'mount/feed':
+      return feedMount(state, action.mountId)
+    case 'mount/ride':
+      return rideMount(state, action.mountId)
+    case 'mount/levelUp':
+      return levelUpMount(state, action.mountId)
 
     case 'debug/addGlimmers':
       state.resources.glimmers = Math.max(0, state.resources.glimmers + action.amount)

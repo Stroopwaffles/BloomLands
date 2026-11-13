@@ -19,6 +19,7 @@ export type BlockedReason =
   | 'camp'
   | 'no-target'
   | 'no-circle'
+  | 'not-ready'
 
 /**
  * Things that just happened, returned by actions so the screen can react (floating numbers,
@@ -55,3 +56,6 @@ export type GameEvent =
   | { type: 'curio'; curioId: string }
   | { type: 'villager-helped'; settlementId: string; glimmers: number }
   | { type: 'story'; text: string; complete: boolean }
+  | { type: 'mount-fed'; mountId: string; feedings: number }
+  | { type: 'mount-tamed'; mountId: string }
+  | { type: 'mount-level'; mountId: string; level: number }

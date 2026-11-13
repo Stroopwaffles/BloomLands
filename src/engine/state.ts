@@ -205,6 +205,14 @@ export interface GameState {
   bloom: Record<string, number>
   /** Curios found this run. */
   curios: string[]
+  mounts: {
+    /** Creatures being befriended: feedings so far and time until the next feeding. */
+    friendship: Record<string, { feedings: number; cooldownMs: number }>
+    /** Tamed mounts and their levels. */
+    owned: Record<string, { level: number }>
+    /** The mount the player is riding, if any. */
+    riding: string | null
+  }
   /** Spirits of the land, by spirit ID (this run). */
   spirits: Record<string, { awakened: boolean }>
   /** Story progress by story ID (missing = not started). */
@@ -302,6 +310,7 @@ export function createNewGame(now: number): GameState {
     curios: [],
     stories: {},
     spirits: {},
+    mounts: { friendship: {}, owned: {}, riding: null },
     settlements: {
       thimblewick: { requests: [], nextArrivalMs: 60_000, filled: 0 },
     },

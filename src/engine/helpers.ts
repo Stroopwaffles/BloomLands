@@ -13,6 +13,7 @@ import { CAMP_RULES } from '../data/challenges'
 import { piratesInRegion } from './challenges'
 import type { GameEvent } from './events'
 import { rollPlant } from './gathering'
+import { mountSpeed, spareMounts } from './mounts'
 import { helperCapacity, helperCount, storageCapacity, storageUsed } from './modifiers'
 import type { Random } from './rng'
 import { addItems, countItems, type GameState, type HelperState } from './state'
@@ -165,6 +166,17 @@ function unload(state: GameState, helper: HelperState): boolean {
   return countItems(helper.bag) === 0
 }
 
+/**
+ * A helper's flight time to or from a spot. Spare mounts (owned but not ridden) are lent to
+ * helpers in order, fastest mount to the first helper.
+ */
+export function helperFlightMs(state: GameState, helper: HelperState, spotId: string): number {
+  const base = baseTravelMs(HOME, spotId) ?? 0
+  const index = state.helpers.list.findIndex((h) => h.id === helper.id)
+  const mountId = spareMounts(state)[index]
+  return mountId ? Math.ceil(base / mountSpeed(state, mountId)) : base
+}
+
 /** Picks the next trip for an idle helper. Returns false if there's nothing to do. */
 function startTrip(state: GameState, helper: HelperState): boolean {
   const itemId = helper.type === 'supply' ? nextShortage(state) : null
@@ -174,7 +186,7 @@ function startTrip(state: GameState, helper: HelperState): boolean {
   helper.tripSpot = spotId
   helper.tripItem = itemId
   helper.phase = 'outbound'
-  helper.remainingMs = baseTravelMs(HOME, spotId) ?? 0
+  helper.remainingMs = helperFlightMs(state, helper, spotId)
   return true
 }
 
@@ -208,7 +220,7 @@ function stepHelper(state: GameState, helper: HelperState, dtMs: number, random:
         addItems(helper.bag, itemId, amount)
       }
       helper.phase = 'returning'
-      helper.remainingMs = baseTravelMs(HOME, helper.tripSpot!) ?? 0
+      helper.remainingMs = helperFlightMs(state, helper, helper.tripSpot!)
     } else if (helper.phase === 'returning') {
       helper.phase = 'unloading'
       helper.remainingMs = 0
