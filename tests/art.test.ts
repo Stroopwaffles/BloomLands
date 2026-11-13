@@ -1,9 +1,30 @@
 import { describe, expect, it } from 'vitest'
-import { getArt, placeholderHue, placeholderShape } from '../src/art/registry'
+import { ITEMS } from '../src/data/items'
+import { PLANTS } from '../src/data/plants'
+import {
+  ART_SVG,
+  getArt,
+  getSvgArt,
+  placeholderHue,
+  placeholderShape,
+  resolveArtId,
+} from '../src/art/registry'
 
 describe('art registry', () => {
   it('returns null for art that is not made yet', () => {
     expect(getArt('plant-clover')).toBeNull()
+    expect(getSvgArt('something-without-art')).toBeNull()
+  })
+
+  it('has art for every plant and item', () => {
+    for (const id of Object.keys(PLANTS)) expect(ART_SVG[id], id).toBeTruthy()
+    for (const id of Object.keys(ITEMS)) expect(ART_SVG[id], id).toBeTruthy()
+  })
+
+  it('follows family aliases', () => {
+    expect(resolveArtId('lodging-press')).toBe('icon-lodging')
+    expect(resolveArtId('gear-gloves-2')).toBe('icon-gloves')
+    expect(resolveArtId('plant-clover')).toBe('plant-clover')
   })
 
   it('gives each ID a stable placeholder color', () => {
