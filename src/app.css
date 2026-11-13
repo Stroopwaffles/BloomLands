@@ -88,3 +88,25 @@ button:focus-visible {
     transition: none;
   }
 }
+
+/* ------------------------------------------------------------------------------------------- */
+/* Player settings (see src/ui/settings.svelte.ts)                                             */
+
+#app {
+  zoom: var(--ui-scale, 1);
+}
+
+html.reduce-motion *,
+html.reduce-motion *::before,
+html.reduce-motion *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+html.no-particles .burst,
+html.no-particles .rain,
+html.no-particles .breeze,
+html.no-particles .drift,
+html.no-particles .petal-fall {
+  display: none !important;
+}

@@ -38,3 +38,15 @@ describe('formatDuration', () => {
     expect(formatDuration(ms)).toBe(expected)
   })
 })
+
+describe('scientific number style', () => {
+  it.each([
+    [999, '999'],
+    [1234, '1.2E3'],
+    [5_600_000_000, '5.6E9'],
+    [99_999, '9.9E4'],
+    [-1500, '-1.5E3'],
+  ])('formats %d as %s', (value, expected) => {
+    expect(formatNumber(value, 'scientific')).toBe(expected)
+  })
+})

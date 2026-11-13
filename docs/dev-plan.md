@@ -184,6 +184,16 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
   - **Checked** at desktop, landscape tablet (1024×768) and phone (375px: usable, no sideways scroll, plant tap targets ≥ 61px).
   - **Not yet art:** upgrade-specific icons (they share family icons), region-to-region map, title screen.
 
+### Added after Release 0.1
+
+**Welcome screen (v0.1.1)**, inspired by Fold Drive Miner's:
+- A short, skippable intro (once per visit), then the title over a golden-hour meadow with falling petals.
+- Menu: **Continue** (when a save exists), **New game** (asks before replacing a save), **Saves**, **Settings**, **Credits**. A **Menu** button in the game header returns here.
+- **The player's fairy** stands beside the menu with their court rank, Meadow bloom and play time; first-time visitors see a faded fairy "waiting to be imagined".
+- **Saves:** copy backup text, save a backup file, restore from text or file (confirms before replacing), delete (confirms).
+- **Settings** (stored separately from the save): reduced motion, particle effects, interface size, autosave interval, number style (1.2K / 1.2E3).
+- Footer: "This game was made entirely with AI."
+
 ### Phase 2: The Full Game
 
 Each region milestone adds that region's content, art, mount, creature, pirate crew, characters, secret areas, recipes and unlock ritual, all following the content doc.

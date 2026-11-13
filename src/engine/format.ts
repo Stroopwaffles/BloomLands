@@ -1,14 +1,32 @@
 const UNITS = ['', 'K', 'M', 'B', 'T'] as const
 
+/** How large numbers are written: 1.2K (short) or 1.2E3 (scientific). A player setting. */
+let numberStyle: 'short' | 'scientific' = 'short'
+
+export function setNumberStyle(style: 'short' | 'scientific'): void {
+  numberStyle = style
+}
+
 /**
- * Formats a number for display: 999, 1.2K, 3.4M, 5.6B (design doc Section 4).
- * Values under 1,000 are shown as whole numbers.
+ * Formats a number for display: 999, 1.2K, 3.4M, 5.6B (design doc Section 4), or 1.2E3 style if
+ * the player prefers. Values under 1,000 are shown as whole numbers.
  */
-export function formatNumber(value: number): string {
+export function formatNumber(value: number, style = numberStyle): string {
   if (!Number.isFinite(value)) return '0'
   const sign = value < 0 ? '-' : ''
   let n = Math.abs(value)
   if (n < 1000) return sign + Math.floor(n).toString()
+
+  if (style === 'scientific') {
+    let exponent = Math.floor(Math.log10(n))
+    let mantissa = Math.floor((n / 10 ** exponent) * 10) / 10
+    if (mantissa >= 10) {
+      mantissa = 1
+      exponent++
+    }
+    const text = Number.isInteger(mantissa) ? mantissa.toString() : mantissa.toFixed(1)
+    return `${sign}${text}E${exponent}`
+  }
 
   let unit = 0
   while (n >= 1000 && unit < UNITS.length - 1) {

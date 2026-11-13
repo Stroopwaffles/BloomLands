@@ -18,54 +18,75 @@
   import SpotScreen from './ui/screens/SpotScreen.svelte'
   import TravelScreen from './ui/screens/TravelScreen.svelte'
   import WelcomeBack from './ui/WelcomeBack.svelte'
+  import { applySettings, settings } from './ui/settings.svelte'
+  import TitleScreen from './ui/title/TitleScreen.svelte'
 
   const { game } = runtime
 
   const satchelCount = $derived(countItems($game.player.satchel))
 
-  onMount(() => runtime.start())
+  /** The welcome screen shows first on every visit; the game runs (and saves) behind it. */
+  let screen = $state<'title' | 'game'>('title')
+
+  function toMenu() {
+    runtime.save()
+    screen = 'title'
+  }
+
+  onMount(() => {
+    applySettings()
+    return runtime.start()
+  })
 </script>
 
-<header>
-  <h1>Bloom Lands</h1>
-  <SkyBadge />
-  <div class="buffs"><BuffBar /></div>
-  <div class="counters">
-    <div class="counter" aria-label="Satchel">
-      <Art id="icon-satchel" size={28} />
-      <span>{formatNumber(satchelCount)} / {formatNumber(satchelCapacity($game))}</span>
-      {#if $game.player.satchelLocked}<span class="locked-tag">locked</span>{/if}
-    </div>
-    <div class="counter" aria-label="Glimmers">
-      <Art id="icon-glimmers" size={28} />
-      <span>{formatNumber($game.resources.glimmers)}</span>
-    </div>
-    <div class="counter" aria-label="Trinkets">
-      <Art id="icon-trinkets" size={28} />
-      <span>{formatNumber(trinketCount($game))}</span>
-    </div>
-    <div class="rank" aria-label="Court rank">{COURT_RANKS[courtRank($game)].name}</div>
-  </div>
-</header>
+{#if screen === 'title'}
+  <TitleScreen onPlay={() => (screen = 'game')} />
+{:else}
+  {#key settings.numberStyle}
+    <header>
+      <button type="button" class="menu-button" onclick={toMenu} aria-label="Main menu">Menu</button
+      >
+      <h1>Bloom Lands</h1>
+      <SkyBadge />
+      <div class="buffs"><BuffBar /></div>
+      <div class="counters">
+        <div class="counter" aria-label="Satchel">
+          <Art id="icon-satchel" size={28} />
+          <span>{formatNumber(satchelCount)} / {formatNumber(satchelCapacity($game))}</span>
+          {#if $game.player.satchelLocked}<span class="locked-tag">locked</span>{/if}
+        </div>
+        <div class="counter" aria-label="Glimmers">
+          <Art id="icon-glimmers" size={28} />
+          <span>{formatNumber($game.resources.glimmers)}</span>
+        </div>
+        <div class="counter" aria-label="Trinkets">
+          <Art id="icon-trinkets" size={28} />
+          <span>{formatNumber(trinketCount($game))}</span>
+        </div>
+        <div class="rank" aria-label="Court rank">{COURT_RANKS[courtRank($game)].name}</div>
+      </div>
+    </header>
 
-<main>
-  {#if !$game.character.created}
-    <CharacterCreator />
-  {:else if $game.player.travel}
-    <TravelScreen />
-  {:else if $game.player.place === HOME}
-    <HomeScreen />
-  {:else if isSettlement($game.player.place)}
-    <SettlementScreen />
-  {:else if isSpiritPlace($game.player.place)}
-    <SpiritScreen />
-  {:else}
-    <SpotScreen />
-  {/if}
-</main>
+    <main>
+      {#if !$game.character.created}
+        <CharacterCreator />
+      {:else if $game.player.travel}
+        <TravelScreen />
+      {:else if $game.player.place === HOME}
+        <HomeScreen />
+      {:else if isSettlement($game.player.place)}
+        <SettlementScreen />
+      {:else if isSpiritPlace($game.player.place)}
+        <SpiritScreen />
+      {:else}
+        <SpotScreen />
+      {/if}
+    </main>
 
-<WelcomeBack />
-<Notices />
+    <WelcomeBack />
+    <Notices />
+  {/key}
+{/if}
 {#if debugEnabled}<DebugPanel />{/if}
 
 <style>
@@ -78,6 +99,18 @@
     padding: 12px 16px;
     background: var(--cream-deep);
     border-bottom: 2px solid var(--honey);
+  }
+
+  .menu-button {
+    min-height: 44px;
+    padding: 0 14px;
+    border: 2px solid var(--honey);
+    border-radius: 12px;
+    background: white;
+    color: var(--ink);
+    font: inherit;
+    font-family: var(--font-heading);
+    cursor: pointer;
   }
 
   h1 {

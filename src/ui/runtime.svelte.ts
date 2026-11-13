@@ -39,6 +39,8 @@ export interface Runtime {
   importText(text: string): void
   /** Deletes the save and starts a new game. */
   reset(): void
+  /** Changes how often the game autosaves (a player setting). */
+  setAutosaveMs(ms: number): void
   /** Debug: pretend the game was closed for `ms`, then catch up as if reopening it. */
   simulateAway(ms: number): void
   /** Starts ticking, autosaving and listening for the tab closing. Returns a stop function. */
@@ -58,6 +60,8 @@ export function createRuntime(storage: Storage | null, clock: () => number = Dat
   // Event listeners are plain callbacks, not screen state, so this Set doesn't need reactivity.
   // eslint-disable-next-line svelte/prefer-svelte-reactivity
   const listeners = new Set<(events: GameEvent[]) => void>()
+  let autosaveMs = AUTOSAVE_INTERVAL_MS
+  let autosaveTimer: ReturnType<typeof setInterval> | undefined
 
   const publish = () => game.set(state)
 
@@ -123,6 +127,14 @@ export function createRuntime(storage: Storage | null, clock: () => number = Dat
       replace(createNewGame(clock()))
     },
 
+    setAutosaveMs(ms) {
+      autosaveMs = ms
+      if (autosaveTimer !== undefined) {
+        clearInterval(autosaveTimer)
+        autosaveTimer = setInterval(save, autosaveMs)
+      }
+    },
+
     simulateAway(ms) {
       advance(state, clock())
       state.meta.lastTickAt -= ms
@@ -134,7 +146,7 @@ export function createRuntime(storage: Storage | null, clock: () => number = Dat
       save()
 
       const tick = setInterval(catchUp, TICK_INTERVAL_MS)
-      const autosave = setInterval(save, AUTOSAVE_INTERVAL_MS)
+      autosaveTimer = setInterval(save, autosaveMs)
       const onVisibility = () => {
         if (document.visibilityState === 'hidden') save()
         else catchUp()
@@ -146,7 +158,8 @@ export function createRuntime(storage: Storage | null, clock: () => number = Dat
 
       return () => {
         clearInterval(tick)
-        clearInterval(autosave)
+        clearInterval(autosaveTimer)
+        autosaveTimer = undefined
         document.removeEventListener('visibilitychange', onVisibility)
         window.removeEventListener('pagehide', onPageHide)
         save()

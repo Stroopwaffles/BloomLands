@@ -14,7 +14,7 @@ The first playable slice: the Meadow, your home, and everything that grows from 
 - Heal the land: bloom, stories with Pip and Marigold, Sorrel the spirit, the secret Fairy Ring
 - Befriend and ride the bumblebee; create and dress your own fairy
 
-Progress saves in your browser. Use the debug panel (add `?debug` to the address) to export a backup.
+Progress saves in your browser. Back it up from **Saves** on the welcome screen (copy the text or save a file), and restore it the same way.
 
 ## Documents
 
