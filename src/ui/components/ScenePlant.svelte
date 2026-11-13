@@ -12,7 +12,16 @@
     wiggle,
     disabled,
     onTap,
-  }: { slot: SlotState; at: Point; wiggle: number; disabled: boolean; onTap: () => void } = $props()
+    pest = { id: 'aphid', name: 'aphids' },
+  }: {
+    slot: SlotState
+    at: Point
+    wiggle: number
+    disabled: boolean
+    onTap: () => void
+    /** Which pest infests plants here (aphids in the Meadow, beetles in the Forest). */
+    pest?: { id: string; name: string }
+  } = $props()
 
   const plant = $derived(slot.plantId ? PLANTS[slot.plantId] : null)
   const pests = $derived(slot.pests ?? 0)
@@ -31,7 +40,7 @@
       type="button"
       class="plant"
       class:disabled
-      aria-label={pests > 0 ? `Tap aphids off the ${plant.name}` : `Tap the ${plant.name}`}
+      aria-label={pests > 0 ? `Tap ${pest.name} off the ${plant.name}` : `Tap the ${plant.name}`}
       onpointerdown={onPointerDown}
       onkeydown={(e) => (e.key === 'Enter' || e.key === ' ') && !disabled && onTap()}
     >
@@ -41,7 +50,7 @@
       {#if pests > 0}
         <span class="pests" aria-hidden="true">
           {#each Array.from({ length: pests }, (_, i) => i) as i (i)}
-            <span class="aphid" style:--i={i}><Art id="pest-aphid" size={26} /></span>
+            <span class="aphid" style:--i={i}><Art id={`pest-${pest.id}`} size={26} /></span>
           {/each}
         </span>
       {/if}

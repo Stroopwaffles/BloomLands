@@ -22,6 +22,7 @@ export function drinkPotion(state: GameState, potionId: string): GameEvent[] {
 }
 
 export function advanceBuffs(state: GameState, dtMs: number): void {
+  if (state.plentyMs > 0) state.plentyMs = Math.max(0, state.plentyMs - dtMs)
   for (const buff of state.buffs) buff.remainingMs -= dtMs
   if (state.buffs.some((buff) => buff.remainingMs <= 0)) {
     state.buffs = state.buffs.filter((buff) => buff.remainingMs > 0)

@@ -1,17 +1,31 @@
 import { ITEM_VALUES, TRADER_RULES, TRADERS } from '../data/economy'
 import { ITEMS } from '../data/items'
+import { PLANTS } from '../data/plants'
+import { SPOTS } from '../data/world'
 import { RECIPES } from '../data/recipes'
 import type { ItemStack } from '../data/types'
 import { canPay, payCost } from './costs'
 import { unlockedRecipes } from './crafting'
 import type { GameEvent } from './events'
 import { stationBuilt, traderPayMultiplier } from './modifiers'
+import { openSpots } from './regions'
 import type { Random } from './rng'
 import { addItems, type GameState, type TradeRequest } from './state'
 
 /** Items a trader might ask for: raw plants, plus anything the player can currently craft. */
+/** A raw material that grows in an open, non-secret spot. */
+function reachableRaw(state: GameState, itemId: string): boolean {
+  return openSpots(state).some(
+    (spotId) =>
+      !SPOTS[spotId].secret &&
+      SPOTS[spotId].plants.some((p) => PLANTS[p].yields.some((y) => y.itemId === itemId)),
+  )
+}
+
 export function requestableItems(state: GameState): string[] {
-  const items = Object.keys(ITEM_VALUES).filter((id) => ITEMS[id]?.category === 'raw')
+  const items = Object.keys(ITEM_VALUES).filter(
+    (id) => ITEMS[id]?.category === 'raw' && reachableRaw(state, id),
+  )
   for (const recipeId of unlockedRecipes(state)) {
     const recipe = RECIPES[recipeId]
     if (recipe && stationBuilt(state, recipe.station) && ITEM_VALUES[recipe.output.itemId]) {

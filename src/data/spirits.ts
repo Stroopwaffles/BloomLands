@@ -43,4 +43,31 @@ export const SPIRITS: Readonly<Record<string, SpiritDef>> = {
       },
     ],
   },
+  'spirit-bramblebeard': {
+    id: 'spirit-bramblebeard',
+    name: 'Bramblebeard, the Old Wood',
+    regionId: 'forest',
+    place: 'elder-oak',
+    sleeping: [
+      'Deep in the bark, two knots open very slowly. They might be eyes.',
+      '"Hmmmm... small... one... The forest... is... sleeping... still... Wake... it... and... then..."',
+      'The eyes close again. That was clearly a lot of talking.',
+    ],
+    awakening: [
+      'Moss ripples down the oak like a beard being stroked. Every leaf in the canopy rustles at once.',
+      '"Ahhhh... I hear... the roots... singing... Thank... you... little... gardener."',
+    ],
+    requirements: [
+      { kind: 'bloom', level: 2, label: 'Help the Forest reach Sprouting bloom' },
+      { kind: 'story', storyId: 'story-hazel', label: "Finish Hazel Quickpaw's story" },
+      {
+        kind: 'offering',
+        items: [
+          { itemId: 'component-earth-loam', amount: 3 },
+          { itemId: 'refined-golden-spore', amount: 1 },
+        ],
+        label: 'Offer 3 Earth Loam and 1 Golden Spore',
+      },
+    ],
+  },
 }

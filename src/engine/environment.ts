@@ -1,6 +1,12 @@
-import { WEATHER, WEATHER_RULES, type WeatherDef, type WeatherKind } from '../data/challenges'
+import {
+  REGION_WEATHER,
+  WEATHER,
+  WEATHER_RULES,
+  type WeatherDef,
+  type WeatherKind,
+} from '../data/challenges'
 import { DAY_MS, NIGHTFALL_MS, PHASE_STARTS, type DayPhase } from '../data/time'
-import { HOME, SETTLEMENTS, SPIRIT_PLACES, SPOTS } from '../data/world'
+import { HOME, placeRegion } from '../data/world'
 import { pickWeighted, type Random } from './rng'
 import type { GameState } from './state'
 
@@ -37,22 +43,20 @@ export function turnSky(state: GameState, to: 'day' | 'night'): void {
 
 /** The region a place belongs to. Home sits at the edge of the Meadow. */
 export function regionOf(placeId: string): string {
-  if (placeId === HOME) return 'meadow'
-  return (
-    SPOTS[placeId]?.regionId ??
-    SETTLEMENTS[placeId]?.regionId ??
-    SPIRIT_PLACES[placeId]?.regionId ??
-    'meadow'
-  )
+  return placeRegion(placeId)
 }
 
 export function weatherIn(state: GameState, regionId: string): WeatherDef {
   return WEATHER[state.weather[regionId]?.kind ?? 'sunshine']
 }
 
-export function rollWeather(random: Random): { kind: WeatherKind; remainingMs: number } {
+export function rollWeather(
+  regionId: string,
+  random: Random,
+): { kind: WeatherKind; remainingMs: number } {
+  const kinds = REGION_WEATHER[regionId] ?? REGION_WEATHER.meadow
   const kind = pickWeighted(
-    Object.values(WEATHER).map((w) => [w.id, w.weight] as const),
+    kinds.map((id) => [id, WEATHER[id].weight] as const),
     random,
   )
   const remainingMs =
@@ -63,7 +67,7 @@ export function rollWeather(random: Random): { kind: WeatherKind; remainingMs: n
 export function advanceWeather(state: GameState, dtMs: number, random: Random): void {
   for (const [regionId, weather] of Object.entries(state.weather)) {
     weather.remainingMs -= dtMs
-    if (weather.remainingMs <= 0) state.weather[regionId] = rollWeather(random)
+    if (weather.remainingMs <= 0) state.weather[regionId] = rollWeather(regionId, random)
   }
 }
 

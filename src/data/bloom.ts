@@ -41,6 +41,10 @@ export interface CurioDef {
     | { kind: 'travel'; multiplier: number }
     | { kind: 'traderPay'; multiplier: number }
     | { kind: 'potionDuration'; multiplier: number }
+    | { kind: 'trinketChance'; multiplier: number }
+    | { kind: 'tagYield'; tag: string; amount: number }
+    | { kind: 'researchSpeed'; multiplier: number }
+    | { kind: 'regionBloom'; regionId: string; multiplier: number }
 }
 
 /** Meadow curios (content doc → Curio Index). They last for the current run. */
@@ -63,6 +67,30 @@ export const CURIOS: Readonly<Record<string, CurioDef>> = {
     description: 'Potions last 20% longer.',
     effect: { kind: 'potionDuration', multiplier: 1.2 },
   },
+  'curio-forgotten-acorn': {
+    id: 'curio-forgotten-acorn',
+    name: 'Forgotten Acorn',
+    description: 'Trinkets turn up 50% more often when you harvest.',
+    effect: { kind: 'trinketChance', multiplier: 1.5 },
+  },
+  'curio-burdocks-field-guide': {
+    id: 'curio-burdocks-field-guide',
+    name: "Burdock's Field Guide",
+    description: 'Mushrooms give 1 extra cap when harvested.',
+    effect: { kind: 'tagYield', tag: 'caps', amount: 1 },
+  },
+  'curio-pressed-flower-bookmark': {
+    id: 'curio-pressed-flower-bookmark',
+    name: 'Pressed-Flower Bookmark',
+    description: 'Research goes 15% faster.',
+    effect: { kind: 'researchSpeed', multiplier: 1.15 },
+  },
+  'curio-heartwood-charm': {
+    id: 'curio-heartwood-charm',
+    name: 'Heartwood Charm',
+    description: 'Bloom gained in the Forest is 25% higher.',
+    effect: { kind: 'regionBloom', regionId: 'forest', multiplier: 1.25 },
+  },
 }
 
 export interface VillagerDef {
@@ -77,6 +105,11 @@ export const VILLAGERS: Readonly<Record<string, readonly VillagerDef[]>> = {
     { id: 'villager-hob', name: 'Hob', title: 'the thimble-maker' },
     { id: 'villager-wisteria', name: 'Wisteria', title: 'who keeps the seed store' },
     { id: 'villager-tumbleweed', name: 'Old Tumbleweed', title: 'the village elder' },
+  ],
+  acornhollow: [
+    { id: 'villager-bristle', name: 'Bristle', title: 'the hedgehog lamplighter' },
+    { id: 'villager-chestnut', name: 'Chestnut', title: 'a squirrel who stores everything' },
+    { id: 'villager-thornbury', name: 'Mother Thornbury', title: 'who runs the acorn bakery' },
   ],
 }
 

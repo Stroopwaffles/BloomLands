@@ -59,6 +59,60 @@ export const SCENES: Readonly<Record<string, SceneLayout>> = {
     camp: { x: 34, y: 76 },
     mount: { x: 84, y: 30 },
   },
+
+  // Forest
+  'fernshade-floor': {
+    slots: [
+      { x: 14, y: 70 },
+      { x: 30, y: 86 },
+      { x: 46, y: 66 },
+      { x: 60, y: 88 },
+      { x: 74, y: 68 },
+      { x: 88, y: 86 },
+    ],
+    creature: { x: 88, y: 40 },
+    camp: { x: 74, y: 76 },
+    mount: { x: 52, y: 28 },
+  },
+  'mossy-stump-ring': {
+    slots: [
+      { x: 22, y: 64 },
+      { x: 36, y: 84 },
+      { x: 50, y: 62 },
+      { x: 64, y: 86 },
+      { x: 78, y: 64 },
+      { x: 90, y: 84 },
+    ],
+    creature: { x: 12, y: 40 },
+    camp: { x: 76, y: 72 },
+    mount: { x: 50, y: 30 },
+  },
+  'hollow-log-library': {
+    slots: [
+      { x: 14, y: 76 },
+      { x: 30, y: 90 },
+      { x: 46, y: 74 },
+      { x: 62, y: 90 },
+      { x: 76, y: 74 },
+      { x: 90, y: 90 },
+    ],
+    creature: { x: 88, y: 52 },
+    camp: { x: 74, y: 80 },
+    mount: { x: 50, y: 40 },
+  },
+  'lost-grove': {
+    slots: [
+      { x: 18, y: 72 },
+      { x: 34, y: 88 },
+      { x: 50, y: 70 },
+      { x: 66, y: 88 },
+      { x: 82, y: 72 },
+      { x: 92, y: 90 },
+    ],
+    creature: { x: 10, y: 44 },
+    camp: { x: 74, y: 78 },
+    mount: { x: 50, y: 30 },
+  },
 }
 
 /** A plain layout for any spot without a hand-placed one. */

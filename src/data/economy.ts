@@ -14,6 +14,15 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'raw-dewdrops': 4,
   'raw-lucky-leaf': 25,
   'raw-ringcap': 30,
+  'raw-moss-tufts': 3,
+  'raw-fern-fronds': 3,
+  'raw-bilberries': 4,
+  'raw-mushroom-caps': 5,
+  'raw-acorns': 7,
+  'raw-red-caps': 8,
+  'raw-golden-caps': 30,
+  'raw-inkcap': 35,
+  'raw-birch-catkins': 35,
   // Refined
   'refined-petal-paste': 10,
   'refined-leaf-tea': 10,
@@ -21,6 +30,9 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'refined-dew-water': 10,
   'refined-fluff-thread': 14,
   'refined-lucky-essence': 35,
+  'refined-spore-dust': 22,
+  'refined-acorn-flour': 24,
+  'refined-golden-spore': 45,
   // Components
   'component-sun-salve': 25,
   'component-calming-tea': 25,
@@ -28,11 +40,13 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'component-sweet-bait': 32,
   'component-lucky-charm-dust': 55,
   'component-pest-smudge': 28,
+  'component-earth-loam': 55,
   // Potions
   'potion-greenthumb-brew': 45,
   'potion-quickwing-tonic': 50,
   'potion-deep-pockets-draught': 70,
   'potion-lucky-dew': 90,
+  'potion-swiftroot-elixir': 95,
 }
 
 export interface TraderDef {

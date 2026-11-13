@@ -1,9 +1,13 @@
 import type { RegionDef, SettlementDef, SpotDef } from './types'
 
-/** The player's home. Not a harvesting spot, but a place you can fly to. */
+/** The player's home. Not a harvesting spot, but a place you can fly to. It sits in the Meadow. */
 export const HOME = 'home'
 
+// ---------------------------------------------------------------------------------------------
+// Harvesting spots (content doc → each region's Sublocations)
+
 const SPOT_LIST: SpotDef[] = [
+  // Meadow
   {
     id: 'buttercup-rise',
     name: 'Buttercup Rise',
@@ -30,14 +34,31 @@ const SPOT_LIST: SpotDef[] = [
     regrowMs: 25_000,
     trinkets: ['trinket-glass-bead', 'trinket-lost-button'],
   },
-]
 
-export const SPOTS: Readonly<Record<string, SpotDef>> = Object.fromEntries(
-  SPOT_LIST.map((spot) => [spot.id, spot]),
-)
+  // Forest
+  {
+    id: 'fernshade-floor',
+    name: 'Fernshade Floor',
+    regionId: 'forest',
+    description: 'The cool forest floor under the ferns. Mushrooms and moss.',
+    plants: ['plant-moss', 'plant-fern', 'plant-button-mushroom', 'plant-red-cap'],
+    slots: 6,
+    regrowMs: 26_000,
+    trinkets: ['trinket-glass-marble', 'trinket-brass-key'],
+  },
+  {
+    id: 'mossy-stump-ring',
+    name: 'Mossy Stump Ring',
+    regionId: 'forest',
+    description:
+      "A ring of old stumps in a sunbeam clearing. Berries, acorns, the Forest's treasures.",
+    plants: ['plant-bilberry', 'plant-acorn', 'plant-moss', 'plant-golden-chanterelle'],
+    slots: 6,
+    regrowMs: 30_000,
+    trinkets: ['trinket-ribbon-scrap', 'trinket-brass-key'],
+  },
 
-// Secret areas (content doc → each region's Secret Areas)
-const SECRET_SPOTS: SpotDef[] = [
+  // Secret areas: hidden until unlocked, re-locked on prestige (design doc 3.12)
   {
     id: 'fairy-ring',
     name: 'The Fairy Ring',
@@ -47,10 +68,54 @@ const SECRET_SPOTS: SpotDef[] = [
     slots: 6,
     regrowMs: 30_000,
     trinkets: ['trinket-glass-bead', 'trinket-thimble'],
-    secret: { curioId: 'curio-pocket-sundial', outfitId: 'outfit-dewdrop' },
+    secret: {
+      curioId: 'curio-pocket-sundial',
+      outfitId: 'outfit-dewdrop',
+      unlock: { kind: 'ritual', hint: 'Perform the Rite of Dawn in the morning.' },
+    },
+  },
+  {
+    id: 'hollow-log-library',
+    name: 'The Hollow Log Library',
+    regionId: 'forest',
+    description: "Old Burdock's secret reading room, inside a fallen log lined with mossy shelves.",
+    plants: ['plant-inkcap', 'plant-fern', 'plant-moss', 'plant-button-mushroom'],
+    slots: 6,
+    regrowMs: 32_000,
+    trinkets: ['trinket-brass-key', 'trinket-glass-marble'],
+    secret: {
+      curioId: 'curio-pressed-flower-bookmark',
+      outfitId: 'outfit-scholar',
+      unlock: {
+        kind: 'story',
+        storyId: 'story-burdock',
+        hint: "Finish Old Burdock's storyline.",
+      },
+    },
+  },
+  {
+    id: 'lost-grove',
+    name: 'The Lost Grove',
+    regionId: 'forest',
+    description: 'A silver-birch glade the Forest only shows to those who have helped it bloom.',
+    plants: ['plant-birch-catkin', 'plant-bilberry', 'plant-fern', 'plant-golden-chanterelle'],
+    slots: 6,
+    regrowMs: 32_000,
+    trinkets: ['trinket-ribbon-scrap', 'trinket-glass-marble'],
+    secret: {
+      curioId: 'curio-heartwood-charm',
+      outfitId: 'outfit-acorn',
+      unlock: { kind: 'bloom', level: 3, hint: 'Help the Forest reach Budding bloom.' },
+    },
   },
 ]
-for (const spot of SECRET_SPOTS) (SPOTS as Record<string, SpotDef>)[spot.id] = spot
+
+export const SPOTS: Readonly<Record<string, SpotDef>> = Object.fromEntries(
+  SPOT_LIST.map((spot) => [spot.id, spot]),
+)
+
+// ---------------------------------------------------------------------------------------------
+// Settlements and spirit places
 
 export const SETTLEMENTS: Readonly<Record<string, SettlementDef>> = {
   thimblewick: {
@@ -60,6 +125,14 @@ export const SETTLEMENTS: Readonly<Record<string, SettlementDef>> = {
     description:
       'A village of field mice living in burrows and old thimbles under the roots of a hawthorn.',
     folk: 'field mice',
+  },
+  acornhollow: {
+    id: 'acornhollow',
+    name: 'Acornhollow',
+    regionId: 'forest',
+    description:
+      'Squirrels and hedgehogs living together inside a huge hollow oak, with round doors at every level.',
+    folk: 'squirrels and hedgehogs',
   },
 }
 
@@ -79,7 +152,17 @@ export const SPIRIT_PLACES: Readonly<Record<string, SpiritPlaceDef>> = {
     description: 'A warm flat stone at the top of the meadow, where the spirit rests.',
     spiritId: 'spirit-sorrel',
   },
+  'elder-oak': {
+    id: 'elder-oak',
+    name: 'The Elder Oak',
+    regionId: 'forest',
+    description: 'The oldest tree in the forest, with a face in its bark if you look closely.',
+    spiritId: 'spirit-bramblebeard',
+  },
 }
+
+// ---------------------------------------------------------------------------------------------
+// Regions (content doc → Recipe Tree → region unlocks)
 
 export const REGIONS: Readonly<Record<string, RegionDef>> = {
   meadow: {
@@ -89,19 +172,29 @@ export const REGIONS: Readonly<Record<string, RegionDef>> = {
     spiritPlace: 'sunstone-hill',
     secretSpots: ['fairy-ring'],
     spots: ['buttercup-rise', 'dandelion-drift'],
+    unlock: null,
+  },
+  forest: {
+    id: 'forest',
+    name: 'Forest',
+    settlement: 'acornhollow',
+    spiritPlace: 'elder-oak',
+    secretSpots: ['hollow-log-library', 'lost-grove'],
+    spots: ['fernshade-floor', 'mossy-stump-ring'],
+    unlock: { rank: 1, ritualId: 'ritual-open-path' },
   },
 }
+
+export const REGION_ORDER: readonly string[] = ['meadow', 'forest']
 
 /** Every place you can fly to, in display order. */
 export function allPlaces(): string[] {
   return [
     HOME,
-    ...Object.values(REGIONS).flatMap((region) => [
-      region.settlement,
-      ...region.spots,
-      region.spiritPlace,
-      ...region.secretSpots,
-    ]),
+    ...REGION_ORDER.flatMap((id) => {
+      const region = REGIONS[id]
+      return [region.settlement, ...region.spots, region.spiritPlace, ...region.secretSpots]
+    }),
   ]
 }
 
@@ -121,10 +214,21 @@ export function isSpiritPlace(placeId: string): boolean {
   return placeId in SPIRIT_PLACES
 }
 
-/**
- * Base flight times in ms, before wing speed. Home sits at the edge of the Meadow.
- * Starting values for balancing.
- */
+/** The region a place belongs to. Home sits at the edge of the Meadow. */
+export function placeRegion(placeId: string): string {
+  if (placeId === HOME) return 'meadow'
+  return (
+    SPOTS[placeId]?.regionId ??
+    SETTLEMENTS[placeId]?.regionId ??
+    SPIRIT_PLACES[placeId]?.regionId ??
+    'meadow'
+  )
+}
+
+// ---------------------------------------------------------------------------------------------
+// Flight times (design doc 3.12: short hops within a region, long flights between regions)
+
+/** Hand-tuned routes in the Meadow. Starting values for balancing. */
 const ROUTES: Record<string, number> = {
   'home|buttercup-rise': 8_000,
   'home|dandelion-drift': 12_000,
@@ -143,9 +247,19 @@ const ROUTES: Record<string, number> = {
   'sunstone-hill|fairy-ring': 6_000,
 }
 
+/** A short hop between two places in the same region (when there's no hand-tuned route). */
+export const HOP_MS = 5_000
+/** A long flight to a neighboring region; each region further adds this again. */
+export const REGION_FLIGHT_MS = 18_000
+
 export function baseTravelMs(from: string, to: string): number | null {
   if (from === to) return null
-  return ROUTES[`${from}|${to}`] ?? ROUTES[`${to}|${from}`] ?? null
+  const route = ROUTES[`${from}|${to}`] ?? ROUTES[`${to}|${from}`]
+  if (route !== undefined) return route
+  const a = REGION_ORDER.indexOf(placeRegion(from))
+  const b = REGION_ORDER.indexOf(placeRegion(to))
+  if (a < 0 || b < 0) return null
+  return a === b ? HOP_MS : REGION_FLIGHT_MS * Math.abs(a - b)
 }
 
 export function placeName(placeId: string): string {

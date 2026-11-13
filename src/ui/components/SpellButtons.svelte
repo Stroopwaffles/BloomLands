@@ -2,7 +2,7 @@
   import Art from '../../art/Art.svelte'
   import { SPELLS, type SpellTarget } from '../../data/magic'
   import { payingStock } from '../../engine/costs'
-  import { checkSpell, knownSpells } from '../../engine/magic'
+  import { checkSpell, knownSpells, spellCost } from '../../engine/magic'
   import CostList from './CostList.svelte'
   import { runtime } from '../game'
   import { BLOCKED_TEXT } from '../messages'
@@ -29,7 +29,7 @@
           <Art id={spellId} size={28} />
           <span>{spell.name}</span>
         </button>
-        <CostList cost={spell.cost} stock={payingStock($game)} />
+        <CostList cost={spellCost($game, spellId)} stock={payingStock($game)} />
       </div>
     {/each}
   </div>

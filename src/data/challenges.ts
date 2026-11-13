@@ -1,9 +1,9 @@
 /**
- * Weather and challenges for the Meadow (design doc 3.15, content doc → Meadow).
+ * Weather and challenges for each region (design doc 3.15, content doc → each region).
  * All numbers are starting values for balancing.
  */
 
-export type WeatherKind = 'sunshine' | 'breeze' | 'light-rain'
+export type WeatherKind = 'sunshine' | 'breeze' | 'light-rain' | 'mist' | 'rain' | 'falling-leaves'
 
 export interface WeatherDef {
   id: WeatherKind
@@ -17,6 +17,10 @@ export interface WeatherDef {
   flightAway: number
   /** Morning dew can grow at any time of day. */
   dewAllDay: boolean
+  /** Multiplies how often rarer plants grow (mist hides them). */
+  luck?: number
+  /** Multiplies how often mushrooms (caps) grow (rain brings them up). */
+  capsBoost?: number
 }
 
 export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
@@ -50,6 +54,44 @@ export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
     flightAway: 1.25,
     dewAllDay: true,
   },
+  mist: {
+    id: 'mist',
+    name: 'Misty morning',
+    description: 'Rare plants hide in the mist, but hidden paths show through.',
+    weight: 35,
+    regrowth: 1,
+    flightHome: 1.1,
+    flightAway: 1.1,
+    dewAllDay: false,
+    luck: 0.6,
+  },
+  rain: {
+    id: 'rain',
+    name: 'Rain',
+    description: 'Slower flights, but mushrooms spring up everywhere.',
+    weight: 30,
+    regrowth: 1.2,
+    flightHome: 1.25,
+    flightAway: 1.25,
+    dewAllDay: true,
+    capsBoost: 2.5,
+  },
+  'falling-leaves': {
+    id: 'falling-leaves',
+    name: 'Falling leaves',
+    description: 'Gusty and golden. Flights are a little slower.',
+    weight: 35,
+    regrowth: 1,
+    flightHome: 1.15,
+    flightAway: 1.15,
+    dewAllDay: false,
+  },
+}
+
+/** Which weather each region gets. */
+export const REGION_WEATHER: Readonly<Record<string, readonly WeatherKind[]>> = {
+  meadow: ['sunshine', 'breeze', 'light-rain'],
+  forest: ['mist', 'rain', 'falling-leaves'],
 }
 
 export const WEATHER_RULES = {
@@ -63,14 +105,30 @@ export const PEST_RULES = {
   chance: 0.2,
   /** Pests on a newly infested plant; each tap clears one. */
   count: 3,
-  /** Plants with this tag attract aphids. */
-  tag: 'petals',
+}
+
+export interface PestDef {
+  id: string
+  name: string
+  /** Plants with this material tag attract them. */
+  tag: string
+}
+
+/** Each region's pest (content doc → each region's Challenges). */
+export const PESTS: Readonly<Record<string, PestDef>> = {
+  meadow: { id: 'aphid', name: 'aphids', tag: 'petals' },
+  forest: { id: 'beetle', name: 'beetles', tag: 'caps' },
 }
 
 export interface CreatureDef {
   id: string
   name: string
   regionId: string
+  /**
+   * 'eats': munches plants until shooed (taps) or calmed.
+   * 'watches': blocks the spot (no gathering, no helpers) until calmed or snuck past.
+   */
+  behavior: 'eats' | 'watches'
   /** Taps to shoo it away. */
   taps: number
   /** It eats a plant this often while it's there. */
@@ -84,11 +142,24 @@ export const CREATURES: Readonly<Record<string, CreatureDef>> = {
     id: 'rabbit',
     name: 'Rabbit',
     regionId: 'meadow',
+    behavior: 'eats',
     taps: 8,
     eatEveryMs: 30_000,
     staysMs: 3 * 60_000,
   },
+  owl: {
+    id: 'owl',
+    name: 'Owl',
+    regionId: 'forest',
+    behavior: 'watches',
+    taps: 0,
+    eatEveryMs: 0,
+    staysMs: 4 * 60_000,
+  },
 }
+
+/** How long Hush Step lets you gather under a watching creature's nose. */
+export const SNEAK_MS = 2 * 60_000
 
 export const CREATURE_RULES = {
   firstMs: 5 * 60_000,
@@ -115,6 +186,17 @@ export const CREWS: Readonly<Record<string, CrewDef>> = {
       '"A treat? For us? ...We\'re not falling for that. Probably." They eat it anyway.',
       '"You keep coming back. And the Meadow keeps getting greener. Why do you care so much?"',
       '"Fine. FINE. The Drifters will drift with you. Got any hammocks at that court of yours?"',
+    ],
+  },
+  'bramble-corsairs': {
+    id: 'bramble-corsairs',
+    name: 'The Bramble Corsairs',
+    regionId: 'forest',
+    description: 'Pirate fairies who hide in thorn thickets and ambush travelers.',
+    parleyLines: [
+      '"Halt! Pay the bramble toll!" ...They accept the treat as the toll. Grudgingly.',
+      '"The Drifters say you\'re good folk. The Drifters say a lot of things."',
+      '"Alright, fairy. No more thorns in your path. Ours are yours now."',
     ],
   },
 }

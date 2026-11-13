@@ -43,6 +43,18 @@ export const CHARACTERS: Readonly<Record<string, CharacterDef>> = {
     title: 'a young mouse baker',
     settlement: 'thimblewick',
   },
+  'char-hazel': {
+    id: 'char-hazel',
+    name: 'Hazel Quickpaw',
+    title: 'a speedy squirrel courier',
+    settlement: 'acornhollow',
+  },
+  'char-burdock': {
+    id: 'char-burdock',
+    name: 'Old Burdock',
+    title: 'a hedgehog herbalist',
+    settlement: 'acornhollow',
+  },
 }
 
 export const STORIES: Readonly<Record<string, StoryDef>> = {
@@ -160,6 +172,118 @@ export const STORIES: Readonly<Record<string, StoryDef>> = {
     ending: [
       'The festival was wonderful, and everyone says it was the best tart in a hundred years!',
       "Please, wear this festival ribbon. Traders will know you're a friend of Thimblewick.",
+    ],
+  },
+  'story-hazel': {
+    id: 'story-hazel',
+    characterId: 'char-hazel',
+    curioId: 'curio-forgotten-acorn',
+    chapters: [
+      {
+        lines: [
+          'Fairy! Fairy-fairy-fairy! Have you got a minute? Half a minute? I talk fast.',
+          "I buried ALL of Acornhollow's festival supplies so nobody would nibble them. Very clever.",
+          'Then I forgot where. Less clever. Could you poke around the forest floor while you gather?',
+        ],
+        task: {
+          kind: 'stat',
+          stat: 'plantsHarvested',
+          amount: 25,
+          label: 'Gather 25 plants while you look for Hazel’s caches',
+        },
+      },
+      {
+        lines: [
+          'You found the first cache! Under a fern! Of course! I love ferns!',
+          'Oh no. The acorns in it sprouted. We need fresh ones for the festival cakes.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-acorns', amount: 8 }],
+          label: 'Bring Hazel 8 Acorns',
+        },
+      },
+      {
+        lines: [
+          'Perfect acorns. Round. Brown. Acorny.',
+          'Mother Thornbury says festival cakes need flour, not whole acorns. Who knew? Everyone, apparently.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'refined-acorn-flour', amount: 2 }],
+          label: 'Bring Hazel 2 Acorn Flour',
+        },
+      },
+      {
+        lines: [
+          'Last cache! It was in the village the whole time, under the lanterns. Very embarrassing.',
+          'The villagers are busy decorating. Could you lend them a hand while I hide... I mean, help?',
+        ],
+        task: {
+          kind: 'stat',
+          stat: 'villagersHelped',
+          amount: 2,
+          label: 'Help 2 villagers in Acornhollow',
+        },
+      },
+    ],
+    ending: [
+      'The festival is ON! Everybody found everything! Mostly thanks to you!',
+      "Here, keep this acorn. I forgot to bury it. It's lucky. It finds things. Unlike me.",
+    ],
+  },
+  'story-burdock': {
+    id: 'story-burdock',
+    characterId: 'char-burdock',
+    curioId: 'curio-burdocks-field-guide',
+    chapters: [
+      {
+        lines: [
+          'Ah. A visitor. Mind the specimen jars, dear.',
+          "I am writing the Forest's very first field guide to mushrooms. Every one, drawn true to life.",
+          'I start, as one should, with the humble button mushroom. A few fresh caps, please.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-mushroom-caps', amount: 6 }],
+          label: 'Bring Burdock 6 Mushroom caps',
+        },
+      },
+      {
+        lines: [
+          'Splendid gills. Now, the red-cap toadstool. Pretty, but you must never eat one.',
+          'Bring me a few, and wash your hands after.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-red-caps', amount: 4 }],
+          label: 'Bring Burdock 4 Red caps',
+        },
+      },
+      {
+        lines: [
+          'To study spores, one grinds them fine. My paws are too old for the mortar these days.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'refined-spore-dust', amount: 2 }],
+          label: 'Bring Burdock 2 Spore Dust',
+        },
+      },
+      {
+        lines: [
+          'And now the jewel of the book: the golden chanterelle. Rare, shy, and smells of apricots.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-golden-caps', amount: 1 }],
+          label: 'Bring Burdock 1 Golden cap',
+        },
+      },
+    ],
+    ending: [
+      'There. Finished. The first field guide of the Forest, and your name is in the thank-yous.',
+      "Take my old copy. Oh, and the old log by the ferns? It's my secret reading room. Do visit.",
     ],
   },
 }

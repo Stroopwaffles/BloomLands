@@ -1,6 +1,8 @@
 import { RESEARCH } from '../data/research'
 import { canPay, payCost } from './costs'
 import type { GameEvent } from './events'
+import { researchSpeed } from './modifiers'
+import { regionUnlocked } from './regions'
 import type { GameState } from './state'
 
 export type ResearchStatus = 'done' | 'in-progress' | 'available' | 'locked'
@@ -10,6 +12,7 @@ export function researchStatus(state: GameState, id: string): ResearchStatus {
   if (state.research.current?.id === id) return 'in-progress'
   const node = RESEARCH[id]
   if (!node) return 'locked'
+  if (node.region && !regionUnlocked(state, node.region)) return 'locked'
   return node.requires.every((req) => state.research.completed.includes(req))
     ? 'available'
     : 'locked'
@@ -39,7 +42,7 @@ export function startResearch(state: GameState, id: string): GameEvent[] {
 export function advanceResearch(state: GameState, dtMs: number): void {
   const current = state.research.current
   if (!current) return
-  current.remainingMs -= dtMs
+  current.remainingMs -= dtMs * researchSpeed(state)
   if (current.remainingMs > 0) return
   state.research.completed.push(current.id)
   state.research.current = null

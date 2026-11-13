@@ -40,6 +40,7 @@ export type PotionEffect =
   | { kind: 'wingSpeed'; multiplier: number }
   | { kind: 'satchel'; amount: number }
   | { kind: 'luck'; multiplier: number }
+  | { kind: 'regrowth'; multiplier: number }
 
 export interface PotionDef {
   /** The potion's item ID. */
@@ -65,6 +66,8 @@ export interface ResearchDef {
   spells?: string[]
   /** Ritual IDs this research teaches. */
   rituals?: string[]
+  /** Only shows up once this region is open (content doc: "recipes appear as regions unlock"). */
+  region?: string
 }
 
 export interface PlantDef {
@@ -101,8 +104,15 @@ export interface SpotDef {
     curioId: string
     /** Unique outfit unlocked on the first visit (kept forever). */
     outfitId: string
+    /** What reveals it. Rituals unlock their secret directly; the others are checked as you play. */
+    unlock: SecretUnlock
   }
 }
+
+export type SecretUnlock =
+  | { kind: 'ritual'; hint: string }
+  | { kind: 'story'; storyId: string; hint: string }
+  | { kind: 'bloom'; level: number; hint: string }
 
 export interface SettlementDef {
   id: string
@@ -123,4 +133,6 @@ export interface RegionDef {
   secretSpots: string[]
   /** Harvesting spots, in display order. */
   spots: string[]
+  /** What it takes to reach this region (null: open from the start). */
+  unlock: { rank: number; ritualId: string } | null
 }

@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { SPOTS } from '../data/world'
+  import ForestBackdrop from './ForestBackdrop.svelte'
+
   /**
    * Painted backdrops for harvesting spots. Wide (160×100) and cropped to fill the scene.
    * Night is a tinted overlay with stars, added by the scene itself.
@@ -8,6 +11,8 @@
     night = false,
     weather = 'sunshine',
   }: { spotId: string; night?: boolean; weather?: string } = $props()
+
+  const region = $derived(SPOTS[spotId]?.regionId ?? 'meadow')
 
   const tufts = (points: [number, number][], color: string) =>
     points.map(([x, y]) => ({ x, y, color }))
@@ -33,7 +38,9 @@
     </radialGradient>
   </defs>
 
-  {#if spotId === 'fairy-ring'}
+  {#if region === 'forest'}
+    <ForestBackdrop {spotId} />
+  {:else if spotId === 'fairy-ring'}
     <rect width="160" height="100" fill="url(#sky-glade)" />
     <g fill="#7fae74" stroke="#5f8f58" stroke-width="0.6">
       <circle cx="12" cy="30" r="20" />
@@ -114,14 +121,36 @@
     {/each}
   {/if}
 
-  {#if weather === 'light-rain'}
+  {#if weather === 'rain'}
+    <rect width="160" height="100" fill="#6f8aa0" opacity="0.2" />
+  {/if}
+  {#if weather === 'light-rain' || weather === 'rain'}
     <g class="rain" stroke="#8fb3d6" stroke-width="0.5" stroke-linecap="round" opacity="0.8">
-      {#each Array.from({ length: 34 }, (_, i) => i) as i (i)}
+      {#each Array.from({ length: weather === 'rain' ? 60 : 34 }, (_, i) => i) as i (i)}
         <line
           x1={(i * 47) % 160}
           y1={(i * 29) % 90}
           x2={((i * 47) % 160) - 1.2}
           y2={((i * 29) % 90) + 4}
+        />
+      {/each}
+    </g>
+  {:else if weather === 'mist'}
+    <g class="mist" fill="#ffffff">
+      <rect width="160" height="100" opacity="0.18" />
+      <ellipse cx="40" cy="70" rx="60" ry="8" opacity="0.5" />
+      <ellipse cx="120" cy="56" rx="56" ry="7" opacity="0.45" />
+      <ellipse cx="80" cy="88" rx="70" ry="9" opacity="0.4" />
+    </g>
+  {:else if weather === 'falling-leaves'}
+    <g class="leaves">
+      {#each [[20, 10, '#e2a83f'], [52, 26, '#c9622f'], [84, 6, '#e2b94f'], [110, 30, '#b8642e'], [140, 14, '#e2a83f'], [66, 46, '#c9622f'], [128, 52, '#e2b94f']] as [x, y, c], i (i)}
+        <path
+          d="M{x} {y} c2 -2 5 -2 6 0 c-1 2 -4 3 -6 0 Z"
+          fill={c as string}
+          stroke="#8a4a1e"
+          stroke-width="0.3"
+          style:--d="{i * 0.7}s"
         />
       {/each}
     </g>
@@ -172,6 +201,35 @@
     }
   }
 
+  .mist {
+    animation: breeze-slow 12s ease-in-out infinite;
+  }
+
+  @keyframes breeze-slow {
+    50% {
+      transform: translateX(8px);
+    }
+  }
+
+  .leaves path {
+    animation: fall 6s linear infinite;
+    animation-delay: var(--d);
+  }
+
+  @keyframes fall {
+    from {
+      transform: translate(0, -10px) rotate(0deg);
+      opacity: 0;
+    }
+    15% {
+      opacity: 1;
+    }
+    to {
+      transform: translate(-14px, 60px) rotate(220deg);
+      opacity: 0;
+    }
+  }
+
   .breeze {
     animation: breeze 4s ease-in-out infinite;
   }
@@ -209,6 +267,8 @@
     .drift,
     .rain,
     .breeze,
+    .mist,
+    .leaves path,
     .rays {
       animation: none;
     }

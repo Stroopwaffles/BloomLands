@@ -1,4 +1,12 @@
-import { CAMP_RULES, CREATURE_RULES, CREATURES, CREWS, PEST_RULES } from '../data/challenges'
+import {
+  CAMP_RULES,
+  CREATURE_RULES,
+  CREATURES,
+  CREWS,
+  PEST_RULES,
+  PESTS,
+  SNEAK_MS,
+} from '../data/challenges'
 import { PLANTS } from '../data/plants'
 import { SPOTS } from '../data/world'
 import { BLOOM_REWARDS } from '../data/bloom'
@@ -32,12 +40,14 @@ export function advancePests(state: GameState, dtMs: number, random: Random): vo
     if (spot.pestCheckMs > 0) continue
     spot.pestCheckMs = PEST_RULES.checkMs
     if (random() >= PEST_RULES.chance) continue
+    const pest = PESTS[SPOTS[spotId].regionId]
+    if (!pest) continue
     const candidates = spot.slots.filter(
       (slot, i) =>
         slot.plantId &&
         !slot.pests &&
         !campBlocksSlot(state, spotId, i) &&
-        PLANTS[slot.plantId].tags?.includes(PEST_RULES.tag),
+        PLANTS[slot.plantId].tags?.includes(pest.tag),
     )
     if (candidates.length === 0) continue
     candidates[Math.floor(random() * candidates.length)].pests = PEST_RULES.count
@@ -55,6 +65,11 @@ export function clearPests(state: GameState, spotId: string): number {
   return cleared
 }
 
+/** The kind of pest found at a spot (for its picture and name). */
+export function pestAt(spotId: string) {
+  return PESTS[SPOTS[spotId]?.regionId ?? 'meadow'] ?? PESTS.meadow
+}
+
 export function pestsAt(state: GameState, spotId: string): number {
   return (state.spots[spotId]?.slots ?? []).reduce((sum, slot) => sum + (slot.pests ?? 0), 0)
 }
@@ -65,11 +80,14 @@ export function pestsAt(state: GameState, spotId: string): number {
 export function advanceCreatures(state: GameState, dtMs: number, random: Random): void {
   const { challenges } = state
   for (const [spotId, creature] of Object.entries(challenges.creatures)) {
+    const def = CREATURES[creature.creatureId]
     creature.remainingMs -= dtMs
-    creature.eatMs -= dtMs
-    while (creature.eatMs <= 0 && creature.remainingMs > 0) {
-      eatPlant(state, spotId, random)
-      creature.eatMs += CREATURES[creature.creatureId].eatEveryMs
+    if (def?.behavior === 'eats') {
+      creature.eatMs -= dtMs
+      while (creature.eatMs <= 0 && creature.remainingMs > 0) {
+        eatPlant(state, spotId, random)
+        creature.eatMs += def.eatEveryMs
+      }
     }
     if (creature.remainingMs <= 0) delete challenges.creatures[spotId]
   }
@@ -97,6 +115,10 @@ export function tapCreature(state: GameState, spotId: string): GameEvent[] {
   }
   const creature = state.challenges.creatures[spotId]
   if (!creature) return [{ type: 'blocked', reason: 'no-target' }]
+  // Watchers can't be shooed: calm them, or sneak past.
+  if (CREATURES[creature.creatureId]?.behavior === 'watches') {
+    return [{ type: 'blocked', reason: 'watching' }]
+  }
   state.stats.taps++
   creature.tapsLeft--
   if (creature.tapsLeft > 0) return [{ type: 'creature-tap', spotId, tapsLeft: creature.tapsLeft }]
@@ -113,6 +135,16 @@ export function sendCreatureAway(
   delete state.challenges.creatures[spotId]
   state.stats.creaturesShooed++
   return [{ type: 'creature-gone', spotId, creatureId: creature.creatureId, how }]
+}
+
+/** Hush Step: gather under a watching creature's nose for a little while. */
+export function sneak(state: GameState): GameEvent[] {
+  state.player.sneakMs = SNEAK_MS
+  return []
+}
+
+export function advanceSneak(state: GameState, dtMs: number): void {
+  if (state.player.sneakMs > 0) state.player.sneakMs = Math.max(0, state.player.sneakMs - dtMs)
 }
 
 // ---------------------------------------------------------------------------------------------

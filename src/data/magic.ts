@@ -1,7 +1,7 @@
 import type { CostEntry } from './types'
 
 /** What a spell is cast at (design doc 3.5: spells are for encounters). */
-export type SpellTarget = 'pests' | 'creature' | 'ambush' | 'camp' | 'tame' | 'parley'
+export type SpellTarget = 'pests' | 'creature' | 'ambush' | 'camp' | 'tame' | 'parley' | 'sneak'
 
 export interface SpellDef {
   id: string
@@ -11,7 +11,19 @@ export interface SpellDef {
   cost: CostEntry[]
 }
 
-/** Meadow spells (content doc → Recipe Tree → Spells). Costs are starting values. */
+/**
+ * Each region's signature component (content doc → Recipe Tree). Parley and Kindred Call use the
+ * signature of the region you cast them in, in place of Sun Salve.
+ */
+export const REGION_SIGNATURE: Readonly<Record<string, string>> = {
+  meadow: 'component-sun-salve',
+  forest: 'component-earth-loam',
+}
+
+/** Spells whose Sun Salve is swapped for the local region's signature component. */
+export const REGIONAL_SPELLS: readonly string[] = ['spell-kindred-call', 'spell-parley']
+
+/** Spells (content doc → Recipe Tree → Spells). Costs are starting values. */
 export const SPELLS: Readonly<Record<string, SpellDef>> = {
   'spell-bugbane': {
     id: 'spell-bugbane',
@@ -55,6 +67,16 @@ export const SPELLS: Readonly<Record<string, SpellDef>> = {
       { itemId: 'component-sun-salve', amount: 1 },
     ],
   },
+  'spell-hush-step': {
+    id: 'spell-hush-step',
+    name: 'Hush Step',
+    description: 'Light as a seed: gather for two minutes without bothering a watching creature.',
+    target: 'sneak',
+    cost: [
+      { itemId: 'component-calming-tea', amount: 1 },
+      { itemId: 'component-thistle-twine', amount: 1 },
+    ],
+  },
   'spell-tanglevine': {
     id: 'spell-tanglevine',
     name: 'Tanglevine',
@@ -67,7 +89,8 @@ export const SPELLS: Readonly<Record<string, SpellDef>> = {
   },
 }
 
-export type RitualEffect = 'turn-to-day' | 'turn-to-night' | 'open-fairy-ring'
+export type RitualEffect =
+  'turn-to-day' | 'turn-to-night' | 'open-fairy-ring' | 'unlock-region' | 'plenty'
 
 export interface RitualDef {
   id: string
@@ -77,7 +100,12 @@ export interface RitualDef {
   cost: CostEntry[]
   /** Only works in the morning. */
   morningOnly?: boolean
+  /** For 'unlock-region' rites: which region opens. */
+  region?: string
 }
+
+/** Rite of Plenty: how long it lasts and how much faster plants regrow. */
+export const PLENTY = { durationMs: 10 * 60_000, regrowth: 1.5 }
 
 /** Rituals are performed at the Ritual Circle at home. */
 export const RITUALS: Readonly<Record<string, RitualDef>> = {
@@ -97,6 +125,24 @@ export const RITUALS: Readonly<Record<string, RitualDef>> = {
     cost: [
       { itemId: 'component-sun-salve', amount: 1 },
       { itemId: 'component-lucky-charm-dust', amount: 1 },
+    ],
+  },
+  'ritual-open-path': {
+    id: 'ritual-open-path',
+    name: 'Rite of the Open Path',
+    description: 'Opens the way to the Forest. Needs a Hearthling court.',
+    effect: 'unlock-region',
+    region: 'forest',
+    cost: [{ itemId: 'component-sun-salve', amount: 2 }],
+  },
+  'ritual-plenty': {
+    id: 'ritual-plenty',
+    name: 'Rite of Plenty',
+    description: 'For ten minutes, plants regrow 50% faster in every open region.',
+    effect: 'plenty',
+    cost: [
+      { itemId: 'component-earth-loam', amount: 1 },
+      { itemId: 'component-sun-salve', amount: 1 },
     ],
   },
   'ritual-turning-night': {

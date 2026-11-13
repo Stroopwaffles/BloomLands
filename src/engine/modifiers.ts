@@ -4,7 +4,8 @@ import { HELPER_RULES, PIRATES_PER_CREW, type HelperType } from '../data/helpers
 import { itemHasTag } from '../data/items'
 import { POTIONS } from '../data/recipes'
 import type { PotionEffect, StationId } from '../data/types'
-import { MOUNTS } from '../data/mounts'
+import { PLENTY } from '../data/magic'
+import { MOUNTS, mountBonusValue } from '../data/mounts'
 import { STARTING_STATIONS, UPGRADES, type QolId, type UpgradeEffect } from '../data/upgrades'
 import { HOME, SETTLEMENTS, SPIRIT_PLACES, SPOTS } from '../data/world'
 import type { GameState } from './state'
@@ -65,9 +66,10 @@ export function satchelCapacity(state: GameState): number {
   // Riding a mount in its home region carries extra.
   const id = state.mounts.riding
   const mount = id ? MOUNTS[id] : null
-  if (id && mount && placeRegion(state.player.place) === mount.regionId) {
-    const level = state.mounts.owned[id]?.level ?? 1
-    capacity += mount.regionSatchel + (level - 1) * mount.satchelPerLevel
+  if (id && mount && mount.bonus.kind === 'satchel') {
+    if (placeRegion(state.player.place) === mount.regionId) {
+      capacity += mountBonusValue(mount, state.mounts.owned[id]?.level ?? 1)
+    }
   }
   for (const e of potionEffects(state)) if (e.kind === 'satchel') capacity += e.amount
   return capacity
@@ -100,6 +102,44 @@ export function traderPayMultiplier(state: GameState): number {
 export function potionDurationMultiplier(state: GameState): number {
   let value = 1
   for (const e of curioEffects(state)) if (e.kind === 'potionDuration') value *= e.multiplier
+  return value
+}
+
+/** Curios that make trinkets turn up more often. */
+export function trinketChanceMultiplier(state: GameState): number {
+  let value = 1
+  for (const e of curioEffects(state)) if (e.kind === 'trinketChance') value *= e.multiplier
+  return value
+}
+
+/** Extra yield for plants with a tag (e.g. Burdock's Field Guide for mushrooms). */
+export function tagYieldBonus(state: GameState, tags: readonly string[] | undefined): number {
+  let bonus = 0
+  for (const e of curioEffects(state)) {
+    if (e.kind === 'tagYield' && tags?.includes(e.tag)) bonus += e.amount
+  }
+  return bonus
+}
+
+export function researchSpeed(state: GameState): number {
+  let value = 1
+  for (const e of curioEffects(state)) if (e.kind === 'researchSpeed') value *= e.multiplier
+  return value
+}
+
+/** Curios that raise bloom gained in one region. */
+export function regionBloomMultiplier(state: GameState, regionId: string): number {
+  let value = 1
+  for (const e of curioEffects(state)) {
+    if (e.kind === 'regionBloom' && e.regionId === regionId) value *= e.multiplier
+  }
+  return value
+}
+
+/** Regrowth from potions and the Rite of Plenty. */
+export function boostRegrowth(state: GameState): number {
+  let value = state.plentyMs > 0 ? PLENTY.regrowth : 1
+  for (const e of potionEffects(state)) if (e.kind === 'regrowth') value *= e.multiplier
   return value
 }
 

@@ -21,6 +21,8 @@ export type BlockedReason =
   | 'no-circle'
   | 'not-ready'
   | 'not-morning'
+  | 'watching'
+  | 'needs-rank'
 
 /**
  * Things that just happened, returned by actions so the screen can react (floating numbers,
@@ -63,3 +65,4 @@ export type GameEvent =
   | { type: 'secret'; spotId: string; found: 'unlocked' | 'visited' }
   | { type: 'outfit'; outfitId: string }
   | { type: 'crew-won'; crewId: string }
+  | { type: 'region-unlocked'; regionId: string }

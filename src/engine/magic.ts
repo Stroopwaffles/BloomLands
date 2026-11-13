@@ -1,13 +1,17 @@
-import { RITUALS, SPELLS } from '../data/magic'
+import { PLENTY, REGION_SIGNATURE, REGIONAL_SPELLS, RITUALS, SPELLS } from '../data/magic'
+import type { CostEntry } from '../data/types'
 import { RESEARCH } from '../data/research'
-import { clearCamp, clearPests, parley, pestsAt, sendCreatureAway } from './challenges'
+import { clearCamp, clearPests, parley, pestsAt, sendCreatureAway, sneak } from './challenges'
 import { canPay, payCost } from './costs'
 import { isMorning, turnSky } from './environment'
 import type { BlockedReason, GameEvent } from './events'
 import { activeFlightEvent, foilAmbush } from './flightEvents'
-import { hasFeature } from './modifiers'
+import { courtRank, hasFeature } from './modifiers'
 import { canTameHere, tameMountHere } from './mounts'
+import { regionUnlocked, spotWatched, unlockRegion } from './regions'
+import { stateRandom } from './rng'
 import { unlockSecret } from './secrets'
+import { placeRegion, REGIONS } from '../data/world'
 import type { GameState } from './state'
 
 /** Spells the player has researched. */
@@ -35,13 +39,30 @@ function hasTarget(state: GameState, spellId: string): boolean {
       return canTameHere(state)
     case 'parley':
       return !travel && !!state.challenges.camps[place]
+    case 'sneak':
+      return !travel && spotWatched(state, place) && state.player.sneakMs <= 0
   }
+}
+
+/**
+ * What a spell costs right here. Parley and Kindred Call use the local region's signature
+ * component (Earth Loam in the Forest) in place of Sun Salve.
+ */
+export function spellCost(state: GameState, spellId: string): CostEntry[] {
+  const cost = SPELLS[spellId]?.cost ?? []
+  if (!REGIONAL_SPELLS.includes(spellId)) return cost
+  const signature = REGION_SIGNATURE[placeRegion(state.player.place)] ?? REGION_SIGNATURE.meadow
+  return cost.map((entry) =>
+    'itemId' in entry && entry.itemId === REGION_SIGNATURE.meadow
+      ? { itemId: signature, amount: entry.amount }
+      : entry,
+  )
 }
 
 export function checkSpell(state: GameState, spellId: string): 'ok' | BlockedReason {
   if (!SPELLS[spellId] || !knownSpells(state).includes(spellId)) return 'locked'
   if (!hasTarget(state, spellId)) return 'no-target'
-  if (!canPay(state, SPELLS[spellId].cost)) return 'missing-items'
+  if (!canPay(state, spellCost(state, spellId))) return 'missing-items'
   return 'ok'
 }
 
@@ -49,7 +70,7 @@ export function checkSpell(state: GameState, spellId: string): 'ok' | BlockedRea
 export function castSpell(state: GameState, spellId: string): GameEvent[] {
   const check = checkSpell(state, spellId)
   if (check !== 'ok') return [{ type: 'blocked', reason: check }]
-  payCost(state, SPELLS[spellId].cost)
+  payCost(state, spellCost(state, spellId))
   state.stats.spellsCast++
   const place = state.player.place
   const cast: GameEvent = { type: 'spell-cast', spellId }
@@ -67,6 +88,8 @@ export function castSpell(state: GameState, spellId: string): GameEvent[] {
       return [cast, ...tameMountHere(state)]
     case 'parley':
       return [cast, ...parley(state, place)]
+    case 'sneak':
+      return [cast, ...sneak(state)]
   }
 }
 
@@ -76,6 +99,11 @@ export function checkRitual(state: GameState, ritualId: string): 'ok' | BlockedR
   if (state.player.travel || state.player.place !== 'home') return 'not-home'
   if (RITUALS[ritualId].morningOnly && !isMorning(state)) return 'not-morning'
   if (ritualId === 'ritual-dawn' && state.secrets.includes('fairy-ring')) return 'already-done'
+  const region = RITUALS[ritualId].region
+  if (region) {
+    if (regionUnlocked(state, region)) return 'already-done'
+    if (courtRank(state) < (REGIONS[region].unlock?.rank ?? 0)) return 'needs-rank'
+  }
   if (!canPay(state, RITUALS[ritualId].cost)) return 'missing-items'
   return 'ok'
 }
@@ -96,6 +124,14 @@ export function performRitual(state: GameState, ritualId: string): GameEvent[] {
       break
     case 'open-fairy-ring':
       return [{ type: 'ritual-performed', ritualId }, ...unlockSecret(state, 'fairy-ring')]
+    case 'plenty':
+      state.plentyMs += PLENTY.durationMs
+      break
+    case 'unlock-region':
+      return [
+        { type: 'ritual-performed', ritualId },
+        ...unlockRegion(state, ritual.region!, stateRandom(state)),
+      ]
   }
   return [{ type: 'ritual-performed', ritualId }]
 }

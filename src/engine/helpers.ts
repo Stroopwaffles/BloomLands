@@ -15,6 +15,7 @@ import { piratesInRegion } from './challenges'
 import type { GameEvent } from './events'
 import { rollPlant } from './gathering'
 import { mountSpeed, spareMounts } from './mounts'
+import { placeOpen, spotWatched } from './regions'
 import { helperCapacity, helperCount, storageCapacity, storageUsed } from './modifiers'
 import type { Random } from './rng'
 import { addItems, countItems, type GameState, type HelperState } from './state'
@@ -68,7 +69,9 @@ export function assignHelper(
 ): GameEvent[] {
   const helper = state.helpers.list.find((h) => h.id === helperId)
   if (!helper || !gathersAtSpot(helper.type)) return [{ type: 'blocked', reason: 'locked' }]
-  if (spotId !== null && !SPOTS[spotId]) return [{ type: 'blocked', reason: 'not-here' }]
+  if (spotId !== null && (!SPOTS[spotId] || !placeOpen(state, spotId))) {
+    return [{ type: 'blocked', reason: 'not-here' }]
+  }
   helper.task = spotId
   return []
 }
@@ -84,11 +87,15 @@ export function setMinimum(state: GameState, itemId: string, amount: number): Ga
 // ---------------------------------------------------------------------------------------------
 // What supply helpers can fetch
 
-/** Plants and spots that give an item, so supply helpers know where to go. */
-function sourcesOf(itemId: string): { spotId: string; plantId: string }[] {
+/**
+ * Plants and spots that give an item, so supply helpers know where to go. With a game state, only
+ * spots the player has opened (and no secret areas) count.
+ */
+function sourcesOf(itemId: string, state?: GameState): { spotId: string; plantId: string }[] {
   const sources: { spotId: string; plantId: string }[] = []
   for (const spot of Object.values(SPOTS)) {
     if (spot.secret) continue
+    if (state && !placeOpen(state, spot.id)) continue
     for (const plantId of spot.plants) {
       if (PLANTS[plantId].yields.some((y) => y.itemId === itemId)) {
         sources.push({ spotId: spot.id, plantId })
@@ -123,6 +130,7 @@ function nextShortage(state: GameState): string | null {
   let best: string | null = null
   let bestGap = 0
   for (const [itemId, minimum] of Object.entries(state.supply.minimums)) {
+    if (sourcesOf(itemId, state).length === 0) continue
     let coming = 0
     for (const h of state.helpers.list) {
       if (h.type !== 'supply' || h.phase === 'idle') continue
@@ -185,9 +193,10 @@ function startTrip(state: GameState, helper: HelperState): boolean {
   const spotId = gathersAtSpot(helper.type)
     ? helper.task
     : itemId
-      ? sourcesOf(itemId)[0].spotId
+      ? (sourcesOf(itemId, state).find((s) => !spotWatched(state, s.spotId))?.spotId ?? null)
       : null
-  if (!spotId) return false
+  // A watched (blocked) spot: wait at home until it's clear (design doc 3.15).
+  if (!spotId || spotWatched(state, spotId)) return false
   helper.tripSpot = spotId
   helper.tripItem = itemId
   helper.phase = 'outbound'

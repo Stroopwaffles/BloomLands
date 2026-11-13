@@ -13,12 +13,12 @@ import { addItems, type GameState, type TravelState } from './state'
 export function rollFlightEvent(
   travel: TravelState,
   random: Random,
-  piratesFriendly = false,
+  ambushCrew: string | null = 'dandelion-drifters',
 ): void {
   if (random() >= FLIGHT_EVENT_RULES.chance) return
   const kind = pickWeighted(
     (Object.entries(FLIGHT_EVENT_RULES.weights) as [FlightEventKind, number][]).filter(
-      ([k]) => !(piratesFriendly && k === 'ambush'),
+      ([k]) => ambushCrew !== null || k !== 'ambush',
     ),
     random,
   )
@@ -27,6 +27,7 @@ export function rollFlightEvent(
     showAtMs: Math.round(travel.totalMs * (1 - FLIGHT_EVENT_RULES.at)),
     taps: 0,
     resolved: false,
+    ...(kind === 'ambush' && ambushCrew ? { crewId: ambushCrew } : {}),
   }
 }
 
@@ -63,7 +64,7 @@ export function tapFlightEvent(state: GameState): GameEvent[] {
       if (event.taps < FLIGHT_EVENT_RULES.ambushTaps) return []
       event.resolved = true
       state.stats.ambushesFoiled++
-      return [{ type: 'flight-event', result: 'The Drifters flutter off, outwitted!' }]
+      return [{ type: 'flight-event', result: 'The pirates flutter off, outwitted!' }]
     case 'seeds':
       if (satchelFull(state)) {
         event.resolved = true
@@ -92,7 +93,7 @@ export function foilAmbush(state: GameState): GameEvent[] {
   if (!event || event.kind !== 'ambush') return [{ type: 'blocked', reason: 'no-target' }]
   event.resolved = true
   state.stats.ambushesFoiled++
-  return [{ type: 'flight-event', result: 'A gust sends the Drifters tumbling away!' }]
+  return [{ type: 'flight-event', result: 'A gust sends the pirates tumbling away!' }]
 }
 
 /**

@@ -180,6 +180,30 @@ export const OUTFIT_PIECES: Readonly<Record<string, OutfitPiece>> = {
     slot: 'outfit',
     color: '#a9d4f5',
   },
+  'piece-moss-robe': {
+    id: 'piece-moss-robe',
+    name: "Scholar's moss robe",
+    slot: 'outfit',
+    color: '#6f9a5b',
+  },
+  'piece-reading-glasses': {
+    id: 'piece-reading-glasses',
+    name: 'Reading glasses',
+    slot: 'accessory',
+    color: '#b08a3e',
+  },
+  'piece-acorn-cap': {
+    id: 'piece-acorn-cap',
+    name: 'Acorn cap',
+    slot: 'headpiece',
+    color: '#9b6a3c',
+  },
+  'piece-leaf-cloak': {
+    id: 'piece-leaf-cloak',
+    name: 'Leaf cloak',
+    slot: 'outfit',
+    color: '#c9832f',
+  },
 }
 
 export interface OutfitSet {
@@ -207,6 +231,16 @@ export const OUTFIT_SETS: Readonly<Record<string, OutfitSet>> = {
     id: 'outfit-dewdrop',
     name: 'Dewdrop set',
     pieces: ['piece-dewdrop-circlet', 'piece-dewdrop-gown', 'piece-dewdrop-cloak'],
+  },
+  'outfit-scholar': {
+    id: 'outfit-scholar',
+    name: "Scholar's set",
+    pieces: ['piece-moss-robe', 'piece-reading-glasses'],
+  },
+  'outfit-acorn': {
+    id: 'outfit-acorn',
+    name: 'Acorn set',
+    pieces: ['piece-acorn-cap', 'piece-leaf-cloak'],
   },
 }
 

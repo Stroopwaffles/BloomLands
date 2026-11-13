@@ -1,4 +1,10 @@
 import type { Component } from 'svelte'
+import {
+  FOREST_ITEM_ART,
+  FOREST_MISC_ART,
+  FOREST_PEOPLE_ART,
+  FOREST_PLANT_ART,
+} from './library/forest'
 import { ITEM_ART } from './library/items'
 import { MISC_ART } from './library/misc'
 import { PLANT_ART } from './library/plants'
@@ -22,6 +28,10 @@ export const ART_SVG: Record<string, string> = {
   ...ITEM_ART,
   ...PEOPLE_ART,
   ...MISC_ART,
+  ...FOREST_PLANT_ART,
+  ...FOREST_ITEM_ART,
+  ...FOREST_PEOPLE_ART,
+  ...FOREST_MISC_ART,
 }
 
 /** Families of assets that share one drawing (e.g. every lodging upgrade uses the lodging icon). */

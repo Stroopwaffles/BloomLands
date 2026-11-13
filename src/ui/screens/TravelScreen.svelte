@@ -1,7 +1,7 @@
 <script lang="ts">
   import Art from '../../art/Art.svelte'
   import { onMount } from 'svelte'
-  import { FLIGHT_EVENT_RULES } from '../../data/challenges'
+  import { CREWS, FLIGHT_EVENT_RULES } from '../../data/challenges'
   import { HOME, placeName } from '../../data/world'
   import { activeFlightEvent } from '../../engine/flightEvents'
   import { formatDuration } from '../../engine/format'
@@ -46,12 +46,14 @@
 
     {#if event?.kind === 'ambush'}
       <section class="event ambush" role="alert">
-        <strong>The Dandelion Drifters swoop in to raid your satchel!</strong>
+        <strong
+          >{CREWS[event.crewId ?? 'dandelion-drifters']?.name ?? 'Pirates'} swoop in to raid your satchel!</strong
+        >
         <span
           >Tap to shoo them ({FLIGHT_EVENT_RULES.ambushTaps - event.taps} more) or cast Gust.</span
         >
         <button type="button" class="tap" onpointerdown={tapEvent}>
-          <Art id="crew-dandelion-drifters" size={64} />
+          <Art id={`crew-${event.crewId ?? 'dandelion-drifters'}`} size={64} />
           Shoo!
         </button>
         <SpellButtons targets={['ambush']} />

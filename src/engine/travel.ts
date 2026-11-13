@@ -1,7 +1,10 @@
-import { baseTravelMs, HOME, isSecret, isSettlement, isSpiritPlace, isSpot } from '../data/world'
+import { CREWS } from '../data/challenges'
+import { MOUNTS, mountBonusValue } from '../data/mounts'
+import { baseTravelMs, HOME, isSettlement, isSpiritPlace, isSpot, placeRegion } from '../data/world'
 import { weatherFlightFactor } from './environment'
 import type { GameEvent } from './events'
 import { applyInstantEvents, rollFlightEvent, settleFlightEvent } from './flightEvents'
+import { placeOpen } from './regions'
 import { discoverSecret } from './secrets'
 import { depositSatchel, ensureSpot } from './gathering'
 import { hasQol, travelMultiplier, wingSpeed } from './modifiers'
@@ -13,8 +16,28 @@ export function travelMs(state: GameState, from: string, to: string): number | n
   const base = baseTravelMs(from, to)
   if (base === null) return null
   return Math.ceil(
-    (base / wingSpeed(state)) * weatherFlightFactor(state, from, to) * travelMultiplier(state),
+    (base / wingSpeed(state)) *
+      weatherFlightFactor(state, from, to) *
+      travelMultiplier(state) *
+      mountHopFactor(state, from, to),
   )
+}
+
+/** Mounts like the flying squirrel make hops inside their own region quicker. */
+function mountHopFactor(state: GameState, from: string, to: string): number {
+  const id = state.mounts.riding
+  const mount = id ? MOUNTS[id] : null
+  if (!id || !mount || mount.bonus.kind !== 'regionTravel') return 1
+  const region = mount.regionId
+  if (placeRegion(from) !== region || placeRegion(to) !== region) return 1
+  return mountBonusValue(mount, state.mounts.owned[id]?.level ?? 1)
+}
+
+/** The pirate crew that might ambush a flight: whoever roams the region you're flying into. */
+function ambushCrew(state: GameState, from: string, to: string): string | null {
+  const region = placeRegion(to === HOME ? from : to)
+  const crew = Object.values(CREWS).find((c) => c.regionId === region)
+  return crew && !state.crews[crew.id]?.won ? crew.id : null
 }
 
 /**
@@ -32,13 +55,13 @@ export function startTravel(
   if (to !== HOME && !isSpot(to) && !isSettlement(to) && !isSpiritPlace(to)) {
     return [{ type: 'blocked', reason: 'not-here' }]
   }
-  if (isSecret(to) && !state.secrets.includes(to)) return [{ type: 'blocked', reason: 'locked' }]
+  if (!placeOpen(state, to)) return [{ type: 'blocked', reason: 'locked' }]
   const totalMs = travelMs(state, player.place, to)
   if (totalMs === null) return [{ type: 'blocked', reason: 'not-here' }]
 
   player.travel = { to, totalMs, remainingMs: totalMs, ...(auto ? { auto: true } : {}) }
   if (random && !auto) {
-    rollFlightEvent(player.travel, random, state.crews['dandelion-drifters']?.won === true)
+    rollFlightEvent(player.travel, random, ambushCrew(state, player.place, to))
   }
   return [{ type: 'depart', to, totalMs, auto }]
 }

@@ -303,6 +303,102 @@ RESEARCH_LIST.push({
   rituals: ['ritual-dawn'],
 })
 
+RESEARCH_LIST.push({
+  id: 'research-open-path',
+  name: 'Rite of the Open Path',
+  branch: 'rites',
+  description: 'The old way into the Forest. Performing it needs a Hearthling court.',
+  cost: [
+    { itemId: 'component-sun-salve', amount: 2 },
+    { itemId: 'component-thistle-twine', amount: 1 },
+  ],
+  durationMs: 3 * MIN,
+  requires: ['research-turning'],
+  unlocks: [],
+  rituals: ['ritual-open-path'],
+})
+
+// Forest (shown once the Forest is open)
+RESEARCH_LIST.push(
+  {
+    id: 'research-spores',
+    name: 'Spore Grinding',
+    branch: 'refining',
+    description: 'Grind mushroom caps into Spore Dust, and golden caps into Golden Spore.',
+    cost: [{ tag: 'caps', amount: 6 }],
+    durationMs: 1 * MIN,
+    requires: ['research-grinding'],
+    unlocks: ['refined-spore-dust', 'refined-golden-spore'],
+    region: 'forest',
+  },
+  {
+    id: 'research-acorn-flour',
+    name: 'Acorn Milling',
+    branch: 'refining',
+    description: 'Grind acorns into a rich, nutty flour.',
+    cost: [{ itemId: 'raw-acorns', amount: 4 }],
+    durationMs: 1 * MIN,
+    requires: ['research-grinding'],
+    unlocks: ['refined-acorn-flour'],
+    region: 'forest',
+  },
+  {
+    id: 'research-loam',
+    name: 'Earth Loam',
+    branch: 'brewing',
+    description: 'Simmer flour and spores into Earth Loam, the Forest’s own magic.',
+    cost: [
+      { itemId: 'refined-spore-dust', amount: 2 },
+      { itemId: 'refined-acorn-flour', amount: 2 },
+    ],
+    durationMs: 3 * MIN,
+    requires: ['research-spores', 'research-acorn-flour'],
+    unlocks: ['component-earth-loam'],
+    region: 'forest',
+  },
+  {
+    id: 'research-swiftroot',
+    name: 'Swiftroot Elixir',
+    branch: 'brewing',
+    description: 'A rooty potion that makes plants regrow faster.',
+    cost: [{ itemId: 'component-earth-loam', amount: 1 }],
+    durationMs: 3 * MIN,
+    requires: ['research-loam', 'research-pressing'],
+    unlocks: ['potion-swiftroot-elixir'],
+    region: 'forest',
+  },
+  {
+    id: 'research-hush-step',
+    name: 'Hush Step',
+    branch: 'spellcraft',
+    description: 'Step so softly that even an owl doesn’t notice.',
+    cost: [
+      { itemId: 'component-calming-tea', amount: 1 },
+      { itemId: 'component-thistle-twine', amount: 1 },
+    ],
+    durationMs: 2 * MIN,
+    requires: ['research-lullaby', 'research-gust'],
+    unlocks: [],
+    spells: ['spell-hush-step'],
+    region: 'forest',
+  },
+  {
+    id: 'research-plenty',
+    name: 'Rite of Plenty',
+    branch: 'rites',
+    description: 'A rite of loam and sunshine that hurries every plant along.',
+    cost: [
+      { itemId: 'component-earth-loam', amount: 1 },
+      { itemId: 'component-sun-salve', amount: 1 },
+    ],
+    durationMs: 4 * MIN,
+    requires: ['research-loam', 'research-open-path'],
+    unlocks: [],
+    rituals: ['ritual-plenty'],
+    region: 'forest',
+  },
+)
+
 export const RESEARCH: Readonly<Record<string, ResearchDef>> = Object.fromEntries(
   RESEARCH_LIST.map((node) => [node.id, node]),
 )

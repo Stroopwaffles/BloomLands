@@ -8,15 +8,19 @@ import type { GameEvent } from './events'
 import {
   bloomLuck,
   bloomRegrowth,
+  boostRegrowth,
   clickPower,
   hasQol,
   luck,
   satchelCapacity,
   storageCapacity,
   storageUsed,
+  tagYieldBonus,
+  trinketChanceMultiplier,
 } from './modifiers'
 import { pickWeighted, type Random } from './rng'
 import { addItems, countItems, type GameState, type SlotState, type SpotState } from './state'
+import { spotWatched } from './regions'
 import { startTravel } from './travel'
 
 /** Chance a harvest gives one extra of each material. Starting value for balancing. */
@@ -33,13 +37,17 @@ export function rollPlant(
   random: Random,
   luckMultiplier = 1,
   morningOk = true,
+  capsBoost = 1,
 ): string {
   const spot = SPOTS[spotId]
   const plants = spot.plants.filter((id) => morningOk || !PLANTS[id].morningOnly)
   return pickWeighted(
     plants.map((id) => {
-      const { rarity } = PLANTS[id]
-      const weight = RARITY_WEIGHT[rarity] * (rarity === 'common' ? 1 : luckMultiplier)
+      const { rarity, tags } = PLANTS[id]
+      const weight =
+        RARITY_WEIGHT[rarity] *
+        (rarity === 'common' ? 1 : luckMultiplier) *
+        (tags?.includes('caps') ? capsBoost : 1)
       return [id, weight] as const
     }),
     random,
@@ -49,7 +57,14 @@ export function rollPlant(
 function growSlot(state: GameState, slot: SlotState, spotId: string, random: Random): void {
   const regionId = SPOTS[spotId].regionId
   const morningOk = morningPlantsGrow(state, regionId)
-  const plantId = rollPlant(spotId, random, luck(state) * bloomLuck(state, regionId), morningOk)
+  const weather = weatherIn(state, regionId)
+  const plantId = rollPlant(
+    spotId,
+    random,
+    luck(state) * bloomLuck(state, regionId) * (weather.luck ?? 1),
+    morningOk,
+    weather.capsBoost ?? 1,
+  )
   slot.plantId = plantId
   slot.hp = PLANTS[plantId].toughness
   slot.regrowMs = 0
@@ -99,6 +114,9 @@ export function tapPlant(
   const slot = state.spots[spotId]?.slots[slotIndex]
   if (!slot?.plantId) return [{ type: 'blocked', reason: 'no-plant' }]
   if (campBlocksSlot(state, spotId, slotIndex)) return [{ type: 'blocked', reason: 'camp' }]
+  if (spotWatched(state, spotId) && state.player.sneakMs <= 0) {
+    return [{ type: 'blocked', reason: 'watching' }]
+  }
 
   // Pests come off first, one per tap. Clearing them is tending, so it works with a full satchel.
   if ((slot.pests ?? 0) > 0) {
@@ -118,15 +136,16 @@ export function tapPlant(
   // Harvest
   const plantId = slot.plantId
   const bonus = random() < BONUS_MATERIAL_CHANCE
+  const extra = (bonus ? 1 : 0) + tagYieldBonus(state, PLANTS[plantId].tags)
   const items: ItemStack[] = PLANTS[plantId].yields.map(({ itemId, amount }) => ({
     itemId,
-    amount: amount + (bonus ? 1 : 0),
+    amount: amount + extra,
   }))
   for (const { itemId, amount } of items) addItems(player.satchel, itemId, amount)
 
   let trinketId: string | null = null
   const trinkets = SPOTS[spotId].trinkets
-  if (trinkets.length > 0 && random() < TRINKET_CHANCE) {
+  if (trinkets.length > 0 && random() < TRINKET_CHANCE * trinketChanceMultiplier(state)) {
     trinketId = trinkets[Math.floor(random() * trinkets.length)]
     addItems(player.satchel, trinketId, 1)
   }
@@ -180,7 +199,11 @@ export function regrowSpots(state: GameState, dtMs: number, random: Random): voi
   for (const [spotId, spot] of Object.entries(state.spots)) {
     if (!SPOTS[spotId]) continue
     const regionId = SPOTS[spotId].regionId
-    const growth = dtMs * weatherIn(state, regionId).regrowth * bloomRegrowth(state, regionId)
+    const growth =
+      dtMs *
+      weatherIn(state, regionId).regrowth *
+      bloomRegrowth(state, regionId) *
+      boostRegrowth(state)
     for (const slot of spot.slots) {
       if (slot.plantId) continue
       slot.regrowMs -= growth

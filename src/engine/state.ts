@@ -55,6 +55,8 @@ export interface FlightEventState {
   resolved: boolean
   /** Gusts: true if it was a tailwind. */
   tailwind?: boolean
+  /** Ambushes: which pirate crew. */
+  crewId?: string
 }
 
 /** A timed job: crafting at a station, or research. */
@@ -161,6 +163,10 @@ export interface GameState {
   }
   /** Weather by region ID. */
   weather: Record<string, WeatherState>
+  /** Regions the player has opened this run (the Meadow is open from the start). */
+  unlockedRegions: string[]
+  /** Time left on the Rite of Plenty. */
+  plentyMs: number
   challenges: {
     /** Large creatures, by the spot they're visiting. */
     creatures: Record<string, CreatureState>
@@ -188,6 +194,8 @@ export interface GameState {
     clickPower: number
     /** Base flight speed, before gear, potions and (later) mounts. */
     wingSpeed: number
+    /** Time left on Hush Step: gathering is allowed under a watching creature's nose. */
+    sneakMs: number
   }
   resources: {
     glimmers: number
@@ -302,6 +310,8 @@ export function createNewGame(now: number): GameState {
     weather: {
       meadow: { kind: 'sunshine', remainingMs: 10 * 60_000 },
     },
+    unlockedRegions: ['meadow'],
+    plentyMs: 0,
     challenges: {
       creatures: {},
       camps: {},
@@ -318,6 +328,7 @@ export function createNewGame(now: number): GameState {
       satchelCapacity: BASE_SATCHEL_CAPACITY,
       clickPower: 1,
       wingSpeed: 1,
+      sneakMs: 0,
     },
     resources: {
       glimmers: 0,

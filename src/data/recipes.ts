@@ -130,6 +130,39 @@ const RECIPE_LIST: RecipeDef[] = [
     durationMs: 20 * SEC,
   },
 
+  // Forest refining and components
+  {
+    id: 'refined-spore-dust',
+    station: 'mortar',
+    inputs: [{ tag: 'caps', amount: 4 }],
+    output: { itemId: 'refined-spore-dust', amount: 1 },
+    durationMs: 14 * SEC,
+  },
+  {
+    id: 'refined-acorn-flour',
+    station: 'mortar',
+    inputs: [{ itemId: 'raw-acorns', amount: 3 }],
+    output: { itemId: 'refined-acorn-flour', amount: 1 },
+    durationMs: 14 * SEC,
+  },
+  {
+    id: 'refined-golden-spore',
+    station: 'mortar',
+    inputs: [{ itemId: 'raw-golden-caps', amount: 1 }],
+    output: { itemId: 'refined-golden-spore', amount: 1 },
+    durationMs: 20 * SEC,
+  },
+  {
+    id: 'component-earth-loam',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'refined-acorn-flour', amount: 1 },
+      { itemId: 'refined-spore-dust', amount: 1 },
+    ],
+    output: { itemId: 'component-earth-loam', amount: 1 },
+    durationMs: 25 * SEC,
+  },
+
   // Potions (brewed in the cauldron)
   {
     id: 'potion-greenthumb-brew',
@@ -171,6 +204,16 @@ const RECIPE_LIST: RecipeDef[] = [
     output: { itemId: 'potion-lucky-dew', amount: 1 },
     durationMs: 40 * SEC,
   },
+  {
+    id: 'potion-swiftroot-elixir',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'component-earth-loam', amount: 1 },
+      { itemId: 'refined-dew-water', amount: 1 },
+    ],
+    output: { itemId: 'potion-swiftroot-elixir', amount: 1 },
+    durationMs: 40 * SEC,
+  },
 ]
 
 export const RECIPES: Readonly<Record<string, RecipeDef>> = Object.fromEntries(
@@ -204,6 +247,12 @@ const POTION_LIST: PotionDef[] = [
     effect: { kind: 'luck', multiplier: 2 },
     durationMs: 3 * MIN,
     description: 'Rarer plants grow twice as often',
+  },
+  {
+    id: 'potion-swiftroot-elixir',
+    effect: { kind: 'regrowth', multiplier: 1.5 },
+    durationMs: 5 * MIN,
+    description: 'Plants regrow 50% faster everywhere',
   },
 ]
 

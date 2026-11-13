@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { HELPER_RULES } from '../src/data/helpers'
-import { levelUpFood, MOUNTS } from '../src/data/mounts'
+import { levelUpFood, mountBonusValue, MOUNTS } from '../src/data/mounts'
 import { applyAction } from '../src/engine/actions'
 import { helperFlightMs } from '../src/engine/helpers'
 import { satchelCapacity, wingSpeed } from '../src/engine/modifiers'
@@ -86,7 +86,7 @@ describe('riding', () => {
     const state = ownedBee()
     applyAction(state, { type: 'mount/ride', mountId: BEE })
     state.player.place = 'buttercup-rise'
-    expect(satchelCapacity(state)).toBe(20 + bee.regionSatchel)
+    expect(satchelCapacity(state)).toBe(20 + mountBonusValue(bee, 1))
   })
 
   it('levels up by feeding, getting faster and carrying more', () => {

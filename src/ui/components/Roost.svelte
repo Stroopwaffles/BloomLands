@@ -1,7 +1,6 @@
 <script lang="ts">
   import Art from '../../art/Art.svelte'
-  import { levelUpFood, MOUNTS } from '../../data/mounts'
-  import { REGIONS } from '../../data/world'
+  import { levelUpFood, mountBonusValue, MOUNTS } from '../../data/mounts'
   import { payingStock } from '../../engine/costs'
   import { stableCapacity } from '../../engine/modifiers'
   import { checkLevelUp, mountSpeed } from '../../engine/mounts'
@@ -16,8 +15,8 @@
 {#if owned.length === 0}
   <p class="hint">
     {stableCapacity($game) === 0
-      ? 'No mounts yet. Build a Bumblebee Roost, then befriend the bumblebee at Buttercup Rise.'
-      : 'Your roost is ready. Befriend the bumblebee at Buttercup Rise.'}
+      ? 'No mounts yet. Build a Roost, then befriend a wild mount (the bumblebee lives at Buttercup Rise).'
+      : 'Your roost is ready. Befriend the bumblebee at Buttercup Rise, or the flying squirrel in the Forest.'}
   </p>
 {:else}
   <ul>
@@ -31,8 +30,10 @@
         <div class="info">
           <strong>{mount.name} · level {level}</strong>
           <span>
-            Flights ×{mountSpeed($game, mountId).toFixed(2)} · +{mount.regionSatchel +
-              (level - 1) * mount.satchelPerLevel} satchel in the {REGIONS[mount.regionId].name}
+            Flights ×{mountSpeed($game, mountId).toFixed(2)} ·
+            {mount.bonus.kind === 'satchel'
+              ? `+${mountBonusValue(mount, level)} ${mount.bonus.label}`
+              : `${Math.round((1 - mountBonusValue(mount, level)) * 100)}% ${mount.bonus.label}`}
           </span>
           <span class="status">
             {riding ? 'You are riding it.' : 'Resting. Lent to a helper while you fly on your own.'}

@@ -63,6 +63,76 @@ const PLANT_LIST: PlantDef[] = [
     rarity: 'rare',
     yields: [{ itemId: 'raw-ringcap', amount: 1 }],
   },
+
+  // Forest
+  {
+    id: 'plant-moss',
+    name: 'Moss',
+    toughness: 2,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-moss-tufts', amount: 2 }],
+  },
+  {
+    id: 'plant-fern',
+    name: 'Fern',
+    toughness: 3,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-fern-fronds', amount: 2 }],
+  },
+  {
+    id: 'plant-bilberry',
+    name: 'Bilberry',
+    toughness: 4,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-bilberries', amount: 3 }],
+  },
+  {
+    id: 'plant-button-mushroom',
+    tags: ['caps'],
+    name: 'Button mushroom',
+    toughness: 5,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-mushroom-caps', amount: 2 }],
+  },
+  {
+    id: 'plant-acorn',
+    name: 'Acorn',
+    toughness: 5,
+    rarity: 'uncommon',
+    yields: [{ itemId: 'raw-acorns', amount: 2 }],
+  },
+  {
+    id: 'plant-red-cap',
+    tags: ['caps'],
+    name: 'Red-cap toadstool',
+    toughness: 6,
+    rarity: 'uncommon',
+    yields: [{ itemId: 'raw-red-caps', amount: 2 }],
+  },
+  {
+    id: 'plant-golden-chanterelle',
+    tags: ['caps'],
+    name: 'Golden chanterelle',
+    toughness: 7,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-golden-caps', amount: 1 }],
+  },
+  // Forest secrets
+  {
+    id: 'plant-inkcap',
+    tags: ['caps'],
+    name: 'Inkcap mushroom',
+    toughness: 5,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-inkcap', amount: 1 }],
+  },
+  {
+    id: 'plant-birch-catkin',
+    name: 'Silver birch catkin',
+    toughness: 4,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-birch-catkins', amount: 1 }],
+  },
 ]
 
 export const PLANTS: Readonly<Record<string, PlantDef>> = Object.fromEntries(

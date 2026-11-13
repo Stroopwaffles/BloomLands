@@ -8,6 +8,7 @@
   import { SPOTS } from '../../data/world'
   import type { GameEvent } from '../../engine/events'
   import { isNight } from '../../engine/environment'
+  import { pestAt } from '../../engine/challenges'
   import { campBlocksSlot, satchelFull } from '../../engine/gathering'
   import { bloomLevel } from '../../engine/modifiers'
   import { wildMountAt } from '../../engine/mounts'
@@ -29,6 +30,11 @@
   const campCrew = $derived($game.challenges.camps[spotId])
   const wildMount = $derived(wildMountAt($game, spotId))
   const night = $derived(isNight($game))
+  const pest = $derived(pestAt(spotId))
+  const watching = $derived(!!creature && CREATURES[creature.creatureId]?.behavior === 'watches')
+  const sneaking = $derived($game.player.sneakMs > 0)
+  /** A watching creature (the owl) stops gathering here unless you sneak with Hush Step. */
+  const blocked = $derived(watching && !sneaking)
   /** Low bloom looks faded and grey; full bloom is in full color (design doc 7.3). */
   const saturation = $derived(0.55 + bloomLevel($game, spotDef?.regionId ?? 'meadow') * 0.09)
 
@@ -66,6 +72,15 @@
     'plant-wild-strawberry': '#f05a6a',
     'plant-morning-dew': '#cdeeff',
     'plant-ringcap': '#f08a9e',
+    'plant-moss': '#8fbf66',
+    'plant-fern': '#6fae5f',
+    'plant-bilberry': '#4a5ea8',
+    'plant-button-mushroom': '#e9d6bd',
+    'plant-acorn': '#c98a4a',
+    'plant-red-cap': '#e0483e',
+    'plant-golden-chanterelle': '#f2b23a',
+    'plant-inkcap': '#3d3550',
+    'plant-birch-catkin': '#e7dca6',
   }
 
   let bursts = $state<Burst[]>([])
@@ -101,9 +116,13 @@
             : `The ${CREATURES[event.creatureId].name.toLowerCase()} hops away!`,
         )
       } else if (event.type === 'camp-cleared') {
-        say(`${CREWS[event.crewId].name} pack up their camp and drift away.`)
+        say(`${CREWS[event.crewId].name} pack up their camp and slip away.`)
       } else if (event.type === 'spell-cast' && event.spellId === 'spell-bugbane') {
-        say('The aphids scatter!')
+        say(`The ${pest.name} scatter!`)
+      } else if (event.type === 'spell-cast' && event.spellId === 'spell-hush-step') {
+        say('You step as softly as a falling seed...')
+      } else if (event.type === 'blocked' && event.reason === 'watching') {
+        say('The owl is watching. Calm it, or sneak with Hush Step.')
       } else if (event.type === 'harvest') {
         burst(event.slot, 'petals', PETAL_COLORS[event.plantId] ?? '#f7b7c8')
         for (const { itemId, amount } of event.items) {
@@ -142,7 +161,7 @@
 
       {#if campCrew}
         <div class="camp" style:left="{layout.camp.x}%" style:top="{layout.camp.y}%">
-          <Art id="camp-dandelion-drifters" size={160} />
+          <Art id={`camp-${campCrew}`} size={160} />
         </div>
       {/if}
 
@@ -152,8 +171,9 @@
             {slot}
             at={layout.slots[i]}
             wiggle={wiggles[i] ?? 0}
-            disabled={full && !slot.pests}
+            disabled={blocked || (full && !slot.pests)}
             onTap={() => tap(i)}
+            {pest}
           />
         {/if}
         {#each bursts.filter((b) => b.slot === i) as b (b.id)}
@@ -187,23 +207,36 @@
 
       {#if creature}
         {@const def = CREATURES[creature.creatureId]}
-        <button
-          type="button"
-          class="creature"
-          style:left="{layout.creature.x}%"
-          style:top="{layout.creature.y}%"
-          aria-label={`Shoo the ${def.name.toLowerCase()} (${creature.tapsLeft} more taps)`}
-          onpointerdown={shoo}
-        >
-          {#key creatureWiggle}
-            <span class="art" class:hop={creatureWiggle > 0}
-              ><Art id={`creature-${creature.creatureId}`} size={120} /></span
-            >
-          {/key}
-          <span class="taps" aria-hidden="true">
-            <span style:width="{(1 - creature.tapsLeft / def.taps) * 100}%"></span>
-          </span>
-        </button>
+        {#if def.behavior === 'watches'}
+          <div
+            class="creature watcher"
+            class:sneaking
+            style:left="{layout.creature.x}%"
+            style:top="{layout.creature.y}%"
+            role="img"
+            aria-label={`A ${def.name.toLowerCase()} is watching`}
+          >
+            <span class="art"><Art id={`creature-${creature.creatureId}`} size={120} /></span>
+          </div>
+        {:else}
+          <button
+            type="button"
+            class="creature"
+            style:left="{layout.creature.x}%"
+            style:top="{layout.creature.y}%"
+            aria-label={`Shoo the ${def.name.toLowerCase()} (${creature.tapsLeft} more taps)`}
+            onpointerdown={shoo}
+          >
+            {#key creatureWiggle}
+              <span class="art" class:hop={creatureWiggle > 0}
+                ><Art id={`creature-${creature.creatureId}`} size={120} /></span
+              >
+            {/key}
+            <span class="taps" aria-hidden="true">
+              <span style:width="{(1 - creature.tapsLeft / def.taps) * 100}%"></span>
+            </span>
+          </button>
+        {/if}
       {/if}
     </div>
 
@@ -214,7 +247,17 @@
         </p>
       {/if}
       {#if message}<p class="note message" role="status">{message}</p>{/if}
-      {#if creature}
+      {#if creature && watching}
+        <p class="note trouble">
+          {#if sneaking}
+            Sneaking past the {CREATURES[creature.creatureId].name.toLowerCase()}... gather quietly
+            ({Math.ceil($game.player.sneakMs / 1000)}s left).
+          {:else}
+            A {CREATURES[creature.creatureId].name.toLowerCase()} is watching this spot. Nobody can gather
+            here (helpers stay home) until you calm it, or sneak past with Hush Step.
+          {/if}
+        </p>
+      {:else if creature}
         <p class="note trouble">
           A {CREATURES[creature.creatureId].name.toLowerCase()} is munching the plants! Tap it to shoo
           it away ({creature.tapsLeft} more), or calm it.
@@ -222,17 +265,46 @@
       {/if}
       {#if campCrew}
         <p class="note trouble">
-          {CREWS[campCrew].name} have camped here, taking over part of the spot. Helpers in the Meadow
+          {CREWS[campCrew].name} have camped here, taking over part of the spot. Helpers in the region
           bring back less until they leave.
         </p>
       {/if}
-      <SpellButtons targets={['pests', 'creature', 'camp', 'parley']} />
+      <SpellButtons targets={['pests', 'creature', 'sneak', 'camp', 'parley']} />
       <WildMount {spotId} />
     </div>
   </div>
 {/if}
 
 <style>
+  .watcher {
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+
+  .watcher .art {
+    display: block;
+    animation: owl-look 4s ease-in-out infinite;
+  }
+
+  .watcher.sneaking {
+    opacity: 0.55;
+  }
+
+  @keyframes owl-look {
+    0%,
+    40%,
+    100% {
+      transform: rotate(0deg);
+    }
+    50%,
+    70% {
+      transform: rotate(-8deg);
+    }
+    80% {
+      transform: rotate(6deg);
+    }
+  }
+
   .spot {
     min-height: calc(100vh - 70px);
     padding: 12px 16px 24px;
