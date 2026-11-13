@@ -67,6 +67,7 @@ export function fulfillVillagerRequest(
   state.stats.glimmersEarned += request.glimmers
   settlement.requests = settlement.requests.filter((r) => r.id !== requestId)
   settlement.filled++
+  state.stats.villagersHelped++
   return [
     { type: 'villager-helped', settlementId, glimmers: request.glimmers },
     ...addBloom(state, SETTLEMENTS[settlementId].regionId, BLOOM_REWARDS.settlementRequest),

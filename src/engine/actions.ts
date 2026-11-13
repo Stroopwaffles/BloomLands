@@ -8,6 +8,7 @@ import { tapFlightEvent } from './flightEvents'
 import { assignHelper, recruitHelper, setMinimum } from './helpers'
 import { castSpell, performRitual } from './magic'
 import { dismissVillagerRequest, fulfillVillagerRequest } from './settlements'
+import { advanceStory } from './stories'
 import { startResearch } from './research'
 import { stateRandom, type Random } from './rng'
 import { addItems, type GameState } from './state'
@@ -39,6 +40,7 @@ export type Action =
   | { type: 'ritual/perform'; ritualId: string }
   | { type: 'villager/fulfill'; settlementId: string; requestId: number }
   | { type: 'villager/dismiss'; settlementId: string; requestId: number }
+  | { type: 'story/advance'; storyId: string }
   | { type: 'debug/addGlimmers'; amount: number }
   | { type: 'debug/addItem'; itemId: string; amount: number }
   | { type: 'debug/skipTime'; ms: number }
@@ -93,6 +95,8 @@ export function applyAction(
       return fulfillVillagerRequest(state, action.settlementId, action.requestId)
     case 'villager/dismiss':
       return dismissVillagerRequest(state, action.settlementId, action.requestId)
+    case 'story/advance':
+      return advanceStory(state, action.storyId)
 
     case 'debug/addGlimmers':
       state.resources.glimmers = Math.max(0, state.resources.glimmers + action.amount)

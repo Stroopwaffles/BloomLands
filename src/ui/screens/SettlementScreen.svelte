@@ -6,6 +6,7 @@
   import { checkRecruit, recruitCost } from '../../engine/helpers'
   import { helperCapacity, helperCount } from '../../engine/modifiers'
   import BloomMeter from '../components/BloomMeter.svelte'
+  import Characters from '../components/Characters.svelte'
   import Destinations from '../components/Destinations.svelte'
   import VillagerRequests from '../components/VillagerRequests.svelte'
   import { runtime } from '../game'
@@ -68,6 +69,12 @@
           </li>
         {/each}
       </ul>
+    </section>
+
+    <section class="panel">
+      <h3>Folk of {settlement.name}</h3>
+      <p class="note">Some villagers have stories, and could use a fairy's help.</p>
+      <Characters settlementId={settlement.id} />
     </section>
 
     <section class="panel">

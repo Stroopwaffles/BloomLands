@@ -110,6 +110,13 @@ export interface TradeRequest {
   remainingMs: number
 }
 
+export interface StoryProgress {
+  chapter: number
+  /** The task's stat when the chapter began (progress counts from here). */
+  statStart: number
+  complete: boolean
+}
+
 export interface SettlementState {
   requests: TradeRequest[]
   nextArrivalMs: number
@@ -198,6 +205,8 @@ export interface GameState {
   bloom: Record<string, number>
   /** Curios found this run. */
   curios: string[]
+  /** Story progress by story ID (missing = not started). */
+  stories: Record<string, StoryProgress>
   /** Villager requests, by settlement ID. */
   settlements: Record<string, SettlementState>
   traders: {
@@ -229,6 +238,7 @@ export interface GameState {
     ambushesFoiled: number
     spellsCast: number
     ritualsPerformed: number
+    villagersHelped: number
   }
 }
 
@@ -288,6 +298,7 @@ export function createNewGame(now: number): GameState {
     upgrades: [],
     bloom: { meadow: 0 },
     curios: [],
+    stories: {},
     settlements: {
       thimblewick: { requests: [], nextArrivalMs: 60_000, filled: 0 },
     },
@@ -322,6 +333,7 @@ export function createNewGame(now: number): GameState {
       ambushesFoiled: 0,
       spellsCast: 0,
       ritualsPerformed: 0,
+      villagersHelped: 0,
     },
   }
 }
