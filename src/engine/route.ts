@@ -167,7 +167,10 @@ export function routeVia(route: Route, from: string, to: string): string {
   const ends = new Set([placeRegion(from), placeRegion(to)])
   const between = route.legs.map((leg) => leg.regionId).filter((id) => !ends.has(id))
   if (between.length === 0) return ''
-  return `via the ${between.map((id) => REGIONS[id]?.name ?? id).join(' and the ')}`
+  const names = between.map((id) => `the ${REGIONS[id]?.name ?? id}`)
+  const list =
+    names.length <= 2 ? names.join(' and ') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`
+  return `via ${list}`
 }
 
 /** The name of a leg's region, for the screen. */

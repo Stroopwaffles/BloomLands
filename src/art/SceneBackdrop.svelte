@@ -3,6 +3,7 @@
   import ForestBackdrop from './ForestBackdrop.svelte'
   import CavesBackdrop from './CavesBackdrop.svelte'
   import GladeBackdrop from './GladeBackdrop.svelte'
+  import SkyBackdrop from './SkyBackdrop.svelte'
   import OrchardBackdrop from './OrchardBackdrop.svelte'
   import SwampBackdrop from './SwampBackdrop.svelte'
 
@@ -52,6 +53,8 @@
     <CavesBackdrop {spotId} />
   {:else if region === 'glade'}
     <GladeBackdrop {spotId} {weather} />
+  {:else if region === 'sky'}
+    <SkyBackdrop {spotId} {weather} />
   {:else if spotId === 'fairy-ring'}
     <rect width="160" height="100" fill="url(#sky-glade)" />
     <g fill="#7fae74" stroke="#5f8f58" stroke-width="0.6">

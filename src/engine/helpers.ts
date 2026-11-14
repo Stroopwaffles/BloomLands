@@ -23,7 +23,7 @@ import { weatherIn } from './environment'
 import type { GameEvent } from './events'
 import { plantWeights, rollPlant } from './gathering'
 import { mountSpeed, spareMounts } from './mounts'
-import { placeOpen, spotWatched } from './regions'
+import { grounded, placeOpen, spotWatched } from './regions'
 import { routeOf } from './route'
 import { sellPrice } from './shop'
 import { rollScoutSecret } from './secrets'
@@ -440,8 +440,8 @@ function startTrip(state: GameState, helper: HelperState): boolean {
     : itemId
       ? (bestSource(state, itemId)?.spotId ?? null)
       : null
-  // A watched (blocked) spot: wait at home until it's clear (design doc 3.15).
-  if (!spotId || spotWatched(state, spotId)) return false
+  // A watched (blocked) spot: wait at home until it's clear (design doc 3.15). Storms too.
+  if (!spotId || spotWatched(state, spotId) || grounded(state, HOME, spotId)) return false
   helper.tripSpot = spotId
   helper.tripItem = itemId
   helper.phase = 'outbound'

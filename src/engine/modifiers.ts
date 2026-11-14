@@ -28,9 +28,17 @@ function placeRegion(placeId: string): string {
  */
 
 function potionEffects(state: GameState): PotionEffect[] {
-  return state.buffs.flatMap((buff) =>
+  const effects = state.buffs.flatMap((buff) =>
     POTIONS[buff.potionId] ? [POTIONS[buff.potionId].effect] : [],
   )
+  // The Aurora Prism makes every potion work better.
+  const strength = product(state, 'potionStrength')
+  if (strength === 1) return effects
+  return effects.map((e) => {
+    if ('multiplier' in e) return { ...e, multiplier: 1 + (e.multiplier - 1) * strength }
+    if ('amount' in e) return { ...e, amount: Math.round(e.amount * strength) }
+    return e
+  })
 }
 
 function upgradeEffects(state: GameState): UpgradeEffect[] {
@@ -197,6 +205,21 @@ export function spellSaveChance(state: GameState): number {
   let chance = 0
   for (const e of curioEffects(state)) if (e.kind === 'spellSave') chance += e.chance
   return Math.min(1, chance)
+}
+
+/** Storms never ground you (Storm Bell). */
+export function stormProof(state: GameState): boolean {
+  return curioEffects(state).some((e) => e.kind === 'stormProof')
+}
+
+/** How much Root Song the ritual gives, as a multiplier (Star Chart). */
+export function rootSongMultiplier(state: GameState): number {
+  return product(state, 'rootSong')
+}
+
+/** Research costs, as a multiplier (Windbound Tome). */
+export function researchCostMultiplier(state: GameState): number {
+  return product(state, 'researchCost')
 }
 
 /** The Moon-Phase Locket lets you choose the Glade's moon. */

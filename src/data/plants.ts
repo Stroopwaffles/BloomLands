@@ -409,6 +409,78 @@ const PLANT_LIST: PlantDef[] = [
     rarity: 'rare',
     yields: [{ itemId: 'raw-poppy-petals', amount: 1 }],
   },
+  // Sky Isles
+  {
+    id: 'plant-skybell',
+    tags: ['petals'],
+    name: 'Skybell',
+    toughness: 8,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-skybell-petals', amount: 2 }],
+  },
+  {
+    id: 'plant-rainbow-moss',
+    tags: ['leaves'],
+    name: 'Rainbow moss',
+    toughness: 8,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-rainbow-moss', amount: 2 }],
+  },
+  {
+    id: 'plant-cloudbloom',
+    tags: ['fluff'],
+    name: 'Cloudbloom',
+    toughness: 9,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-cloud-fluff', amount: 2 }],
+  },
+  {
+    id: 'plant-sunpetal',
+    tags: ['petals'],
+    name: 'Sunpetal',
+    toughness: 9,
+    rarity: 'uncommon',
+    yields: [{ itemId: 'raw-sunpetals', amount: 2 }],
+  },
+  {
+    id: 'plant-wind-thistle',
+    tags: ['fluff'],
+    name: 'Wind thistle',
+    toughness: 10,
+    rarity: 'uncommon',
+    yields: [{ itemId: 'raw-thistledown', amount: 2 }],
+  },
+  {
+    id: 'plant-thunder-lily',
+    tags: ['storm'],
+    name: 'Thunder lily',
+    toughness: 14,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-storm-essence', amount: 1 }],
+  },
+  {
+    id: 'plant-aurora-blossom',
+    name: 'Aurora blossom',
+    toughness: 12,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-aurora-petals', amount: 1 }],
+  },
+  // Sky Isles secrets
+  {
+    id: 'plant-prism-blossom',
+    name: 'Prism blossom',
+    toughness: 13,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-prism-petals', amount: 1 }],
+  },
+  {
+    id: 'plant-whisperleaf',
+    tags: ['leaves'],
+    name: 'Whisperleaf',
+    toughness: 9,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-whisperleaf', amount: 1 }],
+  },
 ]
 
 export const PLANTS: Readonly<Record<string, PlantDef>> = Object.fromEntries(

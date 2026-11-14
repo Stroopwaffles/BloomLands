@@ -4,7 +4,7 @@
   import { BRANCHES, RESEARCH, RESEARCH_ORDER } from '../../data/research'
   import { payingStock } from '../../engine/costs'
   import { formatDuration } from '../../engine/format'
-  import { checkResearch, researchStatus } from '../../engine/research'
+  import { checkResearch, researchStatus, researchCost } from '../../engine/research'
   import CostList from '../components/CostList.svelte'
   import ProgressBar from '../components/ProgressBar.svelte'
   import { runtime } from '../game'
@@ -62,7 +62,7 @@
                     .join(', ')}
                 </p>
               {:else if status === 'available'}
-                <CostList cost={node.cost} stock={payingStock($game)} />
+                <CostList cost={researchCost($game, node.id)} stock={payingStock($game)} />
                 <button
                   type="button"
                   disabled={check !== 'ok'}

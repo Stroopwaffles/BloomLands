@@ -157,9 +157,12 @@ export function tapPlant(
   const plantId = slot.plantId
   const bonus = random() < BONUS_MATERIAL_CHANCE
   // A blossom wind (and the like) blows in an extra of some kinds of plant.
-  const weatherYield = weatherIn(state, SPOTS[spotId].regionId).tagYield
+  const sky = weatherIn(state, SPOTS[spotId].regionId)
+  const weatherYield = sky.tagYield
+  // ...and a rainbow adds one to every harvest.
   const windfall =
-    weatherYield && PLANTS[plantId].tags?.includes(weatherYield.tag) ? weatherYield.amount : 0
+    (weatherYield && PLANTS[plantId].tags?.includes(weatherYield.tag) ? weatherYield.amount : 0) +
+    (sky.yieldBonus ?? 0)
   const extra = (bonus ? 1 : 0) + tagYieldBonus(state, PLANTS[plantId].tags) + windfall
   const items: ItemStack[] = PLANTS[plantId].yields.map(({ itemId, amount }) => ({
     itemId,

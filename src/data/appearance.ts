@@ -294,6 +294,30 @@ export const OUTFIT_PIECES: Readonly<Record<string, OutfitPiece>> = {
     slot: 'headpiece',
     color: '#8a9ad8',
   },
+  'piece-sunrise-crown': {
+    id: 'piece-sunrise-crown',
+    name: 'Sunrise crown',
+    slot: 'headpiece',
+    color: '#f2b45c',
+  },
+  'piece-sunrise-gown': {
+    id: 'piece-sunrise-gown',
+    name: 'Sunrise regalia',
+    slot: 'outfit',
+    color: '#f7a68a',
+  },
+  'piece-sky-scholar-robes': {
+    id: 'piece-sky-scholar-robes',
+    name: "Sky scholar's robes",
+    slot: 'outfit',
+    color: '#7aa8d8',
+  },
+  'piece-star-circlet': {
+    id: 'piece-star-circlet',
+    name: 'Star circlet',
+    slot: 'headpiece',
+    color: '#e2e6f0',
+  },
 }
 
 export interface OutfitSet {
@@ -366,6 +390,16 @@ export const OUTFIT_SETS: Readonly<Record<string, OutfitSet>> = {
     id: 'outfit-sleepwear',
     name: 'Sleepwear',
     pieces: ['piece-nightgown', 'piece-nightshirt', 'piece-nightcap'],
+  },
+  'outfit-sunrise': {
+    id: 'outfit-sunrise',
+    name: 'Sunrise Regalia',
+    pieces: ['piece-sunrise-gown', 'piece-sunrise-crown'],
+  },
+  'outfit-sky-scholar': {
+    id: 'outfit-sky-scholar',
+    name: "Sky Scholar's set",
+    pieces: ['piece-sky-scholar-robes', 'piece-star-circlet'],
   },
 }
 

@@ -29,4 +29,6 @@ export const BLOCKED_TEXT: Record<BlockedReason, string> = {
   'not-full-moon': 'This rite only works under a full moon in the Glade.',
   'no-stars': 'No stars are falling right now.',
   'cooling-down': 'Not just yet. Try again a little later.',
+  storm:
+    'A storm grounds every flight to and from the Sky Isles. Wait for it to pass, or cast Stormward.',
 }

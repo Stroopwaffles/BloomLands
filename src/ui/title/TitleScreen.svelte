@@ -93,6 +93,12 @@
       leaves: false,
       dark: true,
     },
+    sky: {
+      spot: 'cloudbloom-terraces',
+      glow: 'rgb(255 236 214 / 0.55)',
+      fall: ['#ffffff', '#a6d4f8', '#f7c6a8', '#f2c45c'],
+      leaves: false,
+    },
     swamp: {
       spot: 'lilypad-pools',
       glow: 'rgb(214 240 234 / 0.5)',

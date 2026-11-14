@@ -62,4 +62,5 @@ export function advanceMoonTimers(state: GameState, dtMs: number): void {
   const { player } = state
   if (player.starMs) player.starMs = Math.max(0, player.starMs - dtMs)
   if (player.moonLocketMs) player.moonLocketMs = Math.max(0, player.moonLocketMs - dtMs)
+  if (player.stormwardMs) player.stormwardMs = Math.max(0, player.stormwardMs - dtMs)
 }

@@ -10,6 +10,9 @@
   import { COURT_RANKS } from '../../data/economy'
   import { RITUALS } from '../../data/magic'
   import { MAP_ISLANDS } from '../../data/map'
+  import { MOUNTS } from '../../data/mounts'
+  import { BLOCKED_TEXT } from '../messages'
+  import SpellButtons from './SpellButtons.svelte'
   import {
     HOME,
     isSettlement,
@@ -25,7 +28,7 @@
   import { knownRituals } from '../../engine/magic'
   import { courtRank, satchelCapacity, satchelMountAway } from '../../engine/modifiers'
   import { countItems } from '../../engine/state'
-  import { placeOpen, regionReachable } from '../../engine/regions'
+  import { grounded, placeOpen, regionReachable } from '../../engine/regions'
   import { flightBreakdown, pathNodes } from '../../engine/route'
   import { helperFlight, helpersAt } from '../../engine/helpers'
   import { playSound } from '../../audio/sfx'
@@ -299,10 +302,19 @@
             <li class:done={rankOk}>
               {rankOk ? '✓' : '○'} A {COURT_RANKS[unlock.rank].name} court
             </li>
-            <li class:done={knowsRite(unlock.ritualId)}>
-              {knowsRite(unlock.ritualId) ? '✓' : '○'} Research the {RITUALS[unlock.ritualId].name}
-            </li>
-            <li>○ Perform it at your Ritual Circle</li>
+            {#if unlock.ritualId}
+              <li class:done={knowsRite(unlock.ritualId)}>
+                {knowsRite(unlock.ritualId) ? '✓' : '○'} Research the {RITUALS[unlock.ritualId]
+                  .name}
+              </li>
+              <li>○ Perform it at your Ritual Circle</li>
+            {:else if unlock.mountId}
+              {@const tamed = !!$game.mounts.owned[unlock.mountId]}
+              <li class:done={tamed}>
+                {tamed ? '✓' : '○'} Tame the {MOUNTS[unlock.mountId]?.name.toLowerCase()}: only a
+                strong flyer can reach the isles
+              </li>
+            {/if}
           </ul>
           {#if REGIONS[regionId].needsLight}
             <p class="status">
@@ -323,7 +335,12 @@
           {#if selected === here}
             <span class="sub">You are here.</span>
           {:else if breakdown}
-            <button type="button" class="fly" onclick={() => fly(selected!)}>
+            <button
+              type="button"
+              class="fly"
+              disabled={grounded($game, here, selected) && !(($game.player.stormwardMs ?? 0) > 0)}
+              onclick={() => fly(selected!)}
+            >
               Fly · {formatDuration(breakdown.totalMs)}
             </button>
           {/if}
@@ -337,6 +354,10 @@
           </p>
         {/if}
         {#if camp}<p class="status warn">{CREWS[camp]?.name} have camped here.</p>{/if}
+        {#if selected !== here && grounded($game, here, selected) && !(($game.player.stormwardMs ?? 0) > 0)}
+          <p class="status warn">{BLOCKED_TEXT.storm}</p>
+          <SpellButtons targets={['storm']} />
+        {/if}
         {#if breakdown}
           {#if breakdown.via}<p class="via">{breakdown.via}</p>{/if}
           {@const carrying = countItems($game.player.satchel)}
@@ -742,6 +763,11 @@
     font: inherit;
     font-weight: 700;
     cursor: pointer;
+  }
+
+  .fly:disabled {
+    background: var(--disabled, #c9c2d8);
+    cursor: not-allowed;
   }
 
   .status,

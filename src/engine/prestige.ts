@@ -4,7 +4,7 @@ import { RESEARCH } from '../data/research'
 import { UPGRADES } from '../data/upgrades'
 import { REGION_ORDER, SPOTS } from '../data/world'
 import type { GameEvent } from './events'
-import { bonusEffects, courtRank } from './modifiers'
+import { bonusEffects, courtRank, rootSongMultiplier } from './modifiers'
 import { welcomeRegion } from './regions'
 import { createNewGame, type GameState, type HelperState } from './state'
 
@@ -32,6 +32,12 @@ export function rootSongPreview(state: GameState): { total: number; parts: RootS
     { label: 'Spirits awakened', amount: spirits * PRESTIGE_RULES.perSpirit },
     { label: 'Pirate crews won over', amount: crews * PRESTIGE_RULES.perCrew },
   ]
+  const base = parts.reduce((sum, p) => sum + p.amount, 0)
+  // The Star Chart helps the land remember more.
+  const multiplier = rootSongMultiplier(state)
+  if (multiplier !== 1) {
+    parts.push({ label: 'Star Chart', amount: Math.round(base * (multiplier - 1)) })
+  }
   return { total: parts.reduce((sum, p) => sum + p.amount, 0), parts }
 }
 

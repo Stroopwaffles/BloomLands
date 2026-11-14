@@ -25,6 +25,9 @@ export type WeatherKind =
   | 'waning-moon'
   | 'new-moon'
   | 'starfall'
+  | 'storm'
+  | 'rainbow'
+  | 'updraft'
 
 export interface WeatherDef {
   id: WeatherKind
@@ -51,6 +54,10 @@ export interface WeatherDef {
   helperTrips?: number
   /** Harvests of plants with this tag give extra (a blossom wind blows in bonus petals). */
   tagYield?: { tag: string; amount: number }
+  /** Every harvest gives this much extra (a rainbow). */
+  yieldBonus?: number
+  /** No flights to or from the region until it passes (a Sky Isles storm). */
+  grounds?: boolean
 }
 
 export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
@@ -272,6 +279,43 @@ export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
     flightAway: 1,
     dewAllDay: false,
   },
+  // The Sky Isles (design doc 3.16).
+  storm: {
+    id: 'storm',
+    name: 'Storm',
+    description:
+      'Thunder and gales: no one can fly to or from the Sky Isles until it passes. Thunder lilies love it.',
+    weight: 25,
+    regrowth: 1,
+    flightHome: 1,
+    flightAway: 1,
+    dewAllDay: false,
+    tagBoost: { tag: 'storm', multiplier: 4 },
+    grounds: true,
+  },
+  rainbow: {
+    id: 'rainbow',
+    name: 'Rainbow',
+    names: { night: 'Moonbow' },
+    description: 'A rainbow arches over the isles: every harvest gives one extra.',
+    nightDescription: 'A pale moonbow arches over the isles: every harvest gives one extra.',
+    weight: 35,
+    regrowth: 1,
+    flightHome: 1,
+    flightAway: 1,
+    dewAllDay: false,
+    yieldBonus: 1,
+  },
+  updraft: {
+    id: 'updraft',
+    name: 'Updraft',
+    description: 'Warm air rises fast: flights to and from the isles are much quicker.',
+    weight: 40,
+    regrowth: 1,
+    flightHome: 0.6,
+    flightAway: 0.6,
+    dewAllDay: false,
+  },
 }
 
 /** The Glade's moon goes round in this order; a waxing or waning moon may become a starfall. */
@@ -302,6 +346,7 @@ export const REGION_WEATHER: Readonly<Record<string, readonly WeatherKind[]>> = 
   orchard: ['blossom-wind', 'spring-shower', 'late-frost'],
   caves: ['drip-season', 'rumbles', 'still-air'],
   glade: MOON_CYCLE,
+  sky: ['storm', 'rainbow', 'updraft'],
 }
 
 export const WEATHER_RULES = {
@@ -332,6 +377,7 @@ export const PESTS: Readonly<Record<string, PestDef>> = {
   orchard: { id: 'caterpillar', name: 'caterpillars', tag: 'blossoms' },
   caves: { id: 'silverfish', name: 'silverfish', tag: 'fungi' },
   glade: { id: 'earwig', name: 'earwigs', tag: 'petals' },
+  sky: { id: 'gnat', name: 'gnats', tag: 'fluff' },
 }
 
 export interface CreatureDef {
@@ -366,6 +412,8 @@ export interface CreatureDef {
   tapVerb?: string
   /** Once this story is finished it turns up half as often (Vesper and the moth swarm). */
   gentlerAfter?: string
+  /** Flights to the spot it circles take this much longer (the hawk). */
+  delaysFlights?: number
 }
 
 export const CREATURES: Readonly<Record<string, CreatureDef>> = {
@@ -441,6 +489,16 @@ export const CREATURES: Readonly<Record<string, CreatureDef>> = {
     staysMs: 3 * 60_000,
     gentlerAfter: 'story-vesper',
     tapVerb: 'shoo the moths',
+  },
+  hawk: {
+    id: 'hawk',
+    name: 'Hawk',
+    regionId: 'sky',
+    behavior: 'watches',
+    taps: 0,
+    eatEveryMs: 0,
+    staysMs: 4 * 60_000,
+    delaysFlights: 1.5,
   },
 }
 
@@ -535,6 +593,20 @@ export const CREWS: Readonly<Record<string, CrewDef>> = {
       '"...We weren\'t here. You didn\'t see us." A shadowy hand takes the treat. Quickly.',
       '"The Smugglers say you\'re a light-bringer. We don\'t like light. But we like you, a bit."',
       '"Fine. The Moonshadows will lurk on your side now. Very quietly. Shh."',
+    ],
+  },
+  stormchasers: {
+    id: 'stormchasers',
+    name: 'The Stormchasers',
+    regionId: 'sky',
+    description: "Captain Mallow's own elite crew, who ride the storms. The hardest crew of all.",
+    steals: ['raw-storm-essence', 'raw-aurora-petals', 'raw-sunpetals', 'refined-storm-vial'],
+    parleyLines: [
+      '"A TREAT? The Stormchasers don\'t take treats!" ...The treat is gone. Nobody saw who took it.',
+      '"Every crew below says your name like it\'s a good word. We don\'t trust good words."',
+      '"You flew through a storm to bring us cake. That\'s... actually quite brave."',
+      '"The Captain says the land can\'t be healed. You keep healing it anyway. Hmm."',
+      '"All right, storm-flyer. The Stormchasers ride with you. The Captain will want to meet you."',
     ],
   },
 }
@@ -639,6 +711,21 @@ export const REGION_FLIGHT_EVENTS: Readonly<Record<string, RegionFlightEvents>> 
       thanks: 'The little firefly thanks you',
       art: 'villager-flicker',
       glimmers: 40,
+    },
+  },
+  sky: {
+    weights: { ambush: 25, windfall: 25, traveler: 20, gust: 30 },
+    windfall: {
+      itemId: 'raw-cloud-fluff',
+      text: 'Wisps of cloud fluff float right past you!',
+      art: 'raw-cloud-fluff',
+      max: 4,
+    },
+    traveler: {
+      text: 'A little wind sprite has been blown off course.',
+      thanks: 'The wind sprite thanks you',
+      art: 'villager-gusty',
+      glimmers: 50,
     },
   },
   orchard: {

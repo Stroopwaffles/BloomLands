@@ -226,6 +226,8 @@ export interface GameState {
     starMs?: number
     /** Time until the Moon-Phase Locket can choose the moon again. */
     moonLocketMs?: number
+    /** Time left on Stormward: flights to and from the Sky Isles ignore storms. */
+    stormwardMs?: number
   }
   resources: {
     glimmers: number

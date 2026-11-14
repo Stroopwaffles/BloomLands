@@ -5,7 +5,15 @@ import type { GameEvent } from './events'
 import type { Random } from './rng'
 import { BLOOM_LEVELS } from '../data/bloom'
 import { MOUNTS } from '../data/mounts'
-import { alwaysLit, bonusEffects, courtRank, hasLight, hasWaterstride } from './modifiers'
+import { WEATHER } from '../data/challenges'
+import {
+  alwaysLit,
+  bonusEffects,
+  courtRank,
+  hasLight,
+  hasWaterstride,
+  stormProof,
+} from './modifiers'
 import type { GameState } from './state'
 
 /** The newest region the player has opened (the menu shows and plays it). */
@@ -27,6 +35,33 @@ export function regionReachable(state: GameState, regionId: string): boolean {
   const region = REGIONS[regionId]
   if (!region?.needsLight || !region.unlock) return false
   return (hasLight(state) || alwaysLit(state, regionId)) && courtRank(state) >= region.unlock.rank
+}
+
+/**
+ * A storm in a region that grounds flights (the Sky Isles) keeps everyone from flying to or from
+ * it, unless the Storm Bell or Stormward lets you through.
+ */
+export function grounded(state: GameState, from: string, to: string): boolean {
+  if (stormProof(state)) return false
+  for (const placeId of [from, to]) {
+    const regionId = placeRegion(placeId)
+    const kind = state.weather[regionId]?.kind
+    if (kind && WEATHER[kind]?.grounds) return true
+  }
+  return false
+}
+
+/**
+ * Regions reached by a mount instead of a rite (the Sky Isles and the blue jay) open for good
+ * once the court has the mount and the rank.
+ */
+export function advanceMountRegions(state: GameState, random: Random): void {
+  for (const region of Object.values(REGIONS)) {
+    const unlock = region.unlock
+    if (!unlock?.mountId || regionUnlocked(state, region.id)) continue
+    if (!state.mounts.owned[unlock.mountId] || courtRank(state) < unlock.rank) continue
+    state.inbox.push(...unlockRegion(state, region.id, random))
+  }
 }
 
 /** Gives a region its weather and village the first time anyone arrives (also by light). */

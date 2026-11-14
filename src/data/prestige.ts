@@ -35,6 +35,8 @@ export type BonusEffect =
   | { kind: 'craftEcho'; chance: number }
   /** Once a day, choose the Glade's moon phase (Moon-Phase Locket). */
   | { kind: 'moonChoice' }
+  /** Storms never ground flights (Storm Bell). */
+  | { kind: 'stormProof' }
   // Root Song upgrades
   | { kind: 'startGlimmers'; amount: number }
   | { kind: 'startBloom'; amount: number }
@@ -395,6 +397,30 @@ export const RELIC_LIST: RelicDef[] = [
   ),
   relic('spirit-selenne', 5, 'Moonsilver Tear', 'All potions last 50% longer.', [
     { kind: 'potionDuration', multiplier: 1.5 },
+  ]),
+  // Aeris, the High Wind
+  relic('spirit-aeris', 1, 'Cloud Wisp', 'Sky Isles bloom starts one level higher.', [
+    { kind: 'headStart', regionId: 'sky' },
+  ]),
+  relic(
+    'spirit-aeris',
+    2,
+    "Hawk's Truce Feather",
+    'The hawk is friendly and never delays flights.',
+    [{ kind: 'truce', creatureId: 'hawk' }],
+  ),
+  relic(
+    'spirit-aeris',
+    3,
+    'Jay-Blue Feather',
+    'The blue jay is tamed as soon as the Glade opens, so the Sky Isles open when your court rank allows.',
+    [{ kind: 'kinship', mountId: 'mount-blue-jay' }],
+  ),
+  relic('spirit-aeris', 4, 'Storm Bell', 'Storms never ground flights to or from the Sky Isles.', [
+    { kind: 'stormProof' },
+  ]),
+  relic('spirit-aeris', 5, 'Feather of the High Wind', 'All flights are 25% faster.', [
+    { kind: 'travel', multiplier: 0.75 },
   ]),
 ]
 

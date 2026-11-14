@@ -253,6 +253,33 @@
         fill="#fff3b0"
         stroke="none"
       />
+    {:else if outfit === 'piece-sunrise-gown'}
+      <path d={`M${38 - w} 64 Q50 60 ${62 + w} 64 L74 108 Q50 114 26 108 Z`} />
+      <path
+        d={`M${36 - w} 64 Q50 72 ${64 + w} 64 L${66 + w} 70 Q50 80 ${34 - w} 70 Z`}
+        fill="#f2c45c"
+        stroke="#a87e1a"
+      />
+      <g fill="none" stroke-width="1.4">
+        <path d="M30 96 Q50 90 70 96" stroke="#f2c45c" />
+        <path d="M28 102 Q50 96 72 102" stroke="#f7e6a0" />
+      </g>
+      {#each [[40, 84], [50, 80], [60, 84]] as [x, y] (x)}
+        <circle cx={x} cy={y} r="2" fill="#fff3b0" stroke="#a87e1a" stroke-width="0.6" />
+      {/each}
+    {:else if outfit === 'piece-sky-scholar-robes'}
+      <path d={`M${39 - w} 65 Q50 61 ${61 + w} 65 L68 104 Q50 108 32 104 Z`} />
+      <path d="M50 66 L50 104" stroke={shade(outfitColor, 0.7)} stroke-width="1.2" fill="none" />
+      <path
+        d={`M${39 - w} 65 L46 66 L44 100 L33 102 Z`}
+        fill={shade(outfitColor, 1.25)}
+        stroke={shade(outfitColor, 0.75)}
+      />
+      <g fill="#eef8ff" stroke="none">
+        <circle cx="58" cy="78" r="1.4" />
+        <circle cx="62" cy="86" r="1" />
+        <circle cx="56" cy="94" r="1.2" />
+      </g>
     {:else if outfit === 'piece-burrowers-waistcoat'}
       <path
         d={`M${40 - w} 66 Q50 62 ${60 + w} 66 L63 94 Q50 98 37 94 Z`}
@@ -409,6 +436,22 @@
       />
       <path d="M28 38 Q50 32 72 38" fill="none" stroke-width="3" stroke="#eef0ff" />
       <circle cx="84" cy="34" r="4" fill="#eef0ff" />
+    </g>
+  {:else if wardrobe.headpiece.pieceId === 'piece-sunrise-crown'}
+    <g stroke={shade(wardrobe.headpiece.color, 0.6)} stroke-width="1" stroke-linejoin="round">
+      {#each [-40, -20, 0, 20, 40] as a (a)}
+        <path d="M50 30 L48 14 L50 10 L52 14 Z" fill="#fff3b0" transform={`rotate(${a} 50 34)`} />
+      {/each}
+      <path d="M32 34 Q50 24 68 34 L66 38 Q50 30 34 38 Z" fill={wardrobe.headpiece.color} />
+      <circle cx="50" cy="30" r="2.6" fill="#f7a68a" />
+    </g>
+  {:else if wardrobe.headpiece.pieceId === 'piece-star-circlet'}
+    <g stroke={shade(wardrobe.headpiece.color, 0.6)} stroke-width="1">
+      <path d="M32 34 Q50 26 68 34" fill="none" stroke-width="1.8" />
+      <path
+        d="M50 22 L52 27 L57 27 L53 30 L54.6 35 L50 32 L45.4 35 L47 30 L43 27 L48 27 Z"
+        fill="#fff3b0"
+      />
     </g>
   {:else if wardrobe.headpiece.pieceId === 'piece-honeycomb-crown'}
     <g

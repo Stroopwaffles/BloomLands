@@ -163,6 +163,28 @@ const SPOT_LIST: SpotDef[] = [
     trinkets: ['trinket-music-box-key', 'trinket-pearl'],
   },
 
+  // Sky Isles
+  {
+    id: 'cloudbloom-terraces',
+    name: 'Cloudbloom Terraces',
+    regionId: 'sky',
+    description: 'Stepped gardens of flowers growing on clouds.',
+    plants: ['plant-skybell', 'plant-rainbow-moss', 'plant-cloudbloom', 'plant-aurora-blossom'],
+    slots: 6,
+    regrowMs: 34_000,
+    trinkets: ['trinket-golden-feather', 'trinket-kite-string'],
+  },
+  {
+    id: 'windharp-cliffs',
+    name: 'Windharp Cliffs',
+    regionId: 'sky',
+    description: 'Cliffs where the wind sings through the stone. Tough, rare plants.',
+    plants: ['plant-sunpetal', 'plant-wind-thistle', 'plant-thunder-lily', 'plant-rainbow-moss'],
+    slots: 6,
+    regrowMs: 38_000,
+    trinkets: ['trinket-brass-gear', 'trinket-golden-feather'],
+  },
+
   // Secret areas: hidden until unlocked, re-locked on prestige (design doc 3.12)
   {
     id: 'fairy-ring',
@@ -344,6 +366,37 @@ const SPOT_LIST: SpotDef[] = [
       unlock: { kind: 'ritual', hint: 'Perform the Moonrise Rite under a full moon.' },
     },
   },
+  {
+    id: 'aurora-garden',
+    name: 'The Aurora Garden',
+    regionId: 'sky',
+    description: 'A garden at the top of the sky, where the aurora touches down to bloom.',
+    plants: ['plant-prism-blossom', 'plant-aurora-blossom', 'plant-skybell', 'plant-sunpetal'],
+    slots: 6,
+    regrowMs: 38_000,
+    trinkets: ['trinket-golden-feather', 'trinket-brass-gear'],
+    secret: {
+      curioId: 'curio-aurora-prism',
+      outfitId: 'outfit-sunrise',
+      unlock: { kind: 'rank', rank: 5, hint: 'Reach the Moon Court rank.' },
+    },
+  },
+  {
+    id: 'cloud-archive',
+    name: 'The Cloud Archive',
+    regionId: 'sky',
+    description:
+      'A library of cloud-scrolls drifting in the wind, where the sky remembers everything.',
+    plants: ['plant-whisperleaf', 'plant-cloudbloom', 'plant-rainbow-moss', 'plant-wind-thistle'],
+    slots: 6,
+    regrowMs: 34_000,
+    trinkets: ['trinket-kite-string', 'trinket-brass-gear'],
+    secret: {
+      curioId: 'curio-windbound-tome',
+      outfitId: 'outfit-sky-scholar',
+      unlock: { kind: 'run', run: 2, hint: 'Appears from your second run on.' },
+    },
+  },
 ]
 
 export const SPOTS: Readonly<Record<string, SpotDef>> = Object.fromEntries(
@@ -429,6 +482,18 @@ export const SETTLEMENTS: Readonly<Record<string, SettlementDef>> = {
       greeting: 'Shh, softly now, the moths are sleeping. What can I light up for you?',
     },
   },
+  nimbusrest: {
+    id: 'nimbusrest',
+    name: 'Nimbusrest',
+    regionId: 'sky',
+    description: 'A village of wind sprites living in cloud-houses tethered to floating rocks.',
+    folk: 'wind sprites',
+    shop: {
+      name: 'The Weathervane',
+      keeper: 'Zephyrine',
+      greeting: 'Whoosh! Welcome, welcome! Hold onto your hat, everything here blows away.',
+    },
+  },
 }
 
 export interface SpiritPlaceDef {
@@ -481,6 +546,14 @@ export const SPIRIT_PLACES: Readonly<Record<string, SpiritPlaceDef>> = {
     regionId: 'glade',
     description: 'A perfectly round pool that always holds a reflection of the full moon.',
     spiritId: 'spirit-selenne',
+  },
+  'sun-spire': {
+    id: 'sun-spire',
+    name: 'The Sun Spire',
+    regionId: 'sky',
+    description:
+      'The highest isle: a stone spire that catches the first and last light of every day.',
+    spiritId: 'spirit-aeris',
   },
 }
 
@@ -551,6 +624,16 @@ export const REGIONS: Readonly<Record<string, RegionDef>> = {
     unlock: { rank: 4, ritualId: 'ritual-long-twilight' },
     dark: true,
   },
+  sky: {
+    id: 'sky',
+    name: 'Sky Isles',
+    settlement: 'nimbusrest',
+    spiritPlace: 'sun-spire',
+    secretSpots: ['aurora-garden', 'cloud-archive'],
+    spots: ['cloudbloom-terraces', 'windharp-cliffs'],
+    sceneSpot: 'cloudbloom-terraces',
+    unlock: { rank: 5, mountId: 'mount-blue-jay' },
+  },
 }
 
 export const REGION_ORDER: readonly string[] = [
@@ -560,6 +643,7 @@ export const REGION_ORDER: readonly string[] = [
   'orchard',
   'caves',
   'glade',
+  'sky',
 ]
 
 /** Every place you can fly to, in display order. */

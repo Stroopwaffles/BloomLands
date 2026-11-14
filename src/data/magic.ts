@@ -2,7 +2,16 @@ import type { CostEntry } from './types'
 
 /** What a spell is cast at (design doc 3.5: spells are for encounters). */
 export type SpellTarget =
-  'pests' | 'creature' | 'ambush' | 'camp' | 'tame' | 'parley' | 'sneak' | 'webs' | 'shadow'
+  | 'pests'
+  | 'creature'
+  | 'ambush'
+  | 'camp'
+  | 'tame'
+  | 'parley'
+  | 'sneak'
+  | 'webs'
+  | 'shadow'
+  | 'storm'
 
 export interface SpellDef {
   id: string
@@ -23,6 +32,7 @@ export const REGION_SIGNATURE: Readonly<Record<string, string>> = {
   orchard: 'component-beeswax-candle',
   caves: 'component-glow-ink',
   glade: 'component-moon-draught',
+  sky: 'component-wind-silk',
 }
 
 /** Spells whose Sun Salve is swapped for the local region's signature component. */
@@ -99,6 +109,17 @@ export const SPELLS: Readonly<Record<string, SpellDef>> = {
     cost: [
       { itemId: 'component-glow-ink', amount: 1 },
       { itemId: 'component-moon-draught', amount: 1 },
+    ],
+  },
+  'spell-stormward': {
+    id: 'spell-stormward',
+    name: 'Stormward',
+    description:
+      'For ten minutes, you can fly to and from the Sky Isles even in a storm. Cast it anywhere.',
+    target: 'storm',
+    cost: [
+      { itemId: 'component-wind-silk', amount: 1 },
+      { itemId: 'component-crystal-focus', amount: 1 },
     ],
   },
   'spell-tanglevine': {

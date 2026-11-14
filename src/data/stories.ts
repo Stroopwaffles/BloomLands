@@ -103,6 +103,18 @@ export const CHARACTERS: Readonly<Record<string, CharacterDef>> = {
     title: 'a dreamy moth poet',
     settlement: 'emberglow',
   },
+  'char-cumulus': {
+    id: 'char-cumulus',
+    name: 'Professor Cumulus',
+    title: 'an absent-minded cloud-sprite astronomer',
+    settlement: 'nimbusrest',
+  },
+  'char-twill': {
+    id: 'char-twill',
+    name: 'Twill',
+    title: 'a young wind sprite who weaves sails',
+    settlement: 'nimbusrest',
+  },
 }
 
 export const STORIES: Readonly<Record<string, StoryDef>> = {
@@ -750,6 +762,106 @@ export const STORIES: Readonly<Record<string, StoryDef>> = {
     ending: [
       'They listened! The whole swarm, wings folded, and then they… shared. They actually shared.',
       'Take my quill. It has written its best poem. The swarm will be gentler now, I promise.',
+    ],
+  },
+  'story-cumulus': {
+    id: 'story-cumulus',
+    characterId: 'char-cumulus',
+    curioId: 'curio-star-chart',
+    chapters: [
+      {
+        lines: [
+          'Ah! A visitor! Or a very large moth. No, a fairy. Professor Cumulus, astronomer.',
+          'My star maps have blown away again. All of them. Could you gather while you look? Gathering helps one notice things.',
+        ],
+        task: {
+          kind: 'stat',
+          stat: 'plantsHarvested',
+          amount: 30,
+          label: 'Gather 30 plants anywhere, keeping an eye out for star maps',
+        },
+      },
+      {
+        lines: [
+          'Splendid! Now I need ink that won’t fade. Aurora dye, I think. It shifts like the sky.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'refined-aurora-dye', amount: 1 }],
+          label: 'Bring Professor Cumulus 1 Aurora Dye',
+        },
+      },
+      {
+        lines: ['And a lens to see the faint stars. A Starlight Lens, if you can manage it.'],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'component-starlight-lens', amount: 1 }],
+          label: 'Bring Professor Cumulus 1 Starlight Lens',
+        },
+      },
+      {
+        lines: [
+          'Last of all: weights! Something to hold the maps down. Brass gears would do nicely.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'trinket-brass-gear', amount: 2 }],
+          label: 'Bring Professor Cumulus 2 Brass gears',
+        },
+      },
+    ],
+    ending: [
+      'Every star in its place, and every map weighed down! Look how the land below shines in the charts.',
+      'Take this chart. When you sing the Root Song, it will help the land remember even more.',
+    ],
+  },
+  'story-twill': {
+    id: 'story-twill',
+    characterId: 'char-twill',
+    curioId: 'curio-windwoven-shawl',
+    chapters: [
+      {
+        lines: [
+          'Hi! I’m Twill! I’m weaving a sail big enough to catch the highest wind there is!',
+          'It needs so much cloud fluff. So, so much. Could you bring some?',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-cloud-fluff', amount: 12 }],
+          label: 'Bring Twill 12 Cloud fluff',
+        },
+      },
+      {
+        lines: ['Thistledown makes the edges strong. Wind thistles grow on the cliffs.'],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-thistledown', amount: 8 }],
+          label: 'Bring Twill 8 Thistledown',
+        },
+      },
+      {
+        lines: ['Now the hard part: a thread of wind silk to stitch it all together.'],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'component-wind-silk', amount: 1 }],
+          label: 'Bring Twill 1 Wind Silk',
+        },
+      },
+      {
+        lines: [
+          'It’s ready! But the hawk keeps diving at it. Could you chase off something big while I launch?',
+        ],
+        task: {
+          kind: 'stat',
+          stat: 'creaturesShooed',
+          amount: 2,
+          label: 'Send away 2 big troubles (calming the hawk counts)',
+        },
+      },
+    ],
+    ending: [
+      'IT FLIES! It caught the highest wind and I went all the way round the Sun Spire!',
+      'I made you a shawl from the leftover silk. The wind will carry you a little faster now.',
     ],
   },
 }

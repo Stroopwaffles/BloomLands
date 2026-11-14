@@ -315,6 +315,59 @@ export const SCENES: Readonly<Record<string, SceneLayout>> = {
     camp: { x: 76, y: 82 },
     mount: { x: 30, y: 32 },
   },
+  // Sky Isles
+  'cloudbloom-terraces': {
+    slots: [
+      { x: 14, y: 80 },
+      { x: 30, y: 66 },
+      { x: 46, y: 82 },
+      { x: 62, y: 64 },
+      { x: 78, y: 80 },
+      { x: 90, y: 62 },
+    ],
+    creature: { x: 50, y: 34 },
+    camp: { x: 76, y: 66 },
+    mount: { x: 30, y: 34 },
+  },
+  'windharp-cliffs': {
+    slots: [
+      { x: 14, y: 72 },
+      { x: 30, y: 86 },
+      { x: 46, y: 70 },
+      { x: 64, y: 86 },
+      { x: 78, y: 70 },
+      { x: 90, y: 88 },
+    ],
+    creature: { x: 54, y: 32 },
+    camp: { x: 78, y: 76 },
+    mount: { x: 70, y: 30 },
+  },
+  'aurora-garden': {
+    slots: [
+      { x: 50, y: 66 },
+      { x: 28, y: 76 },
+      { x: 72, y: 76 },
+      { x: 18, y: 90 },
+      { x: 50, y: 92 },
+      { x: 82, y: 90 },
+    ],
+    creature: { x: 84, y: 34 },
+    camp: { x: 76, y: 82 },
+    mount: { x: 50, y: 30 },
+  },
+  'cloud-archive': {
+    slots: [
+      { x: 16, y: 74 },
+      { x: 32, y: 88 },
+      { x: 50, y: 72 },
+      { x: 66, y: 88 },
+      { x: 82, y: 74 },
+      { x: 92, y: 90 },
+    ],
+    creature: { x: 50, y: 34 },
+    camp: { x: 76, y: 82 },
+    mount: { x: 30, y: 32 },
+  },
 }
 
 /** A plain layout for any spot without a hand-placed one. */

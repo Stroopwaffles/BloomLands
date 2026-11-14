@@ -84,4 +84,16 @@ export const MAP_ISLANDS: Readonly<Record<string, IslandDef>> = {
       'dream-hollow': { x: 18, y: 76 },
     },
   },
+  sky: {
+    color: '#bfe0f5',
+    edge: '#7aaed0',
+    places: {
+      nimbusrest: { x: 26, y: 52 },
+      'cloudbloom-terraces': { x: 50, y: 74 },
+      'windharp-cliffs': { x: 78, y: 52 },
+      'sun-spire': { x: 52, y: 30 },
+      'aurora-garden': { x: 84, y: 76 },
+      'cloud-archive': { x: 18, y: 76 },
+    },
+  },
 }

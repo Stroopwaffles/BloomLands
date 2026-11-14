@@ -1,8 +1,9 @@
+import { CREATURES } from '../data/challenges'
 import { FLIGHT_EVENT_RULES } from '../data/challenges'
 import { HOME, isSettlement, isSpiritPlace, isSpot, placeRegion } from '../data/world'
 import type { GameEvent } from './events'
 import { applyInstantEvents, flightSpeed, rollFlightEvent, settleFlightEvent } from './flightEvents'
-import { ensureRegion, placeOpen } from './regions'
+import { ensureRegion, grounded, placeOpen } from './regions'
 import { discoverSecret } from './secrets'
 import { depositSatchel, ensureSpot } from './gathering'
 import { hasQol, travelMultiplier, wingSpeed } from './modifiers'
@@ -19,7 +20,10 @@ export function travelMs(state: GameState, from: string, to: string): number | n
   if (!route) return null
   const legs = routeLegTimes(state, from, to, route)
   const ms = legs.reduce((total, l) => total + l.ms, 0)
-  return Math.ceil((ms / wingSpeed(state)) * travelMultiplier(state))
+  // A hawk circling the destination makes you wait for your moment.
+  const creature = state.challenges.creatures[to]
+  const delay = creature ? (CREATURES[creature.creatureId]?.delaysFlights ?? 1) : 1
+  return Math.ceil((ms / wingSpeed(state)) * travelMultiplier(state) * delay)
 }
 
 /**
@@ -38,6 +42,10 @@ export function startTravel(
     return [{ type: 'blocked', reason: 'not-here' }]
   }
   if (!placeOpen(state, to)) return [{ type: 'blocked', reason: 'locked' }]
+  // A Sky Isles storm grounds everyone, unless Stormward (or the Storm Bell) carries you through.
+  if (grounded(state, player.place, to) && !((player.stormwardMs ?? 0) > 0)) {
+    return [{ type: 'blocked', reason: 'storm' }]
+  }
   const totalMs = travelMs(state, player.place, to)
   if (totalMs === null) return [{ type: 'blocked', reason: 'not-here' }]
 

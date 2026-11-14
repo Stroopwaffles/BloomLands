@@ -1,5 +1,5 @@
 import { SPOTS } from '../data/world'
-import { bloomLevel } from './modifiers'
+import { bloomLevel, courtRank } from './modifiers'
 import { regionUnlocked } from './regions'
 import { giveCurio } from './bloom'
 import type { GameEvent } from './events'
@@ -33,7 +33,11 @@ export function advanceSecrets(state: GameState): void {
           ? (state.settlements[unlock.settlementId]?.filled ?? 0) >= unlock.count
           : unlock.kind === 'calmed'
             ? (state.challenges.calmed[unlock.creatureId] ?? 0) >= unlock.count
-            : bloomLevel(state, spot.regionId) >= unlock.level
+            : unlock.kind === 'rank'
+              ? courtRank(state) >= unlock.rank
+              : unlock.kind === 'run'
+                ? state.prestige.run >= unlock.run
+                : bloomLevel(state, spot.regionId) >= unlock.level
     if (met) state.inbox.push(...unlockSecret(state, spot.id))
   }
 }

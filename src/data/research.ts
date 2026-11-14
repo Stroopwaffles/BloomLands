@@ -763,6 +763,72 @@ RESEARCH_LIST.push(
   },
 )
 
+// Sky Isles (shown once the Sky Isles are open)
+RESEARCH_LIST.push(
+  {
+    id: 'research-cloud-silk',
+    name: 'Cloud Silk',
+    branch: 'refining',
+    description: 'Spin cloud fluff into a thread lighter than air.',
+    cost: [{ itemId: 'raw-cloud-fluff', amount: 6 }],
+    durationMs: 3 * MIN,
+    requires: ['research-spinning'],
+    unlocks: ['refined-cloud-silk'],
+    region: 'sky',
+  },
+  {
+    id: 'research-storm-vial',
+    name: 'Storm Vial',
+    branch: 'refining',
+    description: 'Press a thunder lily’s storm essence into a crackling little vial.',
+    cost: [{ itemId: 'raw-storm-essence', amount: 2 }],
+    durationMs: 3 * MIN,
+    requires: ['research-pressing'],
+    unlocks: ['refined-storm-vial'],
+    region: 'sky',
+  },
+  {
+    id: 'research-aurora-dye',
+    name: 'Aurora Dye',
+    branch: 'refining',
+    description: 'Grind aurora petals into a dye that shifts color as you look at it.',
+    cost: [{ itemId: 'raw-aurora-petals', amount: 2 }],
+    durationMs: 3 * MIN,
+    requires: ['research-grinding'],
+    unlocks: ['refined-aurora-dye'],
+    region: 'sky',
+  },
+  {
+    id: 'research-wind-silk',
+    name: 'Wind Silk',
+    branch: 'brewing',
+    description: 'Cloud silk steeped in a storm: the Sky Isles’ own magic, for flight and storms.',
+    cost: [
+      { itemId: 'refined-cloud-silk', amount: 2 },
+      { itemId: 'refined-storm-vial', amount: 1 },
+    ],
+    durationMs: 6 * MIN,
+    requires: ['research-cloud-silk', 'research-storm-vial'],
+    unlocks: ['component-wind-silk'],
+    region: 'sky',
+  },
+  {
+    id: 'research-stormward',
+    name: 'Stormward',
+    branch: 'spellcraft',
+    description: 'A charm of wind silk that lets you fly through a Sky Isles storm.',
+    cost: [
+      { itemId: 'component-wind-silk', amount: 1 },
+      { itemId: 'component-crystal-focus', amount: 1 },
+    ],
+    durationMs: 5 * MIN,
+    requires: ['research-wind-silk'],
+    unlocks: [],
+    spells: ['spell-stormward'],
+    region: 'sky',
+  },
+)
+
 export const RESEARCH: Readonly<Record<string, ResearchDef>> = Object.fromEntries(
   RESEARCH_LIST.map((node) => [node.id, node]),
 )

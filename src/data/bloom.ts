@@ -62,6 +62,12 @@ export interface CurioDef {
     | { kind: 'spellSave'; chance: number }
     /** Offline time counts for this much more (Dreamcatcher). */
     | { kind: 'offlineBoost'; multiplier: number }
+    /** More Root Song from the Root Song Ritual (Star Chart). */
+    | { kind: 'rootSong'; multiplier: number }
+    /** Potions work this much better (Aurora Prism). */
+    | { kind: 'potionStrength'; multiplier: number }
+    /** Research costs this much less (Windbound Tome). */
+    | { kind: 'researchCost'; multiplier: number }
 }
 
 /** Meadow curios (content doc → Curio Index). They last for the current run. */
@@ -199,6 +205,31 @@ export const CURIOS: Readonly<Record<string, CurioDef>> = {
     description: 'Time away counts for 10% more: helpers and stations get a little extra done.',
     effect: { kind: 'offlineBoost', multiplier: 1.1 },
   },
+  // Sky Isles
+  'curio-star-chart': {
+    id: 'curio-star-chart',
+    name: 'Star Chart',
+    description: 'The Root Song Ritual gives 15% more Root Song.',
+    effect: { kind: 'rootSong', multiplier: 1.15 },
+  },
+  'curio-windwoven-shawl': {
+    id: 'curio-windwoven-shawl',
+    name: 'Windwoven Shawl',
+    description: 'All flights are 10% faster.',
+    effect: { kind: 'travel', multiplier: 0.9 },
+  },
+  'curio-aurora-prism': {
+    id: 'curio-aurora-prism',
+    name: 'Aurora Prism',
+    description: 'Potions work 25% better.',
+    effect: { kind: 'potionStrength', multiplier: 1.25 },
+  },
+  'curio-windbound-tome': {
+    id: 'curio-windbound-tome',
+    name: 'Windbound Tome',
+    description: 'Research costs 25% less.',
+    effect: { kind: 'researchCost', multiplier: 0.75 },
+  },
 }
 
 export interface VillagerDef {
@@ -242,6 +273,11 @@ export const VILLAGERS: Readonly<Record<string, readonly VillagerDef[]>> = {
     { id: 'villager-flicker', name: 'Flicker', title: 'who keeps the willow lantern shop' },
     { id: 'villager-ember', name: 'Ember', title: 'the lantern weaver' },
     { id: 'villager-pipwick', name: 'Pipwick', title: 'the youngest lamplighter' },
+  ],
+  nimbusrest: [
+    { id: 'villager-zephyrine', name: 'Zephyrine', title: 'who keeps the Weathervane shop' },
+    { id: 'villager-gusty', name: 'Gusty', title: 'the kite-maker' },
+    { id: 'villager-nimbletuft', name: 'Nimbletuft', title: 'who herds the little clouds' },
   ],
 }
 

@@ -127,6 +127,10 @@ export type SecretUnlock =
   | { kind: 'scout'; regionId: string; chance: number; hint: string }
   /** Only reachable while riding this mount (it never stays open on its own). */
   | { kind: 'riding'; mountId: string; hint: string }
+  /** Opens once the court reaches this rank (index into COURT_RANKS). */
+  | { kind: 'rank'; rank: number; hint: string }
+  /** Only appears from this run on (a reward for prestige). */
+  | { kind: 'run'; run: number; hint: string }
 
 export interface SettlementDef {
   id: string
@@ -151,8 +155,11 @@ export interface RegionDef {
   spots: string[]
   /** The harvesting spot whose scenery stands for the whole region (menu, flights). */
   sceneSpot: string
-  /** What it takes to reach this region (null: open from the start). */
-  unlock: { rank: number; ritualId: string } | null
+  /**
+   * What it takes to reach this region (null: open from the start): a court rank, plus either a
+   * rite or (the Sky Isles) a tamed mount strong enough to fly there.
+   */
+  unlock: { rank: number; ritualId?: string; mountId?: string } | null
   /**
    * Dark until lit: before its rite, light (a Glowlight Potion, or a mount that glows) lets a
    * court of the right rank visit.

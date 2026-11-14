@@ -26,6 +26,9 @@ export function knownRituals(state: GameState): string[] {
   return state.research.completed.flatMap((id) => RESEARCH[id]?.rituals ?? [])
 }
 
+/** How long Stormward lets you fly through Sky Isles storms. */
+export const STORMWARD_MS = 10 * 60_000
+
 /** Whether there's something right here for this spell to work on. */
 function hasTarget(state: GameState, spellId: string): boolean {
   const { place, travel } = state.player
@@ -47,6 +50,12 @@ function hasTarget(state: GameState, spellId: string): boolean {
       const camp = state.challenges.camps[place]
       return state.weather.glade?.kind === 'new-moon' || camp === 'moonshadow-crew'
     }
+    case 'storm':
+      // Worth casting while a storm grounds the Sky Isles (and Stormward isn't already on).
+      return (
+        Object.values(state.weather).some((w) => w.kind === 'storm') &&
+        !((state.player.stormwardMs ?? 0) > 0)
+      )
     case 'camp':
       return !travel && !!state.challenges.camps[place]
     case 'ambush':
@@ -124,6 +133,9 @@ export function castSpell(state: GameState, spellId: string): GameEvent[] {
       return [cast, ...sneak(state)]
     case 'webs':
       return [cast, ...sendCreatureAway(state, place, 'shooed')]
+    case 'storm':
+      state.player.stormwardMs = STORMWARD_MS
+      return [cast]
     case 'shadow': {
       const events: GameEvent[] = [cast]
       if (state.challenges.camps[place] === 'moonshadow-crew')

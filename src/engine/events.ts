@@ -29,6 +29,7 @@ export type BlockedReason =
   | 'not-full-moon'
   | 'no-stars'
   | 'cooling-down'
+  | 'storm'
 
 /**
  * Things that just happened, returned by actions so the screen can react (floating numbers,

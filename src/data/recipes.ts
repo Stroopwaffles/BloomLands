@@ -287,6 +287,7 @@ const RECIPE_LIST: RecipeDef[] = [
       { itemId: 'component-beeswax-candle', amount: 1 },
       { itemId: 'component-glow-ink', amount: 1 },
       { itemId: 'component-moon-draught', amount: 1 },
+      { itemId: 'component-wind-silk', amount: 1 },
     ],
     output: { itemId: 'component-harmony-blend', amount: 1 },
     durationMs: 90 * SEC,
@@ -325,6 +326,39 @@ const RECIPE_LIST: RecipeDef[] = [
       { itemId: 'component-glow-ink', amount: 1 },
     ],
     output: { itemId: 'component-starlight-lens', amount: 1 },
+    durationMs: 45 * SEC,
+  },
+
+  // Sky Isles refining and components
+  {
+    id: 'refined-cloud-silk',
+    station: 'spinning-wheel',
+    inputs: [{ itemId: 'raw-cloud-fluff', amount: 3 }],
+    output: { itemId: 'refined-cloud-silk', amount: 1 },
+    durationMs: 22 * SEC,
+  },
+  {
+    id: 'refined-storm-vial',
+    station: 'press',
+    inputs: [{ itemId: 'raw-storm-essence', amount: 1 }],
+    output: { itemId: 'refined-storm-vial', amount: 1 },
+    durationMs: 26 * SEC,
+  },
+  {
+    id: 'refined-aurora-dye',
+    station: 'mortar',
+    inputs: [{ itemId: 'raw-aurora-petals', amount: 1 }],
+    output: { itemId: 'refined-aurora-dye', amount: 1 },
+    durationMs: 26 * SEC,
+  },
+  {
+    id: 'component-wind-silk',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'refined-cloud-silk', amount: 1 },
+      { itemId: 'refined-storm-vial', amount: 1 },
+    ],
+    output: { itemId: 'component-wind-silk', amount: 1 },
     durationMs: 45 * SEC,
   },
 

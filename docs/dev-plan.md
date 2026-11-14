@@ -455,6 +455,29 @@ Each region milestone adds that region's content, art, mount, creature, pirate c
 - **Lodging:** Lantern Loft (+2 gatherers), Moth Roost (+1 mount), Moonlit Pantry (+600 storage).
 - **Art and sound:** Glade backdrops whose moon follows the cycle, with fireflies, shooting stars in a starfall, the brook, the Starwell and the Dream Hollow. All the new plants, items, people, creatures, mounts and curios, the two outfits, a dark menu scene, and two tracks ("Emberglow" and "The Moon Pool").
 
+#### M16 status: complete — Release 0.8 "Sky Isles" (version 0.8.0)
+
+- **To enter:** no rite. The Sky Isles open for good once the court **owns the blue jay** and reaches the **Moon Court** (`RegionDef.unlock.mountId`, `advanceMountRegions`). The closed island's card on the map says so.
+- **Places:** Nimbusrest (wind sprites, with The Weathervane shop), Cloudbloom Terraces, Windharp Cliffs, and the Sun Spire (Aeris).
+- **Plants and items:**
+  - Skybell, rainbow moss, cloudbloom, sunpetal, wind thistle, thunder lily and aurora blossom, plus prism blossom and whisperleaf in the secret areas.
+  - Cloud Silk (spinning wheel), Storm Vial (press), Aurora Dye (mortar) and **Wind Silk** (the signature).
+  - Three trinkets: a golden feather, a kite string, a brass gear. **Harmony Blend now takes all seven signatures**, as designed.
+- **Weather:**
+  - **Storm:** grounds every flight to or from the isles, the player's and helpers' alike, and thunder lilies grow 4× as often. The new **Stormward** spell (Wind Silk and Crystal Focus) lets you fly for 10 minutes; the Storm Bell relic ends grounding for good. The map card warns, disables Fly, and offers Stormward.
+  - **Rainbow:** every harvest gives one extra.
+  - **Updraft:** flights to and from the isles are 40% quicker.
+- **Challenges:** **the hawk** watches a spot (like the owl) and makes flights there 50% longer. Gnats on fluffy plants. **The Stormchasers**, the captain's elite crew, need five Parleys instead of three.
+- **People:** Professor Cumulus, an astronomer whose star maps blew away (Star Chart: 15% more Root Song), and Twill, who weaves a giant sail (Windwoven Shawl: flights 10% faster), plus three Nimbusrest villagers. **Aeris** wants a Sprouting Sky Isles, Cumulus's story, 3 Wind Silk and an Aurora Dye.
+- **Relics:** Aeris's five. The Jay-Blue Feather tames the blue jay as soon as the Glade opens.
+- **Secret areas:**
+  - **The Aurora Garden** opens at the Moon Court: Aurora Prism (potions 25% stronger) and the Sunrise Regalia.
+  - **The Cloud Archive** appears from run 2: Windbound Tome (research costs 25% less) and the Sky Scholar's set.
+- **Lodging:** Cloud Loft (+2 gatherers), Wind-Chime Tower (+1 scout), Sky Vault (+800 storage).
+- **Polish:** long routes now read "via the Forest, the Swamp and the Caves".
+- **Art and sound:** isle backdrops whose sky follows the weather (storm clouds, rain and lightning, a rainbow, rising updrafts, an aurora, drifting cloud-scrolls), all the new plants, items, people, creatures, curios and both outfits, a bright menu scene, and two tracks ("Nimbusrest" and "Above the Clouds").
+- **Not in this milestone (content doc extras):** the Featherfall Tonic and the Rite of Clear Skies.
+
 ---
 
 ## 4. How We Work Each Milestone

@@ -1,7 +1,8 @@
+import type { CostEntry } from '../data/types'
 import { RESEARCH } from '../data/research'
 import { canPay, payCost } from './costs'
 import type { GameEvent } from './events'
-import { researchSpeed } from './modifiers'
+import { researchSpeed, researchCostMultiplier } from './modifiers'
 import { regionUnlocked } from './regions'
 import type { GameState } from './state'
 
@@ -25,8 +26,16 @@ export function checkResearch(state: GameState, id: string): ResearchCheck {
   if (status === 'done') return 'already-done'
   if (status === 'locked') return 'locked'
   if (state.research.current) return 'research-busy'
-  if (!canPay(state, RESEARCH[id].cost)) return 'missing-items'
+  if (!canPay(state, researchCost(state, id))) return 'missing-items'
   return 'ok'
+}
+
+/** What research costs right now (the Windbound Tome takes some off; never below 1). */
+export function researchCost(state: GameState, id: string): CostEntry[] {
+  const multiplier = researchCostMultiplier(state)
+  const cost = RESEARCH[id]?.cost ?? []
+  if (multiplier === 1) return cost
+  return cost.map((e) => ({ ...e, amount: Math.max(1, Math.ceil(e.amount * multiplier)) }))
 }
 
 /** Starts research. One at a time; the cost is paid when it starts (see payingStocks). */
@@ -34,7 +43,7 @@ export function startResearch(state: GameState, id: string): GameEvent[] {
   const check = checkResearch(state, id)
   if (check !== 'ok') return [{ type: 'blocked', reason: check }]
   const node = RESEARCH[id]
-  payCost(state, node.cost)
+  payCost(state, researchCost(state, id))
   state.research.current = { id, totalMs: node.durationMs, remainingMs: node.durationMs }
   return [{ type: 'research-start', researchId: id }]
 }

@@ -174,4 +174,30 @@ export const SPIRITS: Readonly<Record<string, SpiritDef>> = {
       },
     ],
   },
+  'spirit-aeris': {
+    id: 'spirit-aeris',
+    name: 'Aeris, the High Wind',
+    regionId: 'sky',
+    place: 'sun-spire',
+    sleeping: [
+      'A ribbon of wind loops lazily around the spire, then stops, as if it forgot what it was doing.',
+      '"Oh! Hi! Hello! Sleepy-sleepy, sorry. The isles feel so still. Make them sing, and I’ll wake right up!"',
+    ],
+    awakening: [
+      'The ribbon whips round and round the spire, laughing, and every cloud in the sky starts to dance.',
+      '"WHEEE! Awake! Awake awake awake! Thank you thank you, little gardener of the whole wide world!"',
+    ],
+    requirements: [
+      { kind: 'bloom', level: 2, label: 'Help the Sky Isles reach Sprouting bloom' },
+      { kind: 'story', storyId: 'story-cumulus', label: "Finish Professor Cumulus's story" },
+      {
+        kind: 'offering',
+        items: [
+          { itemId: 'component-wind-silk', amount: 3 },
+          { itemId: 'refined-aurora-dye', amount: 1 },
+        ],
+        label: 'Offer 3 Wind Silk and 1 Aurora Dye',
+      },
+    ],
+  },
 }
