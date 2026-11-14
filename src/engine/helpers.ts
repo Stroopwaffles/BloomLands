@@ -403,6 +403,27 @@ export function helperFlightMs(state: GameState, helper: HelperState, spotId: st
   return Math.ceil(mountId ? base / mountSpeed(state, mountId) : base)
 }
 
+/** Helpers busy at a place right now (gathering, searching, or selling at a village shop). */
+export function helpersAt(state: GameState, placeId: string): HelperState[] {
+  return state.helpers.list.filter((h) => h.phase === 'gathering' && h.tripSpot === placeId)
+}
+
+/**
+ * Where a flying helper is on their trip: `t` runs from 0 (home) to 1 (their spot), whichever
+ * way they're going. Null when they aren't in the air.
+ */
+export function helperFlight(
+  state: GameState,
+  helper: HelperState,
+): { spotId: string; t: number; returning: boolean } | null {
+  if (helper.phase !== 'outbound' && helper.phase !== 'returning') return null
+  if (!helper.tripSpot) return null
+  const total = helperFlightMs(state, helper, helper.tripSpot)
+  const left = total > 0 ? Math.min(1, Math.max(0, helper.remainingMs / total)) : 0
+  const returning = helper.phase === 'returning'
+  return { spotId: helper.tripSpot, t: returning ? left : 1 - left, returning }
+}
+
 /** Picks the next trip for an idle helper. Returns false if there's nothing to do. */
 function startTrip(state: GameState, helper: HelperState): boolean {
   const itemId = helper.type === 'supply' ? nextShortage(state) : null

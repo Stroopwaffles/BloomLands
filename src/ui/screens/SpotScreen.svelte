@@ -17,6 +17,7 @@
     satchelOverload,
   } from '../../engine/modifiers'
   import { wildMountAt } from '../../engine/mounts'
+  import { helpersAt } from '../../engine/helpers'
   import BloomMeter from '../components/BloomMeter.svelte'
   import Destinations from '../components/Destinations.svelte'
   import ScenePlant from '../components/ScenePlant.svelte'
@@ -34,6 +35,21 @@
   const over = $derived(satchelOverload($game))
   const mountAway = $derived(satchelMountAway($game))
   const creature = $derived($game.challenges.creatures[spotId])
+  /** Your helpers working here, each standing beside a plant. */
+  const workers = $derived(helpersAt($game, spotId))
+  function listNames(names: string[]): string {
+    if (names.length <= 1) return names.join('')
+    return `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`
+  }
+  function workerAt(i: number): { x: number; y: number } {
+    // Beside plants a pirate camp isn't covering.
+    const free = layout.slots.filter((_, n) => !campBlocksSlot($game, spotId, n))
+    const slots = free.length > 0 ? free : layout.slots
+    const slot = slots[(i * 2 + 1) % slots.length]
+    // A little to the side of the plant, and nudged further for every lap round the slots.
+    const lap = Math.floor((i * 2 + 1) / slots.length)
+    return { x: slot.x + (i % 2 ? 7 : -7) + lap * 3, y: slot.y + 4 }
+  }
   const campCrew = $derived($game.challenges.camps[spotId])
   const wildMount = $derived(wildMountAt($game, spotId))
   const night = $derived(isNight($game))
@@ -217,6 +233,21 @@
         {/each}
       {/each}
 
+      {#each workers as helper, i (helper.id)}
+        {@const p = workerAt(i)}
+        <div
+          class="worker"
+          class:scout={helper.type === 'scout'}
+          style:left="{p.x}%"
+          style:top="{p.y}%"
+          style:--delay="{(i * 0.37) % 1.2}s"
+          aria-hidden="true"
+        >
+          <span class="worker-art"><Art id={`helper-${helper.type}`} size={64} /></span>
+          <span class="worker-name">{helper.name}</span>
+        </div>
+      {/each}
+
       {#if wildMount}
         <div class="mount" style:left="{layout.mount.x}%" style:top="{layout.mount.y}%">
           <Art id={`${wildMount}-wild`} size={90} />
@@ -274,6 +305,13 @@
         </p>
       {/if}
       {#if message}<p class="note message" role="status">{message}</p>{/if}
+      {#if workers.length > 0}
+        <p class="note helpers-here">
+          {listNames(workers.map((h) => h.name))}
+          {workers.length === 1 ? 'is' : 'are'}
+          {workers.every((h) => h.type === 'scout') ? 'searching' : 'working'} here.
+        </p>
+      {/if}
       {#if creature && watching}
         <p class="note trouble">
           {#if sneaking}
@@ -420,6 +458,71 @@
   .creature :global(svg) {
     width: 100%;
     height: auto;
+  }
+
+  /* Helpers at work beside the plants: they bob as they pick (or peer about, for scouts). */
+  .worker {
+    position: absolute;
+    width: 8%;
+    min-width: 34px;
+    transform: translate(-50%, -100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .worker-art {
+    width: 100%;
+    animation: pick 1.6s ease-in-out infinite;
+    animation-delay: var(--delay);
+    transform-origin: 50% 100%;
+  }
+
+  .worker.scout .worker-art {
+    animation-name: peer;
+    animation-duration: 2.6s;
+  }
+
+  .worker-art :global(svg) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .worker-name {
+    margin-top: -2px;
+    padding: 0 5px;
+    border-radius: 8px;
+    background: rgb(var(--surface-rgb) / 0.8);
+    font-size: 0.62rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  @keyframes pick {
+    40% {
+      transform: translateY(6%) rotate(-6deg);
+    }
+    60% {
+      transform: translateY(6%) rotate(4deg);
+    }
+  }
+
+  @keyframes peer {
+    30% {
+      transform: rotate(-8deg);
+    }
+    70% {
+      transform: rotate(8deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .worker-art {
+      animation: none;
+    }
   }
 
   .mount {

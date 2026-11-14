@@ -27,6 +27,7 @@
   import { countItems } from '../../engine/state'
   import { placeOpen, regionReachable } from '../../engine/regions'
   import { flightBreakdown, pathNodes } from '../../engine/route'
+  import { helperFlight, helpersAt } from '../../engine/helpers'
   import { playSound } from '../../audio/sfx'
   import { runtime } from '../game'
 
@@ -54,6 +55,29 @@
     const spot = MAP_ISLANDS[regionId]?.places[placeId]
     if (index < 0 || !spot) return null
     return { x: index * 100 + spot.x, y: spot.y }
+  }
+
+  /** Helpers in the air, as tiny mice somewhere between home and their spot. */
+  const flyers = $derived(
+    $game.helpers.list.flatMap((helper) => {
+      const flight = helperFlight($game, helper)
+      const from = pos(HOME)
+      const to = flight && pos(flight.spotId)
+      if (!flight || !from || !to) return []
+      // A gentle arc, like the player's own flights.
+      const x = from.x + (to.x - from.x) * flight.t
+      const y = from.y + (to.y - from.y) * flight.t - Math.sin(Math.PI * flight.t) * 10
+      return [{ helper, x, y, returning: flight.returning }]
+    }),
+  )
+
+  /** Mice face the way they're flying. */
+  function flipped(f: { helper: { tripSpot: string | null }; returning: boolean }): boolean {
+    const home = pos(HOME)
+    const spot = f.helper.tripSpot ? pos(f.helper.tripSpot) : null
+    if (!home || !spot) return false
+    const goingRight = f.returning ? home.x > spot.x : spot.x > home.x
+    return !goingRight
   }
 
   function placesOn(regionId: string): string[] {
@@ -188,6 +212,19 @@
           {/each}
         </svg>
 
+        {#each flyers as f (f.helper.id)}
+          <span
+            class="flyer"
+            class:back={flipped(f)}
+            style:left={pct(f.x)}
+            style:top="{f.y}%"
+            title={`${f.helper.name} ${f.returning ? 'heading home' : 'on the way'}`}
+            aria-hidden="true"
+          >
+            <Art id={`helper-${f.helper.type}`} size={20} />
+          </span>
+        {/each}
+
         {#each islands as regionId, i (regionId)}
           {@const open = regionReachable($game, regionId)}
           <div class="island-label" style:left={pct(i * 100 + 50)}>
@@ -211,9 +248,7 @@
             {@const kind = kindOf(placeId)}
             {@const creature = $game.challenges.creatures[placeId]}
             {@const camp = $game.challenges.camps[placeId]}
-            {@const working = $game.helpers.list.filter(
-              (h) => h.tripSpot === placeId && h.phase === 'gathering',
-            ).length}
+            {@const working = helpersAt($game, placeId).length}
             <button
               type="button"
               class="node {kind}"
@@ -240,7 +275,7 @@
                     >{/if}
                   {#if camp}<span class="badge warn" title={CREWS[camp]?.name}>⚑</span>{/if}
                   {#if working}<span class="badge helpers" title="Helpers working here"
-                      >{working}</span
+                      ><Art id="helper-gatherer" size={14} />{working > 1 ? working : ''}</span
                     >{/if}
                 </span>
               {/if}
@@ -619,7 +654,51 @@
   }
 
   .badge.helpers {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    padding: 0 3px 0 1px;
     background: var(--leaf-deep);
+  }
+
+  .badge.helpers :global(svg) {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Helpers flying to and from their jobs. */
+  .flyer {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 1;
+    filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.25));
+    transition:
+      left 1s linear,
+      top 1s linear;
+  }
+
+  .flyer.back :global(svg) {
+    transform: scaleX(-1);
+  }
+
+  .flyer :global(svg) {
+    display: block;
+    animation: flutter 0.9s ease-in-out infinite;
+  }
+
+  @keyframes flutter {
+    50% {
+      translate: 0 -2px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flyer,
+    .flyer :global(svg) {
+      transition: none;
+      animation: none;
+    }
   }
 
   .card {
