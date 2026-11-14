@@ -64,7 +64,7 @@
     gap: 12px;
     padding: 10px 14px;
     border-radius: 18px;
-    background: rgb(255 255 255 / 0.85);
+    background: rgb(var(--surface-rgb) / 0.85);
     border: 2px solid #f2b45c;
     color: var(--ink);
   }
@@ -86,7 +86,7 @@
     height: 16px;
     border-radius: 50%;
     border: 2px solid var(--petal-deep);
-    background: white;
+    background: var(--surface);
   }
 
   .heart.full {
@@ -113,7 +113,7 @@
   }
 
   button:disabled {
-    background: #d8d0c4;
+    background: var(--disabled, #d8d0c4);
     cursor: not-allowed;
   }
 </style>

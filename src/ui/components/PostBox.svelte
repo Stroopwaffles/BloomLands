@@ -100,6 +100,6 @@
     gap: 2px;
     padding: 2px 8px;
     border-radius: 999px;
-    background: rgb(255 255 255 / 0.25);
+    background: rgb(var(--surface-rgb) / 0.25);
   }
 </style>

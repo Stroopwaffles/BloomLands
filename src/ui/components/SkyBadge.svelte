@@ -195,7 +195,7 @@
     width: 4px;
     margin-left: -2px;
     border-radius: 2px;
-    background: white;
+    background: var(--surface);
     box-shadow: 0 0 0 1.5px var(--ink);
   }
 

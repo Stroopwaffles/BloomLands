@@ -98,7 +98,7 @@
 
   .counter:hover,
   .counter[aria-expanded='true'] {
-    background: rgb(255 255 255 / 0.6);
+    background: rgb(var(--surface-rgb) / 0.6);
     border-color: var(--honey);
   }
 

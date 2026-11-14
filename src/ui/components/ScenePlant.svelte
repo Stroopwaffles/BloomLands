@@ -143,7 +143,7 @@
     font-size: clamp(0.65rem, 1.3vw, 0.85rem);
     font-weight: 700;
     color: var(--ink);
-    background: rgb(255 255 255 / 0.75);
+    background: rgb(var(--surface-rgb) / 0.75);
     padding: 0 6px;
     border-radius: 999px;
     pointer-events: none;
@@ -156,7 +156,7 @@
     width: 60%;
     height: 6px;
     border-radius: 999px;
-    background: rgb(255 255 255 / 0.8);
+    background: rgb(var(--surface-rgb) / 0.8);
     overflow: hidden;
   }
 
@@ -203,7 +203,7 @@
   .timer {
     font-size: clamp(0.6rem, 1.2vw, 0.8rem);
     font-weight: 700;
-    background: rgb(255 255 255 / 0.7);
+    background: rgb(var(--surface-rgb) / 0.7);
     padding: 0 6px;
     border-radius: 999px;
   }

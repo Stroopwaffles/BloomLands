@@ -190,9 +190,9 @@
     align-items: center;
     min-height: 50px;
     padding: 0 22px;
-    border: 2px solid rgb(255 255 255 / 0.9);
+    border: 2px solid rgb(var(--surface-rgb) / 0.9);
     border-radius: 16px;
-    background: rgb(255 250 240 / 0.85);
+    background: rgb(var(--cream-rgb) / 0.85);
     font-family: var(--font-heading);
     font-size: 1.15rem;
     cursor: pointer;

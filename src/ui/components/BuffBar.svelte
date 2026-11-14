@@ -35,7 +35,7 @@
     align-items: center;
     gap: 4px;
     padding: 2px 10px 2px 4px;
-    background: white;
+    background: var(--surface);
     border: 2px solid var(--petal);
     border-radius: 999px;
     font-size: 0.85rem;

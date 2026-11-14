@@ -182,7 +182,7 @@
     flex-wrap: wrap;
     gap: 8px;
     padding: 6px 10px;
-    background: white;
+    background: var(--surface);
     border-radius: 12px;
   }
 
@@ -216,7 +216,7 @@
     padding: 0 10px;
     border: 2px solid var(--leaf);
     border-radius: 10px;
-    background: white;
+    background: var(--surface);
     color: var(--ink);
     font: inherit;
     font-size: 0.85rem;

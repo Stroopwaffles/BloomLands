@@ -8,6 +8,10 @@
   --petal-deep: #c97a8c;
   --honey: #f2b45c;
   --ink: #5a4352;
+  /* Cards and controls (white by day) and see-through glass overlays. */
+  --surface: #ffffff;
+  --surface-rgb: 255 255 255;
+  --cream-rgb: 255 250 240;
 
   /* Typography (design doc 7.6): change fonts here only */
   --font-heading: 'Fredoka', 'Nunito', system-ui, sans-serif;
@@ -16,6 +20,37 @@
   font-family: var(--font-body);
   color: var(--ink);
   background: var(--cream);
+}
+
+/*
+ * Night theme (set on <html data-theme="night"> while it's night in the game): soft dusky colors
+ * with lower contrast, so the screen is gentle in the dark. Everything that uses the palette
+ * variables follows along; screens with their own day backdrop use --screen-bg.
+ */
+:root[data-theme='night'] {
+  --cream: #221f43;
+  --cream-deep: #2b2752;
+  --surface: #353066;
+  --surface-rgb: 53 48 102;
+  --cream-rgb: 43 39 82;
+  --ink: #e4dcf2;
+  --leaf: #6f9f6a;
+  --leaf-deep: #6fae69;
+  --petal: #a9789a;
+  --petal-deep: #d69ab3;
+  --honey: #6f5ca8;
+  --screen-bg: linear-gradient(#1f1c40, #28304f);
+  /* Buttons that can't be pressed yet. */
+  --disabled: #4a4570;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  transition:
+    background-color 0.6s ease,
+    color 0.6s ease;
 }
 
 *,

@@ -74,6 +74,11 @@
 </div>
 
 <style>
+  /* At night the court is in moonlight. */
+  :global([data-theme='night']) .court {
+    filter: brightness(0.62) saturate(0.8) hue-rotate(-12deg);
+  }
+
   .court {
     position: relative;
     aspect-ratio: 4 / 3;

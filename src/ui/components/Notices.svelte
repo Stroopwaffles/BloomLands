@@ -105,7 +105,7 @@
     margin: 0;
     padding: 6px 16px;
     border-radius: 999px;
-    background: white;
+    background: var(--surface);
     border: 2px solid var(--petal);
     font-weight: 700;
     box-shadow: 0 4px 12px rgb(90 67 82 / 0.15);
@@ -116,7 +116,7 @@
     padding: 10px 22px;
     font-family: var(--font-heading);
     font-size: 1.15rem;
-    background: linear-gradient(#fff7e8, #fde3ec);
+    background: var(--screen-bg, linear-gradient(#fff7e8, #fde3ec));
     border-color: var(--petal-deep);
   }
 

@@ -39,7 +39,7 @@
     align-items: center;
     gap: 10px;
     padding: 8px 10px;
-    background: white;
+    background: var(--surface);
     border-radius: 14px;
     border: 2px solid #e9dcff;
     box-shadow: 0 0 8px rgb(167 139 250 / 0.25);

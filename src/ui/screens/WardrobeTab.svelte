@@ -36,7 +36,7 @@
     justify-content: center;
     padding: 20px;
     border-radius: 24px;
-    background: linear-gradient(#fde7ef, #fff7e8);
+    background: var(--screen-bg, linear-gradient(#fde7ef, #fff7e8));
     border: 2px solid var(--honey);
   }
 

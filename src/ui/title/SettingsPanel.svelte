@@ -27,6 +27,19 @@
     />
   </section>
   <section>
+    <h3>Night colors</h3>
+    <p class="hint">Softer, darker colors for the interface while it's night in the game.</p>
+    <Choices
+      label="Night colors"
+      options={[
+        { id: 'auto', name: 'At night' },
+        { id: 'off', name: 'Never' },
+      ]}
+      value={settings.nightTheme}
+      onPick={(id) => updateSettings({ nightTheme: id as Settings['nightTheme'] })}
+    />
+  </section>
+  <section>
     <h3>Reduced motion</h3>
     <Choices
       label="Reduced motion"

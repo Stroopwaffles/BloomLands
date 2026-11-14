@@ -228,7 +228,7 @@
     padding: 0 12px;
     border: 1px solid var(--petal-deep);
     border-radius: 10px;
-    background: white;
+    background: var(--surface);
     color: var(--ink);
     font: inherit;
     cursor: pointer;

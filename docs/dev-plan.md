@@ -241,6 +241,14 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - **Selling:** a shop buys **anything** in the satchel at half its worth, with Sell 1, All and Sell everything. Trinkets are worth 40 to a shop. Traders pay 1.5× and villagers grow bloom, so requests stay the better deal. Selling is always cheaper than buying, so there's no buy-and-sell loop.
 - Rates are in `SHOP_RULES` (economy.ts).
 
+### Night theme (v0.3.10)
+
+- While it's night in the game, the whole interface switches to soft night colors (`<html data-theme="night">`): indigo panels and cards, lavender text, muted purple borders, dim disabled buttons. It fades in and out with the clock.
+- **How it works:** components use palette variables (`--cream`, `--cream-deep`, `--surface`, `--ink`, `--honey`, `--disabled`, `--screen-bg`), so nothing is hard-coded white any more. The night values live in one block in `app.css`.
+- **Map at night:** a darker sea, dimmed islands and pins, and dark label pills with light text.
+- **Court scene:** shown in moonlight.
+- **Setting:** "Night colors: At night / Never". The title menu always uses day colors.
+
 ### Backlog (asked for, not scheduled yet)
 
 - Nothing waiting.

@@ -80,7 +80,7 @@
     align-items: center;
     gap: 10px;
     padding: 10px;
-    background: white;
+    background: var(--surface);
     border-radius: 14px;
     border: 2px solid transparent;
   }
@@ -126,7 +126,7 @@
 
   .secondary {
     border: 2px solid #f2b45c;
-    background: white;
+    background: var(--surface);
     color: var(--ink);
   }
 

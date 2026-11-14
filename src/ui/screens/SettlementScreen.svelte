@@ -98,7 +98,7 @@
   .settlement {
     min-height: calc(100vh - 70px);
     padding: 16px;
-    background: linear-gradient(#fbe9d0, #e7f2d9);
+    background: var(--screen-bg, linear-gradient(#fbe9d0, #e7f2d9));
   }
 
   header,
@@ -160,7 +160,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px;
-    background: white;
+    background: var(--surface);
     border-radius: 16px;
   }
 
@@ -213,7 +213,7 @@
   }
 
   button:disabled {
-    background: #c9c2b8;
+    background: var(--disabled, #c9c2b8);
     cursor: not-allowed;
   }
 </style>

@@ -306,9 +306,9 @@
   .panel-box button {
     min-height: 50px;
     padding: 0 22px;
-    border: 2px solid rgb(255 255 255 / 0.9);
+    border: 2px solid rgb(var(--surface-rgb) / 0.9);
     border-radius: 16px;
-    background: rgb(255 250 240 / 0.85);
+    background: rgb(var(--cream-rgb) / 0.85);
     color: var(--ink);
     font: inherit;
     font-family: var(--font-heading);
@@ -319,7 +319,7 @@
   }
 
   .menu button:hover {
-    background: white;
+    background: var(--surface);
     transform: translateX(4px);
   }
 
@@ -335,7 +335,7 @@
     overflow: auto;
     padding: 18px;
     border-radius: 22px;
-    background: rgb(255 250 240 / 0.95);
+    background: rgb(var(--cream-rgb) / 0.95);
     border: 2px solid var(--honey);
     box-shadow: 0 8px 24px rgb(90 67 82 / 0.18);
     user-select: text;
@@ -395,7 +395,7 @@
     align-items: center;
     padding: 10px 20px;
     border-radius: 16px;
-    background: rgb(255 250 240 / 0.9);
+    background: rgb(var(--cream-rgb) / 0.9);
     border: 2px solid var(--petal);
     text-align: center;
     font-size: 0.95rem;

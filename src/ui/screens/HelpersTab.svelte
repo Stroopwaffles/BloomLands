@@ -254,7 +254,7 @@
     align-items: flex-start;
     gap: 10px;
     padding: 10px;
-    background: white;
+    background: var(--surface);
     border-radius: 14px;
   }
 
@@ -306,7 +306,7 @@
     padding: 0 8px;
     border: 2px solid var(--leaf);
     border-radius: 10px;
-    background: white;
+    background: var(--surface);
     font: inherit;
     font-size: 0.9rem;
   }
@@ -316,7 +316,7 @@
     align-items: center;
     gap: 10px;
     padding: 8px 10px;
-    background: white;
+    background: var(--surface);
     border-radius: 14px;
     border: 2px solid transparent;
   }
@@ -343,7 +343,7 @@
     height: 44px;
     border: 2px solid var(--leaf);
     border-radius: 10px;
-    background: white;
+    background: var(--surface);
     color: var(--ink);
     font-size: 1.3rem;
     cursor: pointer;

@@ -74,11 +74,11 @@
   .spirit-place {
     min-height: calc(100vh - 70px);
     padding: 16px;
-    background: linear-gradient(#f6e7c8, #e9f0d8);
+    background: var(--screen-bg, linear-gradient(#f6e7c8, #e9f0d8));
   }
 
   .spirit-place.awake {
-    background: linear-gradient(#fff3c4, #d8efc8);
+    background: var(--screen-bg, linear-gradient(#fff3c4, #d8efc8));
   }
 
   header,
@@ -112,7 +112,7 @@
     gap: 12px;
     padding: 20px;
     border-radius: 24px;
-    background: rgb(255 255 255 / 0.7);
+    background: rgb(var(--surface-rgb) / 0.7);
     border: 2px solid var(--honey);
     text-align: center;
   }
@@ -159,7 +159,7 @@
     gap: 10px;
     padding: 10px 12px;
     border-radius: 14px;
-    background: white;
+    background: var(--surface);
   }
 
   .requirements li div {
@@ -199,7 +199,7 @@
   }
 
   button:disabled {
-    background: #d8d0c4;
+    background: var(--disabled, #d8d0c4);
     cursor: not-allowed;
   }
 

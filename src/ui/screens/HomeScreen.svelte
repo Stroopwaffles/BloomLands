@@ -176,7 +176,7 @@
     padding: 0 22px;
     border: 2px solid var(--honey);
     border-radius: 14px;
-    background: white;
+    background: var(--surface);
     color: var(--ink);
     font: inherit;
     font-family: var(--font-heading);
@@ -225,7 +225,7 @@
     height: 10px;
     margin-top: 6px;
     border-radius: 999px;
-    background: white;
+    background: var(--surface);
     border: 2px solid var(--leaf);
     overflow: hidden;
   }
@@ -319,7 +319,7 @@
       height: 10px;
       margin-top: 6px;
       border-radius: 999px;
-      background: white;
+      background: var(--surface);
       border: 2px solid var(--leaf);
       overflow: hidden;
     }

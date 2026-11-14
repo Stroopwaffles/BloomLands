@@ -208,7 +208,7 @@
     margin: 0;
     padding: 2px 14px;
     border-radius: 12px;
-    background: rgb(255 250 240 / 0.85);
+    background: rgb(var(--cream-rgb) / 0.85);
   }
 
   .route {
@@ -231,8 +231,8 @@
     min-width: 0;
     padding: 6px 4px;
     border-radius: 10px;
-    background: rgb(255 255 255 / 0.65);
-    border: 2px solid rgb(255 255 255 / 0.9);
+    background: rgb(var(--surface-rgb) / 0.65);
+    border: 2px solid rgb(var(--surface-rgb) / 0.9);
     font-size: 0.8rem;
     font-weight: 700;
     text-align: center;
@@ -272,7 +272,7 @@
     margin: 0;
     padding: 2px 12px;
     border-radius: 10px;
-    background: rgb(255 250 240 / 0.85);
+    background: rgb(var(--cream-rgb) / 0.85);
     font-weight: 700;
   }
 
@@ -294,7 +294,7 @@
     width: min(460px, 92%);
     padding: 14px;
     border-radius: 20px;
-    background: rgb(255 255 255 / 0.92);
+    background: rgb(var(--surface-rgb) / 0.92);
     border: 2px solid var(--honey);
     text-align: center;
   }
@@ -328,7 +328,7 @@
     margin: 0;
     padding: 2px 12px;
     border-radius: 10px;
-    background: rgb(255 250 240 / 0.9);
+    background: rgb(var(--cream-rgb) / 0.9);
     font-weight: 700;
     color: var(--leaf-deep);
   }

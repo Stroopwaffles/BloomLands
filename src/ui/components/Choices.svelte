@@ -39,7 +39,7 @@
     padding: 0 14px;
     border: 2px solid var(--honey);
     border-radius: 12px;
-    background: white;
+    background: var(--surface);
     color: var(--ink);
     font: inherit;
     cursor: pointer;

@@ -348,7 +348,7 @@
     padding: 4px 16px;
     border: 2px solid var(--leaf);
     border-radius: 14px;
-    background: white;
+    background: var(--surface);
     color: var(--ink);
     font: inherit;
     cursor: pointer;
@@ -387,6 +387,20 @@
     position: relative;
     height: 230px;
     width: max(100%, calc(var(--islands) * 250px));
+  }
+
+  /* At night the sea darkens and the islands dim, so the light labels stay easy to read. */
+  :global([data-theme='night']) .scroller {
+    background: linear-gradient(#2a3866, #1f2b52);
+    border-color: #4a4f8a;
+  }
+
+  :global([data-theme='night']) .pin {
+    filter: brightness(0.82);
+  }
+
+  :global([data-theme='night']) .sea {
+    filter: brightness(0.62) saturate(0.85);
   }
 
   .sea {
@@ -451,7 +465,7 @@
     padding: 4px 12px;
     border: 2px dashed #8a95a3;
     border-radius: 12px;
-    background: rgb(255 255 255 / 0.8);
+    background: rgb(var(--surface-rgb) / 0.8);
     color: var(--ink);
     font: inherit;
     font-weight: 700;
@@ -482,7 +496,7 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: white;
+    background: var(--surface);
     border: 2px solid var(--leaf);
     font-size: 0.85rem;
     line-height: 1;
@@ -551,7 +565,7 @@
     max-width: 92px;
     padding: 0 5px;
     border-radius: 8px;
-    background: rgb(255 255 255 / 0.85);
+    background: rgb(var(--surface-rgb) / 0.85);
     font-size: 0.68rem;
     font-weight: 700;
     line-height: 1.3;
@@ -594,7 +608,7 @@
   .card {
     padding: 10px 14px;
     border-radius: 16px;
-    background: white;
+    background: var(--surface);
     border: 2px solid var(--honey);
     font-size: 0.9rem;
   }

@@ -109,7 +109,7 @@
     gap: 6px 10px;
     align-items: center;
     padding: 10px;
-    background: white;
+    background: var(--surface);
     border-radius: 14px;
   }
 
@@ -188,7 +188,7 @@
   }
 
   button:disabled {
-    background: #c9c2b8;
+    background: var(--disabled, #c9c2b8);
     cursor: not-allowed;
   }
 </style>

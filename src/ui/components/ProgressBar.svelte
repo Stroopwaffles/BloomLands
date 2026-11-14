@@ -41,7 +41,7 @@
     margin-top: 4px;
     height: 12px;
     border-radius: 999px;
-    background: white;
+    background: var(--surface);
     border: 2px solid var(--leaf);
     overflow: hidden;
   }

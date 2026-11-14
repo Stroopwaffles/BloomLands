@@ -54,6 +54,13 @@
       : themeFor(placeRegion($game.player.travel?.to ?? $game.player.place), isNight($game)),
   )
   $effect(() => music.play(musicTheme))
+
+  /** Soft night colors for the whole interface while it's night in the game (not on the menu). */
+  const nightTheme = $derived(screen === 'game' && settings.nightTheme === 'auto' && isNight($game))
+  $effect(() => {
+    if (nightTheme) document.documentElement.dataset.theme = 'night'
+    else delete document.documentElement.dataset.theme
+  })
 </script>
 
 {#if screen === 'title'}
@@ -129,7 +136,7 @@
     padding: 0 14px;
     border: 2px solid var(--honey);
     border-radius: 12px;
-    background: white;
+    background: var(--surface);
     color: var(--ink);
     font: inherit;
     font-family: var(--font-heading);
@@ -141,7 +148,7 @@
     min-height: 44px;
     border: 2px solid var(--honey);
     border-radius: 12px;
-    background: white;
+    background: var(--surface);
     font-size: 1.2rem;
     cursor: pointer;
   }

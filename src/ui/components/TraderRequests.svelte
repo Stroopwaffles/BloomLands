@@ -83,7 +83,7 @@
     flex-direction: column;
     gap: 8px;
     padding: 12px;
-    background: white;
+    background: var(--surface);
     border-radius: 16px;
   }
 
@@ -153,13 +153,13 @@
   }
 
   .primary:disabled {
-    background: #c9c2b8;
+    background: var(--disabled, #c9c2b8);
     cursor: not-allowed;
   }
 
   .secondary {
     border: 2px solid var(--honey);
-    background: white;
+    background: var(--surface);
     color: var(--ink);
   }
 

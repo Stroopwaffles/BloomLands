@@ -21,6 +21,8 @@ export interface Settings {
   soundVolume: 0 | 25 | 50 | 75 | 100
   /** Quick mute (the speaker button in the header). */
   muted: boolean
+  /** 'auto' switches the interface to soft night colors while it's night in the game. */
+  nightTheme: 'auto' | 'off'
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -32,6 +34,7 @@ export const DEFAULT_SETTINGS: Settings = {
   musicVolume: 50,
   soundVolume: 75,
   muted: false,
+  nightTheme: 'auto',
 }
 
 export const SETTINGS_KEY = 'bloomlands.settings'
@@ -45,6 +48,7 @@ export const SETTING_CHOICES = {
   musicVolume: [0, 25, 50, 75, 100],
   soundVolume: [0, 25, 50, 75, 100],
   muted: [true, false],
+  nightTheme: ['auto', 'off'],
 } as const satisfies { [K in keyof Settings]: readonly Settings[K][] }
 
 /** Reads settings from stored text, keeping only valid values and filling in defaults. */

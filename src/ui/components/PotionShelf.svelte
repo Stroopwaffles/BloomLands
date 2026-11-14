@@ -48,7 +48,7 @@
     align-items: center;
     gap: 10px;
     padding: 8px 10px;
-    background: white;
+    background: var(--surface);
     border-radius: 14px;
   }
 

@@ -325,12 +325,7 @@
   .spot {
     min-height: calc(100vh - 70px);
     padding: 12px 16px 24px;
-    background: linear-gradient(#f3f9e8, #e4f1d6);
-  }
-
-  .spot.night {
-    background: linear-gradient(#2a2763, #3d4f7a);
-    color: #f5f0ff;
+    background: var(--screen-bg, linear-gradient(#f3f9e8, #e4f1d6));
   }
 
   header {
@@ -448,7 +443,7 @@
     height: 6px;
     margin: 2px 15% 0;
     border-radius: 999px;
-    background: rgb(255 255 255 / 0.85);
+    background: rgb(var(--surface-rgb) / 0.85);
     overflow: hidden;
   }
 
@@ -554,7 +549,7 @@
   }
 
   .trouble {
-    background: rgb(255 255 255 / 0.85);
+    background: rgb(var(--surface-rgb) / 0.85);
     border: 2px solid #c97a8c;
     font-weight: 400;
   }

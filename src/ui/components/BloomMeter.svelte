@@ -68,7 +68,7 @@
   .bar {
     height: 10px;
     border-radius: 999px;
-    background: white;
+    background: var(--surface);
     border: 2px solid var(--petal);
     overflow: hidden;
   }

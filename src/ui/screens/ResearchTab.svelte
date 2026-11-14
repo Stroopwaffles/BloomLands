@@ -119,7 +119,7 @@
     flex-direction: column;
     gap: 6px;
     padding: 10px;
-    background: white;
+    background: var(--surface);
     border-radius: 14px;
     border: 2px solid transparent;
   }
@@ -179,7 +179,7 @@
   }
 
   button:disabled {
-    background: #c9c2b8;
+    background: var(--disabled, #c9c2b8);
     cursor: not-allowed;
   }
 </style>

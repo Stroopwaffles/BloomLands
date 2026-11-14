@@ -48,7 +48,7 @@
     gap: 4px;
     padding: 6px 10px 8px;
     border-radius: 14px;
-    background: rgb(255 255 255 / 0.75);
+    background: rgb(var(--surface-rgb) / 0.75);
     border: 2px solid #d9cdf2;
   }
 
@@ -73,7 +73,7 @@
   }
 
   button:disabled {
-    background: #c9c2d8;
+    background: var(--disabled, #c9c2d8);
     cursor: not-allowed;
   }
 </style>

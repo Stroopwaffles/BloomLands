@@ -132,7 +132,7 @@
     align-items: center;
     gap: 10px;
     padding: 10px 12px;
-    background: white;
+    background: var(--surface);
     border-radius: 16px;
   }
 
@@ -167,7 +167,7 @@
 
   .characters button {
     border: 2px solid var(--leaf);
-    background: white;
+    background: var(--surface);
     color: var(--ink);
   }
 
@@ -221,7 +221,7 @@
     margin: 0;
     padding: 10px 14px;
     border-radius: 16px 16px 16px 4px;
-    background: white;
+    background: var(--surface);
     line-height: 1.45;
   }
 
@@ -238,7 +238,7 @@
   .bar {
     height: 10px;
     border-radius: 999px;
-    background: white;
+    background: var(--surface);
     overflow: hidden;
   }
 
@@ -259,13 +259,13 @@
   }
 
   .primary:disabled {
-    background: #c9c2b8;
+    background: var(--disabled, #c9c2b8);
     cursor: not-allowed;
   }
 
   .secondary {
     border: 2px solid var(--honey);
-    background: white;
+    background: var(--surface);
     color: var(--ink);
   }
 </style>

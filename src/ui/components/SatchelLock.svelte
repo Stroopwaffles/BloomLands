@@ -46,7 +46,7 @@
     width: 46px;
     height: 26px;
     border-radius: 999px;
-    background: #d8d0c4;
+    background: var(--disabled, #d8d0c4);
     transition: background 0.15s;
   }
 
@@ -58,7 +58,7 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: white;
+    background: var(--surface);
     transition: transform 0.15s;
   }
 
