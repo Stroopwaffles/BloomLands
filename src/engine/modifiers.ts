@@ -7,7 +7,7 @@ import type { PotionEffect, StationId } from '../data/types'
 import { PLENTY } from '../data/magic'
 import { MOUNTS, mountBonusValue } from '../data/mounts'
 import { STARTING_STATIONS, UPGRADES, type QolId, type UpgradeEffect } from '../data/upgrades'
-import { HOME, SETTLEMENTS, SPIRIT_PLACES, SPOTS } from '../data/world'
+import { HOME, REGIONS, SETTLEMENTS, SPIRIT_PLACES, SPOTS } from '../data/world'
 import type { GameState } from './state'
 
 /** The region a place belongs to (home sits at the edge of the Meadow). */
@@ -73,19 +73,40 @@ export function wingSpeed(state: GameState): number {
   return speed
 }
 
-export function satchelCapacity(state: GameState): number {
+/** Satchel space where the player is now (or, with `placeId`, would be there). */
+export function satchelCapacity(state: GameState, placeId = state.player.place): number {
   let capacity = state.player.satchelCapacity
   for (const e of upgradeEffects(state)) if (e.kind === 'satchel') capacity += e.amount
   // Riding a mount in its home region carries extra.
   const id = state.mounts.riding
   const mount = id ? MOUNTS[id] : null
   if (id && mount && mount.bonus.kind === 'satchel') {
-    if (placeRegion(state.player.place) === mount.regionId) {
+    if (placeRegion(placeId) === mount.regionId) {
       capacity += mountBonusValue(mount, state.mounts.owned[id]?.level ?? 1)
     }
   }
   for (const e of potionEffects(state)) if (e.kind === 'satchel') capacity += e.amount
   return capacity
+}
+
+/** How much more the satchel holds than it can carry right now (0 if not over-full). */
+export function satchelOverload(state: GameState): number {
+  let carried = 0
+  for (const amount of Object.values(state.player.satchel)) carried += amount
+  return Math.max(0, carried - satchelCapacity(state))
+}
+
+/**
+ * Why the satchel is smaller here than it could be: a satchel mount (like the bumblebee) only
+ * carries extra in its own region. Null if that isn't the reason (a Deep Pockets Draught wore off).
+ */
+export function satchelMountAway(state: GameState, placeId = state.player.place): string | null {
+  const id = state.mounts.riding
+  const mount = id ? MOUNTS[id] : null
+  if (!mount || mount.bonus.kind !== 'satchel' || placeRegion(placeId) === mount.regionId) {
+    return null
+  }
+  return `the ${mount.name.toLowerCase()} only carries extra in the ${REGIONS[mount.regionId]?.name ?? 'its home region'}`
 }
 
 /** Multiplies how often uncommon and rarer plants grow. */

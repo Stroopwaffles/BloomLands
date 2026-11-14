@@ -10,7 +10,12 @@
   import { isNight } from '../../engine/environment'
   import { pestAt } from '../../engine/challenges'
   import { campBlocksSlot, satchelFull } from '../../engine/gathering'
-  import { bloomLevel, hasWaterstride } from '../../engine/modifiers'
+  import {
+    bloomLevel,
+    hasWaterstride,
+    satchelMountAway,
+    satchelOverload,
+  } from '../../engine/modifiers'
   import { wildMountAt } from '../../engine/mounts'
   import BloomMeter from '../components/BloomMeter.svelte'
   import Destinations from '../components/Destinations.svelte'
@@ -26,6 +31,8 @@
   const spot = $derived($game.spots[spotId])
   const layout = $derived(SCENES[spotId] ?? DEFAULT_SCENE)
   const full = $derived(satchelFull($game))
+  const over = $derived(satchelOverload($game))
+  const mountAway = $derived(satchelMountAway($game))
   const creature = $derived($game.challenges.creatures[spotId])
   const campCrew = $derived($game.challenges.camps[spotId])
   const wildMount = $derived(wildMountAt($game, spotId))
@@ -250,7 +257,14 @@
     </div>
 
     <div class="below">
-      {#if full}
+      {#if over > 0}
+        <p class="note full" role="status">
+          Your satchel is over-full by {over}: {mountAway ?? 'your Deep Pockets Draught wore off'}.
+          Nothing is lost, but you can't gather until you unpack, sell, or send some home{mountAway
+            ? ', or fly back'
+            : ''}.
+        </p>
+      {:else if full}
         <p class="note full" role="status">
           Your satchel is full! Fly home to put things in storage.
         </p>

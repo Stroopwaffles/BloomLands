@@ -1,7 +1,7 @@
 <script lang="ts">
   import Art from '../../art/Art.svelte'
   import { formatDuration, formatNumber } from '../../engine/format'
-  import { satchelCapacity } from '../../engine/modifiers'
+  import { satchelCapacity, satchelMountAway, satchelOverload } from '../../engine/modifiers'
   import { countItems } from '../../engine/state'
   import { runtime } from '../game'
   import ItemList from './ItemList.svelte'
@@ -11,6 +11,8 @@
   const { game } = runtime
   const count = $derived(countItems($game.player.satchel))
   const capacity = $derived(satchelCapacity($game))
+  const over = $derived(satchelOverload($game))
+  const mountAway = $derived(satchelMountAway($game))
 
   let open = $state(false)
   let root: HTMLDivElement | undefined = $state()
@@ -37,12 +39,14 @@
   <button
     type="button"
     class="counter"
+    class:over={over > 0}
     aria-label={`Satchel: ${count} of ${capacity}. Show what's inside`}
     aria-expanded={open}
     onclick={toggle}
   >
     <Art id="icon-satchel" size={28} />
     <span>{formatNumber(count)} / {formatNumber(capacity)}</span>
+    {#if over > 0}<span class="over-tag">over-full!</span>{/if}
     {#if $game.player.satchelLocked}<span class="locked-tag">locked</span>{/if}
   </button>
 
@@ -66,7 +70,14 @@
             : 'waiting at home for storage space'}.
         </p>
       {/each}
-      {#if count >= capacity}
+      {#if over > 0}
+        <p class="note">
+          Over-full by {formatNumber(over)}: {mountAway ?? 'your Deep Pockets Draught wore off'}.
+          Nothing is lost, but you can't gather more until you unpack, sell or send some home{mountAway
+            ? ', or fly back'
+            : ''}.
+        </p>
+      {:else if count >= capacity}
         <p class="note">Full! Fly home to put things in storage.</p>
       {/if}
       <SatchelLock />
@@ -75,6 +86,21 @@
 </div>
 
 <style>
+  .counter.over {
+    border-color: #c0392b;
+    color: #b03a2e;
+  }
+
+  .over-tag {
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: #c0392b;
+    color: white;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
   .satchel {
     position: relative;
   }

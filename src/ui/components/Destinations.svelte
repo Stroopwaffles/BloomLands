@@ -23,7 +23,8 @@
   import { dayPhase, describeWeather, weatherIn } from '../../engine/environment'
   import { formatDuration } from '../../engine/format'
   import { knownRituals } from '../../engine/magic'
-  import { courtRank } from '../../engine/modifiers'
+  import { courtRank, satchelCapacity, satchelMountAway } from '../../engine/modifiers'
+  import { countItems } from '../../engine/state'
   import { placeOpen, regionUnlocked } from '../../engine/regions'
   import { flightBreakdown, pathNodes } from '../../engine/route'
   import { playSound } from '../../audio/sfx'
@@ -297,6 +298,16 @@
         {#if camp}<p class="status warn">{CREWS[camp]?.name} have camped here.</p>{/if}
         {#if breakdown}
           {#if breakdown.via}<p class="via">{breakdown.via}</p>{/if}
+          {@const carrying = countItems($game.player.satchel)}
+          {@const roomThere = satchelCapacity($game, selected)}
+          {#if carrying > roomThere && roomThere < satchelCapacity($game)}
+            <p class="status warn">
+              Your satchel will be over-full there ({carrying} / {roomThere}): {satchelMountAway(
+                $game,
+                selected,
+              )}. You won't be able to gather until you make room.
+            </p>
+          {/if}
           <ul class="legs">
             {#each breakdown.legs as leg, i (i)}
               <li>

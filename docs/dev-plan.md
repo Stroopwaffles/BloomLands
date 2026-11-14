@@ -268,6 +268,12 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - **Finished rites:** one-time rites whose work is done (their region is open, or the Fairy Ring revealed) are no longer offered at the Ritual Circle. They're listed under "Completed" (`ritualDone`), and repeating one is blocked without cost. Turning and Plenty stay repeatable.
 - **Full-screen scene:** every rite plays one. A glowing circle draws itself, with spinning runes, a star and rising sparkles, then the rite's name and what it did. Region and Fairy Ring rites are "grand": longer, larger, and in the region's colors. Tap to skip, and reduced motion shows a still version.
 
+### Over-full satchel (v0.3.15)
+
+- **When it happens:** the satchel can shrink while full. The bumblebee only adds space in the Meadow, and a Deep Pockets Draught can wear off. Items are never lost, but gathering is blocked until you make room.
+- **What shows:** the header counter gets an "over-full!" tag, and both the satchel popup and the harvesting screen explain why and what to do.
+- **Before flying:** the map card warns when a flight would leave the satchel over-full there, for example "(30 / 20): the bumblebee only carries extra in the Meadow". This uses `satchelCapacity(state, placeId)`, `satchelOverload` and `satchelMountAway`.
+
 ### Backlog (asked for, not scheduled yet)
 
 - Nothing waiting.
