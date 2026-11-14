@@ -26,6 +26,7 @@
   import { courtRank } from '../../engine/modifiers'
   import { placeOpen, regionUnlocked } from '../../engine/regions'
   import { flightBreakdown, pathNodes } from '../../engine/route'
+  import { playSound } from '../../audio/sfx'
   import { runtime } from '../game'
 
   /**
@@ -102,6 +103,7 @@
    * Fly button does that.
    */
   function choose(placeId: string) {
+    if (selected !== placeId) playSound('select')
     selected = placeId
   }
 
@@ -214,6 +216,7 @@
             <button
               type="button"
               class="node {kind}"
+              data-silent
               class:here={placeId === here}
               class:selected={selected === placeId}
               style:left={pct(p.x)}
@@ -458,6 +461,7 @@
   .node {
     position: absolute;
     transform: translate(-50%, -50%);
+    transition: none;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -516,12 +520,18 @@
     z-index: 3;
   }
 
+  /* Pins stay perfectly still: the usual button press-in would knock them off their spot. */
+  .node:not(:disabled):active {
+    transform: translate(-50%, -50%);
+  }
+
   .node:hover .pin {
-    transform: translateY(-2px);
+    box-shadow:
+      0 0 0 3px #fff3c4,
+      0 2px 4px rgb(0 0 0 / 0.15);
   }
 
   .node.selected .pin {
-    transform: scale(1.15);
     box-shadow:
       0 0 0 3px #e2b94f,
       0 0 10px 3px #ffe59e;

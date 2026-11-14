@@ -22,6 +22,7 @@ export type SoundId =
   | 'boing'
   | 'shoo'
   | 'pop'
+  | 'select'
 
 /** C major pentatonic, two octaves up from middle C. Taps climb through it. */
 const PENTATONIC = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5, 1174.66, 1318.51]
@@ -199,6 +200,11 @@ const SOUNDS: Record<SoundId, (ctx: AudioContext, out: AudioNode) => void> = {
   },
   shoo(ctx, out) {
     noise(ctx, out, { duration: 0.25, from: 3000, to: 900, volume: 0.1 })
+  },
+  // Choosing a place on the map: a soft two-note music-box chime.
+  select(ctx, out) {
+    tone(ctx, out, { freq: PENTATONIC[4], decay: 0.18, volume: 0.14, bell: true })
+    tone(ctx, out, { freq: PENTATONIC[6], start: 0.07, decay: 0.3, volume: 0.12, bell: true })
   },
   pop(ctx, out) {
     tone(ctx, out, { freq: 900, decay: 0.06, volume: 0.15, slideTo: 1500 })
