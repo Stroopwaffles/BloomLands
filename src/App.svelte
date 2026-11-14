@@ -8,10 +8,10 @@
   import { latestRegion } from './engine/regions'
   import { formatNumber } from './engine/format'
   import { COURT_RANKS } from './data/economy'
-  import { courtRank, satchelCapacity, trinketCount } from './engine/modifiers'
-  import { countItems } from './engine/state'
+  import { courtRank, trinketCount } from './engine/modifiers'
   import BuffBar from './ui/components/BuffBar.svelte'
   import Notices from './ui/components/Notices.svelte'
+  import SatchelButton from './ui/components/SatchelButton.svelte'
   import SkyBadge from './ui/components/SkyBadge.svelte'
   import DebugPanel from './ui/DebugPanel.svelte'
   import { debugEnabled, runtime } from './ui/game'
@@ -26,8 +26,6 @@
   import TitleScreen from './ui/title/TitleScreen.svelte'
 
   const { game } = runtime
-
-  const satchelCount = $derived(countItems($game.player.satchel))
 
   /** The welcome screen shows first on every visit; the game runs (and saves) behind it. */
   let screen = $state<'title' | 'game'>('title')
@@ -79,11 +77,7 @@
       </button>
       <div class="buffs"><BuffBar /></div>
       <div class="counters">
-        <div class="counter" aria-label="Satchel">
-          <Art id="icon-satchel" size={28} />
-          <span>{formatNumber(satchelCount)} / {formatNumber(satchelCapacity($game))}</span>
-          {#if $game.player.satchelLocked}<span class="locked-tag">locked</span>{/if}
-        </div>
+        <SatchelButton />
         <div class="counter" aria-label="Glimmers">
           <Art id="icon-glimmers" size={28} />
           <span>{formatNumber($game.resources.glimmers)}</span>
@@ -168,14 +162,6 @@
   .counters {
     display: flex;
     gap: 20px;
-  }
-
-  .locked-tag {
-    padding: 0 8px;
-    border-radius: 999px;
-    background: var(--petal-deep);
-    color: white;
-    font-size: 0.75rem;
   }
 
   .rank {
