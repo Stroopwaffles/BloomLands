@@ -225,6 +225,15 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
   - "Fly home" stays one tap away, and the map can be hidden.
 - **Travel screen:** a route strip of the regions you cross with your fairy moving along it, an "Over the Forest" line, a "Crossing into…" note at each border, and the scenery of the region below, which fades as you cross.
 
+### Composed music (v0.3.8)
+
+- The generated music (random motifs and sparkles) is replaced by **six composed tracks** in `src/audio/tracks.ts`, written as chords and melody per bar. Each is a 16-bar A–B tune that loops and plays the same every time:
+  - Meadow: "Buttercup Morning" (C, 84 bpm) and "Dandelion Lullaby" (3/4, 60).
+  - Forest: "Under the Old Oak" (D minor, 72) and "Owl Hour" (3/4, 56).
+  - Swamp: "Lily-Pad Regatta" (F, 66) and "Still Water" (3/4, 54).
+- **Arrangement:** a soft pad, a bass, and either a broken-chord accompaniment (day), a waltz "oom-pah-pah" (night) or a lazy two-step (Swamp day), under a music-box lead with a lighter echo.
+- **New regions:** each adds a day and a night entry. Tests check that every bar adds up.
+
 ### Backlog (asked for, not scheduled yet)
 
 - Nothing waiting.

@@ -1,50 +1,57 @@
 import { describe, expect, it } from 'vitest'
-import { composeBar, makeMotif, THEMES, themeFor } from '../src/audio/music'
+import { parseChord, parseNote, themeFor, trackNotes } from '../src/audio/music'
+import { TRACKS } from '../src/audio/tracks'
 import { parseSettings } from '../src/ui/settingsData'
 
-/** A repeatable random source for tests. */
-function seeded(seed = 1) {
-  let s = seed
-  return () => {
-    s = (s * 16807) % 2147483647
-    return (s - 1) / 2147483646
-  }
-}
-
 describe('music', () => {
-  it('picks a theme per region and time of day, falling back to the Meadow', () => {
+  it('picks a track per region and time of day, falling back to the Meadow', () => {
     expect(themeFor('meadow', false)).toBe('meadow')
     expect(themeFor('forest', true)).toBe('forest-night')
     expect(themeFor('swamp', false)).toBe('swamp')
     expect(themeFor('orchard', true)).toBe('meadow-night')
   })
 
-  it('composes bars with pads, bass and melody notes from the theme', () => {
-    for (const theme of Object.values(THEMES)) {
-      const random = seeded(7)
-      const motif = makeMotif(theme, random)
-      expect(motif).toHaveLength(16)
-      for (let bar = 0; bar < 8; bar++) {
-        const notes = composeBar(theme, bar, motif, random)
-        expect(notes.filter((n) => n.voice === 'pad')).toHaveLength(3)
-        expect(notes.filter((n) => n.voice === 'bass')).toHaveLength(2)
-        for (const n of notes) {
-          expect(n.beat).toBeGreaterThanOrEqual(0)
-          expect(n.beat).toBeLessThan(4)
-          if (n.voice === 'lead' && bar % 4 !== 3) expect(theme.scale).toContain(n.midi)
-        }
+  it('has a day and a night track for every region so far', () => {
+    for (const region of ['meadow', 'forest', 'swamp']) {
+      expect(TRACKS[region]).toBeDefined()
+      expect(TRACKS[`${region}-night`]).toBeDefined()
+    }
+  })
+
+  it('reads notes and chords', () => {
+    expect(parseNote('C4')).toBe(60)
+    expect(parseNote('A4')).toBe(69)
+    expect(parseNote('Bb5')).toBe(82)
+    expect(parseChord('Am')).toEqual({ root: 9, tones: [0, 3, 7] })
+    expect(parseChord('Bb')).toEqual({ root: 10, tones: [0, 4, 7] })
+  })
+
+  it('every bar of every track adds up to a whole bar, with a chord for each', () => {
+    for (const track of Object.values(TRACKS)) {
+      expect(track.melody.length, track.id).toBe(track.chords.length)
+      track.melody.forEach((bar, i) => {
+        const beats = bar.split(/\s+/).reduce((sum, token) => sum + Number(token.split(':')[1]), 0)
+        expect(beats, `${track.id} bar ${i + 1}`).toBe(track.beatsPerBar)
+      })
+      for (const chord of track.chords.flatMap((bar) => bar.split(/\s+/))) {
+        expect(() => parseChord(chord), `${track.id} ${chord}`).not.toThrow()
       }
     }
   })
 
-  it('repeats its motif, so the tune is recognizable', () => {
-    const theme = THEMES.meadow
-    const motif = makeMotif(theme, seeded(3))
-    const lead = (bar: number) =>
-      composeBar(theme, bar, motif, seeded(9))
-        .filter((n) => n.voice === 'lead')
-        .map((n) => `${n.beat}:${n.midi}`)
-    expect(lead(4)).toEqual(lead(0))
+  it('plays the same notes every time, all inside the loop and in a friendly range', () => {
+    for (const track of Object.values(TRACKS)) {
+      const a = trackNotes(track)
+      expect(trackNotes(track)).toEqual(a)
+      expect(a.loopBeats).toBe(track.chords.length * track.beatsPerBar)
+      for (const n of a.notes) {
+        expect(n.beat).toBeGreaterThanOrEqual(0)
+        expect(n.beat).toBeLessThan(a.loopBeats)
+        expect(n.midi).toBeGreaterThanOrEqual(31)
+        expect(n.midi).toBeLessThanOrEqual(88)
+      }
+      expect(a.notes.some((n) => n.voice === 'lead')).toBe(true)
+    }
   })
 })
 
