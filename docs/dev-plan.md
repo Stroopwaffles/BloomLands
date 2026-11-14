@@ -204,6 +204,11 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - **Menu background by region:** the title screen shows the newest region the save has unlocked (Meadow: Buttercup Rise with falling petals; Forest: the Mossy Stump Ring with falling leaves). New regions add an entry to `TITLE_SCENES` in TitleScreen.svelte. The engine helper `latestRegion` also picks the menu music.
 - **Fix: butterfly and dragonfly wings:** each wing part was tilted the wrong way. Forewings now reach up and out and hindwings droop below.
 
+### Sky polish (v0.3.1)
+
+- **Weather names fit the time of day.** The sky badge no longer says "Night · Sunny": clear weather reads Sunny by day, Clear skies at dusk and Starry skies at night; "Misty morning" is now just Mist; muggy heat is Muggy after dark. Night descriptions match too. Effects are unchanged.
+- **Dandelion Clock** (Comforts, 120 Glimmers and 1 trinket): the sky badge counts down to the next part of the day, and tapping it shows the day's timeline, how long day (37m) and night (23m) last, and the countdown to nightfall or dawn.
+
 ### Backlog (asked for, not scheduled yet)
 
 - Nothing waiting.

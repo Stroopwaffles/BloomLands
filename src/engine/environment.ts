@@ -33,6 +33,26 @@ export function advanceTime(state: GameState, dtMs: number): void {
   state.time.dayMs = (state.time.dayMs + dtMs) % DAY_MS
 }
 
+/** The next part of the day, and how long until it starts. */
+export function nextPhase(state: GameState): { phase: DayPhase; name: string; inMs: number } {
+  const at = state.time.dayMs / DAY_MS
+  const next = PHASE_STARTS.find((p) => p.at > at) ?? PHASE_STARTS[0]
+  const startMs = next.at * DAY_MS
+  const inMs = startMs > state.time.dayMs ? startMs - state.time.dayMs : DAY_MS - state.time.dayMs
+  return { phase: next.phase, name: next.name, inMs }
+}
+
+/** How long daytime (dawn to nightfall) and night last. */
+export const DAYTIME_MS = NIGHTFALL_MS
+export const NIGHTTIME_MS = DAY_MS - NIGHTFALL_MS
+
+/** How long until night falls, or (at night) until dawn. */
+export function untilDayChange(state: GameState): { to: 'night' | 'day'; inMs: number } {
+  return isNight(state)
+    ? { to: 'day', inMs: DAY_MS - state.time.dayMs }
+    : { to: 'night', inMs: NIGHTFALL_MS - state.time.dayMs }
+}
+
 /** The Rite of Turning: jump to dawn, or to nightfall. */
 export function turnSky(state: GameState, to: 'day' | 'night'): void {
   state.time.dayMs = to === 'day' ? 0 : NIGHTFALL_MS
@@ -48,6 +68,18 @@ export function regionOf(placeId: string): string {
 
 export function weatherIn(state: GameState, regionId: string): WeatherDef {
   return WEATHER[state.weather[regionId]?.kind ?? 'sunshine']
+}
+
+/** What the weather is called right now: the same sky reads differently by day and by night. */
+export function describeWeather(
+  weather: WeatherDef,
+  phase: DayPhase,
+): { name: string; description: string } {
+  return {
+    name: weather.names?.[phase] ?? weather.name,
+    description:
+      phase === 'night' ? (weather.nightDescription ?? weather.description) : weather.description,
+  }
 }
 
 export function rollWeather(

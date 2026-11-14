@@ -1,7 +1,7 @@
 import type { HelperType } from './helpers'
 import type { CostEntry, StationId } from './types'
 
-export type QolId = 'auto-deposit' | 'auto-return' | 'return-trip' | 'bulk-craft'
+export type QolId = 'auto-deposit' | 'auto-return' | 'return-trip' | 'bulk-craft' | 'clock'
 
 export type UpgradeEffect =
   | { kind: 'station'; station: StationId }
@@ -438,6 +438,18 @@ const UPGRADE_LIST: UpgradeDef[] = [
     items: [trinkets(2)],
     requires: [],
     effect: { kind: 'qol', qol: 'bulk-craft' },
+    courtPoints: 0,
+  },
+  {
+    id: 'qol-clock',
+    name: 'Dandelion Clock',
+    category: 'comfort',
+    description:
+      'Tells the time: a countdown to dusk or dawn in the sky badge, and how long day and night last.',
+    glimmers: 120,
+    items: [trinkets(1)],
+    requires: [],
+    effect: { kind: 'qol', qol: 'clock' },
     courtPoints: 0,
   },
 ]

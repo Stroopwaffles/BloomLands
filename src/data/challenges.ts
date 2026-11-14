@@ -2,6 +2,7 @@
  * Weather and challenges for each region (design doc 3.15, content doc → each region).
  * All numbers are starting values for balancing.
  */
+import type { DayPhase } from './time'
 
 export type WeatherKind =
   | 'sunshine'
@@ -16,8 +17,13 @@ export type WeatherKind =
 
 export interface WeatherDef {
   id: WeatherKind
+  /** Daytime name and description. */
   name: string
   description: string
+  /** Names for other times of day, so the sky never reads "Night · Sunny". */
+  names?: Partial<Record<DayPhase, string>>
+  /** Description at night, if the daytime one doesn't fit. */
+  nightDescription?: string
   weight: number
   /** Multiplies plant regrowth speed. */
   regrowth: number
@@ -37,8 +43,10 @@ export interface WeatherDef {
 export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
   sunshine: {
     id: 'sunshine',
-    name: 'Sunshine',
-    description: 'Plants regrow faster.',
+    name: 'Sunny',
+    description: 'Clear skies and warm sun: plants regrow faster.',
+    names: { dusk: 'Clear skies', night: 'Starry skies' },
+    nightDescription: 'A clear, starry night: plants still regrow faster.',
     weight: 45,
     regrowth: 1.5,
     flightHome: 1,
@@ -59,6 +67,7 @@ export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
     id: 'light-rain',
     name: 'Light rain',
     description: 'Slower flights, but dew gathers all day.',
+    nightDescription: 'Slower flights, but dew gathers at any hour.',
     weight: 25,
     regrowth: 1,
     flightHome: 1.25,
@@ -67,7 +76,7 @@ export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
   },
   mist: {
     id: 'mist',
-    name: 'Misty morning',
+    name: 'Mist',
     description: 'Rare plants hide in the mist, but hidden paths show through.',
     weight: 35,
     regrowth: 1,
@@ -123,6 +132,9 @@ export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
     id: 'muggy',
     name: 'Muggy heat',
     description: "Plants regrow faster, but helpers' trips are slower.",
+    names: { night: 'Muggy' },
+    nightDescription:
+      "Warm and sticky even after dark: plants regrow faster, but helpers' trips are slower.",
     weight: 35,
     regrowth: 1.4,
     flightHome: 1,
