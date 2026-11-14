@@ -209,6 +209,22 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - **Weather names fit the time of day.** The sky badge no longer says "Night · Sunny": clear weather reads Sunny by day, Clear skies at dusk and Starry skies at night; "Misty morning" is now just Mist; muggy heat is Muggy after dark. Night descriptions match too. Effects are unchanged.
 - **Dandelion Clock** (Comforts, 120 Glimmers and 1 trinket): the sky badge counts down to the next part of the day, and tapping it shows the day's timeline, how long day (37m) and night (23m) last, and the countdown to nightfall or dawn.
 
+### Travel update (v0.3.4)
+
+- **Routes over regions:** regions sit in a chain (Meadow, Forest, Swamp), and a long flight is split into one leg per region it crosses. Each leg uses its own region's weather (toward or away from home). Open water only slows the leg over the water.
+- **Spirit Paths:** home and the resting place of every awakened spirit are linked by a 6-second Spirit Path. Flights (and helpers) take it whenever path + hops is quicker. The path has no weather and no flight events.
+- **Flight events come from the region below,** at a random point between 20% and 80% of the flight. Each region has its own:
+  - Meadow: Dandelion Drifters, drifting seeds, a lost beetle, gusts.
+  - Forest: Bramble Corsairs, falling acorns, a lost squirrel courier, bramble snags (half speed until you tap free).
+  - Swamp: Bog Buccaneers, drifting lily petals, a lost tadpole, will-o'-wisps (follow one for a 40% shortcut).
+- **Acorn Post** (Comforts, 250 Glimmers and 2 trinkets): from any settlement, send the whole satchel home for 1 Glimmer per 4 items (at least 3). It arrives after 1.5× the base flight home (at least 10 seconds), also while offline, and waits at the door if storage is full.
+- **World map** (replaces the list of flights):
+  - Regions are islands in a chain, with the next closed region in fog (tap it for what it needs).
+  - Places show creatures, camps and helpers at work. Spirit Paths are drawn in gold.
+  - Tap a place for a card with the flight time, its "via" route and a breakdown (each leg's time, weather, open water, mounts, wing speed, curios). Tap Fly, or tap the place again.
+  - "Fly home" stays one tap away, and the map can be hidden.
+- **Travel screen:** a route strip of the regions you cross with your fairy moving along it, an "Over the Forest" line, a "Crossing into…" note at each border, and the scenery of the region below, which fades as you cross.
+
 ### Backlog (asked for, not scheduled yet)
 
 - Nothing waiting.

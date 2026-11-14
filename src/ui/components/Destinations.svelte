@@ -315,6 +315,7 @@
     flex-direction: column;
     gap: 8px;
     width: 100%;
+    min-width: 0;
   }
 
   .toolbar {
@@ -355,6 +356,8 @@
   }
 
   .scroller {
+    /* The map is wider than the screen; it scrolls inside, never stretching the page. */
+    contain: inline-size;
     overflow-x: auto;
     border-radius: 18px;
     background: linear-gradient(#bfe4f2, #9fd0e6);
