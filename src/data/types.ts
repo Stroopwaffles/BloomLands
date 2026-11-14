@@ -137,6 +137,8 @@ export interface RegionDef {
   secretSpots: string[]
   /** Harvesting spots, in display order. */
   spots: string[]
+  /** The harvesting spot whose scenery stands for the whole region (menu, flights). */
+  sceneSpot: string
   /** What it takes to reach this region (null: open from the start). */
   unlock: { rank: number; ritualId: string } | null
 }

@@ -1,6 +1,6 @@
 <script lang="ts">
   import Art from '../../art/Art.svelte'
-  import { formatNumber } from '../../engine/format'
+  import { formatDuration, formatNumber } from '../../engine/format'
   import { satchelCapacity } from '../../engine/modifiers'
   import { countItems } from '../../engine/state'
   import { runtime } from '../game'
@@ -58,6 +58,14 @@
       <div class="items">
         <ItemList items={$game.player.satchel} empty="Your satchel is empty." />
       </div>
+      {#each $game.post.parcels as parcel (parcel.id)}
+        <p class="parcel">
+          📦 A parcel of {formatNumber(countItems(parcel.items))} items is
+          {parcel.remainingMs > 0
+            ? `on its way home (${formatDuration(parcel.remainingMs + 999)})`
+            : 'waiting at home for storage space'}.
+        </p>
+      {/each}
       {#if count >= capacity}
         <p class="note">Full! Fly home to put things in storage.</p>
       {/if}
@@ -157,6 +165,11 @@
     max-height: 50vh;
     overflow: auto;
     margin-bottom: 10px;
+  }
+
+  .parcel {
+    margin: 0 0 10px;
+    font-size: 0.85rem;
   }
 
   .note {

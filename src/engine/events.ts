@@ -66,3 +66,5 @@ export type GameEvent =
   | { type: 'outfit'; outfitId: string }
   | { type: 'crew-won'; crewId: string }
   | { type: 'region-unlocked'; regionId: string }
+  | { type: 'parcel-sent'; count: number; fee: number; arrivesInMs: number }
+  | { type: 'parcel-arrived'; count: number; waiting: number }

@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { CAMP_RULES, CREATURES, FLIGHT_EVENT_RULES, PEST_RULES } from '../src/data/challenges'
+import {
+  CAMP_RULES,
+  CREATURES,
+  FLIGHT_EVENT_RULES,
+  PEST_RULES,
+  REGION_FLIGHT_EVENTS,
+  type FlightEventKind,
+} from '../src/data/challenges'
 import { PLANTS } from '../src/data/plants'
 import { DAY_MS, NIGHTFALL_MS } from '../src/data/time'
 import { SPOTS } from '../src/data/world'
@@ -220,12 +227,12 @@ describe('pirate camps', () => {
 })
 
 describe('flight events', () => {
-  function flightWith(kind: 'ambush' | 'seeds' | 'traveler' | 'gust'): GameState {
+  function flightWith(kind: FlightEventKind): GameState {
     const state = atButtercup()
     state.player.place = 'home'
     applyAction(state, { type: 'travel/go', to: 'dandelion-drift' }, () => 0.99) // no event rolled
     const travel = state.player.travel!
-    travel.event = { kind, showAtMs: travel.totalMs, taps: 0, resolved: false }
+    travel.event = { kind, showAtMs: travel.totalMs, taps: 0, resolved: false, regionId: 'meadow' }
     return state
   }
 
@@ -258,15 +265,17 @@ describe('flight events', () => {
   })
 
   it('drifting seeds can be caught', () => {
-    const state = flightWith('seeds')
+    const state = flightWith('windfall')
     for (let i = 0; i < 10; i++) applyAction(state, { type: 'flight/tap' })
-    expect(state.player.satchel['raw-dandelion-fluff']).toBe(FLIGHT_EVENT_RULES.seedsMax)
+    expect(state.player.satchel['raw-dandelion-fluff']).toBe(
+      REGION_FLIGHT_EVENTS.meadow.windfall.max,
+    )
   })
 
   it('helping the lost traveler earns a thank-you', () => {
     const state = flightWith('traveler')
     applyAction(state, { type: 'flight/tap' })
-    expect(state.resources.glimmers).toBe(FLIGHT_EVENT_RULES.travelerGlimmers)
+    expect(state.resources.glimmers).toBe(REGION_FLIGHT_EVENTS.meadow.traveler.glimmers)
   })
 
   it('gusts change the flight time by themselves', () => {

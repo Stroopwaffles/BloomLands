@@ -1,7 +1,7 @@
 import type { HelperType } from './helpers'
 import type { CostEntry, StationId } from './types'
 
-export type QolId = 'auto-deposit' | 'auto-return' | 'return-trip' | 'bulk-craft' | 'clock'
+export type QolId = 'auto-deposit' | 'auto-return' | 'return-trip' | 'bulk-craft' | 'clock' | 'post'
 
 export type UpgradeEffect =
   | { kind: 'station'; station: StationId }
@@ -450,6 +450,18 @@ const UPGRADE_LIST: UpgradeDef[] = [
     items: [trinkets(1)],
     requires: [],
     effect: { kind: 'qol', qol: 'clock' },
+    courtPoints: 0,
+  },
+  {
+    id: 'qol-post',
+    name: 'Acorn Post',
+    category: 'comfort',
+    description:
+      'Send your satchel home from any settlement for a few Glimmers. It reaches storage a little later.',
+    glimmers: 250,
+    items: [trinkets(2)],
+    requires: [],
+    effect: { kind: 'qol', qol: 'post' },
     courtPoints: 0,
   },
 ]

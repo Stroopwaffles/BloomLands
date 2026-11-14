@@ -1,6 +1,7 @@
 import { advanceBuffs } from '../buffs'
 import { advanceStations } from '../crafting'
 import { advanceHelpers } from '../helpers'
+import { advancePost } from '../post'
 import { advanceMounts } from '../mounts'
 import { advanceResearch } from '../research'
 import { stateRandom } from '../rng'
@@ -35,6 +36,7 @@ export const helpersSystem: System = {
   update: (state, dtMs) => {
     advanceMounts(state, dtMs)
     advanceHelpers(state, dtMs, stateRandom(state))
+    advancePost(state, dtMs)
   },
 }
 

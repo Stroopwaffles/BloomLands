@@ -1,80 +1,310 @@
+<script lang="ts" module>
+  /** Whether the map is open, shared by every screen for the whole visit. */
+  let mapOpen = $state(true)
+</script>
+
 <script lang="ts">
+  import { onMount } from 'svelte'
+  import Art from '../../art/Art.svelte'
+  import { CREATURES, CREWS } from '../../data/challenges'
   import { COURT_RANKS } from '../../data/economy'
   import { RITUALS } from '../../data/magic'
-  import { HOME, placeName, placeRegion, REGION_ORDER, REGIONS } from '../../data/world'
+  import { MAP_ISLANDS } from '../../data/map'
+  import {
+    HOME,
+    isSettlement,
+    isSpiritPlace,
+    placeName,
+    placeRegion,
+    REGION_ORDER,
+    REGIONS,
+    SPOTS,
+  } from '../../data/world'
+  import { dayPhase, describeWeather, weatherIn } from '../../engine/environment'
   import { formatDuration } from '../../engine/format'
   import { knownRituals } from '../../engine/magic'
   import { courtRank } from '../../engine/modifiers'
   import { placeOpen, regionUnlocked } from '../../engine/regions'
-  import { travelMs } from '../../engine/travel'
+  import { flightBreakdown, pathNodes } from '../../engine/route'
   import { runtime } from '../game'
 
+  /**
+   * The world map (replaces the old list of flights). Regions are islands in a chain; tap a place
+   * to see how long the flight takes and why, then fly. Tapping the chosen place again flies too.
+   */
   const { game } = runtime
-
   const here = $derived($game.player.place)
-  const hereRegion = $derived(placeRegion(here))
+  const phase = $derived(dayPhase($game))
 
-  function placesIn(regionId: string): string[] {
-    const r = REGIONS[regionId]
-    return [r.settlement, ...r.spots, r.spiritPlace, ...r.secretSpots].filter(
-      (id) => id !== here && placeOpen($game, id) && travelMs($game, here, id) !== null,
-    )
+  /** Open regions, then the next closed one (drawn in fog). */
+  const nextLocked = $derived(REGION_ORDER.find((id) => !regionUnlocked($game, id)) ?? null)
+  const islands = $derived(
+    REGION_ORDER.filter(
+      (id) => (regionUnlocked($game, id) || id === nextLocked) && MAP_ISLANDS[id],
+    ),
+  )
+  const total = $derived(islands.length * 100)
+
+  /** A place's position on the whole map, in map units (100 per island). */
+  function pos(placeId: string): { x: number; y: number } | null {
+    const regionId = placeRegion(placeId)
+    const index = islands.indexOf(regionId)
+    const spot = MAP_ISLANDS[regionId]?.places[placeId]
+    if (index < 0 || !spot) return null
+    return { x: index * 100 + spot.x, y: spot.y }
   }
 
-  /** Open regions, the one you're in first; then the next locked region (with what it needs). */
-  const regions = $derived(
-    [...REGION_ORDER].sort((a, b) => Number(b === hereRegion) - Number(a === hereRegion)),
+  function placesOn(regionId: string): string[] {
+    if (!regionUnlocked($game, regionId)) return []
+    return Object.keys(MAP_ISLANDS[regionId].places).filter((id) => placeOpen($game, id))
+  }
+
+  type Kind = 'home' | 'settlement' | 'spirit' | 'secret' | 'spot'
+  function kindOf(placeId: string): Kind {
+    if (placeId === HOME) return 'home'
+    if (isSettlement(placeId)) return 'settlement'
+    if (isSpiritPlace(placeId)) return 'spirit'
+    if (SPOTS[placeId]?.secret) return 'secret'
+    return 'spot'
+  }
+  const KIND_NAME: Record<Kind, string> = {
+    home: 'Your home',
+    settlement: 'Village',
+    spirit: "Spirit's resting place",
+    secret: 'Secret place',
+    spot: 'Harvesting spot',
+  }
+
+  /** Spirit Path lines: from home to every awakened spirit's resting place. */
+  const paths = $derived(
+    pathNodes($game)
+      .filter((id) => id !== HOME)
+      .map((id) => ({ a: pos(HOME), b: pos(id) }))
+      .filter((p) => p.a && p.b) as { a: { x: number; y: number }; b: { x: number; y: number } }[],
   )
-  const nextLocked = $derived(REGION_ORDER.find((id) => !regionUnlocked($game, id)) ?? null)
+
+  let selected = $state<string | null>(null)
+  const breakdown = $derived(
+    selected && selected !== here && !selected.startsWith('locked:')
+      ? flightBreakdown($game, here, selected)
+      : null,
+  )
+
+  function fly(placeId: string) {
+    runtime.dispatch({ type: 'travel/go', to: placeId })
+    selected = null
+  }
+
+  function choose(placeId: string) {
+    if (selected === placeId && placeId !== here) fly(placeId)
+    else selected = placeId
+  }
+
+  function quick(placeId: string): string {
+    const b = flightBreakdown($game, here, placeId)
+    return b ? formatDuration(b.totalMs) : ''
+  }
+
   const knowsRite = (ritualId: string) => knownRituals($game).includes(ritualId)
+  const pct = (n: number) => `${(n / total) * 100}%`
+  const times = (f: number) => `×${Number(f.toFixed(2))}`
+
+  let scroller: HTMLDivElement | undefined = $state()
+  onMount(() => {
+    // Start with the island you're on in view.
+    const index = islands.indexOf(placeRegion(here))
+    if (scroller && index > 0) {
+      scroller.scrollLeft = (scroller.scrollWidth / islands.length) * index - 40
+    }
+  })
 </script>
 
 <div class="destinations">
-  {#if here !== HOME}
-    <button type="button" onclick={() => runtime.dispatch({ type: 'travel/go', to: HOME })}>
-      <span class="name">Fly home</span>
-      <span class="time">{formatDuration(travelMs($game, here, HOME) ?? 0)}</span>
+  <div class="toolbar">
+    {#if here !== HOME}
+      <button type="button" class="home" onclick={() => fly(HOME)}>
+        <span class="name">Fly home</span>
+        <span class="time">{quick(HOME)}</span>
+      </button>
+    {/if}
+    <button
+      type="button"
+      class="toggle"
+      aria-expanded={mapOpen}
+      onclick={() => (mapOpen = !mapOpen)}
+    >
+      {mapOpen ? 'Hide map' : 'Show map'}
     </button>
-  {/if}
+  </div>
 
-  {#each regions as regionId (regionId)}
-    {#if regionUnlocked($game, regionId)}
-      {@const places = placesIn(regionId)}
-      {#if places.length > 0}
-        <div class="region" class:away={regionId !== hereRegion}>
-          {#if $game.unlockedRegions.length > 1}
-            <span class="region-name">{REGIONS[regionId].name}</span>
-          {/if}
-          <div class="row">
-            {#each places as placeId (placeId)}
+  {#if mapOpen}
+    <div class="scroller" bind:this={scroller}>
+      <div class="map" style:--islands={islands.length}>
+        <svg class="sea" viewBox="0 0 {total} 100" preserveAspectRatio="none" aria-hidden="true">
+          {#each islands as regionId, i (regionId)}
+            {#if i > 0}
+              <path
+                d="M{i * 100 - 18} 52 L{i * 100 + 18} 52"
+                class="crossing"
+                vector-effect="non-scaling-stroke"
+              />
+            {/if}
+            <ellipse
+              cx={i * 100 + 50}
+              cy="54"
+              rx="46"
+              ry="42"
+              fill={MAP_ISLANDS[regionId].color}
+              stroke={MAP_ISLANDS[regionId].edge}
+              class:fog={!regionUnlocked($game, regionId)}
+              vector-effect="non-scaling-stroke"
+            />
+          {/each}
+          {#each paths as p, i (i)}
+            <path
+              d="M{p.a.x} {p.a.y} Q{(p.a.x + p.b.x) / 2} {Math.min(p.a.y, p.b.y) - 30} {p.b.x} {p.b
+                .y}"
+              class="spirit-path"
+              vector-effect="non-scaling-stroke"
+            />
+          {/each}
+        </svg>
+
+        {#each islands as regionId, i (regionId)}
+          {@const open = regionUnlocked($game, regionId)}
+          <div class="island-label" style:left={pct(i * 100 + 50)}>
+            {#if open}
+              <strong>{REGIONS[regionId].name}</strong>
+              <span>{describeWeather(weatherIn($game, regionId), phase).name}</span>
+            {:else}
               <button
                 type="button"
-                onclick={() => runtime.dispatch({ type: 'travel/go', to: placeId })}
+                class="locked-island"
+                aria-pressed={selected === `locked:${regionId}`}
+                onclick={() => (selected = `locked:${regionId}`)}
               >
-                <span class="name">Fly to {placeName(placeId)}</span>
-                <span class="time">{formatDuration(travelMs($game, here, placeId) ?? 0)}</span>
+                🔒 The {REGIONS[regionId].name}
               </button>
-            {/each}
+            {/if}
           </div>
-        </div>
-      {/if}
-    {/if}
-  {/each}
 
-  {#if nextLocked && REGIONS[nextLocked].unlock}
-    {@const unlock = REGIONS[nextLocked].unlock!}
-    {@const rankOk = courtRank($game) >= unlock.rank}
-    <div class="locked" aria-label={`The ${REGIONS[nextLocked].name} is still closed`}>
-      <span class="region-name">🔒 The {REGIONS[nextLocked].name}</span>
-      <ul>
-        <li class:done={rankOk}>
-          {rankOk ? '✓' : '○'} A {COURT_RANKS[unlock.rank].name} court
-        </li>
-        <li class:done={knowsRite(unlock.ritualId)}>
-          {knowsRite(unlock.ritualId) ? '✓' : '○'} Research the {RITUALS[unlock.ritualId].name}
-        </li>
-        <li>○ Perform it at your Ritual Circle</li>
-      </ul>
+          {#each placesOn(regionId) as placeId (placeId)}
+            {@const p = pos(placeId)!}
+            {@const kind = kindOf(placeId)}
+            {@const creature = $game.challenges.creatures[placeId]}
+            {@const camp = $game.challenges.camps[placeId]}
+            {@const working = $game.helpers.list.filter(
+              (h) => h.tripSpot === placeId && h.phase === 'gathering',
+            ).length}
+            <button
+              type="button"
+              class="node {kind}"
+              class:here={placeId === here}
+              class:selected={selected === placeId}
+              style:left={pct(p.x)}
+              style:top="{p.y}%"
+              aria-label={`${placeName(placeId)}${placeId === here ? ' (you are here)' : `, ${quick(placeId)}`}`}
+              onclick={() => choose(placeId)}
+            >
+              <span class="pin" aria-hidden="true">
+                {#if kind === 'home'}⌂{:else if kind === 'settlement'}⌂⌂{:else if kind === 'spirit'}✦{:else if kind === 'secret'}✧{:else}❦{/if}
+              </span>
+              {#if placeId === here}
+                <span class="you" aria-hidden="true"><Art id="char-fairy" size={26} /></span>
+              {/if}
+              {#if creature || camp || working}
+                <span class="badges" aria-hidden="true">
+                  {#if creature}<span
+                      class="badge warn"
+                      title={`${CREATURES[creature.creatureId]?.name} here`}>!</span
+                    >{/if}
+                  {#if camp}<span class="badge warn" title={CREWS[camp]?.name}>⚑</span>{/if}
+                  {#if working}<span class="badge helpers" title="Helpers working here"
+                      >{working}</span
+                    >{/if}
+                </span>
+              {/if}
+              <span class="label">{placeName(placeId)}</span>
+            </button>
+          {/each}
+        {/each}
+      </div>
+    </div>
+
+    <div class="card" aria-live="polite">
+      {#if !selected}
+        <p class="hint">Tap a place on the map to see the way there.</p>
+      {:else if selected.startsWith('locked:')}
+        {@const regionId = selected.slice(7)}
+        {@const unlock = REGIONS[regionId].unlock}
+        <strong>The {REGIONS[regionId].name} is still closed</strong>
+        {#if unlock}
+          {@const rankOk = courtRank($game) >= unlock.rank}
+          <ul class="checklist">
+            <li class:done={rankOk}>
+              {rankOk ? '✓' : '○'} A {COURT_RANKS[unlock.rank].name} court
+            </li>
+            <li class:done={knowsRite(unlock.ritualId)}>
+              {knowsRite(unlock.ritualId) ? '✓' : '○'} Research the {RITUALS[unlock.ritualId].name}
+            </li>
+            <li>○ Perform it at your Ritual Circle</li>
+          </ul>
+        {/if}
+      {:else}
+        {@const regionId = placeRegion(selected)}
+        {@const creature = $game.challenges.creatures[selected]}
+        {@const camp = $game.challenges.camps[selected]}
+        <div class="card-head">
+          <div>
+            <strong>{placeName(selected)}</strong>
+            <span class="sub">{KIND_NAME[kindOf(selected)]} · {REGIONS[regionId]?.name}</span>
+          </div>
+          {#if selected === here}
+            <span class="sub">You are here.</span>
+          {:else if breakdown}
+            <button type="button" class="fly" onclick={() => fly(selected!)}>
+              Fly · {formatDuration(breakdown.totalMs)}
+            </button>
+          {/if}
+        </div>
+        {#if creature}
+          <p class="status warn">
+            {CREATURES[creature.creatureId]?.name}
+            {CREATURES[creature.creatureId]?.behavior === 'watches'
+              ? 'is watching it'
+              : 'is eating the plants'}.
+          </p>
+        {/if}
+        {#if camp}<p class="status warn">{CREWS[camp]?.name} have camped here.</p>{/if}
+        {#if breakdown}
+          {#if breakdown.via}<p class="via">{breakdown.via}</p>{/if}
+          <ul class="legs">
+            {#each breakdown.legs as leg, i (i)}
+              <li>
+                <span class="leg-name">{leg.name}</span>
+                <span>{formatDuration(leg.baseMs)}</span>
+                {#each leg.effects as e (e.label)}
+                  <span class="effect" class:slow={e.factor > 1} class:fast={e.factor < 1}
+                    >{e.label} {times(e.factor)}</span
+                  >
+                {/each}
+              </li>
+            {/each}
+            {#if breakdown.wingSpeed !== 1}
+              <li>
+                <span class="leg-name">Your wings</span>
+                <span class="effect fast">{breakdown.wingSpeed.toFixed(2)}× as fast</span>
+              </li>
+            {/if}
+            {#if breakdown.curios !== 1}
+              <li>
+                <span class="leg-name">Curios</span>
+                <span class="effect fast">{times(breakdown.curios)}</span>
+              </li>
+            {/if}
+          </ul>
+        {/if}
+      {/if}
     </div>
   {/if}
 </div>
@@ -82,37 +312,20 @@
 <style>
   .destinations {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: flex-start;
-  }
-
-  .region {
-    display: flex;
     flex-direction: column;
-    gap: 4px;
-    flex-basis: 100%;
-  }
-
-  .row {
-    display: flex;
-    flex-wrap: wrap;
     gap: 8px;
+    width: 100%;
   }
 
-  .region-name {
-    font-family: var(--font-heading);
-    font-size: 0.95rem;
-    opacity: 0.8;
-  }
-
-  button {
-    min-height: 52px;
-    padding: 6px 16px;
+  .toolbar {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .toolbar button {
+    min-height: 48px;
+    padding: 4px 16px;
     border: 2px solid var(--leaf);
     border-radius: 14px;
     background: white;
@@ -121,8 +334,10 @@
     cursor: pointer;
   }
 
-  .away button {
-    border-style: dashed;
+  .home {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .name {
@@ -134,23 +349,298 @@
     opacity: 0.75;
   }
 
-  .locked {
-    flex-basis: 100%;
-    padding: 8px 14px;
-    border: 2px dashed #b9a98f;
-    border-radius: 14px;
-    background: rgb(255 250 240 / 0.7);
-    color: var(--ink);
+  .toggle {
+    margin-left: auto;
+    font-weight: 700;
   }
 
-  .locked ul {
-    margin: 4px 0 0;
+  .scroller {
+    overflow-x: auto;
+    border-radius: 18px;
+    background: linear-gradient(#bfe4f2, #9fd0e6);
+    border: 2px solid #7fb8cf;
+  }
+
+  .map {
+    position: relative;
+    height: 230px;
+    width: max(100%, calc(var(--islands) * 250px));
+  }
+
+  .sea {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .sea ellipse {
+    stroke-width: 2;
+  }
+
+  .sea ellipse.fog {
+    fill: #dfe3e8;
+    stroke: #aab3bd;
+    stroke-dasharray: 6 4;
+    opacity: 0.8;
+  }
+
+  .crossing {
+    stroke: white;
+    stroke-width: 3;
+    stroke-dasharray: 4 6;
+    opacity: 0.8;
+  }
+
+  .spirit-path {
+    fill: none;
+    stroke: #ffe59e;
+    stroke-width: 3;
+    stroke-dasharray: 2 5;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 3px #fff3b0);
+  }
+
+  .island-label {
+    position: absolute;
+    top: 6px;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    pointer-events: none;
+  }
+
+  .island-label strong {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+  }
+
+  .island-label span {
+    opacity: 0.75;
+  }
+
+  .locked-island {
+    pointer-events: auto;
+    margin-top: 80px;
+    min-height: 40px;
+    padding: 4px 12px;
+    border: 2px dashed #8a95a3;
+    border-radius: 12px;
+    background: rgb(255 255 255 / 0.8);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    min-width: 44px;
+    min-height: 44px;
     padding: 0;
-    list-style: none;
+    border: none;
+    background: none;
+    color: var(--ink);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .pin {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--leaf);
+    font-size: 0.85rem;
+    line-height: 1;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 0.15);
+  }
+
+  .home .pin {
+    border-color: #c97a8c;
+    background: #fde7ef;
+  }
+
+  .settlement .pin {
+    border-color: #c9832f;
+    background: #fff3d6;
+    font-size: 0.65rem;
+  }
+
+  .spirit .pin {
+    border-color: #9a86cf;
+    background: #f1ecff;
+  }
+
+  .secret .pin {
+    border-color: #7c5cff;
+    background: #ede6ff;
+  }
+
+  .node.selected .pin,
+  .node:hover .pin {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 3px #ffe59e;
+  }
+
+  .node.here .pin {
+    box-shadow: 0 0 0 3px white;
+  }
+
+  .label {
+    max-width: 92px;
+    padding: 0 5px;
+    border-radius: 8px;
+    background: rgb(255 255 255 / 0.85);
+    font-size: 0.68rem;
+    font-weight: 700;
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  .you {
+    position: absolute;
+    top: -24px;
+    left: -10px;
+  }
+
+  .badges {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    display: flex;
+    gap: 2px;
+  }
+
+  .badge {
+    min-width: 16px;
+    height: 16px;
+    padding: 0 3px;
+    border-radius: 999px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 16px;
+    color: white;
+  }
+
+  .badge.warn {
+    background: #c0392b;
+  }
+
+  .badge.helpers {
+    background: var(--leaf-deep);
+  }
+
+  .card {
+    padding: 10px 14px;
+    border-radius: 16px;
+    background: white;
+    border: 2px solid var(--honey);
     font-size: 0.9rem;
   }
 
-  .locked li.done {
+  .hint {
+    margin: 0;
+    opacity: 0.7;
+  }
+
+  .card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .card-head > div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sub {
+    font-size: 0.8rem;
+    opacity: 0.75;
+  }
+
+  .fly {
+    min-height: 48px;
+    padding: 0 20px;
+    border: none;
+    border-radius: 14px;
+    background: var(--leaf-deep);
+    color: white;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .status,
+  .via {
+    margin: 6px 0 0;
+  }
+
+  .status.warn {
+    color: #a52a1f;
+    font-weight: 700;
+  }
+
+  .via {
+    font-style: italic;
+  }
+
+  .legs {
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 0.82rem;
+  }
+
+  .legs li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .leg-name {
+    font-weight: 700;
+    min-width: 76px;
+  }
+
+  .effect {
+    padding: 0 6px;
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.06);
+  }
+
+  .effect.slow {
+    background: #fde2dd;
+  }
+
+  .effect.fast {
+    background: #e2f3d8;
+  }
+
+  .checklist {
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .checklist li.done {
     color: var(--leaf-deep);
     font-weight: 700;
   }

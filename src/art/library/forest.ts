@@ -603,7 +603,29 @@ const heartwood = curio(
     `<path d="M50 32 C46 22 54 18 58 22 C60 26 54 30 50 32 Z" fill="#9ccc72" stroke="#4f7a3a" stroke-width="1.4"/>`,
 )
 
+/** A bramble snagging a wing mid-flight. */
+const snag =
+  `<path d="M8 70 C24 50 40 76 56 56 C70 40 82 58 94 40" fill="none" stroke="#6e5234" stroke-width="4" stroke-linecap="round"/>` +
+  `<path d="M14 84 C30 66 48 88 66 70 C76 60 86 70 92 62" fill="none" stroke="#7a5c3e" stroke-width="3" stroke-linecap="round"/>` +
+  [
+    [20, 62],
+    [36, 66],
+    [52, 60],
+    [66, 48],
+    [82, 50],
+    [30, 76],
+    [60, 74],
+  ]
+    .map(
+      ([x, y]) =>
+        `<path d="M${x} ${y} l-4 -5 M${x} ${y} l5 -4" stroke="#4e3820" stroke-width="2" stroke-linecap="round"/>`,
+    )
+    .join('') +
+  `<ellipse cx="54" cy="40" rx="16" ry="8" transform="rotate(-20 54 40)" fill="#e9f2ff" stroke="#9ab4d6" stroke-width="1.8" opacity="0.9"/>` +
+  `<circle cx="34" cy="70" r="3" fill="#e0483e"/><circle cx="74" cy="62" r="3" fill="#e0483e"/>`
+
 export const FOREST_MISC_ART: Record<string, string> = {
+  'event-snag': snag,
   'spirit-bramblebeard': bramblebeard,
   'creature-owl': owl,
   'pest-beetle': beetle,

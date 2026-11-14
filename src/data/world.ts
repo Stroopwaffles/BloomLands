@@ -226,6 +226,7 @@ export const REGIONS: Readonly<Record<string, RegionDef>> = {
     spiritPlace: 'sunstone-hill',
     secretSpots: ['fairy-ring'],
     spots: ['buttercup-rise', 'dandelion-drift'],
+    sceneSpot: 'buttercup-rise',
     unlock: null,
   },
   forest: {
@@ -235,6 +236,7 @@ export const REGIONS: Readonly<Record<string, RegionDef>> = {
     spiritPlace: 'elder-oak',
     secretSpots: ['hollow-log-library', 'lost-grove'],
     spots: ['fernshade-floor', 'mossy-stump-ring'],
+    sceneSpot: 'mossy-stump-ring',
     unlock: { rank: 1, ritualId: 'ritual-open-path' },
   },
   swamp: {
@@ -244,6 +246,7 @@ export const REGIONS: Readonly<Record<string, RegionDef>> = {
     spiritPlace: 'sunken-willow',
     secretSpots: ['wisp-hollow'],
     spots: ['reeds-hollow', 'lilypad-pools'],
+    sceneSpot: 'lilypad-pools',
     unlock: { rank: 2, ritualId: 'ritual-reed-gate' },
   },
 }
@@ -320,6 +323,9 @@ export const REGION_FLIGHT_MS = 18_000
  * (the frog) or have drunk a Waterstride Philter.
  */
 export const WATER_FLIGHT_FACTOR = 1.4
+
+/** A flight along the Spirit Path, between home and awakened spirits' resting places. */
+export const SPIRIT_PATH_MS = 6_000
 
 export function baseTravelMs(from: string, to: string): number | null {
   if (from === to) return null

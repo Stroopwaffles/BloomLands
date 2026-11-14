@@ -1,61 +1,25 @@
-import { CREWS } from '../data/challenges'
-import { MOUNTS, mountBonusValue } from '../data/mounts'
-import {
-  baseTravelMs,
-  HOME,
-  isSettlement,
-  isSpiritPlace,
-  isSpot,
-  placeRegion,
-  SPOTS,
-  WATER_FLIGHT_FACTOR,
-} from '../data/world'
-import { weatherFlightFactor } from './environment'
+import { FLIGHT_EVENT_RULES } from '../data/challenges'
+import { HOME, isSettlement, isSpiritPlace, isSpot } from '../data/world'
 import type { GameEvent } from './events'
-import { applyInstantEvents, rollFlightEvent, settleFlightEvent } from './flightEvents'
+import { applyInstantEvents, flightSpeed, rollFlightEvent, settleFlightEvent } from './flightEvents'
 import { placeOpen } from './regions'
 import { discoverSecret } from './secrets'
 import { depositSatchel, ensureSpot } from './gathering'
-import { hasQol, hasWaterstride, travelMultiplier, wingSpeed } from './modifiers'
+import { hasQol, travelMultiplier, wingSpeed } from './modifiers'
+import { legAt, legShares, routeLegTimes, routeOf, SPIRIT_PATH } from './route'
 import type { Random } from './rng'
 import { countItems, type GameState } from './state'
 
-/** Flight time between two places for this player, or null if there's no route. */
+/**
+ * Flight time between two places for this player, or null if there's no route. Each leg of the
+ * route (one per region crossed) gets its own region's weather; then wing speed and curios apply.
+ */
 export function travelMs(state: GameState, from: string, to: string): number | null {
-  const base = baseTravelMs(from, to)
-  if (base === null) return null
-  return Math.ceil(
-    (base / wingSpeed(state)) *
-      weatherFlightFactor(state, from, to) *
-      travelMultiplier(state) *
-      mountHopFactor(state, from, to) *
-      waterFactor(state, from, to),
-  )
-}
-
-/** Open water is slow going, unless you ride a mount that swims or drank Waterstride. */
-export function waterFactor(state: GameState, from: string, to: string): number {
-  if (!SPOTS[to]?.water && !SPOTS[from]?.water) return 1
-  const riding = state.mounts.riding ? MOUNTS[state.mounts.riding] : null
-  if (riding?.swims || hasWaterstride(state)) return 1
-  return WATER_FLIGHT_FACTOR
-}
-
-/** Mounts like the flying squirrel make hops inside their own region quicker. */
-function mountHopFactor(state: GameState, from: string, to: string): number {
-  const id = state.mounts.riding
-  const mount = id ? MOUNTS[id] : null
-  if (!id || !mount || mount.bonus.kind !== 'regionTravel') return 1
-  const region = mount.regionId
-  if (placeRegion(from) !== region || placeRegion(to) !== region) return 1
-  return mountBonusValue(mount, state.mounts.owned[id]?.level ?? 1)
-}
-
-/** The pirate crew that might ambush a flight: whoever roams the region you're flying into. */
-function ambushCrew(state: GameState, from: string, to: string): string | null {
-  const region = placeRegion(to === HOME ? from : to)
-  const crew = Object.values(CREWS).find((c) => c.regionId === region)
-  return crew && !state.crews[crew.id]?.won ? crew.id : null
+  const route = routeOf(state, from, to)
+  if (!route) return null
+  const legs = routeLegTimes(state, from, to, route)
+  const ms = legs.reduce((total, l) => total + l.ms, 0)
+  return Math.ceil((ms / wingSpeed(state)) * travelMultiplier(state))
 }
 
 /**
@@ -77,9 +41,28 @@ export function startTravel(
   const totalMs = travelMs(state, player.place, to)
   if (totalMs === null) return [{ type: 'blocked', reason: 'not-here' }]
 
-  player.travel = { to, totalMs, remainingMs: totalMs, ...(auto ? { auto: true } : {}) }
+  const route = routeOf(state, player.place, to)!
+  const legs = legShares(
+    routeLegTimes(state, player.place, to, route).map((l) => ({
+      regionId: l.leg.regionId,
+      ms: l.ms,
+    })),
+  )
+  player.travel = {
+    to,
+    from: player.place,
+    legs,
+    totalMs,
+    remainingMs: totalMs,
+    ...(auto ? { auto: true } : {}),
+  }
   if (random && !auto) {
-    rollFlightEvent(player.travel, random, ambushCrew(state, player.place, to))
+    // Something may happen somewhere along the way, over whichever region is below.
+    const at =
+      FLIGHT_EVENT_RULES.earliest +
+      random() * (FLIGHT_EVENT_RULES.latest - FLIGHT_EVENT_RULES.earliest)
+    const regionId = legs[legAt(legs, at)].regionId
+    if (regionId !== SPIRIT_PATH) rollFlightEvent(state, player.travel, random, regionId, at)
   }
   return [{ type: 'depart', to, totalMs, auto }]
 }
@@ -91,7 +74,7 @@ export function startTravel(
 export function advanceTravel(state: GameState, dtMs: number, random: Random): void {
   const { player } = state
   if (!player.travel) return
-  player.travel.remainingMs -= dtMs
+  player.travel.remainingMs -= dtMs * flightSpeed(state)
   applyInstantEvents(state, random)
   if (player.travel.remainingMs > 0) return
 

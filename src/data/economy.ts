@@ -62,6 +62,17 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'potion-waterstride-philter': 100,
 }
 
+/** The Acorn Post: sending the satchel home from a settlement. Starting values for balancing. */
+export const POST_RULES = {
+  /** One Glimmer for every this many items... */
+  itemsPerGlimmer: 4,
+  /** ...but never less than this. */
+  minFee: 3,
+  /** Parcels take this much longer than the flight home would (before your wing speed). */
+  delayFactor: 1.5,
+  minDelayMs: 10_000,
+}
+
 export interface TraderDef {
   id: string
   name: string

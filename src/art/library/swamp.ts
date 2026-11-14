@@ -469,7 +469,17 @@ const wispLantern = curio(
     `<circle cx="50" cy="54" r="7" fill="#d9f2ff" stroke="#8ec4e6" stroke-width="1.6"/><circle cx="50" cy="54" r="3" fill="#ffffff"/>`,
 )
 
+/** A will-o'-wisp, beckoning. */
+const wisp =
+  `<circle cx="50" cy="50" r="34" fill="#bfe8ff" opacity="0.3"/>` +
+  `<circle cx="50" cy="50" r="22" fill="#d9f2ff" opacity="0.6"/>` +
+  `<path d="M50 30 C62 36 64 56 50 70 C36 56 38 36 50 30 Z" fill="#ffffff" stroke="#8ec4e6" stroke-width="2"/>` +
+  `<circle cx="45" cy="48" r="2.4" fill="#3e6e9a"/><circle cx="55" cy="48" r="2.4" fill="#3e6e9a"/>` +
+  `<path d="M46 56 Q50 59 54 56" fill="none" stroke="#3e6e9a" stroke-width="1.6" stroke-linecap="round"/>` +
+  `<g fill="#ffffff"><circle cx="24" cy="30" r="2"/><circle cx="78" cy="26" r="1.6"/><circle cx="80" cy="70" r="1.8"/><circle cx="20" cy="72" r="1.4"/></g>`
+
 export const SWAMP_MISC_ART: Record<string, string> = {
+  'event-wisp': wisp,
   'spirit-mirebelle': mirebelle,
   'creature-heron': heron,
   'pest-slug': slug,

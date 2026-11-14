@@ -57,6 +57,8 @@ export interface FlightEventState {
   tailwind?: boolean
   /** Ambushes: which pirate crew. */
   crewId?: string
+  /** The region below the fairy when it happens. */
+  regionId?: string
 }
 
 /** A timed job: crafting at a station, or research. */
@@ -81,6 +83,10 @@ export interface BuffState {
 
 export interface TravelState {
   to: string
+  /** Where the flight started. */
+  from?: string
+  /** The regions the flight passes over, and each one's share of the flight (for the screen). */
+  legs?: { regionId: string; share: number }[]
   totalMs: number
   remainingMs: number
   /** True for a flight home started by Homing Instinct (so Round Trips can fly back after). */
@@ -108,6 +114,18 @@ export interface HelperState {
   bag: Record<string, number>
   /** Brewers: stop once storage holds this many of the recipe's result. */
   keep?: number
+}
+
+/** A satchel sent home by the Acorn Post. */
+export interface ParcelState {
+  id: number
+  /** The settlement it was posted from. */
+  from: string
+  items: Record<string, number>
+  /** Time until it reaches home (0: waiting at the door for storage space). */
+  remainingMs: number
+  /** Its arrival has been announced. */
+  announced?: boolean
 }
 
 /** A visiting trader's request: bring these items, get this reward. */
@@ -226,6 +244,11 @@ export interface GameState {
   supply: {
     /** Minimum stock levels by item ID. Supply helpers fetch anything below its minimum. */
     minimums: Record<string, number>
+  }
+  /** Parcels on their way home by the Acorn Post. */
+  post: {
+    parcels: ParcelState[]
+    nextId: number
   }
   /** Bloom points by region ID (design doc 3.9). */
   bloom: Record<string, number>
@@ -370,6 +393,10 @@ export function createNewGame(now: number): GameState {
     },
     supply: {
       minimums: {},
+    },
+    post: {
+      parcels: [],
+      nextId: 1,
     },
     traders: {
       requests: [],

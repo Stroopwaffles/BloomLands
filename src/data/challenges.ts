@@ -297,18 +297,79 @@ export const CAMP_RULES = {
   helperYield: 0.5,
 }
 
-export type FlightEventKind = 'ambush' | 'seeds' | 'traveler' | 'gust'
+export type FlightEventKind = 'ambush' | 'windfall' | 'traveler' | 'gust' | 'snag' | 'wisp'
 
 export const FLIGHT_EVENT_RULES = {
   /** Chance a flight the player starts has an event. */
   chance: 0.35,
-  weights: { ambush: 30, seeds: 35, traveler: 15, gust: 20 } as Record<FlightEventKind, number>,
-  /** Events appear this far into the flight. */
-  at: 0.4,
+  /** Events happen somewhere between these points of the flight, over whichever region is below. */
+  earliest: 0.2,
+  latest: 0.8,
   ambushTaps: 6,
   ambushSteals: 3,
-  seedsMax: 5,
-  travelerGlimmers: 15,
   tailwind: 0.7,
   headwind: 1.25,
+  /** Taps to pull free of a snag; until then the flight goes at this speed. */
+  snagTaps: 5,
+  snagSpeed: 0.5,
+  /** Following a will-o'-wisp shortens what's left of the flight to this. */
+  wispShortcut: 0.6,
+}
+
+/** What can happen while flying over each region (F2: every region has its own happenings). */
+export interface RegionFlightEvents {
+  /** How likely each kind is (an ambush only if the region's pirates aren't won over). */
+  weights: Partial<Record<FlightEventKind, number>>
+  /** Something to catch as it drifts by. */
+  windfall: { itemId: string; text: string; art: string; max: number }
+  /** Someone lost to help on their way. */
+  traveler: { text: string; thanks: string; art: string; glimmers: number }
+}
+
+export const REGION_FLIGHT_EVENTS: Readonly<Record<string, RegionFlightEvents>> = {
+  meadow: {
+    weights: { ambush: 30, windfall: 35, traveler: 15, gust: 20 },
+    windfall: {
+      itemId: 'raw-dandelion-fluff',
+      text: 'Dandelion seeds drift by!',
+      art: 'event-seeds',
+      max: 5,
+    },
+    traveler: {
+      text: 'A lost beetle asks you the way home.',
+      thanks: 'The lost beetle thanks you',
+      art: 'event-lost-beetle',
+      glimmers: 15,
+    },
+  },
+  forest: {
+    weights: { ambush: 30, windfall: 25, traveler: 15, snag: 30 },
+    windfall: {
+      itemId: 'raw-acorns',
+      text: 'Acorns tumble down from the canopy!',
+      art: 'raw-acorns',
+      max: 3,
+    },
+    traveler: {
+      text: 'A squirrel courier has lost her way with the mail.',
+      thanks: 'The courier thanks you',
+      art: 'villager-chestnut',
+      glimmers: 20,
+    },
+  },
+  swamp: {
+    weights: { ambush: 30, windfall: 25, traveler: 15, wisp: 30 },
+    windfall: {
+      itemId: 'raw-lily-petals',
+      text: 'Lily petals float up on a warm breeze!',
+      art: 'raw-lily-petals',
+      max: 3,
+    },
+    traveler: {
+      text: 'A little tadpole has drifted far from home.',
+      thanks: 'The tadpole’s family thanks you',
+      art: 'villager-puddle',
+      glimmers: 25,
+    },
+  },
 }

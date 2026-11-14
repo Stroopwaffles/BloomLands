@@ -8,6 +8,7 @@
   import BloomMeter from '../components/BloomMeter.svelte'
   import Characters from '../components/Characters.svelte'
   import Destinations from '../components/Destinations.svelte'
+  import PostBox from '../components/PostBox.svelte'
   import VillagerRequests from '../components/VillagerRequests.svelte'
   import { runtime } from '../game'
   import { BLOCKED_TEXT } from '../messages'
@@ -25,6 +26,8 @@
       </div>
       <Destinations />
     </header>
+
+    <PostBox />
 
     <section class="panel">
       <h3>Recruit helpers</h3>

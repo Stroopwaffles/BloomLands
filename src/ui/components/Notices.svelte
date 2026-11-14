@@ -54,6 +54,18 @@
         return ['A new friend joins your court!', true]
       case 'mount-level':
         return [`Your mount reached level ${event.level}!`, false]
+      case 'parcel-sent':
+        return [
+          `Your satchel is on its way home (${event.count} items, ${event.fee} Glimmers).`,
+          false,
+        ]
+      case 'parcel-arrived':
+        return [
+          event.waiting > 0
+            ? `A parcel arrived: ${event.count} items stored, ${event.waiting} wait for storage space.`
+            : `A parcel arrived home: ${event.count} items stored.`,
+          false,
+        ]
       default:
         return null
     }

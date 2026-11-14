@@ -22,6 +22,7 @@ import type { GameEvent } from './events'
 import { rollPlant } from './gathering'
 import { mountSpeed, spareMounts } from './mounts'
 import { placeOpen, spotWatched } from './regions'
+import { routeOf } from './route'
 import {
   helperCapacity,
   helperCount,
@@ -263,7 +264,9 @@ function unload(state: GameState, helper: HelperState): boolean {
 export function helperFlightMs(state: GameState, helper: HelperState, spotId: string): number {
   // Muggy heat slows helpers down; the Reed Pipe speeds them up.
   const weather = weatherIn(state, SPOTS[spotId]?.regionId ?? 'meadow').helperTrips ?? 1
-  const base = (baseTravelMs(HOME, spotId) ?? 0) * weather * helperTripMultiplier(state)
+  // Helpers take the Spirit Path too, when it's quicker.
+  const route = routeOf(state, HOME, spotId)?.baseMs ?? baseTravelMs(HOME, spotId) ?? 0
+  const base = route * weather * helperTripMultiplier(state)
   const index = state.helpers.list.findIndex((h) => h.id === helper.id)
   const mountId = spareMounts(state)[index]
   return Math.ceil(mountId ? base / mountSpeed(state, mountId) : base)
