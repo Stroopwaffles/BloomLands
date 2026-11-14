@@ -95,9 +95,24 @@
     selected = null
   }
 
+  /**
+   * A place is chosen the moment it's pressed. Waiting for a full click lost taps: if the pointer
+   * ended up over something else by the time it was released (a wobble, a neighbour's label), the
+   * browser dropped the click and nothing was selected. Choosing never flies by itself; the card's
+   * Fly button does that.
+   */
   function choose(placeId: string) {
-    if (selected === placeId && placeId !== here) fly(placeId)
-    else selected = placeId
+    selected = placeId
+  }
+
+  function onPress(e: PointerEvent, placeId: string) {
+    if (e.button !== 0) return
+    choose(placeId)
+  }
+
+  /** Keyboard (Enter/Space) activates with a click but no press. */
+  function onKeyClick(e: MouseEvent, placeId: string) {
+    if (e.detail === 0) choose(placeId)
   }
 
   function quick(placeId: string): string {
@@ -204,7 +219,8 @@
               style:left={pct(p.x)}
               style:top="{p.y}%"
               aria-label={`${placeName(placeId)}${placeId === here ? ' (you are here)' : `, ${quick(placeId)}`}`}
-              onclick={() => choose(placeId)}
+              onpointerdown={(e) => onPress(e, placeId)}
+              onclick={(e) => onKeyClick(e, placeId)}
             >
               <span class="pin" aria-hidden="true">
                 {#if kind === 'home'}⌂{:else if kind === 'settlement'}⌂⌂{:else if kind === 'spirit'}✦{:else if kind === 'secret'}✧{:else}❦{/if}
@@ -233,7 +249,7 @@
 
     <div class="card" aria-live="polite">
       {#if !selected}
-        <p class="hint">Tap a place on the map to see the way there.</p>
+        <p class="hint">Tap a place on the map to see the way there, then press Fly.</p>
       {:else if selected.startsWith('locked:')}
         {@const regionId = selected.slice(7)}
         {@const unlock = REGIONS[regionId].unlock}
@@ -490,10 +506,30 @@
     background: #ede6ff;
   }
 
-  .node.selected .pin,
+  /* Hovered and chosen places sit above their neighbours, so overlapping labels can't steal taps. */
+  .node:hover,
+  .node:focus-visible {
+    z-index: 2;
+  }
+
+  .node.selected {
+    z-index: 3;
+  }
+
   .node:hover .pin {
+    transform: translateY(-2px);
+  }
+
+  .node.selected .pin {
     transform: scale(1.15);
-    box-shadow: 0 0 0 3px #ffe59e;
+    box-shadow:
+      0 0 0 3px #e2b94f,
+      0 0 10px 3px #ffe59e;
+  }
+
+  .node.selected .label {
+    background: #e2b94f;
+    color: #3d2a10;
   }
 
   .node.here .pin {

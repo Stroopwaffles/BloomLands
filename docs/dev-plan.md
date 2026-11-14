@@ -221,7 +221,7 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - **World map** (replaces the list of flights):
   - Regions are islands in a chain, with the next closed region in fog (tap it for what it needs).
   - Places show creatures, camps and helpers at work. Spirit Paths are drawn in gold.
-  - Tap a place for a card with the flight time, its "via" route and a breakdown (each leg's time, weather, open water, mounts, wing speed, curios). Tap Fly, or tap the place again.
+  - Tap a place for a card with the flight time, its "via" route and a breakdown (each leg's time, weather, open water, mounts, wing speed, curios), then press Fly. (v0.3.5: places are chosen on press, so taps are never lost, and only the Fly button flies.)
   - "Fly home" stays one tap away, and the map can be hidden.
 - **Travel screen:** a route strip of the regions you cross with your fairy moving along it, an "Over the Forest" line, a "Crossing into…" note at each border, and the scenery of the region below, which fades as you cross.
 
