@@ -178,7 +178,7 @@ export const SCENES: Readonly<Record<string, SceneLayout>> = {
       { x: 44, y: 88 },
       { x: 58, y: 80 },
     ],
-    creature: { x: 12, y: 50 },
+    creature: { x: 28, y: 66 },
     camp: { x: 78, y: 80 },
     mount: { x: 70, y: 30 },
   },

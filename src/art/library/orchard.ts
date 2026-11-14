@@ -57,17 +57,32 @@ const quinceBlossom = blossomTwig('#f6c0a8', [
   [62, 42, 12],
 ])
 
+/** A chunk of fallen honeycomb resting on a leaf, honey pooling and dripping. */
 const honeyDrip =
   ground +
-  `<path d="M22 30 Q50 18 78 30 L74 46 Q50 52 26 46 Z" fill="#f2c94f" stroke="#a87e1a" stroke-width="2"/>` +
-  ring(
-    6,
-    (_, i) =>
-      `<polygon points="${30 + i * 8},32 ${34 + i * 8},30 ${38 + i * 8},32 ${38 + i * 8},37 ${34 + i * 8},39 ${30 + i * 8},37" fill="#ffe59e" stroke="#c99a2a" stroke-width="0.8"/>`,
-  ) +
-  `<g class="sway"><path d="M40 48 C40 62 36 70 40 78 C44 84 48 78 46 70 C44 62 44 56 44 48 Z" fill="#f2b23a" stroke="#a87e1a" stroke-width="1.6"/>` +
-  `<path d="M58 48 C58 56 56 62 58 66 C61 70 64 66 62 60 C61 56 61 52 61 48 Z" fill="#f2b23a" stroke="#a87e1a" stroke-width="1.4"/>` +
-  `<circle cx="42" cy="88" r="4" fill="#f2b23a" stroke="#a87e1a" stroke-width="1.2"/></g>`
+  `<path d="M18 92 C26 76 74 74 84 90 C70 98 30 98 18 92 Z" fill="#8fbf66" stroke="#4f8a4a" stroke-width="1.6"/>` +
+  `<path d="M24 90 Q50 82 78 90" fill="none" stroke="#4f8a4a" stroke-width="1"/>` +
+  `<ellipse cx="50" cy="90" rx="22" ry="4" fill="#f2b23a" opacity="0.85"/>` +
+  `<g class="sway">` +
+  [
+    [40, 70],
+    [52, 70],
+    [64, 70],
+    [46, 60],
+    [58, 60],
+    [52, 50],
+    [34, 80],
+    [46, 80],
+    [58, 80],
+  ]
+    .map(
+      ([x, y]) =>
+        `<polygon points="${x - 6},${y} ${x - 3},${y - 5.2} ${x + 3},${y - 5.2} ${x + 6},${y} ${x + 3},${y + 5.2} ${x - 3},${y + 5.2}" fill="#f6d36a" stroke="#a87e1a" stroke-width="1.4"/><polygon points="${x - 3},${y} ${x - 1.5},${y - 2.6} ${x + 1.5},${y - 2.6} ${x + 3},${y} ${x + 1.5},${y + 2.6} ${x - 1.5},${y + 2.6}" fill="#f2b23a" opacity="0.8"/>`,
+    )
+    .join('') +
+  `<path d="M66 76 C70 80 70 86 68 88 C66 86 65 82 66 76 Z" fill="#f2b23a" stroke="#a87e1a" stroke-width="1"/>` +
+  `<circle cx="46" cy="40" r="2" fill="#f2b23a"/>` +
+  `</g>`
 
 const beeBalm =
   ground +

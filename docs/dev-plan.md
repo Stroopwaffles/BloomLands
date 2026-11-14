@@ -348,6 +348,43 @@ Each region milestone adds that region's content, art, mount, creature, pirate c
   - Scouts don't discover hidden places yet. That arrives with the Caves' Sunken Geode (M13).
   - Helpers are still drawn as field mice everywhere, rather than as each region's own folk.
 
+#### M12 status: complete — Release 0.4 "Blossom Orchard" (version 0.4.0)
+
+- **Opening the Orchard:** a Bramble Court plus the Rite of First Blossom (2 Lily Balm and 2 Sun Salve), researched in the Swamp.
+- **Places:** Combhaven (bee town, with The Honey Pot shop), Petalfall Rows, The Old Pear, and The Grafted Tree (Grandmother Pome).
+- **Plants and items:**
+  - Honey drip, apple, cherry and quince blossom, bee balm, fallen crabapple and golden pollen, plus royal jelly and truffle in the secret areas.
+  - Honey Syrup and Pollen Gold.
+  - The Beeswax Candle (Honey Syrup and Reed Fiber), the Orchard's signature, so Parley and Kindred Call use it there. It's also the "light" the Caves will need.
+  - Three trinkets: copper coin, sewing needle, seed packet.
+- **Weather:**
+  - Blossom wind: every petal harvest gives one extra.
+  - Spring shower: slower flights, faster regrowth.
+  - Late frost: slower regrowth.
+- **Challenges:**
+  - The grumpy badger digs up a plant every 20 seconds and can only be calmed (Lullaby), never shooed. Calming it 3 times opens Badger's Tunnel.
+  - Caterpillars infest blossoms.
+  - The Nectar Nabbers ambush flights over the Orchard and steal honey and pollen first.
+- **People:**
+  - Waxwick (Honeycomb Brooch: +150 storage).
+  - Sir Bumbleton (Knight's Pennant: mounts 10% faster, helpers' borrowed mounts too).
+  - Grandmother Pome.
+  - Three Combhaven villagers.
+- **Mount:** the hummingbird (bee balm, at Petalfall Rows). It's very fast (1.6×), and while you ride it in the Orchard, rarer plants there are 1.5× likelier, plus 0.1 per level.
+- **Secret areas:**
+  - **The Royal Cell** opens after helping Combhaven's villagers 5 times. It holds the Queen's Seal (traders offer trinkets twice as often), royal jelly, and the Honeycomb set (crown, gown, doublet).
+  - **Badger's Tunnel** holds the Badger's Pocket Watch (+2 hours of offline progress), truffles, and the Burrower's waistcoat.
+- **Lodging:** Hummingbird Feeder (+1 mount), Honeycomb Bunks (+2 gatherers), Wax Cellar (+400 storage).
+- **Art and sound:**
+  - Orchard backdrops for all four spots, with blossom trees, drifting petals, a honeycomb hall and an earthy tunnel.
+  - Bees, Pome, the badger, caterpillars, the Nabbers and their hive camp, the hummingbird, the curios and the new outfits.
+  - Orchard day ("Honey and Blossom", G, 92 bpm) and night ("Moonlit Blossom", a waltz) music.
+  - The menu shows Petalfall Rows once the Orchard is open.
+- **New rules, reusable later:** secret areas can unlock by villager requests or by calming a creature; creatures can be `calmOnly`; weather can add `tagYield`; mounts can give `regionLuck`; crews can have favorite `steals`; and there are curio effects for storage, mount speed, trader trinkets and the offline cap.
+- **Simplifications to review:**
+  - Heart Nectar and the Glowlight Potion are left for M13, where the Caves give them a use.
+  - Pome's relics come with prestige (M14).
+
 ---
 
 ## 4. How We Work Each Milestone
