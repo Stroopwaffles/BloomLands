@@ -27,6 +27,8 @@
   import WardrobeTab from './WardrobeTab.svelte'
   import WorkshopTab from './WorkshopTab.svelte'
   import RootSongTab from './RootSongTab.svelte'
+  import CaptainLetters from '../components/CaptainLetters.svelte'
+  import { captainJoined } from '../../engine/ending'
 
   const { game } = runtime
   const carrying = $derived(countItems($game.player.satchel))
@@ -94,7 +96,12 @@
     <div class="court-layout">
       <section class="court panel">
         <h2>Your court</h2>
-        <CourtScene {rank} helperTypes={$game.helpers.list.map((h) => h.type)} size={260} />
+        <CourtScene
+          {rank}
+          helperTypes={$game.helpers.list.map((h) => h.type)}
+          captain={captainJoined($game)}
+          size={260}
+        />
         <p class="rank">{COURT_RANKS[rank].name}</p>
         {#if nextRank}
           <div class="rank-bar" aria-label="Progress to next court rank">
@@ -114,6 +121,8 @@
           <h2>Visitors</h2>
           <TraderRequests />
         </section>
+
+        <CaptainLetters />
 
         <section class="panel">
           <h2>Satchel</h2>

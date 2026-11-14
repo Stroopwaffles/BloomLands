@@ -39,7 +39,13 @@ describe('winning over the Dandelion Drifters', () => {
     expect(state.challenges.camps['buttercup-rise']).toBe(DRIFTERS)
     parley(state)
     const last = parley(state)
-    expect(last.map((e) => e.type)).toEqual(['spell-cast', 'story', 'crew-won', 'bloom'])
+    expect(last.map((e) => e.type)).toEqual([
+      'spell-cast',
+      'story',
+      'crew-won',
+      'bloom',
+      'captain-letter',
+    ])
     expect(state.crews[DRIFTERS].won).toBe(true)
     expect(state.challenges.camps).toEqual({})
     expect(state.bloom.meadow).toBe(BLOOM_REWARDS.crewWonOver)

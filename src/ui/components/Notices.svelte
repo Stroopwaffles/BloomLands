@@ -60,6 +60,10 @@
         ]
       case 'moon-chosen':
         return ['The moon turns at your locket’s bidding.', false]
+      case 'captain-letter':
+        return ['A letter from Captain Mallow has arrived at your court!', true]
+      case 'captain-joined':
+        return ['Captain Mallow joins your court!', true]
       case 'prestige':
         return [`Run ${event.run} begins. The land remembers: +${event.rootSong} Root Song.`, true]
       case 'crew-won':

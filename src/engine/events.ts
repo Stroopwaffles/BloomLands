@@ -30,6 +30,7 @@ export type BlockedReason =
   | 'no-stars'
   | 'cooling-down'
   | 'storm'
+  | 'bonus-run'
 
 /**
  * Things that just happened, returned by actions so the screen can react (floating numbers,
@@ -75,6 +76,11 @@ export type GameEvent =
   | { type: 'crew-won'; crewId: string }
   | { type: 'region-unlocked'; regionId: string }
   | { type: 'prestige'; run: number; rootSong: number }
+  | { type: 'captain-letter'; index: number }
+  | { type: 'captain-joined' }
+  /** The ending plays: it shows the court as it was when the last Root Song was sung. */
+  | { type: 'ending'; rank: number; helpers: string[] }
+  | { type: 'finale' }
   | { type: 'star-caught'; glimmers: number; itemId: string | null }
   | { type: 'moon-chosen'; phase: string }
   | { type: 'relic'; relicId: string }

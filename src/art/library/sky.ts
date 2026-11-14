@@ -219,7 +219,28 @@ const vaneHat = `<path d="M38 26 L62 26 L58 20 L42 20 Z" fill="#7ab4e8" stroke="
 const kite = `<g transform="translate(74 64)"><path d="M0 -14 L10 0 L0 14 L-10 0 Z" fill="#f28a8a" stroke="#a84a4a" stroke-width="1.4"/><path d="M0 14 Q4 20 0 26" fill="none" stroke="#a84a4a" stroke-width="1"/></g>`
 const puff = `<g transform="translate(74 70)" fill="#ffffff" stroke="#c8daea" stroke-width="1.2"><circle cx="-4" cy="0" r="6"/><circle cx="4" cy="-2" r="7"/><circle cx="2" cy="4" r="5"/></g>`
 
+/** Captain Mallow Brambleshanks: patched petal coat, an enormous feathered hat. */
+const captainMallow =
+  shadow +
+  `<path d="M28 58 Q14 44 20 30 Q30 42 34 54 Z M72 58 Q86 44 80 30 Q70 42 66 54 Z" fill="#f7c6d4" opacity="0.8" stroke="#c97a8c" stroke-width="1.2"/>` +
+  `<path d="M30 92 Q28 60 50 52 Q72 60 70 92 Z" fill="#c9506a" stroke="#7a2a3e" stroke-width="2"/>` +
+  `<path d="M36 70 l8 0 0 8 -8 0 Z" fill="#f2c45c" stroke="#a87e1a" stroke-width="1"/>` +
+  `<path d="M58 80 l9 -2 1 8 -9 2 Z" fill="#9ccc72" stroke="#5f8a3e" stroke-width="1"/>` +
+  `<path d="M50 54 L50 92" stroke="#7a2a3e" stroke-width="1.4"/>` +
+  `<circle cx="46" cy="64" r="1.6" fill="#f2c45c"/><circle cx="46" cy="72" r="1.6" fill="#f2c45c"/>` +
+  `<circle cx="50" cy="42" r="13" fill="#fbe0cc" stroke="#d8a88a" stroke-width="2"/>` +
+  `<path d="M38 40 Q36 50 40 54 M62 40 Q64 50 60 54" fill="none" stroke="#8a4a2a" stroke-width="3" stroke-linecap="round"/>` +
+  `<circle cx="45" cy="43" r="2" fill="#2e2420"/>` +
+  `<path d="M52 40 L60 40 L58 46 L53 45 Z" fill="#2e2420"/><path d="M38 38 L62 40" stroke="#2e2420" stroke-width="1"/>` +
+  `<path d="M45 49 Q50 52 55 48" fill="none" stroke="#2e2420" stroke-width="1.6" stroke-linecap="round"/>` +
+  `<path d="M20 32 Q50 14 80 32 Q66 30 50 30 Q34 30 20 32 Z" fill="#3a2a4a" stroke="#1e1430" stroke-width="2"/>` +
+  `<path d="M32 30 Q34 14 50 12 Q66 14 68 30 Z" fill="#3a2a4a" stroke="#1e1430" stroke-width="2"/>` +
+  `<path d="M60 16 Q76 0 92 6 Q80 8 74 14 Q86 10 94 18 Q78 18 66 22 Z" fill="#f7a6c0" stroke="#c97a8c" stroke-width="1.4"/>` +
+  `<path d="M62 20 Q78 8 92 10" fill="none" stroke="#c97a8c" stroke-width="1"/>` +
+  `<circle cx="50" cy="22" r="3" fill="#f2c45c" stroke="#a87e1a" stroke-width="1"/>`
+
 export const SKY_PEOPLE_ART: Record<string, string> = {
+  'char-captain-mallow': captainMallow,
   'char-cumulus': sprite({
     body: '#9ab4d8',
     hair: '#ffffff',

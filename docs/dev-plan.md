@@ -491,6 +491,26 @@ The recipes and rites the content doc lists that M15 and M16 left out:
 - Region rites have a region picker (and a weather picker for Clear Skies) at the Ritual Circle, with costs that update as you choose.
 - **Fix:** route breakdowns now leave out a slowdown a relic has lifted (Mist-Walker's Moss).
 
+#### M17 status: complete — Release 0.9 "The Ending" (version 0.9.0)
+
+- **Captain Mallow's arc** (`data/ending.ts`):
+  - She sends a letter the first time each pirate crew is won over, in any run: seven letters that go from curious, to doubtful, to hopeful.
+  - The letters live in a panel on the Court tab, with a "new" badge, and are kept through prestige (`prestige.crewsEverWon`).
+  - After the seventh, she comes in person and **joins the court**: she appears in the court picture and adds 5 court points, forever.
+- **The ending:** the **fifth** Root Song Ritual plays a five-scene ending:
+  1. The seven spirits gather around the court.
+  2. A pan across every region.
+  3. The captain, the fairy and the helpers dance.
+  4. Each spirit says thank you.
+  5. The finished court.
+
+  It shows the court as it was when the Root Song was sung (`prestige.endingCourt`).
+- **The bonus run:** after the ending, the Root Song Ritual is closed (`bonus-run`). The Root Song tab says to grow the court to the Grand Court.
+- **The final screen:** reaching the Grand Court in the bonus run shows "The End" with the finished court and lifetime stats (time, runs, Root Song, relics, crews, outfits, plants, crafting, villagers, Glimmers, rites).
+  - **Stay a while** keeps playing.
+  - **Start a brand-new game** (asks first) wipes everything, prestige included.
+  - The Root Song tab can replay the ending and reopen the final screen.
+
 ---
 
 ## 4. How We Work Each Milestone

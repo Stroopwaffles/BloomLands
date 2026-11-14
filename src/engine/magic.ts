@@ -206,6 +206,7 @@ export function checkRitual(
     return 'not-full-moon'
   }
   if (ritualDone(state, ritualId)) return 'already-done'
+  if (RITUALS[ritualId].effect === 'root-song' && state.prestige.endingSeen) return 'bonus-run'
   const region = RITUALS[ritualId].region
   if (region && courtRank(state) < (REGIONS[region].unlock?.rank ?? 0)) return 'needs-rank'
   if (courtRank(state) < (RITUALS[ritualId].rank ?? 0)) return 'needs-rank'

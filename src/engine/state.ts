@@ -320,6 +320,16 @@ export interface GameState {
     giftedThisRun: string[]
     /** A new run that hasn't left home yet: start-of-run gifts bought now still count. */
     freshRun?: boolean
+    /** Pirate crews ever won over, in order (Captain Mallow writes after each one). */
+    crewsEverWon: string[]
+    /** Captain Mallow's letters read so far. */
+    lettersRead?: number
+    /** The ending has played (after the fifth prestige): this is the bonus run. */
+    endingSeen?: boolean
+    /** The court as it stood when the ending played (for replays). */
+    endingCourt?: { rank: number; helpers: string[] }
+    /** The bonus run reached the final court rank: the game is finished. */
+    finale?: boolean
   }
   /** Permanent or run bonuses that engine rules read. Filled in by later systems. */
   bonuses: {
@@ -451,6 +461,7 @@ export function createNewGame(now: number): GameState {
       upgrades: {},
       relics: [],
       giftedThisRun: [],
+      crewsEverWon: [],
     },
     bonuses: {
       offlineCapMs: 0,

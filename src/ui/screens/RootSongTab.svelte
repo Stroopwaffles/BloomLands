@@ -11,6 +11,7 @@
     rootUpgradeTier,
   } from '../../engine/prestige'
   import { runtime } from '../game'
+  import { endingView } from '../endingView.svelte'
   import { BLOCKED_TEXT } from '../messages'
 
   /**
@@ -45,6 +46,33 @@
           Singing again now would give <strong>{preview.total}</strong> Root Song.
         {/if}
       </p>
+      {#if prestige.finale}
+        <p class="fresh">
+          The game is finished: your court is complete.
+          <button type="button" class="link" onclick={() => (endingView.finale = true)}
+            >See the final screen</button
+          >
+          ·
+          <button type="button" class="link" onclick={() => (endingView.ending = true)}
+            >Watch the ending again</button
+          >
+        </p>
+      {:else if prestige.endingSeen}
+        <p class="fresh">
+          This is your bonus run, just for fun. Grow your court to the {COURT_RANKS[
+            COURT_RANKS.length - 1
+          ].name} to finish the game.
+          <button type="button" class="link" onclick={() => (endingView.ending = true)}
+            >Watch the ending again</button
+          >
+        </p>
+      {:else}
+        <p class="note">
+          {PRESTIGE_RULES.endingAfter - (prestige.run - 1) === 1
+            ? 'The next Root Song brings the ending.'
+            : `The ending comes with your ${PRESTIGE_RULES.endingAfter}th Root Song: ${PRESTIGE_RULES.endingAfter - (prestige.run - 1)} to go.`}
+        </p>
+      {/if}
       {#if prestige.freshRun}
         <p class="fresh">
           A new run! Start-of-run gifts bought now still count for this run, until you leave home.
@@ -173,6 +201,16 @@
 
   .summary .note {
     margin: 0;
+  }
+
+  .link {
+    padding: 0;
+    border: none;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
   }
 
   .fresh {

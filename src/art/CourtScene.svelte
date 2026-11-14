@@ -9,7 +9,8 @@
     rank,
     helperTypes,
     size = 260,
-  }: { rank: number; helperTypes: string[]; size?: number } = $props()
+    captain = false,
+  }: { rank: number; helperTypes: string[]; size?: number; captain?: boolean } = $props()
 
   const shown = $derived(helperTypes.slice(0, 5))
 </script>
@@ -66,6 +67,10 @@
   </svg>
 
   <div class="fairy"><Art id="char-fairy" size={size * 0.5} /></div>
+  {#if captain}
+    <!-- Captain Mallow, at home at your court. -->
+    <div class="captain"><Art id="char-captain-mallow" size={size * 0.3} /></div>
+  {/if}
   <div class="helpers">
     {#each shown as type, i (i)}
       <span class="helper" style:--i={i}><Art id={`helper-${type}`} size={size * 0.14} /></span>
@@ -99,6 +104,18 @@
   }
 
   .fairy :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+
+  .captain {
+    position: absolute;
+    right: 2%;
+    bottom: 22%;
+    width: 30%;
+  }
+
+  .captain :global(svg) {
     width: 100%;
     height: auto;
   }

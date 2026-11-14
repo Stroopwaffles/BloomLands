@@ -112,10 +112,26 @@ export function performPrestige(state: GameState): GameEvent[] {
     giftedThisRun: [],
     freshRun: true,
   }
+  // The fifth prestige brings the ending; the run after it is the bonus run.
+  const ending = finishedRun >= PRESTIGE_RULES.endingAfter && !state.prestige.endingSeen
+  if (ending) {
+    fresh.prestige.endingSeen = true
+    // Remember the finished court for the ending (and its replays).
+    fresh.prestige.endingCourt = {
+      rank: courtRank(state),
+      helpers: state.helpers.list.map((h) => h.type),
+    }
+  }
+  const finishedCourt = fresh.prestige.endingCourt
   for (const key of Object.keys(state) as (keyof GameState)[]) delete state[key]
   Object.assign(state, fresh)
   startRun(state)
-  return [{ type: 'prestige', run: state.prestige.run, rootSong: total }]
+  return [
+    { type: 'prestige', run: state.prestige.run, rootSong: total },
+    ...(ending && finishedCourt
+      ? [{ type: 'ending' as const, rank: finishedCourt.rank, helpers: finishedCourt.helpers }]
+      : []),
+  ]
 }
 
 export type RootUpgradeCheck = 'ok' | 'locked' | 'maxed' | 'missing-root-song'

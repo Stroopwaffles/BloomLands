@@ -11,6 +11,7 @@ import { PLANTS } from '../data/plants'
 import { SPOTS } from '../data/world'
 import { BLOOM_REWARDS } from '../data/bloom'
 import { addBloom } from './bloom'
+import { recordCrewWon } from './ending'
 import { creatureAtPeace, regionCalmMultiplier } from './modifiers'
 import type { GameEvent } from './events'
 import { campBlocksSlot, eatPlant } from './gathering'
@@ -234,6 +235,7 @@ export function parley(state: GameState, spotId: string): GameEvent[] {
     { type: 'story', text: line, complete: true },
     { type: 'crew-won', crewId },
     ...addBloom(state, crew.regionId, BLOOM_REWARDS.crewWonOver),
+    ...recordCrewWon(state, crewId),
   ]
 }
 

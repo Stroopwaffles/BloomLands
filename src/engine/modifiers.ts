@@ -1,6 +1,7 @@
 import { BLOOM_LEVELS, BLOOM_PER_LEVEL, CURIOS } from '../data/bloom'
 import { RELICS, ROOT_UPGRADES, type BonusEffect } from '../data/prestige'
 import { COURT_RANKS } from '../data/economy'
+import { CAPTAIN, CAPTAIN_LETTERS } from '../data/ending'
 import { HELPER_RULES, PIRATES_PER_CREW, type HelperType } from '../data/helpers'
 import { itemHasTag } from '../data/items'
 import { POTIONS } from '../data/recipes'
@@ -537,7 +538,14 @@ export function helperCount(state: GameState, type: HelperType): number {
 /** Court points: how grand the court is. Lodging and helpers both count. */
 export function courtPoints(state: GameState): number {
   const lodging = state.upgrades.reduce((sum, id) => sum + (UPGRADES[id]?.courtPoints ?? 0), 0)
-  return lodging + state.helpers.list.length * HELPER_RULES.courtPoints
+  // Captain Mallow, once she's joined, is quite a presence at court.
+  const captain = captainJoined(state) ? CAPTAIN.courtPoints : 0
+  return lodging + state.helpers.list.length * HELPER_RULES.courtPoints + captain
+}
+
+/** Captain Mallow joins the court once every crew has been won over (in any runs). */
+export function captainJoined(state: GameState): boolean {
+  return state.prestige.crewsEverWon.length >= CAPTAIN_LETTERS.length
 }
 
 /** Index into COURT_RANKS of the court's current rank. */
