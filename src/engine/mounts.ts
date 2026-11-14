@@ -1,7 +1,7 @@
 import { levelUpFood, MOUNTS } from '../data/mounts'
 import { canPay, payCost } from './costs'
 import type { BlockedReason, GameEvent } from './events'
-import { mountSpeedMultiplier, stableCapacity } from './modifiers'
+import { befriendEase, mountSpeedMultiplier, stableCapacity } from './modifiers'
 import type { GameState } from './state'
 
 /**
@@ -14,7 +14,12 @@ export function friendship(state: GameState, mountId: string) {
 }
 
 export function befriended(state: GameState, mountId: string): boolean {
-  return friendship(state, mountId).feedings >= MOUNTS[mountId].feedingsToBefriend
+  return friendship(state, mountId).feedings >= feedingsToBefriend(state, mountId)
+}
+
+/** Feedings a mount needs before it trusts you (Kind Heart shortens it). */
+export function feedingsToBefriend(state: GameState, mountId: string): number {
+  return Math.max(1, MOUNTS[mountId].feedingsToBefriend - befriendEase(state))
 }
 
 export function ownsMount(state: GameState, mountId: string): boolean {

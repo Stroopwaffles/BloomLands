@@ -38,6 +38,9 @@ import {
   storageUsed,
   trinketChanceMultiplier,
   scoutTrinketMultiplier,
+  helperYieldMultiplier,
+  recruitCostMultiplier,
+  weatherCleared,
 } from './modifiers'
 import type { Random } from './rng'
 import { addItems, countItems, type GameState, type HelperState } from './state'
@@ -48,7 +51,8 @@ import { addItems, countItems, type GameState, type HelperState } from './state'
 /** Glimmers to recruit the next helper of a type. */
 export function recruitCost(state: GameState, type: HelperType): number {
   const owned = helperCount(state, type)
-  return Math.round(HELPER_TYPES[type].baseCost * HELPER_RULES.costGrowth ** owned)
+  const base = HELPER_TYPES[type].baseCost * HELPER_RULES.costGrowth ** owned
+  return Math.round(base * recruitCostMultiplier(state))
 }
 
 export type RecruitCheck = 'ok' | 'not-here' | 'locked' | 'no-room' | 'missing-glimmers'
@@ -275,7 +279,10 @@ export function searchOdds(
 /** How many a supply helper finds on an average trip to a spot (pirates in the region halve it). */
 function expectedFind(state: GameState, spotId: string, itemId: string): number {
   const { chance, perPlant } = searchOdds(state, spotId, itemId)
-  const share = piratesInRegion(state, SPOTS[spotId].regionId) ? CAMP_RULES.helperYield : 1
+  // Pirates nearby take a share; the Still-Water Pearl brings back more.
+  const share =
+    (piratesInRegion(state, SPOTS[spotId].regionId) ? CAMP_RULES.helperYield : 1) *
+    helperYieldMultiplier(state)
   return Math.round(SUPPLY_RULES.searches * share) * chance * perPlant
 }
 
@@ -394,7 +401,8 @@ function unload(state: GameState, helper: HelperState): boolean {
  */
 export function helperFlightMs(state: GameState, helper: HelperState, spotId: string): number {
   // Muggy heat slows helpers down; the Reed Pipe speeds them up.
-  const weather = weatherIn(state, placeRegion(spotId)).helperTrips ?? 1
+  const sky = weatherIn(state, placeRegion(spotId))
+  const weather = weatherCleared(state, sky.id) ? 1 : (sky.helperTrips ?? 1)
   // Helpers take the Spirit Path too, when it's quicker.
   const route = routeOf(state, HOME, spotId)?.baseMs ?? baseTravelMs(HOME, spotId) ?? 0
   const base = route * weather * helperTripMultiplier(state)

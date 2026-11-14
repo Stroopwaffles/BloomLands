@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
   import { BLOOM_LEVELS, CURIOS } from '../../data/bloom'
+  import { RELICS, ROOT_UPGRADES } from '../../data/prestige'
   import { placeName, REGIONS, SPOTS } from '../../data/world'
   import type { GameEvent } from '../../engine/events'
   import { bloomLevel } from '../../engine/modifiers'
@@ -46,6 +47,12 @@
           : [`You found ${placeName(event.spotId)}!`, true]
       case 'region-unlocked':
         return [`The way to the ${REGIONS[event.regionId]?.name} is open!`, true]
+      case 'relic':
+        return [`A relic: ${RELICS[event.relicId]?.name ?? 'a gift'}! It's yours forever.`, true]
+      case 'root-upgrade':
+        return [`${ROOT_UPGRADES[event.upgradeId]?.name} is now tier ${event.tier}.`, false]
+      case 'prestige':
+        return [`Run ${event.run} begins. The land remembers: +${event.rootSong} Root Song.`, true]
       case 'crew-won':
         return ['The pirates are your friends now!', true]
       case 'outfit':

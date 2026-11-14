@@ -3,7 +3,14 @@
   import { SPIRITS } from '../../data/spirits'
   import { SPIRIT_PLACES } from '../../data/world'
   import { payingStock } from '../../engine/costs'
-  import { checkSpirit, requirementMet, spiritAwake } from '../../engine/spirits'
+  import {
+    checkSpirit,
+    requirementMet,
+    spiritAwake,
+    spiritRequirements,
+  } from '../../engine/spirits'
+  import { nextRelic } from '../../engine/prestige'
+  import { RELIC_LIST, ROMAN } from '../../data/prestige'
   import BloomMeter from '../components/BloomMeter.svelte'
   import CostList from '../components/CostList.svelte'
   import Destinations from '../components/Destinations.svelte'
@@ -13,6 +20,21 @@
   const place = $derived(SPIRIT_PLACES[$game.player.place])
   const spirit = $derived(place ? SPIRITS[place.spiritId] : null)
   const awake = $derived(spirit ? spiritAwake($game, spirit.id) : false)
+  const requirements = $derived(spirit ? spiritRequirements($game, spirit.id) : [])
+  /** The relic this spirit gives on waking this run (null if it already gave one, or has none left). */
+  const gift = $derived(
+    spirit && !$game.prestige.giftedThisRun.includes(spirit.id)
+      ? nextRelic($game, spirit.id)
+      : null,
+  )
+  /** The relic it gave this run, if any. */
+  const given = $derived(
+    spirit && $game.prestige.giftedThisRun.includes(spirit.id)
+      ? RELIC_LIST.filter(
+          (r) => r.spiritId === spirit.id && $game.prestige.relics.includes(r.id),
+        ).at(-1)
+      : undefined,
+  )
 </script>
 
 {#if place && spirit}
@@ -38,7 +60,7 @@
 
       {#if !awake}
         <ul class="requirements">
-          {#each spirit.requirements as req, i (i)}
+          {#each requirements as req, i (i)}
             {@const met = requirementMet($game, spirit.id, req)}
             <li class:met>
               <span class="check" aria-hidden="true">{met ? '✓' : ''}</span>
@@ -53,6 +75,15 @@
             </li>
           {/each}
         </ul>
+        {#if gift}
+          <div class="gift">
+            <Art id={gift.id} size={48} />
+            <div>
+              <strong>Its gift: {gift.name} ({ROMAN[gift.index]})</strong>
+              <span>{gift.description} A relic: yours forever.</span>
+            </div>
+          </div>
+        {/if}
         <button
           type="button"
           disabled={checkSpirit($game, spirit.id) !== 'ok'}
@@ -61,9 +92,19 @@
           Make the offering
         </button>
       {:else}
+        {#if given}
+          <div class="gift">
+            <Art id={given.id} size={48} />
+            <div>
+              <strong>{spirit.name.split(',')[0]} gave you {given.name}</strong>
+              <span>{given.description}</span>
+            </div>
+          </div>
+        {/if}
         <p class="note">
-          {spirit.name.split(',')[0]} is awake for this run. When you perform the Root Song Ritual someday,
-          {spirit.name.split(',')[0]} will have a gift for you.
+          {spirit.name.split(',')[0]} is awake for this run.{nextRelic($game, spirit.id)
+            ? ' Wake it again in your next run (after the Root Song Ritual) for its next relic.'
+            : ''}
         </p>
       {/if}
     </section>
@@ -71,6 +112,25 @@
 {/if}
 
 <style>
+  .gift {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 520px;
+    padding: 10px 14px;
+    border-radius: 16px;
+    background: var(--surface);
+    border: 2px solid #d9a441;
+    text-align: left;
+  }
+
+  .gift div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.9rem;
+  }
+
   .spirit-place {
     min-height: calc(100vh - 70px);
     padding: 16px;

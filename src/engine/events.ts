@@ -24,6 +24,8 @@ export type BlockedReason =
   | 'watching'
   | 'needs-rank'
   | 'calm-only'
+  | 'maxed'
+  | 'missing-root-song'
 
 /**
  * Things that just happened, returned by actions so the screen can react (floating numbers,
@@ -68,6 +70,9 @@ export type GameEvent =
   | { type: 'outfit'; outfitId: string }
   | { type: 'crew-won'; crewId: string }
   | { type: 'region-unlocked'; regionId: string }
+  | { type: 'prestige'; run: number; rootSong: number }
+  | { type: 'relic'; relicId: string }
+  | { type: 'root-upgrade'; upgradeId: string; tier: number }
   | { type: 'shop-sold'; itemId: string; amount: number; glimmers: number }
   | { type: 'shop-bought'; itemId: string; amount: number; glimmers: number }
   | { type: 'parcel-sent'; count: number; fee: number; arrivesInMs: number }

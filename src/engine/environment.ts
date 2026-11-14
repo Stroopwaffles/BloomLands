@@ -9,6 +9,7 @@ import { DAY_MS, NIGHTFALL_MS, PHASE_STARTS, type DayPhase } from '../data/time'
 import { HOME, placeRegion } from '../data/world'
 import { pickWeighted, type Random } from './rng'
 import type { GameState } from './state'
+import { dewAllDay, morningWeather, weatherCleared } from './modifiers'
 
 // ---------------------------------------------------------------------------------------------
 // Day and night
@@ -67,6 +68,9 @@ export function regionOf(placeId: string): string {
 }
 
 export function weatherIn(state: GameState, regionId: string): WeatherDef {
+  // A relic like the Blossom Fan brings its weather every morning.
+  const morning = morningWeather(state, regionId)
+  if (morning && isMorning(state) && morning in WEATHER) return WEATHER[morning as WeatherKind]
   return WEATHER[state.weather[regionId]?.kind ?? 'sunshine']
 }
 
@@ -106,6 +110,7 @@ export function advanceWeather(state: GameState, dtMs: number, random: Random): 
 /** Multiplies a flight's time for the weather along the way. */
 export function weatherFlightFactor(state: GameState, from: string, to: string): number {
   const weather = weatherIn(state, regionOf(to === HOME ? from : to))
+  if (weatherCleared(state, weather.id)) return 1
   if (to === HOME) return weather.flightHome
   if (from === HOME) return weather.flightAway
   return (weather.flightHome + weather.flightAway) / 2
@@ -113,5 +118,5 @@ export function weatherFlightFactor(state: GameState, from: string, to: string):
 
 /** Can plants that only grow in the morning grow right now in this region? */
 export function morningPlantsGrow(state: GameState, regionId: string): boolean {
-  return isMorning(state) || weatherIn(state, regionId).dewAllDay
+  return isMorning(state) || weatherIn(state, regionId).dewAllDay || dewAllDay(state)
 }

@@ -4,7 +4,8 @@ import type { CostEntry, StationId } from '../data/types'
 import { BULK_CRAFT_COUNT } from '../data/upgrades'
 import { canPay, payCost } from './costs'
 import type { GameEvent } from './events'
-import { hasQol, stationBuilt, stationSlots } from './modifiers'
+import { craftEchoChance, hasQol, stationBuilt, stationSlots } from './modifiers'
+import { stateRandom } from './rng'
 import { addItems, type GameState } from './state'
 
 /** Recipe IDs unlocked by finished research. */
@@ -77,7 +78,10 @@ export function advanceStations(state: GameState, dtMs: number): void {
     for (const job of finished) {
       const recipe = RECIPES[job.id]
       if (!recipe) continue
-      const amount = recipe.output.amount * (job.count ?? 1)
+      let amount = recipe.output.amount * (job.count ?? 1)
+      // The Echo Crystal: sometimes a job comes out double.
+      const echo = craftEchoChance(state)
+      if (echo > 0 && stateRandom(state)() < echo) amount *= 2
       addItems(state.inventory, recipe.output.itemId, amount)
       state.stats.itemsCrafted += amount
     }

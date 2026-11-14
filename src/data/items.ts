@@ -86,6 +86,7 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'component-glow-ink', name: 'Glow Ink', category: 'component' },
   { id: 'component-crystal-focus', name: 'Crystal Focus', category: 'component' },
   { id: 'component-heart-nectar', name: 'Heart Nectar', category: 'component' },
+  { id: 'component-harmony-blend', name: 'Harmony Blend', category: 'component' },
 
   // Potions
   { id: 'potion-greenthumb-brew', name: 'Greenthumb Brew', category: 'potion' },

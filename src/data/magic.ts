@@ -102,7 +102,7 @@ export const SPELLS: Readonly<Record<string, SpellDef>> = {
 }
 
 export type RitualEffect =
-  'turn-to-day' | 'turn-to-night' | 'open-fairy-ring' | 'unlock-region' | 'plenty'
+  'turn-to-day' | 'turn-to-night' | 'open-fairy-ring' | 'unlock-region' | 'plenty' | 'root-song'
 
 export interface RitualDef {
   id: string
@@ -114,6 +114,8 @@ export interface RitualDef {
   morningOnly?: boolean
   /** For 'unlock-region' rites: which region opens. */
   region?: string
+  /** The court rank needed to perform it (index into COURT_RANKS), besides a region's own. */
+  rank?: number
 }
 
 /** Rite of Plenty: how long it lasts and how much faster plants regrow. */
@@ -189,6 +191,15 @@ export const RITUALS: Readonly<Record<string, RitualDef>> = {
       { itemId: 'component-earth-loam', amount: 1 },
       { itemId: 'component-sun-salve', amount: 1 },
     ],
+  },
+  'ritual-root-song': {
+    id: 'ritual-root-song',
+    name: 'Root Song Ritual',
+    description:
+      'Gives the land Root Song and begins a new run. Your fairy, outfits, Comforts, relics and Root Song stay; everything else starts over.',
+    effect: 'root-song',
+    rank: 4,
+    cost: [{ itemId: 'component-harmony-blend', amount: 1 }],
   },
   'ritual-turning-night': {
     id: 'ritual-turning-night',

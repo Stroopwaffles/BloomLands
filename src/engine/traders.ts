@@ -7,7 +7,13 @@ import type { ItemStack } from '../data/types'
 import { canPay, payCost } from './costs'
 import { unlockedRecipes } from './crafting'
 import type { GameEvent } from './events'
-import { stationBuilt, traderPayMultiplier, traderTrinketMultiplier } from './modifiers'
+import {
+  requestStayMultiplier,
+  stationBuilt,
+  traderPayMultiplier,
+  traderTrinketMultiplier,
+  traderVisitMultiplier,
+} from './modifiers'
 import { openSpots } from './regions'
 import type { Random } from './rng'
 import { addItems, type GameState, type TradeRequest } from './state'
@@ -80,7 +86,7 @@ export function makeRequest(state: GameState, random: Random): TradeRequest {
     wants,
     glimmers: Math.round(value * TRADER_RULES.rewardMultiplier),
     trinketId,
-    remainingMs: TRADER_RULES.expiryMs,
+    remainingMs: Math.round(TRADER_RULES.expiryMs * requestStayMultiplier(state)),
   }
 }
 
@@ -99,7 +105,7 @@ export function advanceTraders(state: GameState, dtMs: number, random: Random): 
   traders.nextArrivalMs -= dtMs
   if (traders.nextArrivalMs > 0) return
   traders.requests.push(makeRequest(state, random))
-  traders.nextArrivalMs = TRADER_RULES.arrivalMs
+  traders.nextArrivalMs = Math.round(TRADER_RULES.arrivalMs * traderVisitMultiplier(state))
 }
 
 export type TradeCheck = 'ok' | 'not-home' | 'missing-items' | 'locked'

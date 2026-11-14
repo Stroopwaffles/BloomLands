@@ -1,7 +1,7 @@
 import { BLOOM_REWARDS, SETTLEMENT_RULES, VILLAGERS } from '../data/bloom'
 import { SETTLEMENTS } from '../data/world'
 import { addBloom } from './bloom'
-import { settlementBloomMultiplier } from './modifiers'
+import { requestStayMultiplier, settlementBloomMultiplier } from './modifiers'
 import { canPay, payCost } from './costs'
 import type { GameEvent } from './events'
 import type { Random } from './rng'
@@ -22,7 +22,7 @@ function makeVillagerRequest(state: GameState, settlementId: string, random: Ran
     wants,
     glimmers: Math.round(value * SETTLEMENT_RULES.rewardMultiplier),
     trinketId: null,
-    remainingMs: SETTLEMENT_RULES.expiryMs,
+    remainingMs: Math.round(SETTLEMENT_RULES.expiryMs * requestStayMultiplier(state)),
   }
 }
 

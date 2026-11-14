@@ -290,6 +290,25 @@ export interface GameState {
     nextArrivalMs: number
     nextRequestId: number
   }
+  /**
+   * Prestige (design doc 3.11). Everything here lasts forever: it's carried into every new run.
+   */
+  prestige: {
+    /** Which run this is (1 for a first game). */
+    run: number
+    /** Root Song to spend. */
+    rootSong: number
+    /** All the Root Song ever earned. */
+    rootSongEarned: number
+    /** Root Song upgrades bought, by ID: the tier reached. */
+    upgrades: Record<string, number>
+    /** Relics received from spirits. */
+    relics: string[]
+    /** Spirits that have already given their relic this run. */
+    giftedThisRun: string[]
+    /** A new run that hasn't left home yet: start-of-run gifts bought now still count. */
+    freshRun?: boolean
+  }
   /** Permanent or run bonuses that engine rules read. Filled in by later systems. */
   bonuses: {
     /** Extra offline progress allowed on top of the base 4 hours. */
@@ -410,6 +429,14 @@ export function createNewGame(now: number): GameState {
       requests: [],
       nextArrivalMs: 20_000,
       nextRequestId: 1,
+    },
+    prestige: {
+      run: 1,
+      rootSong: 0,
+      rootSongEarned: 0,
+      upgrades: {},
+      relics: [],
+      giftedThisRun: [],
     },
     bonuses: {
       offlineCapMs: 0,

@@ -13,6 +13,7 @@ import { regionUnlocked, unlockRegion } from './regions'
 import { stateRandom } from './rng'
 import { unlockSecret } from './secrets'
 import { placeRegion, REGIONS } from '../data/world'
+import { performPrestige } from './prestige'
 import type { GameState } from './state'
 
 /** Spells the player has researched. */
@@ -129,6 +130,7 @@ export function checkRitual(state: GameState, ritualId: string): 'ok' | BlockedR
   if (ritualDone(state, ritualId)) return 'already-done'
   const region = RITUALS[ritualId].region
   if (region && courtRank(state) < (REGIONS[region].unlock?.rank ?? 0)) return 'needs-rank'
+  if (courtRank(state) < (RITUALS[ritualId].rank ?? 0)) return 'needs-rank'
   if (!canPay(state, RITUALS[ritualId].cost)) return 'missing-items'
   return 'ok'
 }
@@ -157,6 +159,8 @@ export function performRitual(state: GameState, ritualId: string): GameEvent[] {
         { type: 'ritual-performed', ritualId },
         ...unlockRegion(state, ritual.region!, stateRandom(state)),
       ]
+    case 'root-song':
+      return [{ type: 'ritual-performed', ritualId }, ...performPrestige(state)]
   }
   return [{ type: 'ritual-performed', ritualId }]
 }

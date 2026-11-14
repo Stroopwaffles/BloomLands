@@ -100,7 +100,11 @@
           <Art id="icon-trinkets" size={28} />
           <span>{formatNumber(trinketCount($game))}</span>
         </div>
-        <div class="rank" aria-label="Court rank">{COURT_RANKS[courtRank($game)].name}</div>
+        <div class="rank" aria-label="Court rank">
+          {COURT_RANKS[courtRank($game)].name}{#if $game.prestige.run > 1}<span class="run"
+              >· Run {$game.prestige.run}</span
+            >{/if}
+        </div>
       </div>
     </header>
 
@@ -187,6 +191,11 @@
     font-family: var(--font-heading);
     font-weight: 500;
     align-self: center;
+  }
+
+  .run {
+    margin-left: 6px;
+    opacity: 0.85;
   }
 
   .counter {

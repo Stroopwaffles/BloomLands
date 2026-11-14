@@ -3,7 +3,9 @@ import { REGIONS, REGION_ORDER, SPOTS, isSecret, placeRegion, HOME } from '../da
 import { rollWeather } from './environment'
 import type { GameEvent } from './events'
 import type { Random } from './rng'
-import { courtRank, hasLight, hasWaterstride } from './modifiers'
+import { BLOOM_LEVELS } from '../data/bloom'
+import { MOUNTS } from '../data/mounts'
+import { alwaysLit, bonusEffects, courtRank, hasLight, hasWaterstride } from './modifiers'
 import type { GameState } from './state'
 
 /** The newest region the player has opened (the menu shows and plays it). */
@@ -24,7 +26,7 @@ export function regionReachable(state: GameState, regionId: string): boolean {
   if (regionUnlocked(state, regionId)) return true
   const region = REGIONS[regionId]
   if (!region?.needsLight || !region.unlock) return false
-  return hasLight(state) && courtRank(state) >= region.unlock.rank
+  return (hasLight(state) || alwaysLit(state, regionId)) && courtRank(state) >= region.unlock.rank
 }
 
 /** Gives a region its weather and village the first time anyone arrives (also by light). */
@@ -33,6 +35,30 @@ export function ensureRegion(state: GameState, regionId: string, random: Random)
   if (!region) return
   state.settlements[region.settlement] ??= { requests: [], nextArrivalMs: 60_000, filled: 0 }
   if (!state.weather[regionId]) state.weather[regionId] = rollWeather(regionId, random)
+  if (state.bloom[regionId] === undefined) state.bloom[regionId] = startingBloom(state, regionId)
+}
+
+/** Bloom a region starts a run with: Deep Roots everywhere, a level more with its relic. */
+export function startingBloom(state: GameState, regionId: string): number {
+  let points = 0
+  let headStart = false
+  for (const e of bonusEffects(state)) {
+    if (e.kind === 'startBloom') points += e.amount
+    if (e.kind === 'headStart' && e.regionId === regionId) headStart = true
+  }
+  return points + (headStart ? BLOOM_LEVELS[1].points : 0)
+}
+
+/**
+ * A region opening for this run: its starting bloom, and mounts that relics tame for you
+ * (Whistling Grass Blade and friends). Safe to call again.
+ */
+export function welcomeRegion(state: GameState, regionId: string): void {
+  if (state.bloom[regionId] === undefined) state.bloom[regionId] = startingBloom(state, regionId)
+  for (const e of bonusEffects(state)) {
+    if (e.kind !== 'kinship' || MOUNTS[e.mountId]?.regionId !== regionId) continue
+    if (!state.mounts.owned[e.mountId]) state.mounts.owned[e.mountId] = { level: 1 }
+  }
 }
 
 /** Can the player (or a helper) go here right now? */
@@ -55,6 +81,7 @@ export function unlockRegion(state: GameState, regionId: string, random: Random)
   const settlement = REGIONS[regionId].settlement
   state.settlements[settlement] ??= { requests: [], nextArrivalMs: 60_000, filled: 0 }
   if (!state.weather[regionId]) state.weather[regionId] = rollWeather(regionId, random)
+  welcomeRegion(state, regionId)
   return [{ type: 'region-unlocked', regionId }]
 }
 

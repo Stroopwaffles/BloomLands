@@ -21,6 +21,7 @@ import {
   mountRegionLuck,
 } from './modifiers'
 import { pickWeighted, type Random } from './rng'
+import { plantEase, weatherCleared } from './modifiers'
 import { addItems, countItems, type GameState, type SlotState, type SpotState } from './state'
 import { playerWatched } from './regions'
 import { rollScoutSecret } from './secrets'
@@ -69,7 +70,7 @@ export function plantWeights(state: GameState, spotId: string): [string, number]
   const luckMultiplier =
     luck(state) *
     bloomLuck(state, regionId) *
-    (weather.luck ?? 1) *
+    (weatherCleared(state, weather.id) ? Math.max(1, weather.luck ?? 1) : (weather.luck ?? 1)) *
     weatherLuckMultiplier(state, weather.id) *
     mountRegionLuck(state, regionId)
   return SPOTS[spotId].plants
@@ -87,7 +88,7 @@ export function plantWeights(state: GameState, spotId: string): [string, number]
 function growSlot(state: GameState, slot: SlotState, spotId: string, random: Random): void {
   const plantId = pickWeighted(plantWeights(state, spotId), random)
   slot.plantId = plantId
-  slot.hp = PLANTS[plantId].toughness
+  slot.hp = Math.max(1, PLANTS[plantId].toughness - plantEase(state))
   slot.regrowMs = 0
   slot.pests = 0
 }

@@ -79,6 +79,7 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'component-glow-ink': 60,
   'component-crystal-focus': 75,
   'component-heart-nectar': 110,
+  'component-harmony-blend': 260,
   // Potions
   'potion-greenthumb-brew': 45,
   'potion-quickwing-tonic': 50,

@@ -44,6 +44,12 @@
         return { line: 'The sky turns to dawn.', color: '#ffe59e', grand: false }
       case 'turn-to-night':
         return { line: 'Dusk falls over the land.', color: '#9a86cf', grand: false }
+      case 'root-song':
+        return {
+          line: 'Roots hum beneath the whole land… it remembers you. A new run begins.',
+          color: '#f2c45c',
+          grand: true,
+        }
       case 'plenty':
         return {
           line: 'Every plant stirs: growth quickens for ten minutes.',

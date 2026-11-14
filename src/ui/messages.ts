@@ -24,4 +24,6 @@ export const BLOCKED_TEXT: Record<BlockedReason, string> = {
   watching: 'Something is watching this spot. Calm it, or sneak past with Hush Step.',
   'needs-rank': 'Your court needs a higher rank first.',
   'calm-only': 'Too grumpy to shoo. Only a calming spell will do.',
+  maxed: 'Already at the highest tier.',
+  'missing-root-song': 'Not enough Root Song yet.',
 }

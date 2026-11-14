@@ -42,6 +42,7 @@ export function startTravel(
   if (totalMs === null) return [{ type: 'blocked', reason: 'not-here' }]
 
   const route = routeOf(state, player.place, to)!
+  state.prestige.freshRun = false
   const legs = legShares(
     routeLegTimes(state, player.place, to, route).map((l) => ({
       regionId: l.leg.regionId,

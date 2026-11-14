@@ -420,6 +420,18 @@ Each region milestone adds that region's content, art, mount, creature, pirate c
   - "Glimmerdeep" (A minor) and "Echoes" (a waltz) music.
   - A dark menu scene.
 
+#### M14 status: complete — Release 0.6 "Root Song" (version 0.6.0)
+
+- **The Root Song Ritual** (researched in the Caves' Rites branch: 2 Glow Ink, Heart Nectar and Crystal Focus) needs a **Blossom Court** and a **Harmony Blend** (cauldron: Sun Salve, Earth Loam, Lily Balm, Beeswax Candle and Glow Ink; the Moon Draught and Wind Silk join when the Glade and Sky Isles arrive). Performing it asks first, shows the Root Song it will give, plays the full-screen rite, and begins the next run.
+- **Root Song earned:** 1 per 10 bloom across all regions, 3 per court rank, 2 per finished story, 5 per awakened spirit, 3 per crew won over (`PRESTIGE_RULES`).
+- **What stays:** the fairy, outfits, Comforts, supply minimums and storage limits, stats, relics and Root Song. **Everything else starts over** (design doc 3.11).
+- **Root Song upgrades** (all 15 from the content doc, 1 to 5 tiers each): Deep Roots, Glimmer Purse, Seasoned Hands, Swift Wings, Roomy Satchel, Old Friends, Kind Heart, Quick Study, Remembered Recipes, Second Cauldron, Long Rest, Trader's Favor, Spirit's Ear, Warm Welcome, Steady Hearth. Start-of-run gifts bought on a new run before leaving home still count for that run.
+- **Relics:** 25, five for each spirit so far (Selenne's and Aeris's come with their regions). A waking spirit gives its **next** relic, at most one per run, so a spirit skipped in one run isn't lost. Each relic it has given raises its bloom requirement by a level and multiplies its offering (Spirit's Ear takes some off).
+  - All effects work: head starts, truces (the creature never turns up), kinship (the mount is tamed when its region opens), the five specialties, and the five hearts. Riddle Shell's fog part is "fog no longer hides rare plants" (simpler than a guaranteed wisp).
+- **Relics, Root Song upgrades and curios share one effect system** (`bonusEffects` in `modifiers.ts`), so every rule that reads a curio also reads relics and upgrades.
+- **Screens:** a Root Song tab at home (balance, upgrades with tier pips, a relic shelf per spirit), the gift on each spirit's screen, the run number beside the court rank, and relic art in spirit-colored frames.
+- **Not yet:** the ending after the 5th prestige and the bonus run (M17).
+
 ---
 
 ## 4. How We Work Each Milestone

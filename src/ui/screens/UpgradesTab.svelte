@@ -3,7 +3,7 @@
   import { UPGRADE_CATEGORIES, UPGRADE_ORDER, UPGRADES } from '../../data/upgrades'
   import { payingStock } from '../../engine/costs'
   import { formatNumber } from '../../engine/format'
-  import { checkUpgrade } from '../../engine/upgrades'
+  import { checkUpgrade, upgradePrice } from '../../engine/upgrades'
   import CostList from '../components/CostList.svelte'
   import { runtime } from '../game'
   import { BLOCKED_TEXT } from '../messages'
@@ -44,10 +44,11 @@
                   .join(', ')}
               </span>
             {:else}
+              {@const price = upgradePrice($game, upgrade.id)}
               <div class="cost">
-                <span class="glimmers" class:short={$game.resources.glimmers < upgrade.glimmers}>
+                <span class="glimmers" class:short={$game.resources.glimmers < price}>
                   <Art id="icon-glimmers" size={22} />
-                  {formatNumber(upgrade.glimmers)}
+                  {formatNumber(price)}
                 </span>
                 {#if upgrade.items.length > 0}
                   <CostList cost={upgrade.items} stock={payingStock($game)} />

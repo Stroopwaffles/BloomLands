@@ -1,3 +1,4 @@
+import { buyRootUpgrade } from './prestige'
 import { drinkPotion } from './buffs'
 import { equipPiece, finishCreating, recolorSlot, setLook } from './character'
 import { startCraft } from './crafting'
@@ -28,6 +29,7 @@ import { buyUpgrade } from './upgrades'
  */
 export type Action =
   | { type: 'travel/go'; to: string }
+  | { type: 'rootsong/buy'; upgradeId: string }
   | { type: 'gather/tap'; spotId: string; slot: number }
   | { type: 'satchel/deposit' }
   | { type: 'satchel/take'; itemId: string; amount: number }
@@ -126,6 +128,8 @@ export function applyAction(
       return castSpell(state, action.spellId)
     case 'ritual/perform':
       return performRitual(state, action.ritualId)
+    case 'rootsong/buy':
+      return buyRootUpgrade(state, action.upgradeId)
     case 'villager/fulfill':
       return fulfillVillagerRequest(state, action.settlementId, action.requestId)
     case 'villager/dismiss':

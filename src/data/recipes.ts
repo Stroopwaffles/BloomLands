@@ -276,6 +276,20 @@ const RECIPE_LIST: RecipeDef[] = [
     output: { itemId: 'component-heart-nectar', amount: 1 },
     durationMs: 40 * SEC,
   },
+  {
+    // One signature from every region (the Glade's and the Sky Isles' join when they open).
+    id: 'component-harmony-blend',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'component-sun-salve', amount: 1 },
+      { itemId: 'component-earth-loam', amount: 1 },
+      { itemId: 'component-lily-balm', amount: 1 },
+      { itemId: 'component-beeswax-candle', amount: 1 },
+      { itemId: 'component-glow-ink', amount: 1 },
+    ],
+    output: { itemId: 'component-harmony-blend', amount: 1 },
+    durationMs: 90 * SEC,
+  },
 
   // Potions (brewed in the cauldron)
   {

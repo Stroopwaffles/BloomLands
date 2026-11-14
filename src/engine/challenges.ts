@@ -11,7 +11,7 @@ import { PLANTS } from '../data/plants'
 import { SPOTS } from '../data/world'
 import { BLOOM_REWARDS } from '../data/bloom'
 import { addBloom } from './bloom'
-import { regionCalmMultiplier } from './modifiers'
+import { creatureAtPeace, regionCalmMultiplier } from './modifiers'
 import type { GameEvent } from './events'
 import { campBlocksSlot, eatPlant } from './gathering'
 import type { Random } from './rng'
@@ -97,6 +97,8 @@ export function advanceCreatures(state: GameState, dtMs: number, random: Random)
   if (challenges.nextCreatureMs > 0) return
   challenges.nextCreatureMs = between(random, CREATURE_RULES.minMs, CREATURE_RULES.maxMs)
   for (const def of Object.values(CREATURES)) {
+    // A spirit's relic can make a creature a friend for good.
+    if (creatureAtPeace(state, def.id)) continue
     // Some only turn up in certain weather (a rockfall needs rumbles).
     if (def.weather && state.weather[def.regionId]?.kind !== def.weather) continue
     // Curios like the Nightlight Jar make a region's troubles rarer.

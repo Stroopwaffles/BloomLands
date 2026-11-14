@@ -1,4 +1,5 @@
-import { BLOOM_LEVELS, BLOOM_PER_LEVEL, CURIOS, type CurioDef } from '../data/bloom'
+import { BLOOM_LEVELS, BLOOM_PER_LEVEL, CURIOS } from '../data/bloom'
+import { RELICS, ROOT_UPGRADES, type BonusEffect } from '../data/prestige'
 import { COURT_RANKS } from '../data/economy'
 import { HELPER_RULES, PIRATES_PER_CREW, type HelperType } from '../data/helpers'
 import { itemHasTag } from '../data/items'
@@ -33,7 +34,13 @@ function potionEffects(state: GameState): PotionEffect[] {
 }
 
 function upgradeEffects(state: GameState): UpgradeEffect[] {
-  return state.upgrades.flatMap((id) => (UPGRADES[id] ? [UPGRADES[id].effect] : []))
+  const bought = state.upgrades.flatMap((id) => (UPGRADES[id] ? [UPGRADES[id].effect] : []))
+  // Root Song upgrades like Seasoned Hands work like gear that lasts forever.
+  for (const [id, tier] of Object.entries(state.prestige.upgrades)) {
+    const upgrade = ROOT_UPGRADES[id]?.upgrade
+    if (upgrade && tier > 0) bought.push(...upgrade(tier))
+  }
+  return bought
 }
 
 export function clickPower(state: GameState): number {
@@ -178,8 +185,112 @@ export function luck(state: GameState): number {
   return value
 }
 
-function curioEffects(state: GameState): CurioDef['effect'][] {
-  return state.curios.flatMap((id) => (CURIOS[id] ? [CURIOS[id].effect] : []))
+/**
+ * Every lasting bonus the rules read: this run's curios, plus relics and Root Song upgrades,
+ * which last forever.
+ */
+function curioEffects(state: GameState): BonusEffect[] {
+  const effects: BonusEffect[] = state.curios.flatMap((id) =>
+    CURIOS[id] ? [CURIOS[id].effect] : [],
+  )
+  for (const id of state.prestige.relics) if (RELICS[id]) effects.push(...RELICS[id].effects)
+  for (const [id, tier] of Object.entries(state.prestige.upgrades)) {
+    const bonus = ROOT_UPGRADES[id]?.bonus
+    if (bonus && tier > 0) effects.push(...bonus(tier))
+  }
+  return effects
+}
+
+/** All lasting bonuses (for the prestige engine). */
+export const bonusEffects = curioEffects
+
+function sumAmount<K extends BonusEffect['kind']>(state: GameState, kind: K): number {
+  let total = 0
+  for (const e of curioEffects(state)) {
+    if (e.kind === kind && 'amount' in e) total += e.amount
+  }
+  return total
+}
+
+function product<K extends BonusEffect['kind']>(state: GameState, kind: K): number {
+  let value = 1
+  for (const e of curioEffects(state)) {
+    if (e.kind === kind && 'multiplier' in e) value *= e.multiplier
+  }
+  return value
+}
+
+/** A relic has made this creature friendly: it never turns up to cause trouble. */
+export function creatureAtPeace(state: GameState, creatureId: string): boolean {
+  return curioEffects(state).some((e) => e.kind === 'truce' && e.creatureId === creatureId)
+}
+
+/** Morning dew grows all day (Dew-Catcher Cup). */
+export function dewAllDay(state: GameState): boolean {
+  return curioEffects(state).some((e) => e.kind === 'dewAllDay')
+}
+
+/** This weather has lost its downsides (Mist-Walker's Moss, Riddle Shell). */
+export function weatherCleared(state: GameState, weather: string): boolean {
+  return curioEffects(state).some((e) => e.kind === 'clearWeather' && e.weather === weather)
+}
+
+/** Weather a relic brings to a region every morning (Blossom Fan), if any. */
+export function morningWeather(state: GameState, regionId: string): string | null {
+  for (const e of curioEffects(state)) {
+    if (e.kind === 'morningWeather' && e.regionId === regionId) return e.weather
+  }
+  return null
+}
+
+/** The region is always lit (Ever-Lit Lantern). */
+export function alwaysLit(state: GameState, regionId: string): boolean {
+  return curioEffects(state).some((e) => e.kind === 'alwaysLit' && e.regionId === regionId)
+}
+
+/** Taps every plant is spared (Heart of the Meadow). */
+export function plantEase(state: GameState): number {
+  return sumAmount(state, 'plantEase')
+}
+
+/** How much more helpers bring back (Still-Water Pearl). */
+export function helperYieldMultiplier(state: GameState): number {
+  return product(state, 'helperYield')
+}
+
+/** How much longer trader and villager requests wait (Golden Apple). */
+export function requestStayMultiplier(state: GameState): number {
+  return product(state, 'requestStay')
+}
+
+/** Chance a finished crafting job comes out double (Echo Crystal). */
+export function craftEchoChance(state: GameState): number {
+  let chance = 0
+  for (const e of curioEffects(state)) if (e.kind === 'craftEcho') chance += e.chance
+  return Math.min(1, chance)
+}
+
+/** Feedings spared when befriending a mount (Kind Heart). */
+export function befriendEase(state: GameState): number {
+  return sumAmount(state, 'befriendEase')
+}
+
+/** How long traders take to arrive, as a multiplier (Trader's Favor). */
+export function traderVisitMultiplier(state: GameState): number {
+  return product(state, 'traderVisits')
+}
+
+/** Items spared from each spirit offering (Spirit's Ear). */
+export function spiritEase(state: GameState): number {
+  return sumAmount(state, 'spiritEase')
+}
+
+export function recruitCostMultiplier(state: GameState): number {
+  return product(state, 'recruitCost')
+}
+
+export function lodgingCostMultiplier(state: GameState): number {
+  return product(state, 'lodgingCost')
 }
 
 /** Curios that shorten flights. */

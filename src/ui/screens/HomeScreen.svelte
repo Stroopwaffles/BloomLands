@@ -26,24 +26,42 @@
   import UpgradesTab from './UpgradesTab.svelte'
   import WardrobeTab from './WardrobeTab.svelte'
   import WorkshopTab from './WorkshopTab.svelte'
+  import RootSongTab from './RootSongTab.svelte'
 
   const { game } = runtime
   const carrying = $derived(countItems($game.player.satchel))
 
-  type Tab = 'court' | 'workshop' | 'research' | 'helpers' | 'upgrades' | 'wardrobe'
-  const TABS: { id: Tab; label: string }[] = [
+  type Tab = 'court' | 'workshop' | 'research' | 'helpers' | 'upgrades' | 'wardrobe' | 'rootsong'
+  const ALL_TABS: { id: Tab; label: string }[] = [
     { id: 'court', label: 'Court' },
     { id: 'workshop', label: 'Workshop' },
     { id: 'research', label: 'Research' },
     { id: 'helpers', label: 'Helpers' },
     { id: 'upgrades', label: 'Upgrades' },
     { id: 'wardrobe', label: 'Wardrobe' },
+    { id: 'rootsong', label: 'Root Song' },
   ]
+  /** The Root Song tab shows once prestige is in sight: a relic, the rite, or a later run. */
+  const showRootSong = $derived(
+    $game.prestige.run > 1 ||
+      $game.prestige.relics.length > 0 ||
+      $game.research.completed.includes('research-root-song'),
+  )
+  const TABS = $derived(ALL_TABS.filter((t) => t.id !== 'rootsong' || showRootSong))
 
   const rank = $derived(courtRank($game))
   const points = $derived(courtPoints($game))
   const nextRank = $derived(COURT_RANKS[rank + 1])
-  let tab = $state<Tab>('court')
+  // A fresh run opens on the Root Song tab, so the new Root Song is easy to spend.
+  let tab = $state<Tab>($game.prestige.freshRun ? 'rootsong' : 'court')
+  // ...and so does the moment a new run begins while you're at home.
+  let seenRun = $game.prestige.run
+  $effect(() => {
+    if ($game.prestige.run !== seenRun) {
+      seenRun = $game.prestige.run
+      tab = 'rootsong'
+    }
+  })
 
   const busyStations = $derived(
     Object.values($game.stations).reduce((sum, station) => sum + station.jobs.length, 0),
@@ -207,6 +225,8 @@
     <HelpersTab />
   {:else if tab === 'upgrades'}
     <UpgradesTab />
+  {:else if tab === 'rootsong'}
+    <RootSongTab />
   {:else}
     <WardrobeTab />
   {/if}

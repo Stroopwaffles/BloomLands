@@ -4,6 +4,8 @@
   import { payingStock } from '../../engine/costs'
   import { checkRitual, knownRituals, ritualDone } from '../../engine/magic'
   import { hasFeature } from '../../engine/modifiers'
+  import { rootSongPreview } from '../../engine/prestige'
+  import { COURT_RANKS } from '../../data/economy'
   import CostList from './CostList.svelte'
   import { runtime } from '../game'
   import { BLOCKED_TEXT } from '../messages'
@@ -13,6 +15,20 @@
   /** Rites that can still do something; one-time rites that are done move to a short list. */
   const rituals = $derived(knownRituals($game).filter((id) => !ritualDone($game, id)))
   const completed = $derived(knownRituals($game).filter((id) => ritualDone($game, id)))
+
+  /** The Root Song Ritual starts a new run, so it asks first. */
+  let confirming = $state(false)
+  const preview = $derived(rootSongPreview($game))
+
+  function perform(ritualId: string) {
+    if (RITUALS[ritualId].effect === 'root-song') confirming = true
+    else runtime.dispatch({ type: 'ritual/perform', ritualId })
+  }
+
+  function sing() {
+    confirming = false
+    runtime.dispatch({ type: 'ritual/perform', ritualId: 'ritual-root-song' })
+  }
 </script>
 
 <section class="panel">
@@ -34,18 +50,57 @@
             <strong>{ritual.name}</strong>
             <span class="desc">{ritual.description}</span>
             <CostList cost={ritual.cost} stock={payingStock($game)} />
+            {#if ritual.rank}
+              <span class="desc rank" class:short={check === 'needs-rank'}>
+                Needs a {COURT_RANKS[ritual.rank].name}.
+              </span>
+            {/if}
           </div>
           <button
             type="button"
             disabled={check !== 'ok'}
             title={check === 'ok' ? undefined : BLOCKED_TEXT[check]}
-            onclick={() => runtime.dispatch({ type: 'ritual/perform', ritualId })}
+            onclick={() => perform(ritualId)}
           >
             Perform
           </button>
         </li>
       {/each}
     </ul>
+    {#if confirming}
+      <div class="confirm" role="dialog" aria-label="Sing the Root Song?">
+        <h4>Sing the Root Song?</h4>
+        <p>
+          The land heals, and a new run begins (run {$game.prestige.run + 1}). You'll earn
+          <strong>{preview.total} Root Song</strong>:
+        </p>
+        <ul class="parts">
+          {#each preview.parts as part (part.label)}
+            <li><span>{part.label}</span><strong>+{part.amount}</strong></li>
+          {/each}
+        </ul>
+        <div class="lists">
+          <div>
+            <strong>Stays</strong>
+            <p>
+              Your fairy and outfits, Comforts, storage and supply settings, relics, Root Song and
+              its upgrades.
+            </p>
+          </div>
+          <div>
+            <strong>Starts over</strong>
+            <p>
+              Glimmers, trinkets, storage, lodging, helpers, research, mounts, curios, stories,
+              spirits, pirates, bloom, regions and secret areas.
+            </p>
+          </div>
+        </div>
+        <div class="actions">
+          <button type="button" class="sing" onclick={sing}>Sing the Root Song</button>
+          <button type="button" class="cancel" onclick={() => (confirming = false)}>Not yet</button>
+        </div>
+      </div>
+    {/if}
     {#if completed.length > 0}
       <p class="done">
         Completed: {completed.map((id) => RITUALS[id].name).join(', ')} ✓
@@ -55,6 +110,65 @@
 </section>
 
 <style>
+  .rank {
+    font-weight: 700;
+  }
+
+  .rank.short {
+    color: #b03a2e;
+  }
+
+  :global([data-theme='night']) .rank.short {
+    color: #f29a8e;
+  }
+
+  .confirm {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px;
+    border-radius: 16px;
+    background: var(--surface);
+    border: 2px solid #d9a441;
+  }
+
+  .confirm h4,
+  .confirm p {
+    margin: 0;
+  }
+
+  .parts {
+    gap: 2px;
+  }
+
+  .parts li {
+    justify-content: space-between;
+    padding: 2px 8px;
+    background: none;
+  }
+
+  .lists {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    font-size: 0.88rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .sing {
+    background: #c98a1c;
+  }
+
+  .cancel {
+    background: var(--disabled, #c9c2d8);
+    color: var(--ink);
+  }
+
   .done {
     margin: 0;
     font-size: 0.85rem;

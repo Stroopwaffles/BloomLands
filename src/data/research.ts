@@ -644,6 +644,23 @@ RESEARCH_LIST.push(
     spells: ['spell-web-unweave'],
     region: 'caves',
   },
+  {
+    id: 'research-root-song',
+    name: 'Root Song Ritual',
+    branch: 'rites',
+    description:
+      'Sing the land a song of its roots: it heals, and a new run begins. Learns Harmony Blend too. Performing it needs a Blossom Court.',
+    cost: [
+      { itemId: 'component-glow-ink', amount: 2 },
+      { itemId: 'component-heart-nectar', amount: 1 },
+      { itemId: 'component-crystal-focus', amount: 1 },
+    ],
+    durationMs: 10 * MIN,
+    requires: ['research-glow-ink', 'research-crystal-focus', 'research-heart-nectar'],
+    unlocks: ['component-harmony-blend'],
+    rituals: ['ritual-root-song'],
+    region: 'caves',
+  },
 )
 
 export const RESEARCH: Readonly<Record<string, ResearchDef>> = Object.fromEntries(
