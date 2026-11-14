@@ -11,7 +11,15 @@
   import { runtime } from '../game'
   import { COURT_RANKS } from '../../data/economy'
   import { formatNumber } from '../../engine/format'
-  import { courtPoints, courtRank, storageCapacity, storageUsed } from '../../engine/modifiers'
+  import {
+    courtPoints,
+    courtRank,
+    satchelCapacity,
+    storageCapacity,
+    storageUsed,
+  } from '../../engine/modifiers'
+  import { itemName } from '../../data/items'
+  import { packRoom } from '../../engine/gathering'
   import TraderRequests from '../components/TraderRequests.svelte'
   import HelpersTab from './HelpersTab.svelte'
   import ResearchTab from './ResearchTab.svelte'
@@ -140,7 +148,35 @@
               {formatNumber(storageUsed($game))} / {formatNumber(storageCapacity($game))}
             </span>
           </h2>
-          <ItemList items={$game.inventory} empty="Your storeroom is empty." />
+          {#if Object.keys($game.inventory).length > 0}
+            <p class="hint">
+              Use + or Pack to put things back in your satchel, to sell at a village shop. ({formatNumber(
+                satchelCapacity($game) - carrying,
+              )} satchel space free)
+            </p>
+          {/if}
+          <ItemList items={$game.inventory} empty="Your storeroom is empty.">
+            {#snippet action(itemId: string, amount: number)}
+              {@const room = packRoom($game, itemId)}
+              <span class="pack">
+                <button
+                  type="button"
+                  aria-label={`Put 1 ${itemName(itemId)} in your satchel`}
+                  disabled={room < 1}
+                  onclick={() => runtime.dispatch({ type: 'satchel/take', itemId, amount: 1 })}
+                  >+1</button
+                >
+                <button
+                  type="button"
+                  aria-label={`Put as many ${itemName(itemId)} as fit in your satchel`}
+                  disabled={room < 1}
+                  title={room < amount && room > 0 ? `Only ${room} fit` : undefined}
+                  onclick={() => runtime.dispatch({ type: 'satchel/take', itemId, amount: room })}
+                  >Pack</button
+                >
+              </span>
+            {/snippet}
+          </ItemList>
         </section>
       </div>
     </div>
@@ -158,6 +194,30 @@
 </div>
 
 <style>
+  .pack {
+    display: flex;
+    gap: 4px;
+  }
+
+  .pack button {
+    min-width: 40px;
+    min-height: 36px;
+    padding: 0 8px;
+    border: 2px solid var(--leaf);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .pack button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
   .home {
     padding: 16px;
     max-width: 1200px;

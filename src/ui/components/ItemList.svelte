@@ -1,10 +1,19 @@
 <script lang="ts">
   import Art from '../../art/Art.svelte'
   import { itemName } from '../../data/items'
+  import type { Snippet } from 'svelte'
   import { formatNumber } from '../../engine/format'
 
-  let { items, empty = 'Nothing here yet.' }: { items: Record<string, number>; empty?: string } =
-    $props()
+  let {
+    items,
+    empty = 'Nothing here yet.',
+    action,
+  }: {
+    items: Record<string, number>
+    empty?: string
+    /** Optional controls shown at the end of each item's row. */
+    action?: Snippet<[string, number]>
+  } = $props()
 
   const entries = $derived(Object.entries(items).sort(([a], [b]) => a.localeCompare(b)))
 </script>
@@ -12,12 +21,13 @@
 {#if entries.length === 0}
   <p class="empty">{empty}</p>
 {:else}
-  <ul>
+  <ul class:with-action={!!action}>
     {#each entries as [itemId, amount] (itemId)}
       <li>
         <Art id={itemId} size={36} />
         <span class="name">{itemName(itemId)}</span>
         <span class="amount">{formatNumber(amount)}</span>
+        {#if action}{@render action(itemId, amount)}{/if}
       </li>
     {/each}
   </ul>
@@ -31,6 +41,11 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 8px;
+  }
+
+  /* Rows with buttons need more room. */
+  ul.with-action {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 270px), 1fr));
   }
 
   li {

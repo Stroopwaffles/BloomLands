@@ -168,6 +168,31 @@ export function tapPlant(
   return events
 }
 
+/** How many of a stored item fit in the satchel right now. */
+export function packRoom(state: GameState, itemId: string): number {
+  const space = Math.max(0, satchelCapacity(state) - countItems(state.player.satchel))
+  return Math.min(space, state.inventory[itemId] ?? 0)
+}
+
+/**
+ * Takes items from home storage back into the satchel (to sell at a shop, or carry to someone).
+ * Only works at home, and only as much as the satchel can hold.
+ */
+export function packSatchel(state: GameState, itemId: string, amount: number): GameEvent[] {
+  const { player } = state
+  if (player.travel) return [{ type: 'blocked', reason: 'flying' }]
+  if (player.place !== 'home') return [{ type: 'blocked', reason: 'not-home' }]
+  if (amount < 1 || (state.inventory[itemId] ?? 0) < amount) {
+    return [{ type: 'blocked', reason: 'missing-items' }]
+  }
+  if (countItems(player.satchel) + amount > satchelCapacity(state)) {
+    return [{ type: 'blocked', reason: 'satchel-full' }]
+  }
+  addItems(state.inventory, itemId, -amount)
+  addItems(player.satchel, itemId, amount)
+  return [{ type: 'packed', itemId, amount }]
+}
+
 /**
  * Moves the satchel into home storage, as much as fits. Trinkets take no space. Whatever
  * doesn't fit stays in the satchel. Only works at home.

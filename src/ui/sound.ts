@@ -25,6 +25,7 @@ export function soundFor(event: GameEvent): SoundId | null {
     case 'depart':
       return 'depart'
     case 'deposit':
+    case 'packed':
     case 'parcel-sent':
     case 'parcel-arrived':
       return 'deposit'

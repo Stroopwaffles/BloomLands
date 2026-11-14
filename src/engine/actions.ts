@@ -4,7 +4,7 @@ import { startCraft } from './crafting'
 import type { CharacterLook, OutfitSlot } from '../data/appearance'
 import type { HelperType } from '../data/helpers'
 import type { GameEvent } from './events'
-import { depositSatchel, tapPlant } from './gathering'
+import { depositSatchel, packSatchel, tapPlant } from './gathering'
 import { tapCreature } from './challenges'
 import { tapFlightEvent } from './flightEvents'
 import { assignHelper, recruitHelper, setBrew, setMinimum } from './helpers'
@@ -30,6 +30,7 @@ export type Action =
   | { type: 'travel/go'; to: string }
   | { type: 'gather/tap'; spotId: string; slot: number }
   | { type: 'satchel/deposit' }
+  | { type: 'satchel/take'; itemId: string; amount: number }
   | { type: 'satchel/setLocked'; locked: boolean }
   | { type: 'craft/start'; recipeId: string; count?: number }
   | { type: 'research/start'; researchId: string }
@@ -80,6 +81,8 @@ export function applyAction(
       return tapPlant(state, action.spotId, action.slot, random)
     case 'satchel/deposit':
       return depositSatchel(state)
+    case 'satchel/take':
+      return packSatchel(state, action.itemId, action.amount)
     case 'satchel/setLocked':
       state.player.satchelLocked = action.locked
       return []

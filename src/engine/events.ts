@@ -42,6 +42,7 @@ export type GameEvent =
   | { type: 'blocked'; reason: BlockedReason }
   | { type: 'depart'; to: string; totalMs: number; auto: boolean }
   | { type: 'deposit'; items: ItemStack[]; leftOver: number }
+  | { type: 'packed'; itemId: string; amount: number }
   | { type: 'craft-start'; recipeId: string; count: number }
   | { type: 'research-start'; researchId: string }
   | { type: 'drink'; potionId: string }

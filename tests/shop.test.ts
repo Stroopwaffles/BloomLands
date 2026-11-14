@@ -96,3 +96,38 @@ describe('settlement shops', () => {
     }
   })
 })
+
+describe('packing the satchel at home', () => {
+  function home(): GameState {
+    const state = createNewGame(START)
+    state.inventory = { 'refined-petal-paste': 30, 'trinket-thimble': 1 }
+    return state
+  }
+
+  it('moves items from storage into the satchel, up to its space', () => {
+    const state = home()
+    applyAction(state, { type: 'satchel/take', itemId: 'refined-petal-paste', amount: 5 })
+    expect(state.player.satchel['refined-petal-paste']).toBe(5)
+    expect(state.inventory['refined-petal-paste']).toBe(25)
+    expect(
+      applyAction(state, { type: 'satchel/take', itemId: 'refined-petal-paste', amount: 25 }),
+    ).toEqual([{ type: 'blocked', reason: 'satchel-full' }])
+    expect(
+      applyAction(state, { type: 'satchel/take', itemId: 'raw-clover-leaves', amount: 1 }),
+    ).toEqual([{ type: 'blocked', reason: 'missing-items' }])
+  })
+
+  it('only works at home, and packed items sell at a shop', () => {
+    const state = home()
+    state.player.place = 'thimblewick'
+    expect(
+      applyAction(state, { type: 'satchel/take', itemId: 'trinket-thimble', amount: 1 }),
+    ).toEqual([{ type: 'blocked', reason: 'not-home' }])
+    state.player.place = 'home'
+    applyAction(state, { type: 'satchel/take', itemId: 'trinket-thimble', amount: 1 })
+    state.player.place = 'thimblewick'
+    const before = state.resources.glimmers
+    applyAction(state, { type: 'shop/sell', itemId: 'trinket-thimble', amount: 1 })
+    expect(state.resources.glimmers).toBe(before + sellPrice('trinket-thimble'))
+  })
+})
