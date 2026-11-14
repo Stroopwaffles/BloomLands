@@ -33,6 +33,8 @@ export type BonusEffect =
   | { kind: 'requestStay'; multiplier: number }
   /** Each finished refining or brewing job may come out double. */
   | { kind: 'craftEcho'; chance: number }
+  /** Once a day, choose the Glade's moon phase (Moon-Phase Locket). */
+  | { kind: 'moonChoice' }
   // Root Song upgrades
   | { kind: 'startGlimmers'; amount: number }
   | { kind: 'startBloom'; amount: number }
@@ -366,6 +368,34 @@ export const RELIC_LIST: RelicDef[] = [
     'Every refining or brewing job has a 20% chance to come out double.',
     [{ kind: 'craftEcho', chance: 0.2 }],
   ),
+  // Selenne, the Quiet Moon
+  relic('spirit-selenne', 1, 'Moonstone Bead', 'Glade bloom starts one level higher.', [
+    { kind: 'headStart', regionId: 'glade' },
+  ]),
+  relic(
+    'spirit-selenne',
+    2,
+    'Moth-Silk Ribbon',
+    'The moth swarm is gentle and shares the glowing flowers.',
+    [{ kind: 'truce', creatureId: 'moth-swarm' }],
+  ),
+  relic(
+    'spirit-selenne',
+    3,
+    'Silver Cocoon',
+    'The luna moth is tamed from the start of each run.',
+    [{ kind: 'kinship', mountId: 'mount-luna-moth' }],
+  ),
+  relic(
+    'spirit-selenne',
+    4,
+    'Moon-Phase Locket',
+    "Once a day, choose the Glade's moon phase (at the Moon Pool).",
+    [{ kind: 'moonChoice' }],
+  ),
+  relic('spirit-selenne', 5, 'Moonsilver Tear', 'All potions last 50% longer.', [
+    { kind: 'potionDuration', multiplier: 1.5 },
+  ]),
 ]
 
 export const RELICS: Readonly<Record<string, RelicDef>> = Object.fromEntries(

@@ -72,4 +72,16 @@ export const MAP_ISLANDS: Readonly<Record<string, IslandDef>> = {
       'surface-lift': { x: 18, y: 76 },
     },
   },
+  glade: {
+    color: '#7c84c8',
+    edge: '#474e94',
+    places: {
+      emberglow: { x: 26, y: 50 },
+      'moonpetal-meadow': { x: 50, y: 74 },
+      silverbrook: { x: 76, y: 50 },
+      'moon-pool': { x: 52, y: 30 },
+      starwell: { x: 84, y: 76 },
+      'dream-hollow': { x: 18, y: 76 },
+    },
+  },
 }

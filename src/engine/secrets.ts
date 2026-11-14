@@ -20,8 +20,10 @@ export function unlockSecret(state: GameState, spotId: string): GameEvent[] {
 export function advanceSecrets(state: GameState): void {
   for (const spot of Object.values(SPOTS)) {
     const unlock = spot.secret?.unlock
-    // Ritual secrets open from their rite, and scout secrets from a lucky search.
+    // Ritual secrets open from their rite, scout secrets from a lucky search, and riding
+    // secrets only while you ride the right mount.
     if (!unlock || unlock.kind === 'ritual' || unlock.kind === 'scout') continue
+    if (unlock.kind === 'riding') continue
     if (state.secrets.includes(spot.id)) continue
     if (!regionUnlocked(state, spot.regionId)) continue
     const met =

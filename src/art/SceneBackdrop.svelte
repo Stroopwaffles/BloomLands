@@ -2,6 +2,7 @@
   import { SPOTS } from '../data/world'
   import ForestBackdrop from './ForestBackdrop.svelte'
   import CavesBackdrop from './CavesBackdrop.svelte'
+  import GladeBackdrop from './GladeBackdrop.svelte'
   import OrchardBackdrop from './OrchardBackdrop.svelte'
   import SwampBackdrop from './SwampBackdrop.svelte'
 
@@ -49,6 +50,8 @@
     <OrchardBackdrop {spotId} />
   {:else if region === 'caves'}
     <CavesBackdrop {spotId} />
+  {:else if region === 'glade'}
+    <GladeBackdrop {spotId} {weather} />
   {:else if spotId === 'fairy-ring'}
     <rect width="160" height="100" fill="url(#sky-glade)" />
     <g fill="#7fae74" stroke="#5f8f58" stroke-width="0.6">
@@ -192,7 +195,8 @@
     </g>
   {/if}
 
-  {#if night}
+  <!-- The Glade has its own twilight sky and moon. -->
+  {#if night && region !== 'glade'}
     <rect width="160" height="100" fill="#1e1b4b" opacity="0.5" />
     <circle cx="130" cy="16" r="6" fill="#fff3b0" />
     <circle cx="133" cy="14" r="5.5" fill="#3a3670" />

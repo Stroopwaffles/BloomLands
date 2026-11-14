@@ -55,6 +55,17 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'raw-star-crystal', name: 'Star crystal', category: 'raw', tags: ['crystals'] },
   { id: 'raw-sunshaft-fern', name: 'Sunshaft fern', category: 'raw' },
 
+  // Moonlit Glade raw materials
+  { id: 'raw-starmoss', name: 'Starmoss', category: 'raw', tags: ['leaves'] },
+  { id: 'raw-jasmine-blossoms', name: 'Jasmine blossoms', category: 'raw', tags: ['moonflowers'] },
+  { id: 'raw-primrose-petals', name: 'Primrose petals', category: 'raw', tags: ['petals'] },
+  { id: 'raw-moonpetals', name: 'Moonpetals', category: 'raw', tags: ['petals', 'moonflowers'] },
+  { id: 'raw-moonlight', name: 'Moonlight', category: 'raw' },
+  { id: 'raw-silver-fronds', name: 'Silver fronds', category: 'raw', tags: ['leaves'] },
+  { id: 'raw-midnight-petals', name: 'Midnight petals', category: 'raw', tags: ['petals'] },
+  { id: 'raw-stardust', name: 'Stardust', category: 'raw' },
+  { id: 'raw-poppy-petals', name: 'Poppy petals', category: 'raw', tags: ['petals'] },
+
   // Refined materials (content doc → Recipe Tree → Tier 1)
   { id: 'refined-petal-paste', name: 'Petal Paste', category: 'refined' },
   { id: 'refined-leaf-tea', name: 'Leaf Tea', category: 'refined' },
@@ -72,6 +83,8 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'refined-pollen-gold', name: 'Pollen Gold', category: 'refined' },
   { id: 'refined-glow-spores', name: 'Glow Spores', category: 'refined' },
   { id: 'refined-crystal-powder', name: 'Crystal Powder', category: 'refined' },
+  { id: 'refined-moonpetal-oil', name: 'Moonpetal Oil', category: 'refined' },
+  { id: 'refined-moonlight-tincture', name: 'Moonlight Tincture', category: 'refined' },
 
   // Components (Tier 2)
   { id: 'component-sun-salve', name: 'Sun Salve', category: 'component' },
@@ -87,6 +100,8 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'component-crystal-focus', name: 'Crystal Focus', category: 'component' },
   { id: 'component-heart-nectar', name: 'Heart Nectar', category: 'component' },
   { id: 'component-harmony-blend', name: 'Harmony Blend', category: 'component' },
+  { id: 'component-moon-draught', name: 'Moon Draught', category: 'component' },
+  { id: 'component-starlight-lens', name: 'Starlight Lens', category: 'component' },
 
   // Potions
   { id: 'potion-greenthumb-brew', name: 'Greenthumb Brew', category: 'potion' },
@@ -121,6 +136,11 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'trinket-iron-key', name: 'Old iron key', category: 'trinket', tags: ['trinket'] },
   { id: 'trinket-glass-lens', name: 'Glass lens', category: 'trinket', tags: ['trinket'] },
   { id: 'trinket-silver-ring', name: 'Silver ring', category: 'trinket', tags: ['trinket'] },
+
+  // Moonlit Glade trinkets
+  { id: 'trinket-pearl', name: 'Pearl', category: 'trinket', tags: ['trinket'] },
+  { id: 'trinket-silver-spoon', name: 'Silver spoon', category: 'trinket', tags: ['trinket'] },
+  { id: 'trinket-music-box-key', name: 'Music-box key', category: 'trinket', tags: ['trinket'] },
 ]
 
 export const ITEMS: Readonly<Record<string, ItemDef>> = Object.fromEntries(

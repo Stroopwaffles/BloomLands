@@ -56,6 +56,12 @@ export interface CurioDef {
     | { kind: 'regionCalm'; regionId: string; multiplier: number }
     | { kind: 'allBloom'; multiplier: number }
     | { kind: 'regionClick'; regionId: string; amount: number }
+    /** Rarer plants likelier everywhere (Fallen Star). */
+    | { kind: 'luck'; multiplier: number }
+    /** Chance a spell costs nothing (Moth-Wing Quill). */
+    | { kind: 'spellSave'; chance: number }
+    /** Offline time counts for this much more (Dreamcatcher). */
+    | { kind: 'offlineBoost'; multiplier: number }
 }
 
 /** Meadow curios (content doc → Curio Index). They last for the current run. */
@@ -168,6 +174,31 @@ export const CURIOS: Readonly<Record<string, CurioDef>> = {
     description: '+1 click power in the Caves.',
     effect: { kind: 'regionClick', regionId: 'caves', amount: 1 },
   },
+  // Moonlit Glade
+  'curio-lamplighters-wick': {
+    id: 'curio-lamplighters-wick',
+    name: "Lamplighter's Wick",
+    description: 'Potions last 25% longer.',
+    effect: { kind: 'potionDuration', multiplier: 1.25 },
+  },
+  'curio-moth-wing-quill': {
+    id: 'curio-moth-wing-quill',
+    name: 'Moth-Wing Quill',
+    description: 'Each spell has a 25% chance to cost nothing.',
+    effect: { kind: 'spellSave', chance: 0.25 },
+  },
+  'curio-fallen-star': {
+    id: 'curio-fallen-star',
+    name: 'Fallen Star',
+    description: 'Rarer plants grow 15% more often everywhere.',
+    effect: { kind: 'luck', multiplier: 1.15 },
+  },
+  'curio-dreamcatcher': {
+    id: 'curio-dreamcatcher',
+    name: 'Dreamcatcher',
+    description: 'Time away counts for 10% more: helpers and stations get a little extra done.',
+    effect: { kind: 'offlineBoost', multiplier: 1.1 },
+  },
 }
 
 export interface VillagerDef {
@@ -206,6 +237,11 @@ export const VILLAGERS: Readonly<Record<string, readonly VillagerDef[]>> = {
     { id: 'villager-nibs', name: 'Nibs', title: 'who runs the lantern store' },
     { id: 'villager-pickworth', name: 'Pickworth', title: 'the tunnel foreman' },
     { id: 'villager-granny-burrow', name: 'Granny Burrow', title: 'who bakes root pies' },
+  ],
+  emberglow: [
+    { id: 'villager-flicker', name: 'Flicker', title: 'who keeps the willow lantern shop' },
+    { id: 'villager-ember', name: 'Ember', title: 'the lantern weaver' },
+    { id: 'villager-pipwick', name: 'Pipwick', title: 'the youngest lamplighter' },
   ],
 }
 

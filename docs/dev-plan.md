@@ -276,7 +276,7 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 
 ### Backlog (asked for, not scheduled yet)
 
-- Nothing waiting.
+- **Revisit the prestige requirements.** The Glade and the Root Song Ritual both need a Blossom Court, so a player can prestige before ever seeing the Glade.
 
 ### Phase 2: The Full Game
 
@@ -431,6 +431,29 @@ Each region milestone adds that region's content, art, mount, creature, pirate c
 - **Relics, Root Song upgrades and curios share one effect system** (`bonusEffects` in `modifiers.ts`), so every rule that reads a curio also reads relics and upgrades.
 - **Screens:** a Root Song tab at home (balance, upgrades with tier pips, a relic shelf per spirit), the gift on each spirit's screen, the run number beside the court rank, and relic art in spirit-colored frames.
 - **Not yet:** the ending after the 5th prestige and the bonus run (M17).
+
+#### M15 status: complete — Release 0.7 "Moonlit Glade" (version 0.7.0)
+
+- **To enter:** a Blossom Court plus the **Rite of Long Twilight** (Crystal Focus and 2 Lily Balm, researched in the Caves). The Glade is always twilight, so the interface uses its night colors there, as in the Caves (`RegionDef.dark`).
+- **Places:** Emberglow (fireflies, with The Willow Lantern shop), Moonpetal Meadow, Silverbrook, and the Moon Pool (Selenne).
+- **Plants and items:**
+  - Starmoss, night jasmine, evening primrose, moonpetal, moonbeam, silverleaf fern and midnight rose, plus stardust bloom and sleepy poppy in the secret areas.
+  - Moonpetal Oil (press, from any "moonflowers": moonpetals or jasmine), Moonlight Tincture, **Moon Draught** (the Glade's signature) and the **Starlight Lens**.
+  - Three trinkets: a pearl, a silver spoon, a music-box key. Harmony Blend now takes Moon Draught too.
+- **The moon cycle** replaces weather: waxing, full, waning and new, in order (`MOON_CYCLE`). A waxing or waning moon may be a **starfall** instead (35%).
+  - Full moon: rare finds 1.6× likelier, and the Moonrise Rite works.
+  - New moon: slower flights, rare finds a little harder, twice the ambushes, and the Moonshadow Crew camps.
+  - Starfall: stars fall through the scene; tapping one gives 8–20 Glimmers, or now and then moonlight or stardust (one every 2.5 seconds).
+  - The Rite of Turning doesn't change the moon.
+- **Challenges:** the **moth swarm** munches spots (10 taps; half as often once Vesper's story is done). Earwigs on petals. **The Moonshadow Crew** camps only under a new moon. The new **Shadowlight** spell (Glow Ink and Moon Draught) ends a new moon early and clears their camp.
+- **People:** Old Nox, a fading firefly lamplighter (Lamplighter's Wick: potions last 25% longer), and Vesper, a moth poet (Moth-Wing Quill: a 25% chance a spell costs nothing), plus three Emberglow villagers. **Selenne** wants a Sprouting Glade, Nox's story finished, 3 Moon Draught and a Starlight Lens.
+- **Mounts:**
+  - **The luna moth** (night jasmine, at Moonpetal Meadow): better rare finds in the Glade, and the only way into the Starwell.
+  - **The blue jay** nests at Silverbrook and is only seen at dawn and in the morning. It eats acorns, and its Kindred Call costs Moon Draught and a Starlight Lens. It's the fastest flyer (1.8×); carrying you to the Sky Isles comes in M16.
+- **Secret areas:** **the Starwell** (open only while riding the luna moth: Fallen Star, rarer plants 15% likelier everywhere; the Starlit set) and **the Dream Hollow** (the Moonrise Rite under a full moon: Dreamcatcher, offline time counts 10% more; Sleepwear: nightgown, nightshirt and nightcap).
+- **Relics:** Selenne's five, including the **Moon-Phase Locket** (once a day, choose the moon at the Moon Pool) and the Moonsilver Tear (potions last 50% longer).
+- **Lodging:** Lantern Loft (+2 gatherers), Moth Roost (+1 mount), Moonlit Pantry (+600 storage).
+- **Art and sound:** Glade backdrops whose moon follows the cycle, with fireflies, shooting stars in a starfall, the brook, the Starwell and the Dream Hollow. All the new plants, items, people, creatures, mounts and curios, the two outfits, a dark menu scene, and two tracks ("Emberglow" and "The Moon Pool").
 
 ---
 

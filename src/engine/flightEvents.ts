@@ -38,9 +38,12 @@ export function rollFlightEvent(
   if (!happenings || random() >= FLIGHT_EVENT_RULES.chance) return
   const crewId = crewOver(state, regionId)
   const kind = pickWeighted(
-    (Object.entries(happenings.weights) as [FlightEventKind, number][]).filter(
-      ([k]) => crewId !== null || k !== 'ambush',
-    ),
+    (Object.entries(happenings.weights) as [FlightEventKind, number][])
+      .filter(([k]) => crewId !== null || k !== 'ambush')
+      // Pirates love the dark: a new moon doubles the chance of an ambush.
+      .map(([k, w]) =>
+        k === 'ambush' && state.weather[regionId]?.kind === 'new-moon' ? [k, w * 2] : [k, w],
+      ) as [FlightEventKind, number][],
     random,
   )
   travel.event = {

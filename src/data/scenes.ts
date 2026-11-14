@@ -262,6 +262,59 @@ export const SCENES: Readonly<Record<string, SceneLayout>> = {
     camp: { x: 80, y: 80 },
     mount: { x: 80, y: 34 },
   },
+  // Moonlit Glade
+  'moonpetal-meadow': {
+    slots: [
+      { x: 13, y: 76 },
+      { x: 29, y: 64 },
+      { x: 45, y: 82 },
+      { x: 61, y: 64 },
+      { x: 77, y: 80 },
+      { x: 90, y: 62 },
+    ],
+    creature: { x: 50, y: 50 },
+    camp: { x: 76, y: 64 },
+    mount: { x: 34, y: 34 },
+  },
+  silverbrook: {
+    slots: [
+      { x: 12, y: 64 },
+      { x: 28, y: 80 },
+      { x: 44, y: 62 },
+      { x: 62, y: 84 },
+      { x: 78, y: 66 },
+      { x: 90, y: 84 },
+    ],
+    creature: { x: 54, y: 46 },
+    camp: { x: 78, y: 74 },
+    mount: { x: 70, y: 32 },
+  },
+  starwell: {
+    slots: [
+      { x: 50, y: 64 },
+      { x: 28, y: 74 },
+      { x: 72, y: 74 },
+      { x: 18, y: 90 },
+      { x: 50, y: 92 },
+      { x: 82, y: 90 },
+    ],
+    creature: { x: 86, y: 50 },
+    camp: { x: 76, y: 82 },
+    mount: { x: 50, y: 30 },
+  },
+  'dream-hollow': {
+    slots: [
+      { x: 16, y: 74 },
+      { x: 32, y: 88 },
+      { x: 50, y: 72 },
+      { x: 66, y: 88 },
+      { x: 82, y: 74 },
+      { x: 92, y: 90 },
+    ],
+    creature: { x: 50, y: 48 },
+    camp: { x: 76, y: 82 },
+    mount: { x: 30, y: 32 },
+  },
 }
 
 /** A plain layout for any spot without a hand-placed one. */

@@ -29,6 +29,10 @@ export interface MountDef {
   light?: boolean
   /** Only shows up in the wild once this story is finished. */
   afterStory?: string
+  /** Only seen in the wild at dawn and in the morning (the blue jay). */
+  morningOnly?: boolean
+  /** Kindred Call costs this instead of the usual Sweet Bait and signature (the blue jay). */
+  tameCost?: { itemId: string; amount: number }[]
   maxLevel: number
   /** Per level above 1. */
   speedPerLevel: number
@@ -120,6 +124,47 @@ export const MOUNTS: Readonly<Record<string, MountDef>> = {
     bonus: { kind: 'clickPower', amount: 1, perLevel: 0.5, label: 'click power in the Caves' },
     light: true,
     afterStory: 'story-lumen',
+    maxLevel: 5,
+    speedPerLevel: 0.05,
+  },
+  'mount-luna-moth': {
+    id: 'mount-luna-moth',
+    name: 'Luna moth',
+    regionId: 'glade',
+    homeSpot: 'moonpetal-meadow',
+    description: 'Finds the Glade’s rarer flowers, and is the only way down into the Starwell.',
+    wildLine: 'is drifting over the moonpetals.',
+    food: { itemId: 'raw-jasmine-blossoms', amount: 5 },
+    feedingsToBefriend: 5,
+    feedCooldownMs: 2 * 60_000,
+    speed: 1.4,
+    bonus: { kind: 'regionLuck', multiplier: 1.3, perLevel: 0.1, label: 'rare finds in the Glade' },
+    maxLevel: 5,
+    speedPerLevel: 0.05,
+  },
+  'mount-blue-jay': {
+    id: 'mount-blue-jay',
+    name: 'Blue jay',
+    regionId: 'glade',
+    homeSpot: 'silverbrook',
+    description:
+      'The strongest flyer of all. It nests at the edge of the Glade and is seen at dawn.',
+    wildLine: 'is perched on a fern, watching the dawn.',
+    food: { itemId: 'raw-acorns', amount: 6 },
+    feedingsToBefriend: 6,
+    feedCooldownMs: 3 * 60_000,
+    speed: 1.8,
+    bonus: {
+      kind: 'regionTravel',
+      multiplier: 0.75,
+      perLevel: 0.05,
+      label: 'faster flights in the Glade',
+    },
+    morningOnly: true,
+    tameCost: [
+      { itemId: 'component-moon-draught', amount: 1 },
+      { itemId: 'component-starlight-lens', amount: 1 },
+    ],
     maxLevel: 5,
     speedPerLevel: 0.05,
   },

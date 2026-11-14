@@ -11,6 +11,10 @@
   } from '../../engine/spirits'
   import { nextRelic } from '../../engine/prestige'
   import { RELIC_LIST, ROMAN } from '../../data/prestige'
+  import { WEATHER } from '../../data/challenges'
+  import { formatDuration } from '../../engine/format'
+  import { canChooseMoon } from '../../engine/modifiers'
+  import { CHOOSABLE_MOONS } from '../../engine/moon'
   import BloomMeter from '../components/BloomMeter.svelte'
   import CostList from '../components/CostList.svelte'
   import Destinations from '../components/Destinations.svelte'
@@ -108,10 +112,75 @@
         </p>
       {/if}
     </section>
+
+    {#if spirit.regionId === 'glade' && canChooseMoon($game)}
+      {@const wait = $game.player.moonLocketMs ?? 0}
+      <section class="locket">
+        <h3>Moon-Phase Locket</h3>
+        <p>
+          The moon tonight: <strong
+            >{WEATHER[$game.weather.glade?.kind ?? 'waxing-moon'].name}</strong
+          >.
+          {wait > 0
+            ? `The locket rests: you can choose again in ${formatDuration(wait)}.`
+            : 'Once a day, you may choose it.'}
+        </p>
+        <div class="phases">
+          {#each CHOOSABLE_MOONS as phase (phase)}
+            <button
+              type="button"
+              disabled={wait > 0 || $game.weather.glade?.kind === phase}
+              onclick={() => runtime.dispatch({ type: 'moon/choose', phase })}
+            >
+              {WEATHER[phase].name}
+            </button>
+          {/each}
+        </div>
+      </section>
+    {/if}
   </div>
 {/if}
 
 <style>
+  .locket {
+    max-width: 760px;
+    margin: 0 auto 16px;
+    padding: 16px;
+    border-radius: 20px;
+    background: rgb(var(--surface-rgb) / 0.8);
+    border: 2px solid #9a86cf;
+    text-align: center;
+  }
+
+  .locket h3,
+  .locket p {
+    margin: 0 0 8px;
+  }
+
+  .phases {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .phases button {
+    min-height: 44px;
+    padding: 0 14px;
+    border: 2px solid #9a86cf;
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .phases button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
   .gift {
     display: flex;
     align-items: center;

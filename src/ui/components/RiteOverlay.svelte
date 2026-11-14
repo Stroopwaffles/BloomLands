@@ -40,6 +40,12 @@
           color: '#f7b7c8',
           grand: true,
         }
+      case 'open-secret':
+        return {
+          line: 'The full moon bows low, and a hidden hollow opens beneath it…',
+          color: '#c8b8f0',
+          grand: true,
+        }
       case 'turn-to-day':
         return { line: 'The sky turns to dawn.', color: '#ffe59e', grand: false }
       case 'turn-to-night':

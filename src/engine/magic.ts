@@ -7,12 +7,13 @@ import { canPay, payCost } from './costs'
 import { isMorning, turnSky } from './environment'
 import type { BlockedReason, GameEvent } from './events'
 import { activeFlightEvent, foilAmbush } from './flightEvents'
-import { courtRank, hasFeature } from './modifiers'
-import { canTameHere, tameMountHere } from './mounts'
+import { courtRank, hasFeature, spellSaveChance } from './modifiers'
+import { canTameHere, tameMountHere, wildMountAt } from './mounts'
 import { regionUnlocked, unlockRegion } from './regions'
 import { stateRandom } from './rng'
 import { unlockSecret } from './secrets'
 import { placeRegion, REGIONS } from '../data/world'
+import { MOUNTS } from '../data/mounts'
 import { performPrestige } from './prestige'
 import type { GameState } from './state'
 
@@ -39,6 +40,12 @@ function hasTarget(state: GameState, spellId: string): boolean {
     case 'webs': {
       const creature = state.challenges.creatures[place]
       return !travel && !!creature && !!CREATURES[creature.creatureId]?.webs
+    }
+    case 'shadow': {
+      // In the Glade: a new moon to brighten, or the Moonshadow Crew camped right here.
+      if (travel || placeRegion(place) !== 'glade') return false
+      const camp = state.challenges.camps[place]
+      return state.weather.glade?.kind === 'new-moon' || camp === 'moonshadow-crew'
     }
     case 'camp':
       return !travel && !!state.challenges.camps[place]
@@ -67,6 +74,12 @@ function hasTarget(state: GameState, spellId: string): boolean {
  */
 export function spellCost(state: GameState, spellId: string): CostEntry[] {
   const cost = SPELLS[spellId]?.cost ?? []
+  // Some creatures want something special to join you (the blue jay).
+  if (SPELLS[spellId]?.target === 'tame' && !state.player.travel) {
+    const wild = wildMountAt(state, state.player.place)
+    const tameCost = wild ? MOUNTS[wild]?.tameCost : undefined
+    if (tameCost) return tameCost
+  }
   if (!REGIONAL_SPELLS.includes(spellId)) return cost
   const signature = REGION_SIGNATURE[placeRegion(state.player.place)] ?? REGION_SIGNATURE.meadow
   return cost.map((entry) =>
@@ -87,7 +100,9 @@ export function checkSpell(state: GameState, spellId: string): 'ok' | BlockedRea
 export function castSpell(state: GameState, spellId: string): GameEvent[] {
   const check = checkSpell(state, spellId)
   if (check !== 'ok') return [{ type: 'blocked', reason: check }]
-  payCost(state, spellCost(state, spellId))
+  // The Moth-Wing Quill: now and then a spell costs nothing.
+  const save = spellSaveChance(state)
+  if (!(save > 0 && stateRandom(state)() < save)) payCost(state, spellCost(state, spellId))
   state.stats.spellsCast++
   const place = state.player.place
   const cast: GameEvent = { type: 'spell-cast', spellId }
@@ -109,6 +124,15 @@ export function castSpell(state: GameState, spellId: string): GameEvent[] {
       return [cast, ...sneak(state)]
     case 'webs':
       return [cast, ...sendCreatureAway(state, place, 'shooed')]
+    case 'shadow': {
+      const events: GameEvent[] = [cast]
+      if (state.challenges.camps[place] === 'moonshadow-crew')
+        events.push(...clearCamp(state, place))
+      // The new moon gives way early to a waxing moon.
+      const moon = state.weather.glade
+      if (moon?.kind === 'new-moon') moon.remainingMs = 0
+      return events
+    }
   }
 }
 
@@ -117,6 +141,7 @@ export function ritualDone(state: GameState, ritualId: string): boolean {
   const ritual = RITUALS[ritualId]
   if (!ritual) return false
   if (ritual.effect === 'open-fairy-ring') return state.secrets.includes('fairy-ring')
+  if (ritual.effect === 'open-secret' && ritual.secret) return state.secrets.includes(ritual.secret)
   if (ritual.effect === 'unlock-region' && ritual.region)
     return regionUnlocked(state, ritual.region)
   return false
@@ -127,6 +152,9 @@ export function checkRitual(state: GameState, ritualId: string): 'ok' | BlockedR
   if (!hasFeature(state, 'ritual-circle')) return 'no-circle'
   if (state.player.travel || state.player.place !== 'home') return 'not-home'
   if (RITUALS[ritualId].morningOnly && !isMorning(state)) return 'not-morning'
+  if (RITUALS[ritualId].fullMoonOnly && state.weather.glade?.kind !== 'full-moon') {
+    return 'not-full-moon'
+  }
   if (ritualDone(state, ritualId)) return 'already-done'
   const region = RITUALS[ritualId].region
   if (region && courtRank(state) < (REGIONS[region].unlock?.rank ?? 0)) return 'needs-rank'
@@ -151,6 +179,8 @@ export function performRitual(state: GameState, ritualId: string): GameEvent[] {
       break
     case 'open-fairy-ring':
       return [{ type: 'ritual-performed', ritualId }, ...unlockSecret(state, 'fairy-ring')]
+    case 'open-secret':
+      return [{ type: 'ritual-performed', ritualId }, ...unlockSecret(state, ritual.secret!)]
     case 'plenty':
       state.plentyMs += PLENTY.durationMs
       break

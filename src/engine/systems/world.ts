@@ -1,5 +1,6 @@
 import { advanceCamps, advanceCreatures, advancePests, advanceSneak } from '../challenges'
 import { advanceSecrets } from '../secrets'
+import { advanceMoonTimers } from '../moon'
 import { advanceTime, advanceWeather } from '../environment'
 import { regrowSpots } from '../gathering'
 import { stateRandom } from '../rng'
@@ -24,6 +25,7 @@ export const challengesSystem: System = {
     advanceCreatures(state, dtMs, random)
     advanceCamps(state, dtMs, random)
     advanceSneak(state, dtMs)
+    advanceMoonTimers(state, dtMs)
     advanceSecrets(state)
   },
 }

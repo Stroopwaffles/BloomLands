@@ -1,5 +1,7 @@
 import {
+  MOON_CYCLE,
   REGION_WEATHER,
+  STARFALL_RULES,
   WEATHER,
   WEATHER_RULES,
   type WeatherDef,
@@ -89,7 +91,19 @@ export function describeWeather(
 export function rollWeather(
   regionId: string,
   random: Random,
-): { kind: WeatherKind; remainingMs: number } {
+  previous?: { step?: number },
+): { kind: WeatherKind; remainingMs: number; step?: number } {
+  const remaining = () =>
+    WEATHER_RULES.minMs + Math.floor(random() * (WEATHER_RULES.maxMs - WEATHER_RULES.minMs))
+  // The Glade's moon goes round in order; a waxing or waning moon may bring a starfall.
+  if (regionId === 'glade') {
+    const step = ((previous?.step ?? -1) + 1) % MOON_CYCLE.length
+    let kind = MOON_CYCLE[step]
+    if ((kind === 'waxing-moon' || kind === 'waning-moon') && random() < STARFALL_RULES.chance) {
+      kind = 'starfall'
+    }
+    return { kind, remainingMs: remaining(), step }
+  }
   const kinds = REGION_WEATHER[regionId] ?? REGION_WEATHER.meadow
   const kind = pickWeighted(
     kinds.map((id) => [id, WEATHER[id].weight] as const),
@@ -103,7 +117,9 @@ export function rollWeather(
 export function advanceWeather(state: GameState, dtMs: number, random: Random): void {
   for (const [regionId, weather] of Object.entries(state.weather)) {
     weather.remainingMs -= dtMs
-    if (weather.remainingMs <= 0) state.weather[regionId] = rollWeather(regionId, random)
+    if (weather.remainingMs <= 0) {
+      state.weather[regionId] = rollWeather(regionId, random, weather)
+    }
   }
 }
 

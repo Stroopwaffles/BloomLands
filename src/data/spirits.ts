@@ -148,4 +148,30 @@ export const SPIRITS: Readonly<Record<string, SpiritDef>> = {
       },
     ],
   },
+  'spirit-selenne': {
+    id: 'spirit-selenne',
+    name: 'Selenne, the Quiet Moon',
+    regionId: 'glade',
+    place: 'moon-pool',
+    sleeping: [
+      'There is only a reflection of the moon in the pool. Then the reflection blinks.',
+      '"...so quiet... the Glade is so quiet, little one... let it shine, and I will wake..."',
+    ],
+    awakening: [
+      'The pool brightens until it holds a whole silver sky, and a calm face smiles up from it.',
+      '"Thank you. Every night, the Glade will remember your light. Softly. Always softly."',
+    ],
+    requirements: [
+      { kind: 'bloom', level: 2, label: 'Help the Moonlit Glade reach Sprouting bloom' },
+      { kind: 'story', storyId: 'story-nox', label: "Finish Old Nox's story" },
+      {
+        kind: 'offering',
+        items: [
+          { itemId: 'component-moon-draught', amount: 3 },
+          { itemId: 'component-starlight-lens', amount: 1 },
+        ],
+        label: 'Offer 3 Moon Draught and 1 Starlight Lens',
+      },
+    ],
+  },
 }

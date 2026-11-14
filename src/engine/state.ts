@@ -33,6 +33,8 @@ export interface SpotState {
 export interface WeatherState {
   kind: WeatherKind
   remainingMs: number
+  /** For a moon cycle: where in the cycle this phase sits. */
+  step?: number
 }
 
 /** A large creature visiting a harvesting spot. */
@@ -220,6 +222,10 @@ export interface GameState {
     wingSpeed: number
     /** Time left on Hush Step: gathering is allowed under a watching creature's nose. */
     sneakMs: number
+    /** Time until another falling star can be caught. */
+    starMs?: number
+    /** Time until the Moon-Phase Locket can choose the moon again. */
+    moonLocketMs?: number
   }
   resources: {
     glimmers: number

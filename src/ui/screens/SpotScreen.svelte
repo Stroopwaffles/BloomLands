@@ -53,6 +53,29 @@
   const campCrew = $derived($game.challenges.camps[spotId])
   const wildMount = $derived(wildMountAt($game, spotId))
   const night = $derived(isNight($game))
+
+  /** A starfall in the Glade: stars tumble through the scene, and tapping one catches it. */
+  const starfall = $derived(
+    spotDef?.regionId === 'glade' && $game.weather.glade?.kind === 'starfall',
+  )
+  let stars = $state<{ id: number; x: number; drift: number }[]>([])
+  let nextStar = 0
+  $effect(() => {
+    if (!starfall) {
+      stars = []
+      return
+    }
+    const timer = setInterval(() => {
+      const star = { id: nextStar++, x: 8 + Math.random() * 84, drift: Math.random() * 16 - 8 }
+      stars = [...stars.slice(-5), star]
+    }, 1700)
+    return () => clearInterval(timer)
+  })
+
+  function catchFallingStar(id: number) {
+    stars = stars.filter((s) => s.id !== id)
+    runtime.dispatch({ type: 'star/catch' })
+  }
   const pest = $derived(pestAt(spotId))
   const watching = $derived(!!creature && CREATURES[creature.creatureId]?.behavior === 'watches')
   /** Webs or rubble block the spot until they're cleared by tapping. */
@@ -248,6 +271,20 @@
         </div>
       {/each}
 
+      {#each stars as star (star.id)}
+        <button
+          type="button"
+          class="falling-star"
+          style:left="{star.x}%"
+          style:--drift="{star.drift}%"
+          aria-label="Catch the falling star"
+          onpointerdown={() => catchFallingStar(star.id)}
+          onanimationend={() => (stars = stars.filter((s) => s.id !== star.id))}
+        >
+          <span aria-hidden="true">★</span>
+        </button>
+      {/each}
+
       {#if wildMount}
         <div class="mount" style:left="{layout.mount.x}%" style:top="{layout.mount.y}%">
           <Art id={`${wildMount}-wild`} size={90} />
@@ -292,6 +329,9 @@
     </div>
 
     <div class="below">
+      {#if starfall}
+        <p class="note stars-note">Stars are falling! Tap them as they fall to catch a gift.</p>
+      {/if}
       {#if over > 0}
         <p class="note full" role="status">
           Your satchel is over-full by {over}: {mountAway ?? 'your Deep Pockets Draught wore off'}.
@@ -461,6 +501,44 @@
   }
 
   /* Helpers at work beside the plants: they bob as they pick (or peer about, for scouts). */
+  /* Falling stars in a Glade starfall: tap to catch. */
+  .falling-star {
+    position: absolute;
+    top: -8%;
+    z-index: 3;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(255 243 176 / 0.55), transparent 70%);
+    color: #ffe59e;
+    font-size: 1.6rem;
+    line-height: 48px;
+    text-shadow: 0 0 10px #fff3b0;
+    cursor: pointer;
+    animation: star-fall 4.2s linear forwards;
+  }
+
+  @keyframes star-fall {
+    to {
+      top: 92%;
+      margin-left: var(--drift);
+      opacity: 0.2;
+    }
+  }
+
+  .stars-note {
+    background: var(--surface);
+    border: 2px solid #d9a441;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .falling-star {
+      animation-duration: 8s;
+    }
+  }
+
   .worker {
     position: absolute;
     width: 8%;

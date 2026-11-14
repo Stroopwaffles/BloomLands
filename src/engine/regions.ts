@@ -65,7 +65,11 @@ export function welcomeRegion(state: GameState, regionId: string): void {
 export function placeOpen(state: GameState, placeId: string): boolean {
   if (placeId === HOME) return true
   if (!regionReachable(state, placeRegion(placeId))) return false
-  return !isSecret(placeId) || state.secrets.includes(placeId)
+  if (!isSecret(placeId)) return true
+  // The Starwell: only reachable while riding the luna moth.
+  const unlock = SPOTS[placeId]?.secret?.unlock
+  if (unlock?.kind === 'riding') return state.mounts.riding === unlock.mountId
+  return state.secrets.includes(placeId)
 }
 
 /** Harvesting spots the player can reach, in display order. */

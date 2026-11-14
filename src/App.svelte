@@ -4,7 +4,7 @@
   import { isNight } from './engine/environment'
   import { startSound } from './ui/sound'
   import Art from './art/Art.svelte'
-  import { HOME, isSettlement, isSpiritPlace, placeRegion } from './data/world'
+  import { HOME, isSettlement, isSpiritPlace, placeRegion, REGIONS } from './data/world'
   import { latestRegion } from './engine/regions'
   import { formatNumber } from './engine/format'
   import { COURT_RANKS } from './data/economy'
@@ -57,12 +57,14 @@
   $effect(() => music.play(musicTheme))
 
   /**
-   * Soft night colors for the whole interface while it's night in the game, and always in the
-   * Caves, which are dark down there (not on the menu).
+   * Soft night colors for the whole interface while it's night in the game, and always in
+   * regions that are always dark: the Caves and the twilight Glade (not on the menu).
    */
-  const inCaves = $derived(placeRegion($game.player.travel?.to ?? $game.player.place) === 'caves')
+  const inDark = $derived(
+    REGIONS[placeRegion($game.player.travel?.to ?? $game.player.place)]?.dark === true,
+  )
   const nightTheme = $derived(
-    screen === 'game' && settings.nightTheme === 'auto' && (isNight($game) || inCaves),
+    screen === 'game' && settings.nightTheme === 'auto' && (isNight($game) || inDark),
   )
   $effect(() => {
     if (nightTheme) document.documentElement.dataset.theme = 'night'

@@ -103,6 +103,8 @@ export function advanceCreatures(state: GameState, dtMs: number, random: Random)
     if (def.weather && state.weather[def.regionId]?.kind !== def.weather) continue
     // Curios like the Nightlight Jar make a region's troubles rarer.
     if (random() >= regionCalmMultiplier(state, def.regionId)) continue
+    // A creature won over by a story (Vesper's moths) turns up half as often.
+    if (def.gentlerAfter && state.stories[def.gentlerAfter]?.complete && random() < 0.5) continue
     const spots = visitedSpots(state, def.regionId).filter(
       (id) => !challenges.creatures[id] && (!def.spots || def.spots.includes(id)),
     )
@@ -186,6 +188,8 @@ export function advanceCamps(state: GameState, dtMs: number, random: Random): vo
     const alreadyCamped = Object.values(challenges.camps).includes(crew.id)
     if (alreadyCamped || state.crews[crew.id]?.won) continue
     if (random() >= regionCalmMultiplier(state, crew.regionId)) continue
+    // Some crews only camp in their weather (the Moonshadow Crew needs a new moon).
+    if (crew.weather && state.weather[crew.regionId]?.kind !== crew.weather) continue
     const spots = visitedSpots(state, crew.regionId)
     if (spots.length === 0) continue
     const spotId = spots[Math.floor(random() * spots.length)]

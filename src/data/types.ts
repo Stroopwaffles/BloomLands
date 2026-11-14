@@ -125,6 +125,8 @@ export type SecretUnlock =
   | { kind: 'calmed'; creatureId: string; count: number; hint: string }
   /** A scout searching the region may stumble on it (a rare harvest there can reveal it too). */
   | { kind: 'scout'; regionId: string; chance: number; hint: string }
+  /** Only reachable while riding this mount (it never stays open on its own). */
+  | { kind: 'riding'; mountId: string; hint: string }
 
 export interface SettlementDef {
   id: string
@@ -156,4 +158,6 @@ export interface RegionDef {
    * court of the right rank visit.
    */
   needsLight?: boolean
+  /** Always dark (the Caves, the twilight Glade): the interface uses its night colors there. */
+  dark?: boolean
 }

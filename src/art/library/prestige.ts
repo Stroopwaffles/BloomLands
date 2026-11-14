@@ -53,6 +53,7 @@ const SPIRIT_COLORS: Record<string, string> = {
   'spirit-mirebelle': '#4fa8a0',
   'spirit-pome': '#e87fa0',
   'spirit-quartz': '#8a78d8',
+  'spirit-selenne': '#7a8ad8',
 }
 
 const frame = (color: string) =>

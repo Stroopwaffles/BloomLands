@@ -1,4 +1,5 @@
 import { levelUpFood, MOUNTS } from '../data/mounts'
+import { isMorning } from './environment'
 import { canPay, payCost } from './costs'
 import type { BlockedReason, GameEvent } from './events'
 import { befriendEase, mountSpeedMultiplier, stableCapacity } from './modifiers'
@@ -33,7 +34,8 @@ export function wildMountAt(state: GameState, spotId: string): string | null {
       (m) =>
         m.homeSpot === spotId &&
         !ownsMount(state, m.id) &&
-        (!m.afterStory || state.stories[m.afterStory]?.complete === true),
+        (!m.afterStory || state.stories[m.afterStory]?.complete === true) &&
+        (!m.morningOnly || isMorning(state)),
     )?.id ?? null
   )
 }

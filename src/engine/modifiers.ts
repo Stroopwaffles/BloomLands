@@ -182,7 +182,26 @@ export function satchelMountAway(state: GameState, placeId = state.player.place)
 export function luck(state: GameState): number {
   let value = 1
   for (const e of potionEffects(state)) if (e.kind === 'luck') value *= e.multiplier
+  // Curios like the Fallen Star help everywhere.
+  for (const e of curioEffects(state)) if (e.kind === 'luck') value *= e.multiplier
   return value
+}
+
+/** Offline time counts for more (Dreamcatcher). */
+export function offlineBoost(state: GameState): number {
+  return product(state, 'offlineBoost')
+}
+
+/** Chance a spell costs nothing (Moth-Wing Quill). */
+export function spellSaveChance(state: GameState): number {
+  let chance = 0
+  for (const e of curioEffects(state)) if (e.kind === 'spellSave') chance += e.chance
+  return Math.min(1, chance)
+}
+
+/** The Moon-Phase Locket lets you choose the Glade's moon. */
+export function canChooseMoon(state: GameState): boolean {
+  return curioEffects(state).some((e) => e.kind === 'moonChoice')
 }
 
 /**

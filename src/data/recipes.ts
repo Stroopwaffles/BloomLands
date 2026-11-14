@@ -286,9 +286,46 @@ const RECIPE_LIST: RecipeDef[] = [
       { itemId: 'component-lily-balm', amount: 1 },
       { itemId: 'component-beeswax-candle', amount: 1 },
       { itemId: 'component-glow-ink', amount: 1 },
+      { itemId: 'component-moon-draught', amount: 1 },
     ],
     output: { itemId: 'component-harmony-blend', amount: 1 },
     durationMs: 90 * SEC,
+  },
+
+  // Moonlit Glade refining and components
+  {
+    id: 'refined-moonpetal-oil',
+    station: 'press',
+    inputs: [{ tag: 'moonflowers', amount: 3 }],
+    output: { itemId: 'refined-moonpetal-oil', amount: 1 },
+    durationMs: 18 * SEC,
+  },
+  {
+    id: 'refined-moonlight-tincture',
+    station: 'press',
+    inputs: [{ itemId: 'raw-moonlight', amount: 2 }],
+    output: { itemId: 'refined-moonlight-tincture', amount: 1 },
+    durationMs: 22 * SEC,
+  },
+  {
+    id: 'component-moon-draught',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'refined-moonpetal-oil', amount: 1 },
+      { itemId: 'refined-dew-water', amount: 1 },
+    ],
+    output: { itemId: 'component-moon-draught', amount: 1 },
+    durationMs: 35 * SEC,
+  },
+  {
+    id: 'component-starlight-lens',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'component-crystal-focus', amount: 1 },
+      { itemId: 'component-glow-ink', amount: 1 },
+    ],
+    output: { itemId: 'component-starlight-lens', amount: 1 },
+    durationMs: 45 * SEC,
   },
 
   // Potions (brewed in the cauldron)

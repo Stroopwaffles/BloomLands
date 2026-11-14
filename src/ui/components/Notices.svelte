@@ -51,6 +51,15 @@
         return [`A relic: ${RELICS[event.relicId]?.name ?? 'a gift'}! It's yours forever.`, true]
       case 'root-upgrade':
         return [`${ROOT_UPGRADES[event.upgradeId]?.name} is now tier ${event.tier}.`, false]
+      case 'star-caught':
+        return [
+          event.itemId
+            ? `You caught a falling star: ${event.itemId === 'raw-stardust' ? 'stardust!' : 'moonlight!'}`
+            : `You caught a falling star: +${event.glimmers} Glimmers`,
+          false,
+        ]
+      case 'moon-chosen':
+        return ['The moon turns at your locket’s bidding.', false]
       case 'prestige':
         return [`Run ${event.run} begins. The land remembers: +${event.rootSong} Root Song.`, true]
       case 'crew-won':

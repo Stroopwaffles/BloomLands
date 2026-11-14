@@ -264,6 +264,36 @@ export const OUTFIT_PIECES: Readonly<Record<string, OutfitPiece>> = {
     slot: 'headpiece',
     color: '#f2c94f',
   },
+  'piece-starlit-cloak': {
+    id: 'piece-starlit-cloak',
+    name: 'Starlit cloak',
+    slot: 'outfit',
+    color: '#2e3a7a',
+  },
+  'piece-midnight-veil': {
+    id: 'piece-midnight-veil',
+    name: 'Midnight veil',
+    slot: 'headpiece',
+    color: '#5a4a9a',
+  },
+  'piece-nightgown': {
+    id: 'piece-nightgown',
+    name: 'Nightgown',
+    slot: 'outfit',
+    color: '#cfd8f5',
+  },
+  'piece-nightshirt': {
+    id: 'piece-nightshirt',
+    name: 'Nightshirt',
+    slot: 'outfit',
+    color: '#cfd8f5',
+  },
+  'piece-nightcap': {
+    id: 'piece-nightcap',
+    name: 'Nightcap',
+    slot: 'headpiece',
+    color: '#8a9ad8',
+  },
 }
 
 export interface OutfitSet {
@@ -326,6 +356,16 @@ export const OUTFIT_SETS: Readonly<Record<string, OutfitSet>> = {
     id: 'outfit-miner',
     name: "Miner's set",
     pieces: ['piece-miners-overalls', 'piece-lamp-helmet'],
+  },
+  'outfit-starlit': {
+    id: 'outfit-starlit',
+    name: 'Starlit set',
+    pieces: ['piece-starlit-cloak', 'piece-midnight-veil'],
+  },
+  'outfit-sleepwear': {
+    id: 'outfit-sleepwear',
+    name: 'Sleepwear',
+    pieces: ['piece-nightgown', 'piece-nightshirt', 'piece-nightcap'],
   },
 }
 

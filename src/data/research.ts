@@ -645,6 +645,22 @@ RESEARCH_LIST.push(
     region: 'caves',
   },
   {
+    id: 'research-long-twilight',
+    name: 'Rite of Long Twilight',
+    branch: 'rites',
+    description:
+      'Calls up an evening that never ends, opening the Moonlit Glade. Needs a Blossom Court.',
+    cost: [
+      { itemId: 'component-crystal-focus', amount: 1 },
+      { itemId: 'component-lily-balm', amount: 2 },
+    ],
+    durationMs: 8 * MIN,
+    requires: ['research-crystal-focus'],
+    unlocks: [],
+    rituals: ['ritual-long-twilight'],
+    region: 'caves',
+  },
+  {
     id: 'research-root-song',
     name: 'Root Song Ritual',
     branch: 'rites',
@@ -660,6 +676,90 @@ RESEARCH_LIST.push(
     unlocks: ['component-harmony-blend'],
     rituals: ['ritual-root-song'],
     region: 'caves',
+  },
+)
+
+// Moonlit Glade (shown once the Glade is open)
+RESEARCH_LIST.push(
+  {
+    id: 'research-moonpetal-oil',
+    name: 'Moonpetal Oil',
+    branch: 'refining',
+    description: 'Press moonpetals or night jasmine into a silvery oil.',
+    cost: [{ tag: 'moonflowers', amount: 6 }],
+    durationMs: 2 * MIN,
+    requires: ['research-pressing'],
+    unlocks: ['refined-moonpetal-oil'],
+    region: 'glade',
+  },
+  {
+    id: 'research-moonlight-tincture',
+    name: 'Moonlight Tincture',
+    branch: 'refining',
+    description: 'Catch moonbeams in a bottle and press them into a bright tincture.',
+    cost: [{ itemId: 'raw-moonlight', amount: 3 }],
+    durationMs: 2 * MIN,
+    requires: ['research-pressing'],
+    unlocks: ['refined-moonlight-tincture'],
+    region: 'glade',
+  },
+  {
+    id: 'research-moon-draught',
+    name: 'Moon Draught',
+    branch: 'brewing',
+    description: 'Moonpetal oil and dew water: the Glade’s own magic, for night potions and rites.',
+    cost: [
+      { itemId: 'refined-moonpetal-oil', amount: 2 },
+      { itemId: 'refined-dew-water', amount: 2 },
+    ],
+    durationMs: 5 * MIN,
+    requires: ['research-moonpetal-oil'],
+    unlocks: ['component-moon-draught'],
+    region: 'glade',
+  },
+  {
+    id: 'research-starlight-lens',
+    name: 'Starlight Lens',
+    branch: 'brewing',
+    description:
+      'A lens of crystal and glow ink that gathers starlight. Some say blue jays love them.',
+    cost: [
+      { itemId: 'component-crystal-focus', amount: 1 },
+      { itemId: 'component-glow-ink', amount: 1 },
+      { itemId: 'refined-moonlight-tincture', amount: 1 },
+    ],
+    durationMs: 6 * MIN,
+    requires: ['research-moon-draught', 'research-moonlight-tincture'],
+    unlocks: ['component-starlight-lens'],
+    region: 'glade',
+  },
+  {
+    id: 'research-shadowlight',
+    name: 'Shadowlight',
+    branch: 'spellcraft',
+    description:
+      'A soft light that finds whatever hides in shadow, and chases off new-moon darkness.',
+    cost: [{ itemId: 'component-moon-draught', amount: 1 }],
+    durationMs: 3 * MIN,
+    requires: ['research-moon-draught'],
+    unlocks: [],
+    spells: ['spell-shadowlight'],
+    region: 'glade',
+  },
+  {
+    id: 'research-moonrise-rite',
+    name: 'Moonrise Rite',
+    branch: 'rites',
+    description: 'Performed under a full moon, it opens the way to the Dream Hollow.',
+    cost: [
+      { itemId: 'component-moon-draught', amount: 2 },
+      { itemId: 'component-crystal-focus', amount: 1 },
+    ],
+    durationMs: 6 * MIN,
+    requires: ['research-moon-draught'],
+    unlocks: [],
+    rituals: ['ritual-moonrise'],
+    region: 'glade',
   },
 )
 

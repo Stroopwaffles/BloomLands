@@ -2,7 +2,7 @@ import type { CostEntry } from './types'
 
 /** What a spell is cast at (design doc 3.5: spells are for encounters). */
 export type SpellTarget =
-  'pests' | 'creature' | 'ambush' | 'camp' | 'tame' | 'parley' | 'sneak' | 'webs'
+  'pests' | 'creature' | 'ambush' | 'camp' | 'tame' | 'parley' | 'sneak' | 'webs' | 'shadow'
 
 export interface SpellDef {
   id: string
@@ -22,6 +22,7 @@ export const REGION_SIGNATURE: Readonly<Record<string, string>> = {
   swamp: 'component-lily-balm',
   orchard: 'component-beeswax-candle',
   caves: 'component-glow-ink',
+  glade: 'component-moon-draught',
 }
 
 /** Spells whose Sun Salve is swapped for the local region's signature component. */
@@ -89,6 +90,17 @@ export const SPELLS: Readonly<Record<string, SpellDef>> = {
     target: 'webs',
     cost: [{ itemId: 'component-glow-ink', amount: 1 }],
   },
+  'spell-shadowlight': {
+    id: 'spell-shadowlight',
+    name: 'Shadowlight',
+    description:
+      'In the Glade: ends a new moon early, and sends the Moonshadow Crew packing from their camp.',
+    target: 'shadow',
+    cost: [
+      { itemId: 'component-glow-ink', amount: 1 },
+      { itemId: 'component-moon-draught', amount: 1 },
+    ],
+  },
   'spell-tanglevine': {
     id: 'spell-tanglevine',
     name: 'Tanglevine',
@@ -102,7 +114,13 @@ export const SPELLS: Readonly<Record<string, SpellDef>> = {
 }
 
 export type RitualEffect =
-  'turn-to-day' | 'turn-to-night' | 'open-fairy-ring' | 'unlock-region' | 'plenty' | 'root-song'
+  | 'turn-to-day'
+  | 'turn-to-night'
+  | 'open-fairy-ring'
+  | 'open-secret'
+  | 'unlock-region'
+  | 'plenty'
+  | 'root-song'
 
 export interface RitualDef {
   id: string
@@ -116,6 +134,10 @@ export interface RitualDef {
   region?: string
   /** The court rank needed to perform it (index into COURT_RANKS), besides a region's own. */
   rank?: number
+  /** Only works under a full moon in the Glade. */
+  fullMoonOnly?: boolean
+  /** For 'open-secret' rites: which secret area opens. */
+  secret?: string
 }
 
 /** Rite of Plenty: how long it lasts and how much faster plants regrow. */
@@ -180,6 +202,30 @@ export const RITUALS: Readonly<Record<string, RitualDef>> = {
     cost: [
       { itemId: 'component-beeswax-candle', amount: 2 },
       { itemId: 'component-lily-balm', amount: 1 },
+    ],
+  },
+  'ritual-long-twilight': {
+    id: 'ritual-long-twilight',
+    name: 'Rite of Long Twilight',
+    description:
+      'Calls up an evening that never ends: the Moonlit Glade opens. Needs a Blossom Court.',
+    effect: 'unlock-region',
+    region: 'glade',
+    cost: [
+      { itemId: 'component-crystal-focus', amount: 1 },
+      { itemId: 'component-lily-balm', amount: 2 },
+    ],
+  },
+  'ritual-moonrise': {
+    id: 'ritual-moonrise',
+    name: 'Moonrise Rite',
+    description: 'Performed under a full moon, it opens the Dream Hollow for this run.',
+    effect: 'open-secret',
+    secret: 'dream-hollow',
+    fullMoonOnly: true,
+    cost: [
+      { itemId: 'component-moon-draught', amount: 1 },
+      { itemId: 'component-crystal-focus', amount: 1 },
     ],
   },
   'ritual-plenty': {

@@ -136,6 +136,33 @@ const SPOT_LIST: SpotDef[] = [
     trinkets: ['trinket-silver-ring', 'trinket-glass-lens'],
   },
 
+  // Moonlit Glade
+  {
+    id: 'moonpetal-meadow',
+    name: 'Moonpetal Meadow',
+    regionId: 'glade',
+    description: 'A silver field of night-blooming flowers.',
+    plants: [
+      'plant-night-jasmine',
+      'plant-evening-primrose',
+      'plant-moonpetal',
+      'plant-midnight-rose',
+    ],
+    slots: 6,
+    regrowMs: 30_000,
+    trinkets: ['trinket-pearl', 'trinket-silver-spoon'],
+  },
+  {
+    id: 'silverbrook',
+    name: 'Silverbrook',
+    regionId: 'glade',
+    description: 'A slow stream reflecting the moon, with ferns and moonbeams to catch.',
+    plants: ['plant-starmoss', 'plant-moonbeam', 'plant-silverleaf-fern', 'plant-moonpetal'],
+    slots: 6,
+    regrowMs: 32_000,
+    trinkets: ['trinket-music-box-key', 'trinket-pearl'],
+  },
+
   // Secret areas: hidden until unlocked, re-locked on prestige (design doc 3.12)
   {
     id: 'fairy-ring',
@@ -278,6 +305,45 @@ const SPOT_LIST: SpotDef[] = [
       unlock: { kind: 'story', storyId: 'story-digby', hint: "Finish Digby Loamsworth's story." },
     },
   },
+  {
+    id: 'starwell',
+    name: 'The Starwell',
+    regionId: 'glade',
+    description: 'A deep well of night sky where fallen stars come to rest.',
+    plants: ['plant-stardust-bloom', 'plant-moonbeam', 'plant-moonpetal', 'plant-midnight-rose'],
+    slots: 6,
+    regrowMs: 34_000,
+    trinkets: ['trinket-pearl', 'trinket-music-box-key'],
+    secret: {
+      curioId: 'curio-fallen-star',
+      outfitId: 'outfit-starlit',
+      unlock: {
+        kind: 'riding',
+        mountId: 'mount-luna-moth',
+        hint: 'Only a luna moth can carry you down into it.',
+      },
+    },
+  },
+  {
+    id: 'dream-hollow',
+    name: 'The Dream Hollow',
+    regionId: 'glade',
+    description: 'A mossy hollow where everyone who lies down has the loveliest dreams.',
+    plants: [
+      'plant-sleepy-poppy',
+      'plant-night-jasmine',
+      'plant-evening-primrose',
+      'plant-starmoss',
+    ],
+    slots: 6,
+    regrowMs: 30_000,
+    trinkets: ['trinket-silver-spoon', 'trinket-music-box-key'],
+    secret: {
+      curioId: 'curio-dreamcatcher',
+      outfitId: 'outfit-sleepwear',
+      unlock: { kind: 'ritual', hint: 'Perform the Moonrise Rite under a full moon.' },
+    },
+  },
 ]
 
 export const SPOTS: Readonly<Record<string, SpotDef>> = Object.fromEntries(
@@ -351,6 +417,18 @@ export const SETTLEMENTS: Readonly<Record<string, SettlementDef>> = {
       greeting: 'Mind your head! Lamps, rope, roots and rocks. What d’you need?',
     },
   },
+  emberglow: {
+    id: 'emberglow',
+    name: 'Emberglow',
+    regionId: 'glade',
+    description: 'A firefly village of tiny lanterns hung from a weeping willow.',
+    folk: 'fireflies',
+    shop: {
+      name: 'The Willow Lantern',
+      keeper: 'Flicker',
+      greeting: 'Shh, softly now, the moths are sleeping. What can I light up for you?',
+    },
+  },
 }
 
 export interface SpiritPlaceDef {
@@ -396,6 +474,13 @@ export const SPIRIT_PLACES: Readonly<Record<string, SpiritPlaceDef>> = {
     regionId: 'caves',
     description: 'A still underground lake that repeats every sound.',
     spiritId: 'spirit-quartz',
+  },
+  'moon-pool': {
+    id: 'moon-pool',
+    name: 'The Moon Pool',
+    regionId: 'glade',
+    description: 'A perfectly round pool that always holds a reflection of the full moon.',
+    spiritId: 'spirit-selenne',
   },
 }
 
@@ -453,10 +538,29 @@ export const REGIONS: Readonly<Record<string, RegionDef>> = {
     sceneSpot: 'fungus-gallery',
     unlock: { rank: 3, ritualId: 'ritual-lantern' },
     needsLight: true,
+    dark: true,
+  },
+  glade: {
+    id: 'glade',
+    name: 'Moonlit Glade',
+    settlement: 'emberglow',
+    spiritPlace: 'moon-pool',
+    secretSpots: ['starwell', 'dream-hollow'],
+    spots: ['moonpetal-meadow', 'silverbrook'],
+    sceneSpot: 'moonpetal-meadow',
+    unlock: { rank: 4, ritualId: 'ritual-long-twilight' },
+    dark: true,
   },
 }
 
-export const REGION_ORDER: readonly string[] = ['meadow', 'forest', 'swamp', 'orchard', 'caves']
+export const REGION_ORDER: readonly string[] = [
+  'meadow',
+  'forest',
+  'swamp',
+  'orchard',
+  'caves',
+  'glade',
+]
 
 /** Every place you can fly to, in display order. */
 export function allPlaces(): string[] {

@@ -26,6 +26,9 @@ export type BlockedReason =
   | 'calm-only'
   | 'maxed'
   | 'missing-root-song'
+  | 'not-full-moon'
+  | 'no-stars'
+  | 'cooling-down'
 
 /**
  * Things that just happened, returned by actions so the screen can react (floating numbers,
@@ -71,6 +74,8 @@ export type GameEvent =
   | { type: 'crew-won'; crewId: string }
   | { type: 'region-unlocked'; regionId: string }
   | { type: 'prestige'; run: number; rootSong: number }
+  | { type: 'star-caught'; glimmers: number; itemId: string | null }
+  | { type: 'moon-chosen'; phase: string }
   | { type: 'relic'; relicId: string }
   | { type: 'root-upgrade'; upgradeId: string; tier: number }
   | { type: 'shop-sold'; itemId: string; amount: number; glimmers: number }

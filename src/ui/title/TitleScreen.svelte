@@ -86,6 +86,13 @@
       fall: ['#fbe3ea', '#f7a6c0', '#ffffff', '#f6c0a8'],
       leaves: false,
     },
+    glade: {
+      spot: 'moonpetal-meadow',
+      glow: 'rgb(232 236 255 / 0.35)',
+      fall: ['#e8e4ff', '#c8b8f0', '#fff3b0', '#9fb4f0'],
+      leaves: false,
+      dark: true,
+    },
     swamp: {
       spot: 'lilypad-pools',
       glow: 'rgb(214 240 234 / 0.5)',

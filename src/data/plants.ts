@@ -338,6 +338,77 @@ const PLANT_LIST: PlantDef[] = [
     rarity: 'rare',
     yields: [{ itemId: 'raw-sunshaft-fern', amount: 1 }],
   },
+  // Moonlit Glade
+  {
+    id: 'plant-starmoss',
+    tags: ['leaves'],
+    name: 'Starmoss',
+    toughness: 5,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-starmoss', amount: 2 }],
+  },
+  {
+    id: 'plant-night-jasmine',
+    name: 'Night jasmine',
+    toughness: 6,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-jasmine-blossoms', amount: 2 }],
+  },
+  {
+    id: 'plant-evening-primrose',
+    tags: ['petals'],
+    name: 'Evening primrose',
+    toughness: 6,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-primrose-petals', amount: 2 }],
+  },
+  {
+    id: 'plant-moonpetal',
+    tags: ['petals'],
+    name: 'Moonpetal',
+    toughness: 7,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-moonpetals', amount: 2 }],
+  },
+  {
+    id: 'plant-moonbeam',
+    name: 'Moonbeam',
+    toughness: 1,
+    rarity: 'uncommon',
+    yields: [{ itemId: 'raw-moonlight', amount: 1 }],
+  },
+  {
+    id: 'plant-silverleaf-fern',
+    tags: ['leaves'],
+    name: 'Silverleaf fern',
+    toughness: 8,
+    rarity: 'uncommon',
+    yields: [{ itemId: 'raw-silver-fronds', amount: 2 }],
+  },
+  {
+    id: 'plant-midnight-rose',
+    tags: ['petals'],
+    name: 'Midnight rose',
+    toughness: 10,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-midnight-petals', amount: 1 }],
+  },
+  // Moonlit Glade secrets
+  {
+    id: 'plant-stardust-bloom',
+    name: 'Stardust bloom',
+    toughness: 9,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-stardust', amount: 1 }],
+  },
+  {
+    id: 'plant-sleepy-poppy',
+    tags: ['petals'],
+    name: 'Sleepy poppy',
+    toughness: 7,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-poppy-petals', amount: 1 }],
+  },
 ]
 
 export const PLANTS: Readonly<Record<string, PlantDef>> = Object.fromEntries(

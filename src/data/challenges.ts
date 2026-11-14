@@ -20,6 +20,11 @@ export type WeatherKind =
   | 'drip-season'
   | 'rumbles'
   | 'still-air'
+  | 'waxing-moon'
+  | 'full-moon'
+  | 'waning-moon'
+  | 'new-moon'
+  | 'starfall'
 
 export interface WeatherDef {
   id: WeatherKind
@@ -214,6 +219,79 @@ export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
     dewAllDay: false,
     luck: 1.6,
   },
+  // The Moonlit Glade has a moon cycle instead of weather (design doc 3.16).
+  'waxing-moon': {
+    id: 'waxing-moon',
+    name: 'Waxing moon',
+    description: 'The moon grows a little rounder each night. The full moon is coming.',
+    weight: 0,
+    regrowth: 1,
+    flightHome: 1,
+    flightAway: 1,
+    dewAllDay: false,
+  },
+  'full-moon': {
+    id: 'full-moon',
+    name: 'Full moon',
+    description: 'The Glade glows silver: rare finds are much more likely. Some rites need it.',
+    weight: 0,
+    regrowth: 1.1,
+    flightHome: 1,
+    flightAway: 1,
+    dewAllDay: false,
+    luck: 1.6,
+  },
+  'waning-moon': {
+    id: 'waning-moon',
+    name: 'Waning moon',
+    description: 'The moon slims night by night. A new moon is coming.',
+    weight: 0,
+    regrowth: 1,
+    flightHome: 1,
+    flightAway: 1,
+    dewAllDay: false,
+  },
+  'new-moon': {
+    id: 'new-moon',
+    name: 'New moon',
+    description: 'Dark as ink: flights are slower, and pirates love the shadows.',
+    weight: 0,
+    regrowth: 1,
+    flightHome: 1.2,
+    flightAway: 1.2,
+    dewAllDay: false,
+    luck: 0.8,
+  },
+  starfall: {
+    id: 'starfall',
+    name: 'Starfall',
+    description: 'Stars tumble through the twilight: tap them as they fall to catch a gift.',
+    weight: 0,
+    regrowth: 1,
+    flightHome: 1,
+    flightAway: 1,
+    dewAllDay: false,
+  },
+}
+
+/** The Glade's moon goes round in this order; a waxing or waning moon may become a starfall. */
+export const MOON_CYCLE: readonly WeatherKind[] = [
+  'waxing-moon',
+  'full-moon',
+  'waning-moon',
+  'new-moon',
+]
+
+export const STARFALL_RULES = {
+  /** Chance a waxing or waning moon brings a starfall instead. */
+  chance: 0.35,
+  /** Shortest time between caught stars. */
+  cooldownMs: 2500,
+  /** What a caught star gives: Glimmers, or now and then moonlight or stardust. */
+  glimmersMin: 8,
+  glimmersMax: 20,
+  moonlightChance: 0.25,
+  stardustChance: 0.08,
 }
 
 /** Which weather each region gets. */
@@ -223,6 +301,7 @@ export const REGION_WEATHER: Readonly<Record<string, readonly WeatherKind[]>> = 
   swamp: ['fog', 'drizzle', 'muggy'],
   orchard: ['blossom-wind', 'spring-shower', 'late-frost'],
   caves: ['drip-season', 'rumbles', 'still-air'],
+  glade: MOON_CYCLE,
 }
 
 export const WEATHER_RULES = {
@@ -252,6 +331,7 @@ export const PESTS: Readonly<Record<string, PestDef>> = {
   swamp: { id: 'slug', name: 'slugs', tag: 'petals' },
   orchard: { id: 'caterpillar', name: 'caterpillars', tag: 'blossoms' },
   caves: { id: 'silverfish', name: 'silverfish', tag: 'fungi' },
+  glade: { id: 'earwig', name: 'earwigs', tag: 'petals' },
 }
 
 export interface CreatureDef {
@@ -284,6 +364,8 @@ export interface CreatureDef {
   weather?: WeatherKind
   /** What tapping it does, for the screen ("tear down the webs"). */
   tapVerb?: string
+  /** Once this story is finished it turns up half as often (Vesper and the moth swarm). */
+  gentlerAfter?: string
 }
 
 export const CREATURES: Readonly<Record<string, CreatureDef>> = {
@@ -349,6 +431,17 @@ export const CREATURES: Readonly<Record<string, CreatureDef>> = {
     weather: 'rumbles',
     tapVerb: 'dig through the rubble',
   },
+  'moth-swarm': {
+    id: 'moth-swarm',
+    name: 'Moth swarm',
+    regionId: 'glade',
+    behavior: 'eats',
+    taps: 10,
+    eatEveryMs: 25_000,
+    staysMs: 3 * 60_000,
+    gentlerAfter: 'story-vesper',
+    tapVerb: 'shoo the moths',
+  },
 }
 
 /** How long Hush Step lets you gather under a watching creature's nose. */
@@ -369,6 +462,8 @@ export interface CrewDef {
   parleyLines: string[]
   /** Items they go for first when an ambush succeeds. */
   steals?: string[]
+  /** They only make camp in this weather (the Moonshadow Crew needs a new moon). */
+  weather?: WeatherKind
 }
 
 export const CREWS: Readonly<Record<string, CrewDef>> = {
@@ -427,6 +522,19 @@ export const CREWS: Readonly<Record<string, CrewDef>> = {
       '"Who said that? ...Who said THAT?" A treat echoes down the tunnel. It\'s gone in a blink.',
       '"The Nabbers say you\'re sweet. Down here we don\'t trust sweet. But we do trust snacks."',
       '"All right, light-bringer. The Smugglers will smuggle for you now. Mind the drips."',
+    ],
+  },
+  'moonshadow-crew': {
+    id: 'moonshadow-crew',
+    name: 'The Moonshadow Crew',
+    regionId: 'glade',
+    description: 'Sneaky pirate fairies who move only in shadows: they make camp under a new moon.',
+    steals: ['raw-moonpetals', 'raw-midnight-petals', 'raw-moonlight'],
+    weather: 'new-moon',
+    parleyLines: [
+      '"...We weren\'t here. You didn\'t see us." A shadowy hand takes the treat. Quickly.',
+      '"The Smugglers say you\'re a light-bringer. We don\'t like light. But we like you, a bit."',
+      '"Fine. The Moonshadows will lurk on your side now. Very quietly. Shh."',
     ],
   },
 }
@@ -516,6 +624,21 @@ export const REGION_FLIGHT_EVENTS: Readonly<Record<string, RegionFlightEvents>> 
       thanks: 'The mole thanks you',
       art: 'villager-nibs',
       glimmers: 35,
+    },
+  },
+  glade: {
+    weights: { ambush: 30, windfall: 35, traveler: 35 },
+    windfall: {
+      itemId: 'raw-moonpetals',
+      text: 'Moonpetals drift down like silver snow!',
+      art: 'raw-moonpetals',
+      max: 4,
+    },
+    traveler: {
+      text: 'A young firefly’s lantern has gone out, and she’s lost in the dark.',
+      thanks: 'The little firefly thanks you',
+      art: 'villager-flicker',
+      glimmers: 40,
     },
   },
   orchard: {

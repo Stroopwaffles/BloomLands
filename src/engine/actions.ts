@@ -1,4 +1,6 @@
 import { buyRootUpgrade } from './prestige'
+import { catchStar, chooseMoon } from './moon'
+import type { WeatherKind } from '../data/challenges'
 import { drinkPotion } from './buffs'
 import { equipPiece, finishCreating, recolorSlot, setLook } from './character'
 import { startCraft } from './crafting'
@@ -30,6 +32,8 @@ import { buyUpgrade } from './upgrades'
 export type Action =
   | { type: 'travel/go'; to: string }
   | { type: 'rootsong/buy'; upgradeId: string }
+  | { type: 'star/catch' }
+  | { type: 'moon/choose'; phase: WeatherKind }
   | { type: 'gather/tap'; spotId: string; slot: number }
   | { type: 'satchel/deposit' }
   | { type: 'satchel/take'; itemId: string; amount: number }
@@ -130,6 +134,10 @@ export function applyAction(
       return performRitual(state, action.ritualId)
     case 'rootsong/buy':
       return buyRootUpgrade(state, action.upgradeId)
+    case 'star/catch':
+      return catchStar(state, random)
+    case 'moon/choose':
+      return chooseMoon(state, action.phase, random)
     case 'villager/fulfill':
       return fulfillVillagerRequest(state, action.settlementId, action.requestId)
     case 'villager/dismiss':

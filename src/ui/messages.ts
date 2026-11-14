@@ -26,4 +26,7 @@ export const BLOCKED_TEXT: Record<BlockedReason, string> = {
   'calm-only': 'Too grumpy to shoo. Only a calming spell will do.',
   maxed: 'Already at the highest tier.',
   'missing-root-song': 'Not enough Root Song yet.',
+  'not-full-moon': 'This rite only works under a full moon in the Glade.',
+  'no-stars': 'No stars are falling right now.',
+  'cooling-down': 'Not just yet. Try again a little later.',
 }

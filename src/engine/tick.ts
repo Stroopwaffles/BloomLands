@@ -1,4 +1,4 @@
-import { curioOfflineMs } from './modifiers'
+import { curioOfflineMs, offlineBoost } from './modifiers'
 import type { GameState } from './state'
 import { SYSTEMS, type System, type TickContext } from './systems'
 
@@ -49,7 +49,8 @@ export function advance(
   }
 
   const cap = offlineCapMs(state)
-  const simulatedMs = Math.min(elapsedMs, cap)
+  // The Dreamcatcher makes time away count for a little more.
+  const simulatedMs = Math.round(Math.min(elapsedMs, cap) * offlineBoost(state))
   simulate(state, simulatedMs, { offline: true }, systems)
   return { elapsedMs, simulatedMs, offline: true, capped: elapsedMs > cap }
 }

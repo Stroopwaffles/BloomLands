@@ -12,7 +12,7 @@ describe('music', () => {
   })
 
   it('has a day and a night track for every region so far', () => {
-    for (const region of ['meadow', 'forest', 'swamp', 'orchard', 'caves']) {
+    for (const region of ['meadow', 'forest', 'swamp', 'orchard', 'caves', 'glade']) {
       expect(TRACKS[region]).toBeDefined()
       expect(TRACKS[`${region}-night`]).toBeDefined()
     }

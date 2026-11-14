@@ -16,6 +16,7 @@ import {
 import { SWAMP_ITEM_ART, SWAMP_MISC_ART, SWAMP_PEOPLE_ART, SWAMP_PLANT_ART } from './library/swamp'
 import { MISC_ART } from './library/misc'
 import { PRESTIGE_ART } from './library/prestige'
+import { GLADE_ITEM_ART, GLADE_MISC_ART, GLADE_PEOPLE_ART, GLADE_PLANT_ART } from './library/glade'
 import { PLANT_ART } from './library/plants'
 import { PEOPLE_ART } from './library/people'
 
@@ -53,6 +54,10 @@ export const ART_SVG: Record<string, string> = {
   ...CAVES_ITEM_ART,
   ...CAVES_PEOPLE_ART,
   ...CAVES_MISC_ART,
+  ...GLADE_PLANT_ART,
+  ...GLADE_ITEM_ART,
+  ...GLADE_PEOPLE_ART,
+  ...GLADE_MISC_ART,
   ...PRESTIGE_ART,
 }
 

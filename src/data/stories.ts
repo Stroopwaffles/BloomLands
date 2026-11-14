@@ -91,6 +91,18 @@ export const CHARACTERS: Readonly<Record<string, CharacterDef>> = {
     title: 'a shy young glowworm',
     settlement: 'glimmerdeep',
   },
+  'char-nox': {
+    id: 'char-nox',
+    name: 'Old Nox',
+    title: 'an ancient firefly lamplighter',
+    settlement: 'emberglow',
+  },
+  'char-vesper': {
+    id: 'char-vesper',
+    name: 'Vesper',
+    title: 'a dreamy moth poet',
+    settlement: 'emberglow',
+  },
 }
 
 export const STORIES: Readonly<Record<string, StoryDef>> = {
@@ -635,6 +647,109 @@ export const STORIES: Readonly<Record<string, StoryDef>> = {
     ending: [
       'You did it, and I watched the whole time with my eyes open! I’m going to be brave too.',
       'Keep my nightlight. And... my cousin is a big glowworm. She’s by the fungi now. She’d like you.',
+    ],
+  },
+  'story-nox': {
+    id: 'story-nox',
+    characterId: 'char-nox',
+    curioId: 'curio-lamplighters-wick',
+    chapters: [
+      {
+        lines: [
+          'Evening, little one. Old Nox, lamplighter of Emberglow these three hundred twilights.',
+          'My glow is fading, you see. I need an apprentice. Will you walk the lantern rounds with me?',
+        ],
+        task: {
+          kind: 'stat',
+          stat: 'plantsHarvested',
+          amount: 25,
+          label: 'Walk the rounds: gather 25 plants anywhere',
+        },
+      },
+      {
+        lines: ['Lanterns burn best on jasmine. Its scent keeps the dark polite.'],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-jasmine-blossoms', amount: 8 }],
+          label: 'Bring Old Nox 8 Jasmine blossoms',
+        },
+      },
+      {
+        lines: [
+          'And a little moonpetal oil, for the wicks. A lamplighter is only as good as his wicks.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'refined-moonpetal-oil', amount: 2 }],
+          label: 'Bring Old Nox 2 Moonpetal Oil',
+        },
+      },
+      {
+        lines: [
+          'Now, an apprentice must be known in the village. Help a few folk, and they’ll trust you.',
+        ],
+        task: {
+          kind: 'stat',
+          stat: 'villagersHelped',
+          amount: 3,
+          label: 'Help 3 villagers anywhere',
+        },
+      },
+    ],
+    ending: [
+      'There. Emberglow knows your name now. Pipwick will take the rounds, and you showed her how.',
+      'Take my old wick. It burns slow and steady, like any good magic should.',
+    ],
+  },
+  'story-vesper': {
+    id: 'story-vesper',
+    characterId: 'char-vesper',
+    curioId: 'curio-moth-wing-quill',
+    chapters: [
+      {
+        lines: [
+          'Oh! A visitor. I am Vesper. I write poems. Mostly about moonlight. Mostly sad ones.',
+          'The moth swarm crowds the glowing flowers and nobody else gets a turn. I want to write them a poem to share. I need inspiration.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-moonpetals', amount: 8 }],
+          label: 'Bring Vesper 8 Moonpetals for inspiration',
+        },
+      },
+      {
+        lines: ['They will not listen while they are crowding. Gently move them along, would you?'],
+        task: {
+          kind: 'stat',
+          stat: 'creaturesShooed',
+          amount: 2,
+          label: 'Send away 2 big troubles (the moth swarm counts)',
+        },
+      },
+      {
+        lines: [
+          'Moths adore moon draught. A sip, and they might sit still long enough to hear me.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'component-moon-draught', amount: 1 }],
+          label: 'Bring Vesper 1 Moon Draught',
+        },
+      },
+      {
+        lines: [
+          'One last thing: a midnight rose, for the final verse. It has to be a midnight rose.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-midnight-petals', amount: 2 }],
+          label: 'Bring Vesper 2 Midnight petals',
+        },
+      },
+    ],
+    ending: [
+      'They listened! The whole swarm, wings folded, and then they… shared. They actually shared.',
+      'Take my quill. It has written its best poem. The swarm will be gentler now, I promise.',
     ],
   },
 }
