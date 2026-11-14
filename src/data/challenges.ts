@@ -17,6 +17,9 @@ export type WeatherKind =
   | 'blossom-wind'
   | 'spring-shower'
   | 'late-frost'
+  | 'drip-season'
+  | 'rumbles'
+  | 'still-air'
 
 export interface WeatherDef {
   id: WeatherKind
@@ -178,6 +181,39 @@ export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
     flightAway: 1,
     dewAllDay: false,
   },
+  // The Caves have underground happenings instead of weather.
+  'drip-season': {
+    id: 'drip-season',
+    name: 'Drip season',
+    description: 'Water drips through the rock: crystals grow far more often.',
+    weight: 35,
+    regrowth: 1.1,
+    flightHome: 1,
+    flightAway: 1,
+    dewAllDay: false,
+    tagBoost: { tag: 'crystals', multiplier: 2.5 },
+  },
+  rumbles: {
+    id: 'rumbles',
+    name: 'Rumbles',
+    description: 'The ground shakes now and then. A rockfall may block a spot for a while.',
+    weight: 30,
+    regrowth: 1,
+    flightHome: 1,
+    flightAway: 1,
+    dewAllDay: false,
+  },
+  'still-air': {
+    id: 'still-air',
+    name: 'Still air',
+    description: 'The glowing fungi shine brighter: rare finds are more likely.',
+    weight: 35,
+    regrowth: 1,
+    flightHome: 1,
+    flightAway: 1,
+    dewAllDay: false,
+    luck: 1.6,
+  },
 }
 
 /** Which weather each region gets. */
@@ -186,6 +222,7 @@ export const REGION_WEATHER: Readonly<Record<string, readonly WeatherKind[]>> = 
   forest: ['mist', 'rain', 'falling-leaves'],
   swamp: ['fog', 'drizzle', 'muggy'],
   orchard: ['blossom-wind', 'spring-shower', 'late-frost'],
+  caves: ['drip-season', 'rumbles', 'still-air'],
 }
 
 export const WEATHER_RULES = {
@@ -214,6 +251,7 @@ export const PESTS: Readonly<Record<string, PestDef>> = {
   forest: { id: 'beetle', name: 'beetles', tag: 'caps' },
   swamp: { id: 'slug', name: 'slugs', tag: 'petals' },
   orchard: { id: 'caterpillar', name: 'caterpillars', tag: 'blossoms' },
+  caves: { id: 'silverfish', name: 'silverfish', tag: 'fungi' },
 }
 
 export interface CreatureDef {
@@ -223,8 +261,9 @@ export interface CreatureDef {
   /**
    * 'eats': munches plants until shooed (taps) or calmed.
    * 'watches': blocks the spot (no gathering, no helpers) until calmed or snuck past.
+   * 'blocks': blocks the spot until cleared by tapping (webs, rubble); no sneaking past.
    */
-  behavior: 'eats' | 'watches'
+  behavior: 'eats' | 'watches' | 'blocks'
   /** Taps to shoo it away. */
   taps: number
   /** It eats a plant this often while it's there. */
@@ -237,6 +276,14 @@ export interface CreatureDef {
   ignoresWaterstride?: boolean
   /** Too grumpy to shoo: only a calming spell sends it away. */
   calmOnly?: boolean
+  /** Not a creature at all (a rockfall): calming spells don't work on it. */
+  noCalm?: boolean
+  /** Spins webs: Web Unweave clears it. */
+  webs?: boolean
+  /** Only turns up during this weather (a rockfall during rumbles). */
+  weather?: WeatherKind
+  /** What tapping it does, for the screen ("tear down the webs"). */
+  tapVerb?: string
 }
 
 export const CREATURES: Readonly<Record<string, CreatureDef>> = {
@@ -278,6 +325,29 @@ export const CREATURES: Readonly<Record<string, CreatureDef>> = {
     eatEveryMs: 20_000,
     staysMs: 3 * 60_000,
     calmOnly: true,
+  },
+  spider: {
+    id: 'spider',
+    name: 'Spider',
+    regionId: 'caves',
+    behavior: 'blocks',
+    taps: 10,
+    eatEveryMs: 0,
+    staysMs: 4 * 60_000,
+    webs: true,
+    tapVerb: 'tear down its webs',
+  },
+  rockfall: {
+    id: 'rockfall',
+    name: 'Rockfall',
+    regionId: 'caves',
+    behavior: 'blocks',
+    taps: 8,
+    eatEveryMs: 0,
+    staysMs: 90_000,
+    noCalm: true,
+    weather: 'rumbles',
+    tapVerb: 'dig through the rubble',
   },
 }
 
@@ -345,6 +415,18 @@ export const CREWS: Readonly<Record<string, CrewDef>> = {
       '"Is that... honey cake? We were only borrowing the honey. Forever. But still."',
       '"The Buccaneers say you share. Nobody shares in the Orchard. It\'s very confusing."',
       '"Fine! The Nabbers will nab for you instead. Sweetest deal we ever made."',
+    ],
+  },
+  'stalactite-smugglers': {
+    id: 'stalactite-smugglers',
+    name: 'The Stalactite Smugglers',
+    regionId: 'caves',
+    description: 'Pirate fairies who hide in the ceiling and drop down on gatherers.',
+    steals: ['raw-crystal-shards', 'raw-geode-crystals', 'refined-crystal-powder'],
+    parleyLines: [
+      '"Who said that? ...Who said THAT?" A treat echoes down the tunnel. It\'s gone in a blink.',
+      '"The Nabbers say you\'re sweet. Down here we don\'t trust sweet. But we do trust snacks."',
+      '"All right, light-bringer. The Smugglers will smuggle for you now. Mind the drips."',
     ],
   },
 }
@@ -419,6 +501,21 @@ export const REGION_FLIGHT_EVENTS: Readonly<Record<string, RegionFlightEvents>> 
       thanks: 'The courier thanks you',
       art: 'villager-chestnut',
       glimmers: 20,
+    },
+  },
+  caves: {
+    weights: { ambush: 30, windfall: 35, traveler: 35 },
+    windfall: {
+      itemId: 'raw-glowcap-spores',
+      text: 'Glowing spores drift through the dark!',
+      art: 'raw-glowcap-spores',
+      max: 4,
+    },
+    traveler: {
+      text: 'A little mole has dropped his lamp in the dark.',
+      thanks: 'The mole thanks you',
+      art: 'villager-nibs',
+      glimmers: 35,
     },
   },
   orchard: {

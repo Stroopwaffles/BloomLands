@@ -39,6 +39,8 @@
   const night = $derived(isNight($game))
   const pest = $derived(pestAt(spotId))
   const watching = $derived(!!creature && CREATURES[creature.creatureId]?.behavior === 'watches')
+  /** Webs or rubble block the spot until they're cleared by tapping. */
+  const blocking = $derived(!!creature && CREATURES[creature.creatureId]?.behavior === 'blocks')
   const sneaking = $derived($game.player.sneakMs > 0)
   /** The heron ignores a fairy who drank a Waterstride Philter. */
   const skimming = $derived(
@@ -48,7 +50,7 @@
       !sneaking,
   )
   /** A watching creature (the owl, the heron) stops gathering here unless you get past it. */
-  const blocked = $derived(watching && !sneaking && !skimming)
+  const blocked = $derived((watching && !sneaking && !skimming) || blocking)
   /** "a rabbit", "an owl" */
   const aName = (name: string) => `${/^[aeiou]/i.test(name) ? 'An' : 'A'} ${name.toLowerCase()}`
   /** Low bloom looks faded and grey; full bloom is in full color (design doc 7.3). */
@@ -240,7 +242,9 @@
             class="creature"
             style:left="{layout.creature.x}%"
             style:top="{layout.creature.y}%"
-            aria-label={`Shoo the ${def.name.toLowerCase()} (${creature.tapsLeft} more taps)`}
+            aria-label={def.tapVerb
+              ? `Tap to ${def.tapVerb} (${creature.tapsLeft} more taps)`
+              : `Shoo the ${def.name.toLowerCase()} (${creature.tapsLeft} more taps)`}
             onpointerdown={shoo}
           >
             {#key creatureWiggle}
@@ -288,6 +292,14 @@
               : ''}.
           {/if}
         </p>
+      {:else if creature && blocking}
+        {@const def = CREATURES[creature.creatureId]}
+        <p class="note trouble">
+          {def.webs
+            ? `A spider has webbed over this spot! Tap to ${def.tapVerb} (${creature.tapsLeft} more), or cast Web Unweave or Lullaby.`
+            : `${aName(def.name)} blocks this spot! Tap to ${def.tapVerb} (${creature.tapsLeft} more).`}
+          Nobody can gather here until it's cleared.
+        </p>
       {:else if creature && CREATURES[creature.creatureId]?.calmOnly}
         <p class="note trouble">
           {aName(CREATURES[creature.creatureId].name)} is digging up the plants! It's far too grumpy to
@@ -305,7 +317,7 @@
           bring back less until they leave.
         </p>
       {/if}
-      <SpellButtons targets={['pests', 'creature', 'sneak', 'camp', 'parley']} />
+      <SpellButtons targets={['pests', 'creature', 'webs', 'sneak', 'camp', 'parley']} />
       <WildMount {spotId} />
     </div>
   </div>

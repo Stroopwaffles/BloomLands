@@ -43,6 +43,8 @@ export type PotionEffect =
   | { kind: 'regrowth'; multiplier: number }
   /** Waterstride: no slowdowns over water, and the heron lets you be. */
   | { kind: 'waterstride' }
+  /** Glowlight: light to visit dark places (the Caves) before they're lit for good. */
+  | { kind: 'light' }
 
 export interface PotionDef {
   /** The potion's item ID. */
@@ -121,6 +123,8 @@ export type SecretUnlock =
   | { kind: 'requests'; settlementId: string; count: number; hint: string }
   /** Calm a creature this many times. */
   | { kind: 'calmed'; creatureId: string; count: number; hint: string }
+  /** A scout searching the region may stumble on it (a rare harvest there can reveal it too). */
+  | { kind: 'scout'; regionId: string; chance: number; hint: string }
 
 export interface SettlementDef {
   id: string
@@ -147,4 +151,9 @@ export interface RegionDef {
   sceneSpot: string
   /** What it takes to reach this region (null: open from the start). */
   unlock: { rank: number; ritualId: string } | null
+  /**
+   * Dark until lit: before its rite, light (a Glowlight Potion, or a mount that glows) lets a
+   * court of the right rank visit.
+   */
+  needsLight?: boolean
 }

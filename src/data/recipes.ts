@@ -230,6 +230,53 @@ const RECIPE_LIST: RecipeDef[] = [
     durationMs: 30 * SEC,
   },
 
+  // Caves refining and components
+  {
+    id: 'refined-glow-spores',
+    station: 'mortar',
+    inputs: [{ itemId: 'raw-glowcap-spores', amount: 3 }],
+    output: { itemId: 'refined-glow-spores', amount: 1 },
+    durationMs: 14 * SEC,
+  },
+  {
+    id: 'refined-crystal-powder',
+    station: 'mortar',
+    inputs: [{ tag: 'crystals', amount: 2 }],
+    output: { itemId: 'refined-crystal-powder', amount: 1 },
+    durationMs: 20 * SEC,
+  },
+  {
+    id: 'component-glow-ink',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'refined-glow-spores', amount: 1 },
+      { itemId: 'refined-dew-water', amount: 1 },
+    ],
+    output: { itemId: 'component-glow-ink', amount: 1 },
+    durationMs: 30 * SEC,
+  },
+  {
+    id: 'component-crystal-focus',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'refined-crystal-powder', amount: 1 },
+      { itemId: 'refined-dew-water', amount: 1 },
+    ],
+    output: { itemId: 'component-crystal-focus', amount: 1 },
+    durationMs: 35 * SEC,
+  },
+  {
+    id: 'component-heart-nectar',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'refined-honey-syrup', amount: 1 },
+      { itemId: 'refined-pollen-gold', amount: 1 },
+      { itemId: 'refined-orchid-essence', amount: 1 },
+    ],
+    output: { itemId: 'component-heart-nectar', amount: 1 },
+    durationMs: 40 * SEC,
+  },
+
   // Potions (brewed in the cauldron)
   {
     id: 'potion-greenthumb-brew',
@@ -291,6 +338,16 @@ const RECIPE_LIST: RecipeDef[] = [
     output: { itemId: 'potion-waterstride-philter', amount: 1 },
     durationMs: 40 * SEC,
   },
+  {
+    id: 'potion-glowlight',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'component-beeswax-candle', amount: 1 },
+      { itemId: 'refined-dew-water', amount: 1 },
+    ],
+    output: { itemId: 'potion-glowlight', amount: 1 },
+    durationMs: 40 * SEC,
+  },
 ]
 
 export const RECIPES: Readonly<Record<string, RecipeDef>> = Object.fromEntries(
@@ -336,6 +393,12 @@ const POTION_LIST: PotionDef[] = [
     effect: { kind: 'waterstride' },
     durationMs: 5 * MIN,
     description: 'No slowdowns over water, and the heron lets you be',
+  },
+  {
+    id: 'potion-glowlight',
+    effect: { kind: 'light' },
+    durationMs: 10 * MIN,
+    description: 'Light to visit the Caves before the Lantern Rite',
   },
 ]
 

@@ -56,8 +56,14 @@
   )
   $effect(() => music.play(musicTheme))
 
-  /** Soft night colors for the whole interface while it's night in the game (not on the menu). */
-  const nightTheme = $derived(screen === 'game' && settings.nightTheme === 'auto' && isNight($game))
+  /**
+   * Soft night colors for the whole interface while it's night in the game, and always in the
+   * Caves, which are dark down there (not on the menu).
+   */
+  const inCaves = $derived(placeRegion($game.player.travel?.to ?? $game.player.place) === 'caves')
+  const nightTheme = $derived(
+    screen === 'game' && settings.nightTheme === 'auto' && (isNight($game) || inCaves),
+  )
   $effect(() => {
     if (nightTheme) document.documentElement.dataset.theme = 'night'
     else delete document.documentElement.dataset.theme

@@ -8,11 +8,11 @@ describe('music', () => {
     expect(themeFor('meadow', false)).toBe('meadow')
     expect(themeFor('forest', true)).toBe('forest-night')
     expect(themeFor('swamp', false)).toBe('swamp')
-    expect(themeFor('caves', true)).toBe('meadow-night')
+    expect(themeFor('sky', true)).toBe('meadow-night')
   })
 
   it('has a day and a night track for every region so far', () => {
-    for (const region of ['meadow', 'forest', 'swamp', 'orchard']) {
+    for (const region of ['meadow', 'forest', 'swamp', 'orchard', 'caves']) {
       expect(TRACKS[region]).toBeDefined()
       expect(TRACKS[`${region}-night`]).toBeDefined()
     }

@@ -25,7 +25,7 @@
   import { knownRituals } from '../../engine/magic'
   import { courtRank, satchelCapacity, satchelMountAway } from '../../engine/modifiers'
   import { countItems } from '../../engine/state'
-  import { placeOpen, regionUnlocked } from '../../engine/regions'
+  import { placeOpen, regionReachable } from '../../engine/regions'
   import { flightBreakdown, pathNodes } from '../../engine/route'
   import { playSound } from '../../audio/sfx'
   import { runtime } from '../game'
@@ -39,10 +39,10 @@
   const phase = $derived(dayPhase($game))
 
   /** Open regions, then the next closed one (drawn in fog). */
-  const nextLocked = $derived(REGION_ORDER.find((id) => !regionUnlocked($game, id)) ?? null)
+  const nextLocked = $derived(REGION_ORDER.find((id) => !regionReachable($game, id)) ?? null)
   const islands = $derived(
     REGION_ORDER.filter(
-      (id) => (regionUnlocked($game, id) || id === nextLocked) && MAP_ISLANDS[id],
+      (id) => (regionReachable($game, id) || id === nextLocked) && MAP_ISLANDS[id],
     ),
   )
   const total = $derived(islands.length * 100)
@@ -57,7 +57,7 @@
   }
 
   function placesOn(regionId: string): string[] {
-    if (!regionUnlocked($game, regionId)) return []
+    if (!regionReachable($game, regionId)) return []
     return Object.keys(MAP_ISLANDS[regionId].places).filter((id) => placeOpen($game, id))
   }
 
@@ -174,7 +174,7 @@
               ry="42"
               fill={MAP_ISLANDS[regionId].color}
               stroke={MAP_ISLANDS[regionId].edge}
-              class:fog={!regionUnlocked($game, regionId)}
+              class:fog={!regionReachable($game, regionId)}
               vector-effect="non-scaling-stroke"
             />
           {/each}
@@ -189,7 +189,7 @@
         </svg>
 
         {#each islands as regionId, i (regionId)}
-          {@const open = regionUnlocked($game, regionId)}
+          {@const open = regionReachable($game, regionId)}
           <div class="island-label" style:left={pct(i * 100 + 50)}>
             {#if open}
               <strong>{REGIONS[regionId].name}</strong>
@@ -269,6 +269,12 @@
             </li>
             <li>○ Perform it at your Ritual Circle</li>
           </ul>
+          {#if REGIONS[regionId].needsLight}
+            <p class="status">
+              It's dark down there: until the rite, a Glowlight Potion (or a glowing mount) lights
+              your way for a visit.
+            </p>
+          {/if}
         {/if}
       {:else}
         {@const regionId = placeRegion(selected)}

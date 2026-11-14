@@ -1,7 +1,8 @@
 import type { CostEntry } from './types'
 
 /** What a spell is cast at (design doc 3.5: spells are for encounters). */
-export type SpellTarget = 'pests' | 'creature' | 'ambush' | 'camp' | 'tame' | 'parley' | 'sneak'
+export type SpellTarget =
+  'pests' | 'creature' | 'ambush' | 'camp' | 'tame' | 'parley' | 'sneak' | 'webs'
 
 export interface SpellDef {
   id: string
@@ -20,6 +21,7 @@ export const REGION_SIGNATURE: Readonly<Record<string, string>> = {
   forest: 'component-earth-loam',
   swamp: 'component-lily-balm',
   orchard: 'component-beeswax-candle',
+  caves: 'component-glow-ink',
 }
 
 /** Spells whose Sun Salve is swapped for the local region's signature component. */
@@ -79,6 +81,13 @@ export const SPELLS: Readonly<Record<string, SpellDef>> = {
       { itemId: 'component-calming-tea', amount: 1 },
       { itemId: 'component-thistle-twine', amount: 1 },
     ],
+  },
+  'spell-web-unweave': {
+    id: 'spell-web-unweave',
+    name: 'Web Unweave',
+    description: 'Gently unpicks the spider webs blocking a spot in the Caves.',
+    target: 'webs',
+    cost: [{ itemId: 'component-glow-ink', amount: 1 }],
   },
   'spell-tanglevine': {
     id: 'spell-tanglevine',
@@ -158,6 +167,17 @@ export const RITUALS: Readonly<Record<string, RitualDef>> = {
     cost: [
       { itemId: 'component-lily-balm', amount: 2 },
       { itemId: 'component-sun-salve', amount: 2 },
+    ],
+  },
+  'ritual-lantern': {
+    id: 'ritual-lantern',
+    name: 'Lantern Rite',
+    description: 'Lights the way into the Caves for good. Needs a Bramble Court.',
+    effect: 'unlock-region',
+    region: 'caves',
+    cost: [
+      { itemId: 'component-beeswax-candle', amount: 2 },
+      { itemId: 'component-lily-balm', amount: 1 },
     ],
   },
   'ritual-plenty': {

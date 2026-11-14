@@ -60,4 +60,16 @@ export const MAP_ISLANDS: Readonly<Record<string, IslandDef>> = {
       'badgers-tunnel': { x: 86, y: 74 },
     },
   },
+  caves: {
+    color: '#8d93c4',
+    edge: '#555b94',
+    places: {
+      glimmerdeep: { x: 28, y: 50 },
+      'fungus-gallery': { x: 54, y: 72 },
+      'crystal-seam': { x: 76, y: 46 },
+      'echo-pool': { x: 50, y: 32 },
+      'sunken-geode': { x: 84, y: 76 },
+      'surface-lift': { x: 18, y: 76 },
+    },
+  },
 }

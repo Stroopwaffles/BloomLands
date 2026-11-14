@@ -208,6 +208,60 @@ export const SCENES: Readonly<Record<string, SceneLayout>> = {
     camp: { x: 76, y: 82 },
     mount: { x: 50, y: 34 },
   },
+
+  // Caves
+  'fungus-gallery': {
+    slots: [
+      { x: 14, y: 76 },
+      { x: 30, y: 90 },
+      { x: 46, y: 74 },
+      { x: 62, y: 90 },
+      { x: 78, y: 76 },
+      { x: 90, y: 90 },
+    ],
+    creature: { x: 86, y: 52 },
+    camp: { x: 76, y: 82 },
+    mount: { x: 50, y: 36 },
+  },
+  'crystal-seam': {
+    slots: [
+      { x: 16, y: 72 },
+      { x: 32, y: 88 },
+      { x: 50, y: 70 },
+      { x: 66, y: 88 },
+      { x: 82, y: 72 },
+      { x: 92, y: 90 },
+    ],
+    creature: { x: 50, y: 50 },
+    camp: { x: 76, y: 80 },
+    mount: { x: 30, y: 34 },
+  },
+  'sunken-geode': {
+    slots: [
+      { x: 50, y: 66 },
+      { x: 30, y: 76 },
+      { x: 70, y: 76 },
+      { x: 20, y: 92 },
+      { x: 50, y: 92 },
+      { x: 80, y: 92 },
+    ],
+    creature: { x: 86, y: 52 },
+    camp: { x: 76, y: 82 },
+    mount: { x: 50, y: 34 },
+  },
+  'surface-lift': {
+    slots: [
+      { x: 40, y: 72 },
+      { x: 60, y: 72 },
+      { x: 28, y: 88 },
+      { x: 50, y: 92 },
+      { x: 72, y: 88 },
+      { x: 88, y: 76 },
+    ],
+    creature: { x: 12, y: 56 },
+    camp: { x: 80, y: 80 },
+    mount: { x: 80, y: 34 },
+  },
 }
 
 /** A plain layout for any spot without a hand-placed one. */

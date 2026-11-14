@@ -11,6 +11,7 @@ import { PLANTS } from '../data/plants'
 import { SPOTS } from '../data/world'
 import { BLOOM_REWARDS } from '../data/bloom'
 import { addBloom } from './bloom'
+import { regionCalmMultiplier } from './modifiers'
 import type { GameEvent } from './events'
 import { campBlocksSlot, eatPlant } from './gathering'
 import type { Random } from './rng'
@@ -96,6 +97,10 @@ export function advanceCreatures(state: GameState, dtMs: number, random: Random)
   if (challenges.nextCreatureMs > 0) return
   challenges.nextCreatureMs = between(random, CREATURE_RULES.minMs, CREATURE_RULES.maxMs)
   for (const def of Object.values(CREATURES)) {
+    // Some only turn up in certain weather (a rockfall needs rumbles).
+    if (def.weather && state.weather[def.regionId]?.kind !== def.weather) continue
+    // Curios like the Nightlight Jar make a region's troubles rarer.
+    if (random() >= regionCalmMultiplier(state, def.regionId)) continue
     const spots = visitedSpots(state, def.regionId).filter(
       (id) => !challenges.creatures[id] && (!def.spots || def.spots.includes(id)),
     )
@@ -123,6 +128,7 @@ export function tapCreature(state: GameState, spotId: string): GameEvent[] {
   }
   // Some creatures are too grumpy to shoo (the badger): only a calming spell works.
   if (CREATURES[creature.creatureId]?.calmOnly) return [{ type: 'blocked', reason: 'calm-only' }]
+  // Blockers (webs, rubble) and munchers both give way to enough taps.
   state.stats.taps++
   creature.tapsLeft--
   if (creature.tapsLeft > 0) return [{ type: 'creature-tap', spotId, tapsLeft: creature.tapsLeft }]
@@ -177,6 +183,7 @@ export function advanceCamps(state: GameState, dtMs: number, random: Random): vo
   for (const crew of Object.values(CREWS)) {
     const alreadyCamped = Object.values(challenges.camps).includes(crew.id)
     if (alreadyCamped || state.crews[crew.id]?.won) continue
+    if (random() >= regionCalmMultiplier(state, crew.regionId)) continue
     const spots = visitedSpots(state, crew.regionId)
     if (spots.length === 0) continue
     const spotId = spots[Math.floor(random() * spots.length)]

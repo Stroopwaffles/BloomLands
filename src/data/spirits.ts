@@ -122,4 +122,30 @@ export const SPIRITS: Readonly<Record<string, SpiritDef>> = {
       },
     ],
   },
+  'spirit-quartz': {
+    id: 'spirit-quartz',
+    name: 'Old Quartz, the Deep Echo',
+    regionId: 'caves',
+    place: 'echo-pool',
+    sleeping: [
+      'Crystals glint under the still water. Your footsteps come back to you. ...you. ...you.',
+      '"Light... light... The deep is dim, small one. Bring the Caves to life. ...life. ...life."',
+    ],
+    awakening: [
+      'Every crystal in the cavern rings at once, a chord that echoes and echoes.',
+      '"Awake. Awake. ...Thank you. ...Thank you. ...you."',
+    ],
+    requirements: [
+      { kind: 'bloom', level: 2, label: 'Help the Caves reach Sprouting bloom' },
+      { kind: 'story', storyId: 'story-digby', label: "Finish Digby Loamsworth's story" },
+      {
+        kind: 'offering',
+        items: [
+          { itemId: 'component-glow-ink', amount: 3 },
+          { itemId: 'component-crystal-focus', amount: 1 },
+        ],
+        label: 'Offer 3 Glow Ink and 1 Crystal Focus',
+      },
+    ],
+  },
 }

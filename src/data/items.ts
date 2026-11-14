@@ -44,6 +44,17 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'raw-royal-jelly', name: 'Royal jelly', category: 'raw' },
   { id: 'raw-truffle', name: 'Truffle', category: 'raw' },
 
+  // Caves raw materials
+  { id: 'raw-cave-moss', name: 'Cave moss', category: 'raw', tags: ['leaves'] },
+  { id: 'raw-root-fibers', name: 'Root fibers', category: 'raw', tags: ['stalks'] },
+  { id: 'raw-glowcap-spores', name: 'Glowcap spores', category: 'raw' },
+  { id: 'raw-ghost-petals', name: 'Ghost petals', category: 'raw', tags: ['petals'] },
+  { id: 'raw-crystal-shards', name: 'Crystal shards', category: 'raw', tags: ['crystals'] },
+  { id: 'raw-star-spores', name: 'Star spores', category: 'raw' },
+  { id: 'raw-geode-crystals', name: 'Geode crystals', category: 'raw', tags: ['crystals'] },
+  { id: 'raw-star-crystal', name: 'Star crystal', category: 'raw', tags: ['crystals'] },
+  { id: 'raw-sunshaft-fern', name: 'Sunshaft fern', category: 'raw' },
+
   // Refined materials (content doc → Recipe Tree → Tier 1)
   { id: 'refined-petal-paste', name: 'Petal Paste', category: 'refined' },
   { id: 'refined-leaf-tea', name: 'Leaf Tea', category: 'refined' },
@@ -59,6 +70,8 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'refined-orchid-essence', name: 'Orchid Essence', category: 'refined' },
   { id: 'refined-honey-syrup', name: 'Honey Syrup', category: 'refined' },
   { id: 'refined-pollen-gold', name: 'Pollen Gold', category: 'refined' },
+  { id: 'refined-glow-spores', name: 'Glow Spores', category: 'refined' },
+  { id: 'refined-crystal-powder', name: 'Crystal Powder', category: 'refined' },
 
   // Components (Tier 2)
   { id: 'component-sun-salve', name: 'Sun Salve', category: 'component' },
@@ -70,6 +83,9 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'component-earth-loam', name: 'Earth Loam', category: 'component' },
   { id: 'component-lily-balm', name: 'Lily Balm', category: 'component' },
   { id: 'component-beeswax-candle', name: 'Beeswax Candle', category: 'component' },
+  { id: 'component-glow-ink', name: 'Glow Ink', category: 'component' },
+  { id: 'component-crystal-focus', name: 'Crystal Focus', category: 'component' },
+  { id: 'component-heart-nectar', name: 'Heart Nectar', category: 'component' },
 
   // Potions
   { id: 'potion-greenthumb-brew', name: 'Greenthumb Brew', category: 'potion' },
@@ -78,6 +94,7 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'potion-lucky-dew', name: 'Lucky Dew', category: 'potion' },
   { id: 'potion-swiftroot-elixir', name: 'Swiftroot Elixir', category: 'potion' },
   { id: 'potion-waterstride-philter', name: 'Waterstride Philter', category: 'potion' },
+  { id: 'potion-glowlight', name: 'Glowlight Potion', category: 'potion' },
 
   // Meadow trinkets
   { id: 'trinket-lost-button', name: 'Lost button', category: 'trinket', tags: ['trinket'] },
@@ -98,6 +115,11 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'trinket-copper-coin', name: 'Copper coin', category: 'trinket', tags: ['trinket'] },
   { id: 'trinket-sewing-needle', name: 'Sewing needle', category: 'trinket', tags: ['trinket'] },
   { id: 'trinket-seed-packet', name: 'Seed packet', category: 'trinket', tags: ['trinket'] },
+
+  // Caves trinkets
+  { id: 'trinket-iron-key', name: 'Old iron key', category: 'trinket', tags: ['trinket'] },
+  { id: 'trinket-glass-lens', name: 'Glass lens', category: 'trinket', tags: ['trinket'] },
+  { id: 'trinket-silver-ring', name: 'Silver ring', category: 'trinket', tags: ['trinket'] },
 ]
 
 export const ITEMS: Readonly<Record<string, ItemDef>> = Object.fromEntries(
@@ -120,5 +142,6 @@ export const TAG_NAMES: Readonly<Record<string, string>> = {
   fruit: 'Fruit',
   fluff: 'Fluff',
   stalks: 'Stalks',
+  crystals: 'Crystals',
   trinket: 'Trinkets',
 }

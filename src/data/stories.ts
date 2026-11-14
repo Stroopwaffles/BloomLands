@@ -79,6 +79,18 @@ export const CHARACTERS: Readonly<Record<string, CharacterDef>> = {
     title: 'a retired (and very dramatic) bumblebee knight',
     settlement: 'combhaven',
   },
+  'char-digby': {
+    id: 'char-digby',
+    name: 'Digby Loamsworth',
+    title: 'a mole engineer',
+    settlement: 'glimmerdeep',
+  },
+  'char-lumen': {
+    id: 'char-lumen',
+    name: 'Lumen',
+    title: 'a shy young glowworm',
+    settlement: 'glimmerdeep',
+  },
 }
 
 export const STORIES: Readonly<Record<string, StoryDef>> = {
@@ -518,6 +530,111 @@ export const STORIES: Readonly<Record<string, StoryDef>> = {
     ending: [
       'It is finished! "The Legendary Adventures of Sir Bumbleton", in four thrilling volumes.',
       'Carry my pennant, brave fairy. Any steed that flies under it flies a little faster.',
+    ],
+  },
+  'story-digby': {
+    id: 'story-digby',
+    characterId: 'char-digby',
+    curioId: 'curio-brass-spyglass',
+    chapters: [
+      {
+        lines: [
+          'Ah! Careful, that’s a load-bearing pebble. Digby Loamsworth, engineer.',
+          'My family has never seen the sun. Not once! I’m building a lift, all the way up. I need rope.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-root-fibers', amount: 10 }],
+          label: 'Bring Digby 10 Root fibers',
+        },
+      },
+      {
+        lines: [
+          'Good strong rope. Now, counterweights. Crystal is heavy and lovely. Lovely heavy.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-crystal-shards', amount: 4 }],
+          label: 'Bring Digby 4 Crystal shards',
+        },
+      },
+      {
+        lines: [
+          'The town thinks I’m digging a hole to nowhere. Help the neighbors, and they’ll come round.',
+        ],
+        task: {
+          kind: 'stat',
+          stat: 'villagersHelped',
+          amount: 3,
+          label: 'Help 3 villagers in Glimmerdeep',
+        },
+      },
+      {
+        lines: ['Last thing. The shaft is pitch black. Candles, so nobody bumps their nose.'],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'component-beeswax-candle', amount: 2 }],
+          label: 'Bring Digby 2 Beeswax Candles',
+        },
+      },
+    ],
+    ending: [
+      'It works! We went up, and there it was. The sun. Grandma cried. I cried. The lift cried, a bit.',
+      'Take my spyglass. And the lift is yours to use: things grow at the bottom of the sunbeam now.',
+    ],
+  },
+  'story-lumen': {
+    id: 'story-lumen',
+    characterId: 'char-lumen',
+    curioId: 'curio-nightlight-jar',
+    chapters: [
+      {
+        lines: [
+          'Oh! Um. Hello. I’m Lumen. I’m a glowworm. I’m... afraid of the dark. I know. I KNOW.',
+          'Would you stay nearby while you gather? It’s less scary with company.',
+        ],
+        task: {
+          kind: 'stat',
+          stat: 'plantsHarvested',
+          amount: 20,
+          label: 'Gather 20 plants while Lumen keeps you company',
+        },
+      },
+      {
+        lines: [
+          'Glowcaps glow too, like me! Could you bring some? Glowing friends are the best friends.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-glowcap-spores', amount: 6 }],
+          label: 'Bring Lumen 6 Glowcap spores',
+        },
+      },
+      {
+        lines: [
+          'A little jar of Glow Ink would make the perfect nightlight. Then I’d never be alone.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'component-glow-ink', amount: 1 }],
+          label: 'Bring Lumen 1 Glow Ink',
+        },
+      },
+      {
+        lines: [
+          'I want to be brave. Really brave. Will you show me how? Chase off something big and scary.',
+        ],
+        task: {
+          kind: 'stat',
+          stat: 'creaturesShooed',
+          amount: 1,
+          label: 'Send away a spider, rockfall or other big trouble',
+        },
+      },
+    ],
+    ending: [
+      'You did it, and I watched the whole time with my eyes open! I’m going to be brave too.',
+      'Keep my nightlight. And... my cousin is a big glowworm. She’s by the fungi now. She’d like you.',
     ],
   },
 }

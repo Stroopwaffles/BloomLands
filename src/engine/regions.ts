@@ -3,7 +3,7 @@ import { REGIONS, REGION_ORDER, SPOTS, isSecret, placeRegion, HOME } from '../da
 import { rollWeather } from './environment'
 import type { GameEvent } from './events'
 import type { Random } from './rng'
-import { hasWaterstride } from './modifiers'
+import { courtRank, hasLight, hasWaterstride } from './modifiers'
 import type { GameState } from './state'
 
 /** The newest region the player has opened (the menu shows and plays it). */
@@ -16,10 +16,29 @@ export function regionUnlocked(state: GameState, regionId: string): boolean {
   return state.unlockedRegions.includes(regionId)
 }
 
+/**
+ * Can the player get into a region right now? Open regions always; a dark region (the Caves)
+ * also while the player has light and the court has the rank its rite needs.
+ */
+export function regionReachable(state: GameState, regionId: string): boolean {
+  if (regionUnlocked(state, regionId)) return true
+  const region = REGIONS[regionId]
+  if (!region?.needsLight || !region.unlock) return false
+  return hasLight(state) && courtRank(state) >= region.unlock.rank
+}
+
+/** Gives a region its weather and village the first time anyone arrives (also by light). */
+export function ensureRegion(state: GameState, regionId: string, random: Random): void {
+  const region = REGIONS[regionId]
+  if (!region) return
+  state.settlements[region.settlement] ??= { requests: [], nextArrivalMs: 60_000, filled: 0 }
+  if (!state.weather[regionId]) state.weather[regionId] = rollWeather(regionId, random)
+}
+
 /** Can the player (or a helper) go here right now? */
 export function placeOpen(state: GameState, placeId: string): boolean {
   if (placeId === HOME) return true
-  if (!regionUnlocked(state, placeRegion(placeId))) return false
+  if (!regionReachable(state, placeRegion(placeId))) return false
   return !isSecret(placeId) || state.secrets.includes(placeId)
 }
 
@@ -42,7 +61,8 @@ export function unlockRegion(state: GameState, regionId: string, random: Random)
 /** A creature watching this spot blocks gathering there (and helpers stay away). */
 export function spotWatched(state: GameState, spotId: string): boolean {
   const creature = state.challenges.creatures[spotId]
-  return !!creature && CREATURES[creature.creatureId]?.behavior === 'watches'
+  const behavior = creature ? CREATURES[creature.creatureId]?.behavior : null
+  return behavior === 'watches' || behavior === 'blocks'
 }
 
 /**
@@ -50,7 +70,10 @@ export function spotWatched(state: GameState, spotId: string): boolean {
  * them; a Waterstride Philter is enough for the heron, who ignores anyone skimming the water.
  */
 export function playerWatched(state: GameState, spotId: string): boolean {
-  if (!spotWatched(state, spotId) || state.player.sneakMs > 0) return false
+  if (!spotWatched(state, spotId)) return false
   const def = CREATURES[state.challenges.creatures[spotId].creatureId]
+  // Webs and rubble have to be cleared: there's no sneaking past them.
+  if (def?.behavior === 'blocks') return true
+  if (state.player.sneakMs > 0) return false
   return !(def?.ignoresWaterstride && hasWaterstride(state))
 }

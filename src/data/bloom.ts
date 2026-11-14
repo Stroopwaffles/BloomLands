@@ -52,6 +52,10 @@ export interface CurioDef {
     | { kind: 'mountSpeed'; multiplier: number }
     | { kind: 'traderTrinkets'; multiplier: number }
     | { kind: 'offlineCap'; ms: number }
+    | { kind: 'scoutTrinkets'; multiplier: number }
+    | { kind: 'regionCalm'; regionId: string; multiplier: number }
+    | { kind: 'allBloom'; multiplier: number }
+    | { kind: 'regionClick'; regionId: string; amount: number }
 }
 
 /** Meadow curios (content doc → Curio Index). They last for the current run. */
@@ -140,6 +144,30 @@ export const CURIOS: Readonly<Record<string, CurioDef>> = {
     description: 'Progress while you are away is kept for 2 more hours.',
     effect: { kind: 'offlineCap', ms: 2 * 60 * 60_000 },
   },
+  'curio-brass-spyglass': {
+    id: 'curio-brass-spyglass',
+    name: 'Brass Spyglass',
+    description: 'Scouts find trinkets 50% more often.',
+    effect: { kind: 'scoutTrinkets', multiplier: 1.5 },
+  },
+  'curio-nightlight-jar': {
+    id: 'curio-nightlight-jar',
+    name: 'Nightlight Jar',
+    description: 'Spiders, rockfalls and smugglers turn up in the Caves half as often.',
+    effect: { kind: 'regionCalm', regionId: 'caves', multiplier: 0.5 },
+  },
+  'curio-heartstone': {
+    id: 'curio-heartstone',
+    name: 'Heartstone',
+    description: 'Bloom gained everywhere is 10% higher.',
+    effect: { kind: 'allBloom', multiplier: 1.1 },
+  },
+  'curio-miners-lamp': {
+    id: 'curio-miners-lamp',
+    name: "Miner's Lamp",
+    description: '+1 click power in the Caves.',
+    effect: { kind: 'regionClick', regionId: 'caves', amount: 1 },
+  },
 }
 
 export interface VillagerDef {
@@ -173,6 +201,11 @@ export const VILLAGERS: Readonly<Record<string, readonly VillagerDef[]>> = {
     { id: 'villager-pollyanna', name: 'Pollyanna', title: 'who sorts the pollen' },
     { id: 'villager-hexley', name: 'Hexley', title: 'the hexagon architect' },
     { id: 'villager-mother-comb', name: 'Mother Comb', title: 'keeper of the honey vats' },
+  ],
+  glimmerdeep: [
+    { id: 'villager-nibs', name: 'Nibs', title: 'who runs the lantern store' },
+    { id: 'villager-pickworth', name: 'Pickworth', title: 'the tunnel foreman' },
+    { id: 'villager-granny-burrow', name: 'Granny Burrow', title: 'who bakes root pies' },
   ],
 }
 

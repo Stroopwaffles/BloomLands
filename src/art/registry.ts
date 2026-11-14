@@ -5,6 +5,7 @@ import {
   FOREST_PEOPLE_ART,
   FOREST_PLANT_ART,
 } from './library/forest'
+import { CAVES_ITEM_ART, CAVES_MISC_ART, CAVES_PEOPLE_ART, CAVES_PLANT_ART } from './library/caves'
 import { ITEM_ART } from './library/items'
 import {
   ORCHARD_ITEM_ART,
@@ -47,6 +48,10 @@ export const ART_SVG: Record<string, string> = {
   ...ORCHARD_ITEM_ART,
   ...ORCHARD_PEOPLE_ART,
   ...ORCHARD_MISC_ART,
+  ...CAVES_PLANT_ART,
+  ...CAVES_ITEM_ART,
+  ...CAVES_PEOPLE_ART,
+  ...CAVES_MISC_ART,
 }
 
 /** Families of assets that share one drawing (e.g. every lodging upgrade uses the lodging icon). */

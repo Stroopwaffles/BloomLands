@@ -26,6 +26,7 @@ import { mountSpeed, spareMounts } from './mounts'
 import { placeOpen, spotWatched } from './regions'
 import { routeOf } from './route'
 import { sellPrice } from './shop'
+import { rollScoutSecret } from './secrets'
 import {
   helperCapacity,
   helperCount,
@@ -36,6 +37,7 @@ import {
   supplyKeenness,
   storageUsed,
   trinketChanceMultiplier,
+  scoutTrinketMultiplier,
 } from './modifiers'
 import type { Random } from './rng'
 import { addItems, countItems, type GameState, type HelperState } from './state'
@@ -339,7 +341,9 @@ function scoutFinds(state: GameState, spotId: string, random: Random): ItemStack
   const trinkets = SPOTS[spotId].trinkets
   if (trinkets.length === 0) return []
   // Curios that make trinkets likelier help scouts too, in proportion.
-  const boost = trinketChanceMultiplier(state)
+  const boost = trinketChanceMultiplier(state) * scoutTrinketMultiplier(state)
+  // While searching, a scout may also stumble on a hidden passage (the Sunken Geode).
+  state.inbox.push(...rollScoutSecret(state, SPOTS[spotId].regionId, random))
   const found: ItemStack[] = []
   if (random() < Math.min(1, SCOUT_RULES.trinketChance * boost)) {
     found.push({ itemId: trinkets[Math.floor(random() * trinkets.length)], amount: 1 })

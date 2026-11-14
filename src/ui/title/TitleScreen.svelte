@@ -73,6 +73,12 @@
       fall: ['#e2a34a', '#c9763a', '#9cc46a', '#d9b44f'],
       leaves: true,
     },
+    caves: {
+      spot: 'fungus-gallery',
+      glow: 'rgb(142 224 240 / 0.35)',
+      fall: ['#7fe0b0', '#8ee0f0', '#c8b8f0', '#e6ff8a'],
+      leaves: false,
+    },
     orchard: {
       spot: 'petalfall-rows',
       glow: 'rgb(255 228 200 / 0.55)',

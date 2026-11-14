@@ -20,7 +20,9 @@ export function unlockSecret(state: GameState, spotId: string): GameEvent[] {
 export function advanceSecrets(state: GameState): void {
   for (const spot of Object.values(SPOTS)) {
     const unlock = spot.secret?.unlock
-    if (!unlock || unlock.kind === 'ritual' || state.secrets.includes(spot.id)) continue
+    // Ritual secrets open from their rite, and scout secrets from a lucky search.
+    if (!unlock || unlock.kind === 'ritual' || unlock.kind === 'scout') continue
+    if (state.secrets.includes(spot.id)) continue
     if (!regionUnlocked(state, spot.regionId)) continue
     const met =
       unlock.kind === 'story'
@@ -32,6 +34,26 @@ export function advanceSecrets(state: GameState): void {
             : bloomLevel(state, spot.regionId) >= unlock.level
     if (met) state.inbox.push(...unlockSecret(state, spot.id))
   }
+}
+
+/**
+ * A scout searching a region (or, very rarely, a harvest there) may stumble on its hidden
+ * passage. `scale` turns a scout's chance into a rarer one for harvests.
+ */
+export function rollScoutSecret(
+  state: GameState,
+  regionId: string,
+  random: () => number,
+  scale = 1,
+): GameEvent[] {
+  const events: GameEvent[] = []
+  for (const spot of Object.values(SPOTS)) {
+    const unlock = spot.secret?.unlock
+    if (!unlock || unlock.kind !== 'scout' || unlock.regionId !== regionId) continue
+    if (state.secrets.includes(spot.id)) continue
+    if (random() < unlock.chance * scale) events.push(...unlockSecret(state, spot.id))
+  }
+  return events
 }
 
 /** Called when the player lands at a spot: the first visit to a secret area finds its treasures. */

@@ -108,6 +108,34 @@ const SPOT_LIST: SpotDef[] = [
     trinkets: ['trinket-copper-coin', 'trinket-seed-packet'],
   },
 
+  // Caves
+  {
+    id: 'fungus-gallery',
+    name: 'Fungus Gallery',
+    regionId: 'caves',
+    description: 'A long cavern lit by glowing mushrooms.',
+    plants: [
+      'plant-cave-moss',
+      'plant-pale-root',
+      'plant-glowcap',
+      'plant-ghost-orchid',
+      'plant-starfungus',
+    ],
+    slots: 6,
+    regrowMs: 30_000,
+    trinkets: ['trinket-iron-key', 'trinket-glass-lens'],
+  },
+  {
+    id: 'crystal-seam',
+    name: 'Crystal Seam',
+    regionId: 'caves',
+    description: 'A wall of crystals and geodes. Very tough, very valuable.',
+    plants: ['plant-crystal-shard', 'plant-geode', 'plant-cave-moss'],
+    slots: 6,
+    regrowMs: 34_000,
+    trinkets: ['trinket-silver-ring', 'trinket-glass-lens'],
+  },
+
   // Secret areas: hidden until unlocked, re-locked on prestige (design doc 3.12)
   {
     id: 'fairy-ring',
@@ -214,6 +242,42 @@ const SPOT_LIST: SpotDef[] = [
       },
     },
   },
+  {
+    id: 'sunken-geode',
+    name: 'The Sunken Geode',
+    regionId: 'caves',
+    description: 'A hidden hollow inside one enormous geode, glittering in every color.',
+    plants: ['plant-star-crystal', 'plant-geode', 'plant-crystal-shard', 'plant-ghost-orchid'],
+    slots: 6,
+    regrowMs: 34_000,
+    trinkets: ['trinket-silver-ring', 'trinket-glass-lens'],
+    secret: {
+      curioId: 'curio-heartstone',
+      outfitId: 'outfit-crystal',
+      unlock: {
+        kind: 'scout',
+        regionId: 'caves',
+        chance: 0.12,
+        hint: 'A scout searching the Caves might find a hidden passage.',
+      },
+    },
+  },
+  {
+    id: 'surface-lift',
+    name: 'The Surface Lift',
+    regionId: 'caves',
+    description:
+      "Digby's lift shaft, where a beam of sunlight lets surface plants grow underground.",
+    plants: ['plant-sunshaft-fern', 'plant-clover', 'plant-daisy', 'plant-cave-moss'],
+    slots: 6,
+    regrowMs: 30_000,
+    trinkets: ['trinket-iron-key', 'trinket-lost-button'],
+    secret: {
+      curioId: 'curio-miners-lamp',
+      outfitId: 'outfit-miner',
+      unlock: { kind: 'story', storyId: 'story-digby', hint: "Finish Digby Loamsworth's story." },
+    },
+  },
 ]
 
 export const SPOTS: Readonly<Record<string, SpotDef>> = Object.fromEntries(
@@ -275,6 +339,18 @@ export const SETTLEMENTS: Readonly<Record<string, SettlementDef>> = {
       greeting: 'Buzz buzz, busy busy! Everything fresh from the rows today.',
     },
   },
+  glimmerdeep: {
+    id: 'glimmerdeep',
+    name: 'Glimmerdeep',
+    regionId: 'caves',
+    description: 'A mole mining town of tunnels, lanterns and little rail carts.',
+    folk: 'moles',
+    shop: {
+      name: 'The Lantern Store',
+      keeper: 'Nibs',
+      greeting: 'Mind your head! Lamps, rope, roots and rocks. What d’you need?',
+    },
+  },
 }
 
 export interface SpiritPlaceDef {
@@ -313,6 +389,13 @@ export const SPIRIT_PLACES: Readonly<Record<string, SpiritPlaceDef>> = {
     regionId: 'orchard',
     description: 'A single tree that grows every kind of fruit at once.',
     spiritId: 'spirit-pome',
+  },
+  'echo-pool': {
+    id: 'echo-pool',
+    name: 'The Echo Pool',
+    regionId: 'caves',
+    description: 'A still underground lake that repeats every sound.',
+    spiritId: 'spirit-quartz',
   },
 }
 
@@ -360,9 +443,20 @@ export const REGIONS: Readonly<Record<string, RegionDef>> = {
     sceneSpot: 'petalfall-rows',
     unlock: { rank: 3, ritualId: 'ritual-first-blossom' },
   },
+  caves: {
+    id: 'caves',
+    name: 'Caves',
+    settlement: 'glimmerdeep',
+    spiritPlace: 'echo-pool',
+    secretSpots: ['sunken-geode', 'surface-lift'],
+    spots: ['fungus-gallery', 'crystal-seam'],
+    sceneSpot: 'fungus-gallery',
+    unlock: { rank: 3, ritualId: 'ritual-lantern' },
+    needsLight: true,
+  },
 }
 
-export const REGION_ORDER: readonly string[] = ['meadow', 'forest', 'swamp', 'orchard']
+export const REGION_ORDER: readonly string[] = ['meadow', 'forest', 'swamp', 'orchard', 'caves']
 
 /** Every place you can fly to, in display order. */
 export function allPlaces(): string[] {

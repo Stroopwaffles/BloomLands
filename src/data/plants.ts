@@ -265,6 +265,79 @@ const PLANT_LIST: PlantDef[] = [
     rarity: 'rare',
     yields: [{ itemId: 'raw-truffle', amount: 1 }],
   },
+
+  // Caves
+  {
+    id: 'plant-cave-moss',
+    name: 'Cave moss',
+    toughness: 4,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-cave-moss', amount: 2 }],
+  },
+  {
+    id: 'plant-pale-root',
+    tags: ['stalks'],
+    name: 'Pale root',
+    toughness: 5,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-root-fibers', amount: 2 }],
+  },
+  {
+    id: 'plant-glowcap',
+    tags: ['fungi'],
+    name: 'Glowcap',
+    toughness: 6,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-glowcap-spores', amount: 2 }],
+  },
+  {
+    id: 'plant-ghost-orchid',
+    tags: ['petals'],
+    name: 'Ghost orchid',
+    toughness: 7,
+    rarity: 'uncommon',
+    yields: [{ itemId: 'raw-ghost-petals', amount: 2 }],
+  },
+  {
+    id: 'plant-crystal-shard',
+    tags: ['crystals'],
+    name: 'Crystal shard',
+    toughness: 9,
+    rarity: 'uncommon',
+    yields: [{ itemId: 'raw-crystal-shards', amount: 2 }],
+  },
+  {
+    id: 'plant-starfungus',
+    tags: ['fungi'],
+    name: 'Starfungus',
+    toughness: 8,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-star-spores', amount: 1 }],
+  },
+  {
+    id: 'plant-geode',
+    tags: ['crystals'],
+    name: 'Geode',
+    toughness: 12,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-geode-crystals', amount: 1 }],
+  },
+  // Caves secrets
+  {
+    id: 'plant-star-crystal',
+    tags: ['crystals'],
+    name: 'Star crystal',
+    toughness: 10,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-star-crystal', amount: 1 }],
+  },
+  {
+    id: 'plant-sunshaft-fern',
+    name: 'Sunshaft fern',
+    toughness: 5,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-sunshaft-fern', amount: 1 }],
+  },
 ]
 
 export const PLANTS: Readonly<Record<string, PlantDef>> = Object.fromEntries(

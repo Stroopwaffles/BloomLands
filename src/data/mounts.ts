@@ -25,6 +25,10 @@ export interface MountDef {
     | { kind: 'regionLuck'; multiplier: number; perLevel: number; label: string }
   /** Swims: no slowdown flying over open water. */
   swims?: boolean
+  /** Glows: counts as light for visiting dark regions. */
+  light?: boolean
+  /** Only shows up in the wild once this story is finished. */
+  afterStory?: string
   maxLevel: number
   /** Per level above 1. */
   speedPerLevel: number
@@ -99,6 +103,23 @@ export const MOUNTS: Readonly<Record<string, MountDef>> = {
       perLevel: 0.1,
       label: 'rarer plants grow more often in the Orchard',
     },
+    maxLevel: 5,
+    speedPerLevel: 0.05,
+  },
+  'mount-glowworm': {
+    id: 'mount-glowworm',
+    name: 'Glowworm',
+    regionId: 'caves',
+    homeSpot: 'fungus-gallery',
+    description: 'Lights up the Caves (it counts as light to visit), and gathers fast down there.',
+    wildLine: 'is glowing softly by the fungi.',
+    food: { itemId: 'raw-cave-moss', amount: 5 },
+    feedingsToBefriend: 5,
+    feedCooldownMs: 2 * 60_000,
+    speed: 1.3,
+    bonus: { kind: 'clickPower', amount: 1, perLevel: 0.5, label: 'click power in the Caves' },
+    light: true,
+    afterStory: 'story-lumen',
     maxLevel: 5,
     speedPerLevel: 0.05,
   },

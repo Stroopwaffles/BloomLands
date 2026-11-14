@@ -1,3 +1,4 @@
+import { CREATURES } from '../data/challenges'
 import { PLENTY, REGION_SIGNATURE, REGIONAL_SPELLS, RITUALS, SPELLS } from '../data/magic'
 import type { CostEntry } from '../data/types'
 import { RESEARCH } from '../data/research'
@@ -8,7 +9,7 @@ import type { BlockedReason, GameEvent } from './events'
 import { activeFlightEvent, foilAmbush } from './flightEvents'
 import { courtRank, hasFeature } from './modifiers'
 import { canTameHere, tameMountHere } from './mounts'
-import { regionUnlocked, spotWatched, unlockRegion } from './regions'
+import { regionUnlocked, unlockRegion } from './regions'
 import { stateRandom } from './rng'
 import { unlockSecret } from './secrets'
 import { placeRegion, REGIONS } from '../data/world'
@@ -29,8 +30,15 @@ function hasTarget(state: GameState, spellId: string): boolean {
   switch (SPELLS[spellId].target) {
     case 'pests':
       return !travel && pestsAt(state, place) > 0
-    case 'creature':
-      return !travel && !!state.challenges.creatures[place]
+    case 'creature': {
+      // Calming works on creatures, not on rubble.
+      const creature = state.challenges.creatures[place]
+      return !travel && !!creature && !CREATURES[creature.creatureId]?.noCalm
+    }
+    case 'webs': {
+      const creature = state.challenges.creatures[place]
+      return !travel && !!creature && !!CREATURES[creature.creatureId]?.webs
+    }
     case 'camp':
       return !travel && !!state.challenges.camps[place]
     case 'ambush':
@@ -39,8 +47,16 @@ function hasTarget(state: GameState, spellId: string): boolean {
       return canTameHere(state)
     case 'parley':
       return !travel && !!state.challenges.camps[place]
-    case 'sneak':
-      return !travel && spotWatched(state, place) && state.player.sneakMs <= 0
+    case 'sneak': {
+      // Hush Step slips past watchers, not past webs or rubble.
+      const creature = state.challenges.creatures[place]
+      return (
+        !travel &&
+        !!creature &&
+        CREATURES[creature.creatureId]?.behavior === 'watches' &&
+        state.player.sneakMs <= 0
+      )
+    }
   }
 }
 
@@ -90,6 +106,8 @@ export function castSpell(state: GameState, spellId: string): GameEvent[] {
       return [cast, ...parley(state, place)]
     case 'sneak':
       return [cast, ...sneak(state)]
+    case 'webs':
+      return [cast, ...sendCreatureAway(state, place, 'shooed')]
   }
 }
 

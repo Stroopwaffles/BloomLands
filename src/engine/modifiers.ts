@@ -40,6 +40,12 @@ export function clickPower(state: GameState): number {
   let power = state.player.clickPower
   for (const e of upgradeEffects(state)) if (e.kind === 'clickPower') power += e.amount
   for (const e of potionEffects(state)) if (e.kind === 'clickPower') power += e.amount
+  // Curios like the Miner's Lamp help in one region.
+  for (const e of curioEffects(state)) {
+    if (e.kind === 'regionClick' && placeRegion(state.player.place) === e.regionId) {
+      power += e.amount
+    }
+  }
   // Riding a mount like the frog in its home region gathers faster.
   const id = state.mounts.riding
   const mount = id ? MOUNTS[id] : null
@@ -49,6 +55,13 @@ export function clickPower(state: GameState): number {
     }
   }
   return power
+}
+
+/** Light for dark regions: a Glowlight Potion, or riding a mount that glows. */
+export function hasLight(state: GameState): boolean {
+  if (potionEffects(state).some((e) => e.kind === 'light')) return true
+  const id = state.mounts.riding
+  return !!(id && MOUNTS[id]?.light)
 }
 
 /** A Waterstride Philter is active: no water slowdowns, and the heron lets you be. */
@@ -82,6 +95,22 @@ export function mountRegionLuck(state: GameState, regionId: string): number {
   if (!id || !mount || mount.bonus.kind !== 'regionLuck' || mount.regionId !== regionId) return 1
   if (placeRegion(state.player.place) !== regionId) return 1
   return mountBonusValue(mount, state.mounts.owned[id]?.level ?? 1)
+}
+
+/** Curios that help scouts find trinkets (Brass Spyglass). */
+export function scoutTrinketMultiplier(state: GameState): number {
+  let value = 1
+  for (const e of curioEffects(state)) if (e.kind === 'scoutTrinkets') value *= e.multiplier
+  return value
+}
+
+/** Curios that make a region's troubles turn up less often (Nightlight Jar): 1 = as usual. */
+export function regionCalmMultiplier(state: GameState, regionId: string): number {
+  let value = 1
+  for (const e of curioEffects(state)) {
+    if (e.kind === 'regionCalm' && e.regionId === regionId) value *= e.multiplier
+  }
+  return value
 }
 
 /** Curios that make traders offer trinkets more often (Queen's Seal). */
@@ -198,6 +227,7 @@ export function researchSpeed(state: GameState): number {
 export function regionBloomMultiplier(state: GameState, regionId: string): number {
   let value = 1
   for (const e of curioEffects(state)) {
+    if (e.kind === 'allBloom') value *= e.multiplier
     if (e.kind === 'regionBloom' && e.regionId === regionId) value *= e.multiplier
   }
   return value

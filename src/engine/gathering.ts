@@ -23,6 +23,7 @@ import {
 import { pickWeighted, type Random } from './rng'
 import { addItems, countItems, type GameState, type SlotState, type SpotState } from './state'
 import { playerWatched } from './regions'
+import { rollScoutSecret } from './secrets'
 import { startTravel } from './travel'
 
 /** Chance a harvest gives one extra of each material. Starting value for balancing. */
@@ -180,6 +181,10 @@ export function tapPlant(
 
   const events: GameEvent[] = [
     { type: 'harvest', spotId, slot: slotIndex, plantId, items, bonus, trinketId },
+    // A rare plant very occasionally reveals a hidden passage that scouts usually find.
+    ...(PLANTS[plantId].rarity === 'rare'
+      ? rollScoutSecret(state, SPOTS[spotId].regionId, random, 0.1)
+      : []),
   ]
   // Homing Instinct: head home as soon as the satchel fills up.
   if (satchelFull(state) && hasQol(state, 'auto-return')) {

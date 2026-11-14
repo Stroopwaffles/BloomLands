@@ -24,7 +24,12 @@ export function ownsMount(state: GameState, mountId: string): boolean {
 /** The wild mount at this spot that hasn't been tamed yet, if any. */
 export function wildMountAt(state: GameState, spotId: string): string | null {
   return (
-    Object.values(MOUNTS).find((m) => m.homeSpot === spotId && !ownsMount(state, m.id))?.id ?? null
+    Object.values(MOUNTS).find(
+      (m) =>
+        m.homeSpot === spotId &&
+        !ownsMount(state, m.id) &&
+        (!m.afterStory || state.stories[m.afterStory]?.complete === true),
+    )?.id ?? null
   )
 }
 

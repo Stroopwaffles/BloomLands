@@ -240,6 +240,30 @@ export const OUTFIT_PIECES: Readonly<Record<string, OutfitPiece>> = {
     slot: 'outfit',
     color: '#8a6a44',
   },
+  'piece-crystal-diadem': {
+    id: 'piece-crystal-diadem',
+    name: 'Crystal diadem',
+    slot: 'headpiece',
+    color: '#8ee0f0',
+  },
+  'piece-geode-mantle': {
+    id: 'piece-geode-mantle',
+    name: 'Geode mantle',
+    slot: 'outfit',
+    color: '#7a5aa8',
+  },
+  'piece-miners-overalls': {
+    id: 'piece-miners-overalls',
+    name: "Miner's overalls",
+    slot: 'outfit',
+    color: '#4a6e9a',
+  },
+  'piece-lamp-helmet': {
+    id: 'piece-lamp-helmet',
+    name: 'Lamp helmet',
+    slot: 'headpiece',
+    color: '#f2c94f',
+  },
 }
 
 export interface OutfitSet {
@@ -292,6 +316,16 @@ export const OUTFIT_SETS: Readonly<Record<string, OutfitSet>> = {
     id: 'outfit-burrower',
     name: "Burrower's set",
     pieces: ['piece-burrowers-waistcoat'],
+  },
+  'outfit-crystal': {
+    id: 'outfit-crystal',
+    name: 'Crystal set',
+    pieces: ['piece-crystal-diadem', 'piece-geode-mantle'],
+  },
+  'outfit-miner': {
+    id: 'outfit-miner',
+    name: "Miner's set",
+    pieces: ['piece-miners-overalls', 'piece-lamp-helmet'],
   },
 }
 

@@ -40,6 +40,15 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'raw-quince-petals': 38,
   'raw-royal-jelly': 45,
   'raw-truffle': 45,
+  'raw-cave-moss': 5,
+  'raw-root-fibers': 5,
+  'raw-glowcap-spores': 6,
+  'raw-ghost-petals': 11,
+  'raw-crystal-shards': 14,
+  'raw-star-spores': 40,
+  'raw-geode-crystals': 50,
+  'raw-star-crystal': 60,
+  'raw-sunshaft-fern': 45,
   // Refined
   'refined-petal-paste': 10,
   'refined-leaf-tea': 10,
@@ -55,6 +64,8 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'refined-orchid-essence': 40,
   'refined-honey-syrup': 16,
   'refined-pollen-gold': 45,
+  'refined-glow-spores': 22,
+  'refined-crystal-powder': 34,
   // Components
   'component-sun-salve': 25,
   'component-calming-tea': 25,
@@ -65,6 +76,9 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'component-earth-loam': 55,
   'component-lily-balm': 50,
   'component-beeswax-candle': 60,
+  'component-glow-ink': 60,
+  'component-crystal-focus': 75,
+  'component-heart-nectar': 110,
   // Potions
   'potion-greenthumb-brew': 45,
   'potion-quickwing-tonic': 50,
@@ -72,6 +86,7 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'potion-lucky-dew': 90,
   'potion-swiftroot-elixir': 95,
   'potion-waterstride-philter': 100,
+  'potion-glowlight': 110,
 }
 
 /** Settlement shops. Starting values for balancing. */

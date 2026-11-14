@@ -1,8 +1,8 @@
 import { FLIGHT_EVENT_RULES } from '../data/challenges'
-import { HOME, isSettlement, isSpiritPlace, isSpot } from '../data/world'
+import { HOME, isSettlement, isSpiritPlace, isSpot, placeRegion } from '../data/world'
 import type { GameEvent } from './events'
 import { applyInstantEvents, flightSpeed, rollFlightEvent, settleFlightEvent } from './flightEvents'
-import { placeOpen } from './regions'
+import { ensureRegion, placeOpen } from './regions'
 import { discoverSecret } from './secrets'
 import { depositSatchel, ensureSpot } from './gathering'
 import { hasQol, travelMultiplier, wingSpeed } from './modifiers'
@@ -82,6 +82,7 @@ export function advanceTravel(state: GameState, dtMs: number, random: Random): v
   const wasAuto = player.travel.auto === true
   player.place = player.travel.to
   player.travel = null
+  ensureRegion(state, placeRegion(player.place), random)
 
   if (isSpot(player.place)) {
     player.lastSpot = player.place
