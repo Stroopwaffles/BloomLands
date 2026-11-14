@@ -5,7 +5,8 @@ import {
   HELPER_NAMES,
   HELPER_RULES,
   HELPER_TYPES,
-  RARITY_HAUL_FACTOR,
+  searchBonus,
+  SUPPLY_RULES,
   SCOUT_RULES,
   type HelperType,
 } from '../data/helpers'
@@ -20,7 +21,7 @@ import { canPay, payCost } from './costs'
 import { stationInUse, unlockedRecipes } from './crafting'
 import { weatherIn } from './environment'
 import type { GameEvent } from './events'
-import { rollPlant } from './gathering'
+import { plantWeights, rollPlant } from './gathering'
 import { mountSpeed, spareMounts } from './mounts'
 import { placeOpen, spotWatched } from './regions'
 import { routeOf } from './route'
@@ -32,6 +33,7 @@ import {
   stationBuilt,
   stationSlots,
   storageCapacity,
+  supplyKeenness,
   storageUsed,
   trinketChanceMultiplier,
 } from './modifiers'
@@ -244,17 +246,66 @@ export function supplyableItems(state?: GameState): string[] {
     .map((item) => item.id)
 }
 
-/** How many of an item a supply helper brings back from one trip. */
-export function supplyHaul(itemId: string): number {
-  const source = sourcesOf(itemId)[0]
-  if (!source) return 0
-  const plant = PLANTS[source.plantId]
-  const plants = Math.max(
-    1,
-    Math.round(HELPER_RULES.plantsPerTrip * RARITY_HAUL_FACTOR[plant.rarity]),
+/** One searched plant's chance of being the item, and how many it gives, at a spot right now. */
+export function searchOdds(
+  state: GameState,
+  spotId: string,
+  itemId: string,
+): { chance: number; perPlant: number } {
+  const keenness = supplyKeenness(state)
+  let target = 0
+  let other = 0
+  let perPlant = 0
+  for (const [plantId, weight] of plantWeights(state, spotId)) {
+    const plant = PLANTS[plantId]
+    const yields = plant.yields.find((y) => y.itemId === itemId)
+    const bonus = yields ? searchBonus(plant.rarity, keenness) : 0
+    if (yields && bonus > 0) {
+      target += weight * bonus
+      perPlant = Math.max(perPlant, yields.amount)
+    } else {
+      other += weight
+    }
+  }
+  return { chance: target > 0 ? target / (target + other) : 0, perPlant }
+}
+
+/** How many a supply helper finds on an average trip to a spot (pirates in the region halve it). */
+function expectedFind(state: GameState, spotId: string, itemId: string): number {
+  const { chance, perPlant } = searchOdds(state, spotId, itemId)
+  const share = piratesInRegion(state, SPOTS[spotId].regionId) ? CAMP_RULES.helperYield : 1
+  return Math.round(SUPPLY_RULES.searches * share) * chance * perPlant
+}
+
+/** The best spot to search for an item right now (open, not watched), and what to expect. */
+export function bestSource(
+  state: GameState,
+  itemId: string,
+): { spotId: string; expected: number } | null {
+  let best: { spotId: string; expected: number } | null = null
+  for (const { spotId } of sourcesOf(itemId, state)) {
+    if (spotWatched(state, spotId)) continue
+    const expected = expectedFind(state, spotId, itemId)
+    if (expected > 0 && (!best || expected > best.expected)) best = { spotId, expected }
+  }
+  return best
+}
+
+/** How many of an item a supply helper brings back on an average trip right now. */
+export function supplyHaul(state: GameState, itemId: string): number {
+  return bestSource(state, itemId)?.expected ?? 0
+}
+
+export type SupplyStatus = 'ok' | 'too-rare' | 'not-now'
+
+/** Can suppliers fetch this item: yes; not until the court learns about rare plants; or not now. */
+export function supplyStatus(state: GameState, itemId: string): SupplyStatus {
+  if (supplyHaul(state, itemId) > 0) return 'ok'
+  const keenness = supplyKeenness(state)
+  const rareOnly = sourcesOf(itemId, state).every(
+    ({ plantId }) => searchBonus(PLANTS[plantId].rarity, keenness) === 0,
   )
-  const perPlant = plant.yields.find((y) => y.itemId === itemId)?.amount ?? 0
-  return plants * perPlant
+  return rareOnly ? 'too-rare' : 'not-now'
 }
 
 /** The item furthest below its minimum, counting what other supply helpers are already fetching. */
@@ -262,15 +313,17 @@ function nextShortage(state: GameState): string | null {
   let best: string | null = null
   let bestGap = 0
   for (const [itemId, minimum] of Object.entries(state.supply.minimums)) {
-    if (sourcesOf(itemId, state).length === 0) continue
+    const haul = supplyHaul(state, itemId)
+    if (haul <= 0) continue // out of reach (too rare, or out of season right now)
     let coming = 0
     for (const h of state.helpers.list) {
       if (h.type !== 'supply' || h.phase === 'idle') continue
-      coming += h.tripItem === itemId ? supplyHaul(itemId) : 0
+      coming += h.tripItem === itemId && h.phase !== 'returning' ? haul : 0
       coming += h.bag[itemId] ?? 0
     }
     const gap = minimum - (state.inventory[itemId] ?? 0) - coming
-    if (gap > bestGap) {
+    // Hauls are averages now, so only set out for at least one whole missing item.
+    if (gap >= 1 && gap > bestGap) {
       best = itemId
       bestGap = gap
     }
@@ -303,8 +356,12 @@ function gather(state: GameState, helper: HelperState, random: Random): ItemStac
   if (helper.type === 'scout') return scoutFinds(state, spotId, random)
   const share = piratesInRegion(state, SPOTS[spotId].regionId) ? CAMP_RULES.helperYield : 1
   if (helper.tripItem) {
-    const amount = Math.max(1, Math.round(supplyHaul(helper.tripItem) * share))
-    return [{ itemId: helper.tripItem, amount }]
+    // Search plant by plant, with the player's odds plus the helper's eye for what they want.
+    const { chance, perPlant } = searchOdds(state, spotId, helper.tripItem)
+    let amount = 0
+    const searches = Math.round(SUPPLY_RULES.searches * share)
+    for (let i = 0; i < searches; i++) if (random() < chance) amount += perPlant
+    return amount > 0 ? [{ itemId: helper.tripItem, amount }] : []
   }
   const found: ItemStack[] = []
   const plants = Math.max(1, Math.round(HELPER_RULES.plantsPerTrip * share))
@@ -348,7 +405,7 @@ function startTrip(state: GameState, helper: HelperState): boolean {
   const spotId = gathersAtSpot(helper.type)
     ? helper.task
     : itemId
-      ? (sourcesOf(itemId, state).find((s) => !spotWatched(state, s.spotId))?.spotId ?? null)
+      ? (bestSource(state, itemId)?.spotId ?? null)
       : null
   // A watched (blocked) spot: wait at home until it's clear (design doc 3.15).
   if (!spotId || spotWatched(state, spotId)) return false

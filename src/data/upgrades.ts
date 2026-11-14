@@ -14,6 +14,8 @@ export type UpgradeEffect =
   | { kind: 'helpers'; helper: HelperType; amount: number }
   | { kind: 'feature'; feature: 'ritual-circle' }
   | { kind: 'stable'; amount: number }
+  /** How well supply helpers can search for rare plants (1: at all, 2: keenly). */
+  | { kind: 'supplyKeen'; level: number }
 
 export type UpgradeCategory = 'lodging' | 'gear' | 'comfort'
 
@@ -281,6 +283,28 @@ const UPGRADE_LIST: UpgradeDef[] = [
     requires: ['lodging-mouse-bunks'],
     effect: { kind: 'helpers', helper: 'scout', amount: 1 },
     courtPoints: 2,
+  },
+  {
+    id: 'lodging-seed-catalogue',
+    name: 'Seed Catalogue',
+    category: 'lodging',
+    description: 'A shelf of plant guides. Supply helpers can now search for rare plants.',
+    glimmers: 400,
+    items: [trinkets(2)],
+    requires: ['lodging-supply-nook'],
+    effect: { kind: 'supplyKeen', level: 1 },
+    courtPoints: 2,
+  },
+  {
+    id: 'lodging-botanists-library',
+    name: "Botanist's Library",
+    category: 'lodging',
+    description: 'Supply helpers spot rare plants twice as easily.',
+    glimmers: 1200,
+    items: [trinkets(4), { itemId: 'raw-lucky-leaf', amount: 2 }],
+    requires: ['lodging-seed-catalogue'],
+    effect: { kind: 'supplyKeen', level: 2 },
+    courtPoints: 3,
   },
   {
     id: 'lodging-market-stall',

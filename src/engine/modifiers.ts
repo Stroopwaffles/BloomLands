@@ -240,6 +240,14 @@ export function hasFeature(state: GameState, feature: 'ritual-circle'): boolean 
   return upgradeEffects(state).some((e) => e.kind === 'feature' && e.feature === feature)
 }
 
+/** How well supply helpers search for rare plants: 0 not at all, 1 normally, 2 keenly. */
+export function supplyKeenness(state: GameState): number {
+  let level = 0
+  for (const e of upgradeEffects(state))
+    if (e.kind === 'supplyKeen') level = Math.max(level, e.level)
+  return level
+}
+
 export function hasQol(state: GameState, qol: QolId): boolean {
   return upgradeEffects(state).some((e) => e.kind === 'qol' && e.qol === qol)
 }

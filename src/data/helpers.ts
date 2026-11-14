@@ -105,12 +105,22 @@ export const HELPER_RULES = {
   courtPoints: 2,
 }
 
-/** Supply helpers gathering one specific plant find fewer of the rarer ones per trip. */
-export const RARITY_HAUL_FACTOR: Readonly<Record<Rarity, number>> = {
-  common: 1,
-  uncommon: 0.5,
-  rare: 0.25,
-  'very-rare': 0.1,
+/**
+ * Supply helpers search a spot for the item they were sent for. Each trip they look at `searches`
+ * plants, with the same odds the player gets, but they know what they're looking for, so the
+ * plant they want counts `bonus` times as likely. Rare plants are out of reach until the court
+ * learns about them (Seed Catalogue: normal odds; Botanist's Library: the bonus too).
+ */
+export const SUPPLY_RULES = {
+  searches: 6,
+  bonus: 2,
+}
+
+/** How keen-eyed suppliers are about a rarity, by how much the court knows (0, 1 or 2). */
+export function searchBonus(rarity: Rarity, keenness: number): number {
+  if (rarity === 'common' || rarity === 'uncommon') return SUPPLY_RULES.bonus
+  if (keenness <= 0) return 0
+  return keenness === 1 ? 1 : SUPPLY_RULES.bonus
 }
 
 /** Names for field-mouse helpers. */

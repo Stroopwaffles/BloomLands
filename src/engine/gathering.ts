@@ -55,20 +55,34 @@ export function rollPlant(
   )
 }
 
-function growSlot(state: GameState, slot: SlotState, spotId: string, random: Random): void {
+/**
+ * How likely each plant is to grow at a spot right now: rarity, then everything that shifts the
+ * odds (luck potions, bloom, weather, curios), leaving out morning-only plants outside the morning.
+ * Growing plants and supply helpers' searches both use these odds.
+ */
+export function plantWeights(state: GameState, spotId: string): [string, number][] {
   const regionId = SPOTS[spotId].regionId
   const morningOk = morningPlantsGrow(state, regionId)
   const weather = weatherIn(state, regionId)
-  const plantId = rollPlant(
-    spotId,
-    random,
+  const luckMultiplier =
     luck(state) *
-      bloomLuck(state, regionId) *
-      (weather.luck ?? 1) *
-      weatherLuckMultiplier(state, weather.id),
-    morningOk,
-    weather.tagBoost,
-  )
+    bloomLuck(state, regionId) *
+    (weather.luck ?? 1) *
+    weatherLuckMultiplier(state, weather.id)
+  return SPOTS[spotId].plants
+    .filter((id) => morningOk || !PLANTS[id].morningOnly)
+    .map((id) => {
+      const { rarity, tags } = PLANTS[id]
+      const weight =
+        RARITY_WEIGHT[rarity] *
+        (rarity === 'common' ? 1 : luckMultiplier) *
+        (weather.tagBoost && tags?.includes(weather.tagBoost.tag) ? weather.tagBoost.multiplier : 1)
+      return [id, weight]
+    })
+}
+
+function growSlot(state: GameState, slot: SlotState, spotId: string, random: Random): void {
+  const plantId = pickWeighted(plantWeights(state, spotId), random)
   slot.plantId = plantId
   slot.hp = PLANTS[plantId].toughness
   slot.regrowMs = 0

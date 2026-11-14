@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { HELPER_RULES } from '../src/data/helpers'
+import { HELPER_RULES, SUPPLY_RULES } from '../src/data/helpers'
 import { baseTravelMs } from '../src/data/world'
 import { applyAction } from '../src/engine/actions'
 import { recruitCost, supplyableItems, supplyHaul } from '../src/engine/helpers'
@@ -140,7 +140,11 @@ describe('supply helpers', () => {
       tripSpot: 'dandelion-drift',
     })
     advance(state, START + 61_000 + 2 * 12_000 + HELPER_RULES.gatherMs + 1000)
-    expect(state.inventory['raw-wild-berries']).toBe(supplyHaul('raw-wild-berries'))
+    // A search: some berries (2 per bush found), never more than the plants searched.
+    expect(state.stats.helperTrips).toBe(1)
+    const berries = state.inventory['raw-wild-berries'] ?? 0
+    expect(berries % 2).toBe(0)
+    expect(berries).toBeLessThanOrEqual(SUPPLY_RULES.searches * 2)
   })
 
   it('stop once stock is at the minimum', () => {
@@ -161,7 +165,7 @@ describe('supply helpers', () => {
     ])
     applyAction(state, { type: 'helpers/recruit', helperType: 'supply' })
     applyAction(state, { type: 'helpers/recruit', helperType: 'supply' })
-    const haul = supplyHaul('raw-daisy-petals')
+    const haul = Math.ceil(supplyHaul(state, 'raw-daisy-petals'))
     applyAction(state, { type: 'supply/setMinimum', itemId: 'raw-daisy-petals', amount: haul })
     advance(state, START + 1000)
     const busy = state.helpers.list.filter((h) => h.phase !== 'idle')

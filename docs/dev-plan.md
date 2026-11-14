@@ -255,6 +255,14 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - **Storage limits** (Helpers tab): set the most of any item to keep in storage, where 0 means no limit.
 - **Peddler helper** (Market Stall lodging: 300 Glimmers, 3 Petal Paste, needs Mouse Bunks): takes whatever is furthest over its limit, up to 20 at a time, to the nearest open village shop. They sell it at the shop's price (half its worth) and bring the Glimmers home. They keep working offline.
 
+### Supply helpers search instead of fetch (v0.3.13)
+
+- **Searching:** each supplier trip searches 6 plants at the best open spot, using the same odds as plant growth (`plantWeights`: rarity, luck potions, bloom, weather, curios). The wanted plant counts double. They keep only what they were sent for, so commons come home in good numbers, uncommons usually, and rares occasionally.
+- **Growing conditions:** morning-only plants can't be found outside the morning (unless it rains), and mist and fog lower the odds of rares.
+- **Unlocking rares:** suppliers can't search for rare plants at first. **Seed Catalogue** (lodging, 400 Glimmers and 2 trinkets) allows it at normal odds, about 1 lucky leaf every 9 trips. **Botanist's Library** (1,200 Glimmers, 4 trinkets, 2 lucky leaves) doubles their eye for rares too.
+- **Minimum stock panel:** shows the expected haul ("about 6 per trip", "about 1 every 9 trips"), or why an item can't be fetched now. Suppliers don't set out for items they can't find.
+- Tuning is in `SUPPLY_RULES` (helpers.ts).
+
 ### Backlog (asked for, not scheduled yet)
 
 - Nothing waiting.

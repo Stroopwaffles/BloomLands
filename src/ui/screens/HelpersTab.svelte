@@ -19,6 +19,7 @@
     nearestMarket,
     supplyableItems,
     supplyHaul,
+    supplyStatus,
     surplus,
   } from '../../engine/helpers'
   import { sellPrice } from '../../engine/shop'
@@ -58,6 +59,21 @@
       .sort((a, b) => itemName(a).localeCompare(itemName(b))),
   )
   const market = $derived(nearestMarket($game))
+
+  /** What a supplier can expect for an item, in words. */
+  function expectation(itemId: string): string {
+    switch (supplyStatus($game, itemId)) {
+      case 'too-rare':
+        return 'Too rare to search for yet (build a Seed Catalogue)'
+      case 'not-now':
+        return "Can't be found right now (out of season or blocked)"
+      default: {
+        const haul = supplyHaul($game, itemId)
+        if (haul >= 1) return `about ${formatNumber(Math.round(haul))} per trip`
+        return `about 1 every ${Math.round(1 / haul)} trips`
+      }
+    }
+  }
 
   function setMaximum(itemId: string, amount: number) {
     runtime.dispatch({ type: 'storage/setMaximum', itemId, amount })
@@ -267,7 +283,8 @@
     <h3>Minimum stock</h3>
     {#if hasSupply}
       <p class="note">
-        Supply helpers fetch anything that falls below its minimum. Set a minimum to 0 to ignore an
+        Supply helpers search for anything that falls below its minimum, with the same luck you
+        have: plenty of common plants, fewer of the rarer ones. Set a minimum to 0 to ignore an
         item.
       </p>
     {:else}
@@ -285,7 +302,7 @@
           <div class="item">
             <strong>{itemName(itemId)}</strong>
             <span>
-              {formatNumber(stock)} in storage · {formatNumber(supplyHaul(itemId))} per trip
+              {formatNumber(stock)} in storage · {expectation(itemId)}
             </span>
           </div>
           <div class="stepper">
@@ -306,6 +323,7 @@
             <button
               type="button"
               aria-label={`Raise minimum for ${itemName(itemId)}`}
+              disabled={supplyStatus($game, itemId) === 'too-rare'}
               onclick={() => setMinimum(itemId, minimum + 5)}>+</button
             >
           </div>
