@@ -238,6 +238,46 @@ Each region milestone adds that region's content, art, mount, creature, pirate c
 - **Art:** Forest backdrops for all four spots, mist, rain and falling-leaf weather, squirrels and hedgehogs, Bramblebeard, the owl, beetles, the Corsairs and their thorn camp, the flying squirrel, curios, Hush Step and the new outfits.
 - *Simplification to review:* the Rite of Plenty speeds up every open region rather than one chosen region.
 
+#### M11 status: complete — Release 0.3 "Swamp" (version 0.3.0)
+
+- **Opening the Swamp:** a Hedge Court plus the Rite of the Reed Gate (2 Earth Loam and 1 Sun Salve), researched in the Forest.
+- **Places:** Toad Village, Reeds Hollow, the Lilypad Pools (open water), the Sunken Willow, and the secret Wisp Hollow.
+- **Open water:** flights to and from water spots take 40% longer, unless you ride the frog or have drunk a Waterstride Philter.
+- **Swamp content:**
+  - 7 plants plus the wisp lily, and 3 trinkets (bottle cap, fishing fly, tiny bell).
+  - Reed Fiber, and Dew Water pressed from duckweed.
+  - Lily Oil, Orchid Essence and Lily Balm. Lily Balm is the Swamp's signature, so Parley and Kindred Call use it there.
+  - The Waterstride Philter (5 minutes: no water slowdown, and the heron ignores you).
+  - Five new research nodes appear once the Swamp is open.
+- **Weather:**
+  - Fog: rare plants hide.
+  - Drizzle: slower flights, but petal plants grow twice as often.
+  - Muggy heat: plants regrow 40% faster, but helpers' flights take 30% longer.
+- **Challenges:**
+  - The heron watches only the Lilypad Pools. Lullaby calms it, Hush Step sneaks past it, and Waterstride lets you gather under its nose. Helpers still stay home while it watches.
+  - Slugs infest petal plants.
+  - The Bog Buccaneers camp in the Swamp and ambush flights there.
+- **People:**
+  - Mayor Gubbins (Mayor's Chain of Office: helping villagers raises 50% more bloom).
+  - Wren Mudwhistle (Reed Pipe: helpers' flights 15% quicker).
+  - Mirebelle at the Sunken Willow.
+  - Three Toad Village villagers.
+- **Mount:** the frog, befriended with duckweed at the Lilypad Pools. In the Swamp it adds click power (+1, rising to +3 at level 5), and it swims, so open water doesn't slow it.
+- **Secret area:** Wisp Hollow opens at Swamp bloom Budding. It holds the Wisp Lantern curio (rarer plants twice as likely in fog) and the Lantern-Bug set (cloak and lily-pad hat).
+- **New helpers:**
+  - **Brewers** stay home and repeat a recipe you choose until storage holds the amount you pick (5, 10, 25 or 50). They take a station slot while they work, and they keep working offline.
+  - **Scouts** search a spot you choose and bring home its trinkets: a 60% chance per trip, with a 20% chance of a second one. Trinket curios help them too.
+  - Trinkets that helpers bring home never need storage space.
+- **Lodging:** Lily Pond (+1 mount), Brewer's Corner and Brewing Loft (brewers), Scout's Perch (scout), Reed Loft (+300 storage).
+- **Art and sound:**
+  - Swamp backdrops for all three spots, fog, drizzle and muggy-heat weather, toads, a newt and a tadpole, Mirebelle, the heron, slugs, the Buccaneers and their leaf-boat camp, the frog, curios, and brewer and scout helpers.
+  - Swamp day and night music in F.
+  - The menu shows the Lilypad Pools once the Swamp is open.
+- **Simplifications to review:**
+  - Fog's will-o'-wisp path is decoration only; Wisp Hollow opens by bloom, as the content doc says.
+  - Scouts don't discover hidden places yet. That arrives with the Caves' Sunken Geode (M13).
+  - Helpers are still drawn as field mice everywhere, rather than as each region's own folk.
+
 ---
 
 ## 4. How We Work Each Milestone
