@@ -522,7 +522,8 @@
 
   /* Pins stay perfectly still: the usual button press-in would knock them off their spot. */
   .node:not(:disabled):active {
-    transform: translate(-50%, -50%);
+    translate: none;
+    scale: none;
   }
 
   .node:hover .pin {

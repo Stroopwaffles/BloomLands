@@ -66,16 +66,22 @@ h3 {
   pointer-events: none;
 }
 
-/* Buttons feel soft and press in a little. */
+/*
+ * Buttons feel soft and press in a little. This uses the separate `translate` and `scale`
+ * properties, which add to an element's own `transform` rather than replacing it, so a button
+ * that is positioned with a transform (map pins, creatures) is never knocked off its spot.
+ */
 button {
   transition:
-    transform 0.08s ease,
+    translate 0.08s ease,
+    scale 0.08s ease,
     box-shadow 0.15s ease,
     background-color 0.15s ease;
 }
 
 button:not(:disabled):active {
-  transform: translateY(1px) scale(0.98);
+  translate: 0 1px;
+  scale: 0.98;
 }
 
 button:focus-visible {

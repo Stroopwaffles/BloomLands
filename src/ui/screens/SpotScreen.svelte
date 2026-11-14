@@ -422,6 +422,12 @@
     touch-action: manipulation;
   }
 
+  /* The creature stays put when tapped; its own hop is the feedback. */
+  .creature:not(:disabled):active {
+    translate: none;
+    scale: none;
+  }
+
   .creature .art {
     display: block;
     filter: drop-shadow(0 3px 2px rgb(60 60 40 / 0.25));
