@@ -342,6 +342,7 @@
   }
 
   .panel {
+    min-width: 0;
     background: var(--cream-deep);
     border: 2px solid var(--honey);
     border-radius: 20px;
@@ -369,6 +370,7 @@
 
   .list li {
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-start;
     gap: 10px;
     padding: 10px;
@@ -378,6 +380,7 @@
 
   .info {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -417,6 +420,16 @@
     flex-direction: column;
     gap: 2px;
     font-size: 0.8rem;
+    min-width: 0;
+  }
+
+  /* A helper's job picker gets its own full-width row, so long place names never spill out. */
+  .list li > .task {
+    flex-basis: 100%;
+  }
+
+  .task select {
+    width: 100%;
   }
 
   select {
