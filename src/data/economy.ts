@@ -80,8 +80,8 @@ export const TRADERS: readonly TraderDef[] = [
 ]
 
 export const TRADER_RULES = {
-  /** Requests waiting at once. */
-  maxRequests: 2,
+  /** Only one trader visits the court at a time. */
+  maxRequests: 1,
   /** Time until the first trader of a new game arrives. */
   firstArrivalMs: 20_000,
   /** Time between arrivals while there's room for another request. */

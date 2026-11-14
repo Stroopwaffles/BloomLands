@@ -12,7 +12,6 @@ import { openSpots } from './regions'
 import type { Random } from './rng'
 import { addItems, type GameState, type TradeRequest } from './state'
 
-/** Items a trader might ask for: raw plants, plus anything the player can currently craft. */
 /** A raw material that grows in an open, non-secret spot. */
 function reachableRaw(state: GameState, itemId: string): boolean {
   return openSpots(state).some(
@@ -22,6 +21,7 @@ function reachableRaw(state: GameState, itemId: string): boolean {
   )
 }
 
+/** Items a trader might ask for: raw plants, plus anything the player can currently craft. */
 export function requestableItems(state: GameState): string[] {
   const items = Object.keys(ITEM_VALUES).filter(
     (id) => ITEMS[id]?.category === 'raw' && reachableRaw(state, id),
@@ -90,6 +90,10 @@ export function advanceTraders(state: GameState, dtMs: number, random: Random): 
   for (const request of traders.requests) request.remainingMs -= dtMs
   if (traders.requests.some((r) => r.remainingMs <= 0)) {
     traders.requests = traders.requests.filter((r) => r.remainingMs > 0)
+  }
+  // Older saves could have two visits waiting at once; the extra one moves on.
+  if (traders.requests.length > TRADER_RULES.maxRequests) {
+    traders.requests = traders.requests.slice(0, TRADER_RULES.maxRequests)
   }
   if (traders.requests.length >= TRADER_RULES.maxRequests) return
   traders.nextArrivalMs -= dtMs

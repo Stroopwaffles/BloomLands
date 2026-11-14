@@ -58,6 +58,23 @@ describe('traders', () => {
     expect(state.traders.requests.length).toBeLessThanOrEqual(TRADER_RULES.maxRequests)
   })
 
+  it('only one trader visits the court at a time', () => {
+    const state = home()
+    expect(TRADER_RULES.maxRequests).toBe(1)
+    for (let i = 1; i <= 20; i++) {
+      advance(state, START + i * TRADER_RULES.arrivalMs)
+      expect(state.traders.requests.length).toBeLessThanOrEqual(1)
+    }
+  })
+
+  it('sends the extra visitor on its way in an older save with two waiting', () => {
+    const state = home()
+    const first = makeRequest(state, stateRandom(state))
+    state.traders.requests.push(first, makeRequest(state, stateRandom(state)))
+    advance(state, START + 1000)
+    expect(state.traders.requests.map((r) => r.id)).toEqual([first.id])
+  })
+
   it('leave when a request expires', () => {
     const state = home()
     state.traders.requests.push({ ...makeRequest(state, stateRandom(state)), remainingMs: 1000 })
