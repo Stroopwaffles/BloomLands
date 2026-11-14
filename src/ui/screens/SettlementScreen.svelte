@@ -9,6 +9,7 @@
   import Characters from '../components/Characters.svelte'
   import Destinations from '../components/Destinations.svelte'
   import PostBox from '../components/PostBox.svelte'
+  import ShopPanel from '../components/ShopPanel.svelte'
   import VillagerRequests from '../components/VillagerRequests.svelte'
   import { runtime } from '../game'
   import { BLOCKED_TEXT } from '../messages'
@@ -26,6 +27,8 @@
       </div>
       <Destinations />
     </header>
+
+    <ShopPanel settlementId={settlement.id} />
 
     <PostBox />
 

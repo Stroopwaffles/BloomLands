@@ -10,6 +10,7 @@ import { tapFlightEvent } from './flightEvents'
 import { assignHelper, recruitHelper, setBrew, setMinimum } from './helpers'
 import { castSpell, performRitual } from './magic'
 import { sendParcel } from './post'
+import { buyItems, sellItems } from './shop'
 import { dismissVillagerRequest, fulfillVillagerRequest } from './settlements'
 import { feedMount, levelUpMount, rideMount } from './mounts'
 import { awakenSpirit } from './spirits'
@@ -41,6 +42,8 @@ export type Action =
   | { type: 'helpers/brew'; helperId: number; recipeId: string | null; keep?: number }
   | { type: 'supply/setMinimum'; itemId: string; amount: number }
   | { type: 'post/send' }
+  | { type: 'shop/sell'; itemId: string; amount: number }
+  | { type: 'shop/buy'; itemId: string; amount: number }
   | { type: 'creature/tap'; spotId: string }
   | { type: 'flight/tap' }
   | { type: 'spell/cast'; spellId: string }
@@ -102,6 +105,10 @@ export function applyAction(
       return setMinimum(state, action.itemId, action.amount)
     case 'post/send':
       return sendParcel(state)
+    case 'shop/sell':
+      return sellItems(state, action.itemId, action.amount)
+    case 'shop/buy':
+      return buyItems(state, action.itemId, action.amount)
     case 'creature/tap':
       return tapCreature(state, action.spotId)
     case 'flight/tap':

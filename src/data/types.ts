@@ -125,6 +125,8 @@ export interface SettlementDef {
   description: string
   /** Who lives here (the folk helpers recruited here belong to). */
   folk: string
+  /** The village shop. */
+  shop: { name: string; keeper: string; greeting: string }
 }
 
 export interface RegionDef {

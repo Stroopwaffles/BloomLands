@@ -164,6 +164,11 @@ export const SETTLEMENTS: Readonly<Record<string, SettlementDef>> = {
     description:
       'A village of field mice living in burrows and old thimbles under the roots of a hawthorn.',
     folk: 'field mice',
+    shop: {
+      name: 'The Thimble Shop',
+      keeper: 'Hob',
+      greeting: 'Buttons, petals, fluff, a bit of everything! What can I do for you?',
+    },
   },
   acornhollow: {
     id: 'acornhollow',
@@ -172,6 +177,11 @@ export const SETTLEMENTS: Readonly<Record<string, SettlementDef>> = {
     description:
       'Squirrels and hedgehogs living together inside a huge hollow oak, with round doors at every level.',
     folk: 'squirrels and hedgehogs',
+    shop: {
+      name: 'The Acorn Exchange',
+      keeper: 'Chestnut',
+      greeting: "I keep a little of everything. And I mean everything. Let's trade!",
+    },
   },
   'toad-village': {
     id: 'toad-village',
@@ -180,6 +190,11 @@ export const SETTLEMENTS: Readonly<Record<string, SettlementDef>> = {
     description:
       'Toads living in mud-domed houses on giant lily pads, linked by wobbly reed bridges.',
     folk: 'toads',
+    shop: {
+      name: 'Lily-Pad Market',
+      keeper: 'Madame Lilywhite',
+      greeting: 'Welcome, dear. Mind the puddles, and the prices are very fair.',
+    },
   },
 }
 

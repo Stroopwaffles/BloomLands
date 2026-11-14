@@ -62,6 +62,16 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'potion-waterstride-philter': 100,
 }
 
+/** Settlement shops. Starting values for balancing. */
+export const SHOP_RULES = {
+  /** Shops pay this share of an item's worth (traders pay 1.5×, so requests stay better). */
+  sellRate: 0.5,
+  /** Shops charge this many times an item's worth. */
+  buyRate: 2,
+  /** What a trinket is worth to a shop. */
+  trinketValue: 40,
+}
+
 /** The Acorn Post: sending the satchel home from a settlement. Starting values for balancing. */
 export const POST_RULES = {
   /** One Glimmer for every this many items... */

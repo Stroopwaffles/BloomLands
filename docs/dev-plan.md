@@ -234,6 +234,13 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - **Arrangement:** a soft pad, a bass, and either a broken-chord accompaniment (day), a waltz "oom-pah-pah" (night) or a lazy two-step (Swamp day), under a music-box lead with a lighter echo.
 - **New regions:** each adds a day and a night entry. Tests check that every bar adds up.
 
+### Settlement shops (v0.3.9)
+
+- Every settlement has a shop: The Thimble Shop (Hob), The Acorn Exchange (Chestnut) and Lily-Pad Market (Madame Lilywhite).
+- **Buying:** a shop sells only the **common** plants of its own region (from its open, non-secret spots) at 2× their worth, into the satchel (×1, ×5, ×10, within satchel space).
+- **Selling:** a shop buys **anything** in the satchel at half its worth, with Sell 1, All and Sell everything. Trinkets are worth 40 to a shop. Traders pay 1.5× and villagers grow bloom, so requests stay the better deal. Selling is always cheaper than buying, so there's no buy-and-sell loop.
+- Rates are in `SHOP_RULES` (economy.ts).
+
 ### Backlog (asked for, not scheduled yet)
 
 - Nothing waiting.

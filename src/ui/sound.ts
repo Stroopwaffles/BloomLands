@@ -31,6 +31,8 @@ export function soundFor(event: GameEvent): SoundId | null {
     case 'craft-start':
     case 'research-start':
       return 'craft'
+    case 'shop-sold':
+    case 'shop-bought':
     case 'trade-filled':
     case 'villager-helped':
       return 'coins'
