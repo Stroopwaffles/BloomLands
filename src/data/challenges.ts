@@ -3,7 +3,16 @@
  * All numbers are starting values for balancing.
  */
 
-export type WeatherKind = 'sunshine' | 'breeze' | 'light-rain' | 'mist' | 'rain' | 'falling-leaves'
+export type WeatherKind =
+  | 'sunshine'
+  | 'breeze'
+  | 'light-rain'
+  | 'mist'
+  | 'rain'
+  | 'falling-leaves'
+  | 'fog'
+  | 'drizzle'
+  | 'muggy'
 
 export interface WeatherDef {
   id: WeatherKind
@@ -19,8 +28,10 @@ export interface WeatherDef {
   dewAllDay: boolean
   /** Multiplies how often rarer plants grow (mist hides them). */
   luck?: number
-  /** Multiplies how often mushrooms (caps) grow (rain brings them up). */
-  capsBoost?: number
+  /** Plants with this tag grow more often (rain brings up mushrooms, drizzle opens lilies). */
+  tagBoost?: { tag: string; multiplier: number }
+  /** Multiplies helpers' flight times in the region (muggy heat makes them dawdle). */
+  helperTrips?: number
 }
 
 export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
@@ -74,7 +85,7 @@ export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
     flightHome: 1.25,
     flightAway: 1.25,
     dewAllDay: true,
-    capsBoost: 2.5,
+    tagBoost: { tag: 'caps', multiplier: 2.5 },
   },
   'falling-leaves': {
     id: 'falling-leaves',
@@ -86,12 +97,46 @@ export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
     flightAway: 1.15,
     dewAllDay: false,
   },
+  fog: {
+    id: 'fog',
+    name: 'Fog',
+    description: "Rare plants hide in the fog. Will-o'-wisps flicker at the edges.",
+    weight: 30,
+    regrowth: 1,
+    flightHome: 1.1,
+    flightAway: 1.1,
+    dewAllDay: false,
+    luck: 0.6,
+  },
+  drizzle: {
+    id: 'drizzle',
+    name: 'Drizzle',
+    description: 'Slower flights, but lilies and marigolds bloom more.',
+    weight: 35,
+    regrowth: 1,
+    flightHome: 1.25,
+    flightAway: 1.25,
+    dewAllDay: true,
+    tagBoost: { tag: 'petals', multiplier: 2 },
+  },
+  muggy: {
+    id: 'muggy',
+    name: 'Muggy heat',
+    description: "Plants regrow faster, but helpers' trips are slower.",
+    weight: 35,
+    regrowth: 1.4,
+    flightHome: 1,
+    flightAway: 1,
+    dewAllDay: false,
+    helperTrips: 1.3,
+  },
 }
 
 /** Which weather each region gets. */
 export const REGION_WEATHER: Readonly<Record<string, readonly WeatherKind[]>> = {
   meadow: ['sunshine', 'breeze', 'light-rain'],
   forest: ['mist', 'rain', 'falling-leaves'],
+  swamp: ['fog', 'drizzle', 'muggy'],
 }
 
 export const WEATHER_RULES = {
@@ -118,6 +163,7 @@ export interface PestDef {
 export const PESTS: Readonly<Record<string, PestDef>> = {
   meadow: { id: 'aphid', name: 'aphids', tag: 'petals' },
   forest: { id: 'beetle', name: 'beetles', tag: 'caps' },
+  swamp: { id: 'slug', name: 'slugs', tag: 'petals' },
 }
 
 export interface CreatureDef {
@@ -135,6 +181,10 @@ export interface CreatureDef {
   eatEveryMs: number
   /** It wanders off by itself after this long. */
   staysMs: number
+  /** Only turns up at these spots (default: any spot in its region). */
+  spots?: string[]
+  /** A Waterstride Philter lets you gather under its nose (the heron ignores you). */
+  ignoresWaterstride?: boolean
 }
 
 export const CREATURES: Readonly<Record<string, CreatureDef>> = {
@@ -155,6 +205,17 @@ export const CREATURES: Readonly<Record<string, CreatureDef>> = {
     taps: 0,
     eatEveryMs: 0,
     staysMs: 4 * 60_000,
+  },
+  heron: {
+    id: 'heron',
+    name: 'Heron',
+    regionId: 'swamp',
+    behavior: 'watches',
+    taps: 0,
+    eatEveryMs: 0,
+    staysMs: 4 * 60_000,
+    spots: ['lilypad-pools'],
+    ignoresWaterstride: true,
   },
 }
 
@@ -197,6 +258,17 @@ export const CREWS: Readonly<Record<string, CrewDef>> = {
       '"Halt! Pay the bramble toll!" ...They accept the treat as the toll. Grudgingly.',
       '"The Drifters say you\'re good folk. The Drifters say a lot of things."',
       '"Alright, fairy. No more thorns in your path. Ours are yours now."',
+    ],
+  },
+  'bog-buccaneers': {
+    id: 'bog-buccaneers',
+    name: 'The Bog Buccaneers',
+    regionId: 'swamp',
+    description: 'Pirate fairies who sail leaf boats and raid lily-pad gatherers.',
+    parleyLines: [
+      '"Ahoy! Er, I mean, ARR!" The captain bails out his leaf boat and takes the treat.',
+      '"Them Corsairs say you\'re soft. We say soft is nice. Have you seen how damp it is out here?"',
+      '"Hoist the lily pad! The Buccaneers sail for your court now. Mind the puddles."',
     ],
   },
 }

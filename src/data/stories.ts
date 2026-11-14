@@ -55,6 +55,18 @@ export const CHARACTERS: Readonly<Record<string, CharacterDef>> = {
     title: 'a hedgehog herbalist',
     settlement: 'acornhollow',
   },
+  'char-gubbins': {
+    id: 'char-gubbins',
+    name: 'Mayor Gubbins',
+    title: 'the pompous, kind-hearted toad mayor',
+    settlement: 'toad-village',
+  },
+  'char-wren': {
+    id: 'char-wren',
+    name: 'Wren Mudwhistle',
+    title: 'a newt musician',
+    settlement: 'toad-village',
+  },
 }
 
 export const STORIES: Readonly<Record<string, StoryDef>> = {
@@ -284,6 +296,111 @@ export const STORIES: Readonly<Record<string, StoryDef>> = {
     ending: [
       'There. Finished. The first field guide of the Forest, and your name is in the thank-yous.',
       "Take my old copy. Oh, and the old log by the ferns? It's my secret reading room. Do visit.",
+    ],
+  },
+  'story-gubbins': {
+    id: 'story-gubbins',
+    characterId: 'char-gubbins',
+    curioId: 'curio-mayors-chain',
+    chapters: [
+      {
+        lines: [
+          'Ahem! HARRUMPH. A visitor! Welcome, welcome, to Toad Village, jewel of the Swamp!',
+          'I, Mayor Gubbins, am planning the first ever Grand Lily-Pad Regatta. Very grand. Very wet.',
+          'Every boat needs a mast. Reeds, my dear fairy. Lots of reeds.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-reed-stalks', amount: 10 }],
+          label: 'Bring the Mayor 10 Reed stalks',
+        },
+      },
+      {
+        lines: ['Splendid masts! Now the rigging. Twine would snap. We need proper Reed Fiber.'],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'refined-reed-fiber', amount: 2 }],
+          label: 'Bring the Mayor 2 Reed Fiber',
+        },
+      },
+      {
+        lines: [
+          'Alas, the villagers say regattas are "a lot of fuss". A LOT of fuss? It is EXACTLY enough fuss!',
+          'Perhaps if somebody helped them with their chores, they would have time to sail.',
+        ],
+        task: {
+          kind: 'stat',
+          stat: 'villagersHelped',
+          amount: 3,
+          label: 'Help 3 villagers in Toad Village',
+        },
+      },
+      {
+        lines: [
+          'Everyone is coming! Now, the mayoral trophy must SHINE. Lily Balm, the finest polish there is.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'component-lily-balm', amount: 1 }],
+          label: 'Bring the Mayor 1 Lily Balm',
+        },
+      },
+    ],
+    ending: [
+      'What a regatta! Three boats sank, and everybody agrees it was the best day in Swamp history.',
+      'Please, wear my spare chain of office. The villagers will listen to you. Mostly.',
+    ],
+  },
+  'story-wren': {
+    id: 'story-wren',
+    characterId: 'char-wren',
+    curioId: 'curio-reed-pipe',
+    chapters: [
+      {
+        lines: [
+          'Oh! Hello. Shh. Listen. Hear the frogs? Every one of them is singing a different song.',
+          "I'm starting a frog choir. A proper one. With instruments. Reed pipes first, please.",
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-reed-stalks', amount: 8 }],
+          label: 'Bring Wren 8 Reed stalks',
+        },
+      },
+      {
+        lines: [
+          'Lovely pipes. Now drums. Cattail fluff makes the softest drum pads. Frogs like soft.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-cattail-fluff', amount: 6 }],
+          label: 'Bring Wren 6 Cattail fluff',
+        },
+      },
+      {
+        lines: [
+          'Now we need singers. While you gather, listen for frogs who can hold a tune.',
+          'Most of them just go "ribbit". We need the ones who go "ribBIT".',
+        ],
+        task: {
+          kind: 'stat',
+          stat: 'plantsHarvested',
+          amount: 30,
+          label: 'Gather 30 plants while you listen for singing frogs',
+        },
+      },
+      {
+        lines: ['All that croaking makes for sore throats. Myrtle leaves make a soothing tea.'],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-myrtle-leaves', amount: 4 }],
+          label: 'Bring Wren 4 Myrtle leaves',
+        },
+      },
+    ],
+    ending: [
+      'The first concert of the Mudwhistle Frog Choir! Nobody was in tune, and it was perfect.',
+      'Take my first reed pipe. Play it for your helpers. They fly faster with a tune to hum.',
     ],
   },
 }

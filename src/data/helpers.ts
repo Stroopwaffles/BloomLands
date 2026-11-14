@@ -1,6 +1,6 @@
 import type { Rarity } from './types'
 
-export type HelperType = 'gatherer' | 'supply' | 'pirate'
+export type HelperType = 'gatherer' | 'supply' | 'pirate' | 'brewer' | 'scout'
 
 export interface HelperTypeDef {
   id: HelperType
@@ -39,14 +39,43 @@ export const HELPER_TYPES: Readonly<Record<HelperType, HelperTypeDef>> = {
     baseCost: 40,
     unlockHint: 'Win over a pirate crew first.',
   },
+  brewer: {
+    id: 'brewer',
+    name: 'Brewer',
+    description:
+      'Stays home and keeps a station busy: makes the recipe you choose until you have enough.',
+    accessory: 'apron',
+    baseCost: 120,
+    unlockHint: "Build a Brewer's Corner at home first (Upgrades).",
+  },
+  scout: {
+    id: 'scout',
+    name: 'Scout',
+    description: 'Searches a harvesting spot you choose for trinkets, and brings them home.',
+    accessory: 'goggles',
+    baseCost: 100,
+    unlockHint: "Build a Scout's Perch at home first (Upgrades).",
+  },
 }
 
-export const HELPER_TYPE_ORDER: readonly HelperType[] = ['gatherer', 'supply', 'pirate']
+export const HELPER_TYPE_ORDER: readonly HelperType[] = [
+  'gatherer',
+  'supply',
+  'brewer',
+  'scout',
+  'pirate',
+]
 
-/** Helpers who work a chosen spot. */
+/** Helpers who work a chosen spot (gatherers and pirates gather there, scouts search it). */
 export function gathersAtSpot(type: HelperType): boolean {
-  return type === 'gatherer' || type === 'pirate'
+  return type === 'gatherer' || type === 'pirate' || type === 'scout'
 }
+
+/** Brewers: how much of their recipe's result they keep in storage, by default and as choices. */
+export const BREWER_KEEP = { default: 10, choices: [5, 10, 25, 50] }
+
+/** Scouts: chances per trip of finding a trinket, and of finding a second one. */
+export const SCOUT_RULES = { trinketChance: 0.6, secondChance: 0.2 }
 
 /** Hammocks the reformed pirates bring with them, per crew won over. */
 export const PIRATES_PER_CREW = 2

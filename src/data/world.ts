@@ -58,6 +58,29 @@ const SPOT_LIST: SpotDef[] = [
     trinkets: ['trinket-ribbon-scrap', 'trinket-brass-key'],
   },
 
+  // Swamp
+  {
+    id: 'reeds-hollow',
+    name: 'Reeds Hollow',
+    regionId: 'swamp',
+    description: 'A dense bed of reeds and cattails along the bank.',
+    plants: ['plant-reed', 'plant-cattail', 'plant-marsh-marigold', 'plant-bog-myrtle'],
+    slots: 6,
+    regrowMs: 28_000,
+    trinkets: ['trinket-bottle-cap', 'trinket-fishing-fly'],
+  },
+  {
+    id: 'lilypad-pools',
+    name: 'Lilypad Pools',
+    regionId: 'swamp',
+    description: 'Open water dotted with lilies. Easier to reach with the frog.',
+    plants: ['plant-duckweed', 'plant-water-lily', 'plant-bog-orchid'],
+    slots: 6,
+    regrowMs: 30_000,
+    trinkets: ['trinket-tiny-bell', 'trinket-bottle-cap'],
+    water: true,
+  },
+
   // Secret areas: hidden until unlocked, re-locked on prestige (design doc 3.12)
   {
     id: 'fairy-ring',
@@ -108,6 +131,22 @@ const SPOT_LIST: SpotDef[] = [
       unlock: { kind: 'bloom', level: 3, hint: 'Help the Forest reach Budding bloom.' },
     },
   },
+  {
+    id: 'wisp-hollow',
+    name: 'Wisp Hollow',
+    regionId: 'swamp',
+    description: "A hidden pool the will-o'-wisps lead you to, once the Swamp is blooming.",
+    plants: ['plant-wisp-lily', 'plant-water-lily', 'plant-cattail', 'plant-duckweed'],
+    slots: 6,
+    regrowMs: 32_000,
+    trinkets: ['trinket-tiny-bell', 'trinket-fishing-fly'],
+    water: true,
+    secret: {
+      curioId: 'curio-wisp-lantern',
+      outfitId: 'outfit-lantern-bug',
+      unlock: { kind: 'bloom', level: 3, hint: 'Help the Swamp reach Budding bloom.' },
+    },
+  },
 ]
 
 export const SPOTS: Readonly<Record<string, SpotDef>> = Object.fromEntries(
@@ -134,6 +173,14 @@ export const SETTLEMENTS: Readonly<Record<string, SettlementDef>> = {
       'Squirrels and hedgehogs living together inside a huge hollow oak, with round doors at every level.',
     folk: 'squirrels and hedgehogs',
   },
+  'toad-village': {
+    id: 'toad-village',
+    name: 'Toad Village',
+    regionId: 'swamp',
+    description:
+      'Toads living in mud-domed houses on giant lily pads, linked by wobbly reed bridges.',
+    folk: 'toads',
+  },
 }
 
 export interface SpiritPlaceDef {
@@ -159,6 +206,13 @@ export const SPIRIT_PLACES: Readonly<Record<string, SpiritPlaceDef>> = {
     description: 'The oldest tree in the forest, with a face in its bark if you look closely.',
     spiritId: 'spirit-bramblebeard',
   },
+  'sunken-willow': {
+    id: 'sunken-willow',
+    name: 'The Sunken Willow',
+    regionId: 'swamp',
+    description: 'A willow half under water, its branches trailing in the still pool.',
+    spiritId: 'spirit-mirebelle',
+  },
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -183,9 +237,18 @@ export const REGIONS: Readonly<Record<string, RegionDef>> = {
     spots: ['fernshade-floor', 'mossy-stump-ring'],
     unlock: { rank: 1, ritualId: 'ritual-open-path' },
   },
+  swamp: {
+    id: 'swamp',
+    name: 'Swamp',
+    settlement: 'toad-village',
+    spiritPlace: 'sunken-willow',
+    secretSpots: ['wisp-hollow'],
+    spots: ['reeds-hollow', 'lilypad-pools'],
+    unlock: { rank: 2, ritualId: 'ritual-reed-gate' },
+  },
 }
 
-export const REGION_ORDER: readonly string[] = ['meadow', 'forest']
+export const REGION_ORDER: readonly string[] = ['meadow', 'forest', 'swamp']
 
 /** Every place you can fly to, in display order. */
 export function allPlaces(): string[] {
@@ -251,6 +314,12 @@ const ROUTES: Record<string, number> = {
 export const HOP_MS = 5_000
 /** A long flight to a neighboring region; each region further adds this again. */
 export const REGION_FLIGHT_MS = 18_000
+
+/**
+ * Flights to open water (spot.water) take this much longer, unless you ride a mount that swims
+ * (the frog) or have drunk a Waterstride Philter.
+ */
+export const WATER_FLIGHT_FACTOR = 1.4
 
 export function baseTravelMs(from: string, to: string): number | null {
   if (from === to) return null

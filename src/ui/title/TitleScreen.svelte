@@ -14,7 +14,7 @@
   import { formatDuration } from '../../engine/format'
   import { bloomLevel, courtRank } from '../../engine/modifiers'
   import { latestRegion } from '../../engine/regions'
-  import { GAME_VERSION } from '../../engine/version'
+  import { GAME_VERSION, RELEASE_NAME } from '../../engine/version'
   import { runtime } from '../game'
   import CreditsPanel from './CreditsPanel.svelte'
   import SavesPanel from './SavesPanel.svelte'
@@ -73,6 +73,12 @@
       fall: ['#e2a34a', '#c9763a', '#9cc46a', '#d9b44f'],
       leaves: true,
     },
+    swamp: {
+      spot: 'lilypad-pools',
+      glow: 'rgb(214 240 234 / 0.5)',
+      fall: ['#f7c6d4', '#ffffff', '#ffd23f', '#d79ae6'],
+      leaves: false,
+    },
   }
   const scene = $derived((hasSave && TITLE_SCENES[latestRegion($game)]) || TITLE_SCENES.meadow)
 
@@ -102,7 +108,9 @@
 
   <div class="layout">
     <div class="brand">
-      <span class="tag">Release {GAME_VERSION.split('.').slice(0, 2).join('.')} · The Forest</span>
+      <span class="tag"
+        >Release {GAME_VERSION.split('.').slice(0, 2).join('.')} · {RELEASE_NAME}</span
+      >
       <h1 class="logo">Bloom<br />Lands</h1>
       <p class="tagline">a cozy fairy court</p>
 

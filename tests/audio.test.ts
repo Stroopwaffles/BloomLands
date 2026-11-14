@@ -15,8 +15,8 @@ describe('music', () => {
   it('picks a theme per region and time of day, falling back to the Meadow', () => {
     expect(themeFor('meadow', false)).toBe('meadow')
     expect(themeFor('forest', true)).toBe('forest-night')
-    expect(themeFor('swamp', false)).toBe('meadow')
-    expect(themeFor('swamp', true)).toBe('meadow-night')
+    expect(themeFor('swamp', false)).toBe('swamp')
+    expect(themeFor('orchard', true)).toBe('meadow-night')
   })
 
   it('composes bars with pads, bass and melody notes from the theme', () => {

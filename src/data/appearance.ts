@@ -204,6 +204,18 @@ export const OUTFIT_PIECES: Readonly<Record<string, OutfitPiece>> = {
     slot: 'outfit',
     color: '#c9832f',
   },
+  'piece-lantern-bug-cloak': {
+    id: 'piece-lantern-bug-cloak',
+    name: 'Lantern-bug cloak',
+    slot: 'outfit',
+    color: '#3f5f6e',
+  },
+  'piece-lily-pad-hat': {
+    id: 'piece-lily-pad-hat',
+    name: 'Lily-pad hat',
+    slot: 'headpiece',
+    color: '#6fae5f',
+  },
 }
 
 export interface OutfitSet {
@@ -241,6 +253,11 @@ export const OUTFIT_SETS: Readonly<Record<string, OutfitSet>> = {
     id: 'outfit-acorn',
     name: 'Acorn set',
     pieces: ['piece-acorn-cap', 'piece-leaf-cloak'],
+  },
+  'outfit-lantern-bug': {
+    id: 'outfit-lantern-bug',
+    name: 'Lantern-Bug set',
+    pieces: ['piece-lantern-bug-cloak', 'piece-lily-pad-hat'],
   },
 }
 

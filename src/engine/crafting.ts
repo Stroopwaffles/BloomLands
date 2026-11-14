@@ -1,6 +1,6 @@
 import { RECIPES } from '../data/recipes'
 import { RESEARCH } from '../data/research'
-import type { CostEntry } from '../data/types'
+import type { CostEntry, StationId } from '../data/types'
 import { BULK_CRAFT_COUNT } from '../data/upgrades'
 import { canPay, payCost } from './costs'
 import type { GameEvent } from './events'
@@ -14,6 +14,18 @@ export function unlockedRecipes(state: GameState): Set<string> {
     for (const recipeId of RESEARCH[id]?.unlocks ?? []) unlocked.add(recipeId)
   }
   return unlocked
+}
+
+/** Jobs running at a station: the player's own, plus any brewer working there. */
+export function stationInUse(state: GameState, station: StationId): number {
+  const brewers = state.helpers.list.filter(
+    (h) =>
+      h.type === 'brewer' &&
+      h.phase === 'gathering' &&
+      !!h.tripItem &&
+      RECIPES[h.tripItem]?.station === station,
+  ).length
+  return state.stations[station].jobs.length + brewers
 }
 
 /** Batch sizes the player can choose right now. */
@@ -34,7 +46,7 @@ export function checkCraft(state: GameState, recipeId: string, count = 1): Craft
   if (!batchSizes(state).includes(count)) return 'locked'
   if (!stationBuilt(state, recipe.station)) return 'not-built'
   if (state.player.travel || state.player.place !== 'home') return 'not-home'
-  if (state.stations[recipe.station].jobs.length >= stationSlots(state, recipe.station)) {
+  if (stationInUse(state, recipe.station) >= stationSlots(state, recipe.station)) {
     return 'station-busy'
   }
   if (!canPay(state, scaledInputs(recipeId, count))) return 'missing-items'

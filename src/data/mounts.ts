@@ -21,6 +21,9 @@ export interface MountDef {
   bonus:
     | { kind: 'satchel'; amount: number; perLevel: number; label: string }
     | { kind: 'regionTravel'; multiplier: number; perLevel: number; label: string }
+    | { kind: 'clickPower'; amount: number; perLevel: number; label: string }
+  /** Swims: no slowdown flying over open water. */
+  swims?: boolean
   maxLevel: number
   /** Per level above 1. */
   speedPerLevel: number
@@ -62,14 +65,33 @@ export const MOUNTS: Readonly<Record<string, MountDef>> = {
     maxLevel: 5,
     speedPerLevel: 0.05,
   },
+  'mount-frog': {
+    id: 'mount-frog',
+    name: 'Frog',
+    regionId: 'swamp',
+    homeSpot: 'lilypad-pools',
+    description: 'Bouncy and cheerful. Gathers fast in the Swamp, and happily crosses water.',
+    wildLine: 'is sunning itself on a lily pad.',
+    food: { itemId: 'raw-duckweed', amount: 5 },
+    feedingsToBefriend: 5,
+    feedCooldownMs: 2 * 60_000,
+    speed: 1.15,
+    bonus: { kind: 'clickPower', amount: 1, perLevel: 0.5, label: 'click power in the Swamp' },
+    swims: true,
+    maxLevel: 5,
+    speedPerLevel: 0.05,
+  },
 }
 
-/** Region bonus value at a level: satchel space, or the travel-time multiplier inside the region. */
+/**
+ * Region bonus value at a level: satchel space, click power, or the travel-time multiplier inside
+ * the region.
+ */
 export function mountBonusValue(mount: MountDef, level: number): number {
   const b = mount.bonus
-  return b.kind === 'satchel'
-    ? b.amount + (level - 1) * b.perLevel
-    : Math.max(0.3, b.multiplier - (level - 1) * b.perLevel)
+  if (b.kind === 'satchel') return b.amount + (level - 1) * b.perLevel
+  if (b.kind === 'clickPower') return Math.floor(b.amount + (level - 1) * b.perLevel)
+  return Math.max(0.3, b.multiplier - (level - 1) * b.perLevel)
 }
 
 /** Food needed to raise a mount from `level` to `level + 1`. */

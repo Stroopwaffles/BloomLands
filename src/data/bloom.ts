@@ -45,6 +45,9 @@ export interface CurioDef {
     | { kind: 'tagYield'; tag: string; amount: number }
     | { kind: 'researchSpeed'; multiplier: number }
     | { kind: 'regionBloom'; regionId: string; multiplier: number }
+    | { kind: 'settlementBloom'; multiplier: number }
+    | { kind: 'helperTrips'; multiplier: number }
+    | { kind: 'weatherLuck'; weather: string; multiplier: number }
 }
 
 /** Meadow curios (content doc → Curio Index). They last for the current run. */
@@ -91,6 +94,24 @@ export const CURIOS: Readonly<Record<string, CurioDef>> = {
     description: 'Bloom gained in the Forest is 25% higher.',
     effect: { kind: 'regionBloom', regionId: 'forest', multiplier: 1.25 },
   },
+  'curio-mayors-chain': {
+    id: 'curio-mayors-chain',
+    name: "Mayor's Chain of Office",
+    description: 'Helping villagers raises 50% more bloom.',
+    effect: { kind: 'settlementBloom', multiplier: 1.5 },
+  },
+  'curio-reed-pipe': {
+    id: 'curio-reed-pipe',
+    name: 'Reed Pipe',
+    description: "Helpers' flights take 15% less time.",
+    effect: { kind: 'helperTrips', multiplier: 0.85 },
+  },
+  'curio-wisp-lantern': {
+    id: 'curio-wisp-lantern',
+    name: 'Wisp Lantern',
+    description: 'In fog, rarer plants grow twice as often.',
+    effect: { kind: 'weatherLuck', weather: 'fog', multiplier: 2 },
+  },
 }
 
 export interface VillagerDef {
@@ -110,6 +131,15 @@ export const VILLAGERS: Readonly<Record<string, readonly VillagerDef[]>> = {
     { id: 'villager-bristle', name: 'Bristle', title: 'the hedgehog lamplighter' },
     { id: 'villager-chestnut', name: 'Chestnut', title: 'a squirrel who stores everything' },
     { id: 'villager-thornbury', name: 'Mother Thornbury', title: 'who runs the acorn bakery' },
+  ],
+  'toad-village': [
+    {
+      id: 'villager-croaksworth',
+      name: 'Grandpa Croaksworth',
+      title: 'who naps on the biggest pad',
+    },
+    { id: 'villager-puddle', name: 'Puddle', title: 'a tadpole who wants to help' },
+    { id: 'villager-lilywhite', name: 'Madame Lilywhite', title: 'the reed weaver' },
   ],
 }
 

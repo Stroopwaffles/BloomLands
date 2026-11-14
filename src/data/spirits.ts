@@ -70,4 +70,30 @@ export const SPIRITS: Readonly<Record<string, SpiritDef>> = {
       },
     ],
   },
+  'spirit-mirebelle': {
+    id: 'spirit-mirebelle',
+    name: 'Mirebelle, the Still Water',
+    regionId: 'swamp',
+    place: 'sunken-willow',
+    sleeping: [
+      'Rings of ripples spread across the pool, though nothing touched the water.',
+      '"What sleeps in the reeds but never dreams? ...The Swamp, little one. Wake it, and ask me again."',
+    ],
+    awakening: [
+      'The ripples rise into a lady of rings and water, wearing a crown of lilies.',
+      '"What is still, yet always moving? A swamp that is loved. Thank you, little gardener."',
+    ],
+    requirements: [
+      { kind: 'bloom', level: 2, label: 'Help the Swamp reach Sprouting bloom' },
+      { kind: 'story', storyId: 'story-gubbins', label: "Finish Mayor Gubbins's story" },
+      {
+        kind: 'offering',
+        items: [
+          { itemId: 'component-lily-balm', amount: 3 },
+          { itemId: 'refined-orchid-essence', amount: 1 },
+        ],
+        label: 'Offer 3 Lily Balm and 1 Orchid Essence',
+      },
+    ],
+  },
 }

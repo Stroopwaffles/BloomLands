@@ -1,6 +1,7 @@
 <script lang="ts">
   import { SPOTS } from '../data/world'
   import ForestBackdrop from './ForestBackdrop.svelte'
+  import SwampBackdrop from './SwampBackdrop.svelte'
 
   /**
    * Painted backdrops for harvesting spots. Wide (160×100) and cropped to fill the scene.
@@ -40,6 +41,8 @@
 
   {#if region === 'forest'}
     <ForestBackdrop {spotId} />
+  {:else if region === 'swamp'}
+    <SwampBackdrop {spotId} />
   {:else if spotId === 'fairy-ring'}
     <rect width="160" height="100" fill="url(#sky-glade)" />
     <g fill="#7fae74" stroke="#5f8f58" stroke-width="0.6">
@@ -124,9 +127,9 @@
   {#if weather === 'rain'}
     <rect width="160" height="100" fill="#6f8aa0" opacity="0.2" />
   {/if}
-  {#if weather === 'light-rain' || weather === 'rain'}
+  {#if weather === 'light-rain' || weather === 'rain' || weather === 'drizzle'}
     <g class="rain" stroke="#8fb3d6" stroke-width="0.5" stroke-linecap="round" opacity="0.8">
-      {#each Array.from({ length: weather === 'rain' ? 60 : 34 }, (_, i) => i) as i (i)}
+      {#each Array.from({ length: weather === 'rain' ? 60 : weather === 'drizzle' ? 22 : 34 }, (_, i) => i) as i (i)}
         <line
           x1={(i * 47) % 160}
           y1={(i * 29) % 90}
@@ -141,6 +144,20 @@
       <ellipse cx="40" cy="70" rx="60" ry="8" opacity="0.5" />
       <ellipse cx="120" cy="56" rx="56" ry="7" opacity="0.45" />
       <ellipse cx="80" cy="88" rx="70" ry="9" opacity="0.4" />
+    </g>
+  {:else if weather === 'fog'}
+    <g class="mist" fill="#e6f2ee">
+      <rect width="160" height="100" opacity="0.28" />
+      <ellipse cx="30" cy="62" rx="70" ry="10" opacity="0.6" />
+      <ellipse cx="130" cy="50" rx="60" ry="9" opacity="0.55" />
+      <ellipse cx="80" cy="84" rx="80" ry="11" opacity="0.5" />
+    </g>
+  {:else if weather === 'muggy'}
+    <rect width="160" height="100" fill="#f2d98a" opacity="0.16" />
+    <g class="shimmer" fill="none" stroke="#fff3c8" stroke-width="0.6" opacity="0.6">
+      <path d="M10 40 q10 -2 20 0 q10 2 20 0" />
+      <path d="M90 34 q10 -2 20 0 q10 2 20 0" />
+      <path d="M50 56 q8 -2 16 0 q8 2 16 0" />
     </g>
   {:else if weather === 'falling-leaves'}
     <g class="leaves">
@@ -203,6 +220,17 @@
 
   .mist {
     animation: breeze-slow 12s ease-in-out infinite;
+  }
+
+  .shimmer {
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    50% {
+      transform: translateY(-2px);
+      opacity: 0.2;
+    }
   }
 
   @keyframes breeze-slow {
@@ -268,6 +296,7 @@
     .rain,
     .breeze,
     .mist,
+    .shimmer,
     .leaves path,
     .rays {
       animation: none;

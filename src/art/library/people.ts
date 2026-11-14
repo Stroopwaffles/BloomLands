@@ -53,6 +53,8 @@ const basket = `<g transform="translate(66 70)"><path d="M-12 0 L12 0 L9 14 L-9 
 const satchelStrap = `<path d="M36 62 L64 86" stroke="#a8875d" stroke-width="3"/><rect x="58" y="80" width="14" height="11" rx="3" fill="#c97a3a" stroke="#8f5426" stroke-width="1.6"/>`
 const bandana = `<path d="M30 36 Q50 22 70 36 Q50 30 30 36 Z" fill="#c23a4c" stroke="#8f2636" stroke-width="1.6"/><path d="M70 36 L80 32 L78 42 Z" fill="#c23a4c" stroke="#8f2636" stroke-width="1.4"/><circle cx="44" cy="31" r="1.4" fill="white"/><circle cx="55" cy="30" r="1.4" fill="white"/>`
 
+const ladle = `<g transform="translate(68 70) rotate(20)"><path d="M0 -18 L0 4" stroke="#a8875d" stroke-width="2.6" stroke-linecap="round"/><path d="M-7 4 Q0 14 7 4 Z" fill="#c9cdd6" stroke="#8f96a6" stroke-width="1.6"/></g>`
+const goggles = `<path d="M28 38 Q50 30 72 38" fill="none" stroke="#7a5a44" stroke-width="3"/><g stroke="#8f5426" stroke-width="2"><circle cx="41" cy="36" r="6.5" fill="#bfe8ff"/><circle cx="59" cy="36" r="6.5" fill="#bfe8ff"/></g><path d="M38 33 l3 -2 M56 33 l3 -2" stroke="white" stroke-width="1.6" stroke-linecap="round"/>`
 const glasses = `<g fill="none" stroke="#8f6a3a" stroke-width="1.6"><circle cx="42" cy="44" r="5.5"/><circle cx="58" cy="44" r="5.5"/><path d="M47.5 44 L52.5 44"/></g>`
 const scroll = `<g transform="translate(70 76) rotate(-20)"><rect x="-6" y="-12" width="12" height="24" rx="3" fill="#fbf1e2" stroke="#c9a77f" stroke-width="1.6"/><path d="M-3 -6 L3 -6 M-3 0 L3 0 M-3 6 L1 6" stroke="#c9a77f" stroke-width="1.2"/></g>`
 const apron = `<path d="M38 66 L62 66 L64 88 Q50 92 36 88 Z" fill="#ffffff" stroke="#d9cfe0" stroke-width="1.6"/><circle cx="50" cy="76" r="3" fill="#f05a6a"/>`
@@ -187,6 +189,8 @@ export const PEOPLE_ART: Record<string, string> = {
   'helper-gatherer': mouse({ fur: '#c9a27e', front: basket }),
   'helper-supply': mouse({ fur: '#b8926e', wear: satchelStrap }),
   'helper-pirate': mouse({ fur: '#a9a3b8', top: bandana }),
+  'helper-brewer': mouse({ fur: '#d2ae88', wear: apron, front: ladle }),
+  'helper-scout': mouse({ fur: '#b49a7c', top: goggles }),
 
   // Thimblewick folk
   'char-pip': mouse({ fur: '#b9b2ad', top: glasses, front: scroll }),

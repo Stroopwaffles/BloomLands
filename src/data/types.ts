@@ -41,6 +41,8 @@ export type PotionEffect =
   | { kind: 'satchel'; amount: number }
   | { kind: 'luck'; multiplier: number }
   | { kind: 'regrowth'; multiplier: number }
+  /** Waterstride: no slowdowns over water, and the heron lets you be. */
+  | { kind: 'waterstride' }
 
 export interface PotionDef {
   /** The potion's item ID. */
@@ -98,6 +100,8 @@ export interface SpotDef {
   regrowMs: number
   /** Trinkets that can turn up as bonus drops here. */
   trinkets: string[]
+  /** Open water: flights here are slower without the frog or Waterstride (WATER_FLIGHT_FACTOR). */
+  water?: boolean
   /** Secret areas stay hidden until unlocked (design doc 3.12). */
   secret?: {
     /** Curio found on the first visit each run. */

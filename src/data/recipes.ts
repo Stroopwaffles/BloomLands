@@ -163,6 +163,47 @@ const RECIPE_LIST: RecipeDef[] = [
     durationMs: 25 * SEC,
   },
 
+  // Swamp refining and components
+  {
+    id: 'refined-reed-fiber',
+    station: 'spinning-wheel',
+    inputs: [{ tag: 'stalks', amount: 3 }],
+    output: { itemId: 'refined-reed-fiber', amount: 1 },
+    durationMs: 12 * SEC,
+  },
+  {
+    // Content doc: Dew Water is pressed from dewdrops or duckweed.
+    id: 'refined-dew-water-duckweed',
+    station: 'press',
+    inputs: [{ itemId: 'raw-duckweed', amount: 3 }],
+    output: { itemId: 'refined-dew-water', amount: 1 },
+    durationMs: 10 * SEC,
+  },
+  {
+    id: 'refined-lily-oil',
+    station: 'press',
+    inputs: [{ itemId: 'raw-lily-petals', amount: 3 }],
+    output: { itemId: 'refined-lily-oil', amount: 1 },
+    durationMs: 14 * SEC,
+  },
+  {
+    id: 'refined-orchid-essence',
+    station: 'drying-rack',
+    inputs: [{ itemId: 'raw-orchid-petals', amount: 1 }],
+    output: { itemId: 'refined-orchid-essence', amount: 1 },
+    durationMs: 20 * SEC,
+  },
+  {
+    id: 'component-lily-balm',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'refined-lily-oil', amount: 1 },
+      { itemId: 'refined-petal-paste', amount: 1 },
+    ],
+    output: { itemId: 'component-lily-balm', amount: 1 },
+    durationMs: 25 * SEC,
+  },
+
   // Potions (brewed in the cauldron)
   {
     id: 'potion-greenthumb-brew',
@@ -214,6 +255,16 @@ const RECIPE_LIST: RecipeDef[] = [
     output: { itemId: 'potion-swiftroot-elixir', amount: 1 },
     durationMs: 40 * SEC,
   },
+  {
+    id: 'potion-waterstride-philter',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'component-lily-balm', amount: 1 },
+      { itemId: 'component-thistle-twine', amount: 1 },
+    ],
+    output: { itemId: 'potion-waterstride-philter', amount: 1 },
+    durationMs: 40 * SEC,
+  },
 ]
 
 export const RECIPES: Readonly<Record<string, RecipeDef>> = Object.fromEntries(
@@ -253,6 +304,12 @@ const POTION_LIST: PotionDef[] = [
     effect: { kind: 'regrowth', multiplier: 1.5 },
     durationMs: 5 * MIN,
     description: 'Plants regrow 50% faster everywhere',
+  },
+  {
+    id: 'potion-waterstride-philter',
+    effect: { kind: 'waterstride' },
+    durationMs: 5 * MIN,
+    description: 'No slowdowns over water, and the heron lets you be',
   },
 ]
 

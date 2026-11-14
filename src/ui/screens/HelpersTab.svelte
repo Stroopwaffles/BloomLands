@@ -1,11 +1,13 @@
 <script lang="ts">
   import Art from '../../art/Art.svelte'
-  import { gathersAtSpot, HELPER_RULES, HELPER_TYPES } from '../../data/helpers'
+  import { BREWER_KEEP, gathersAtSpot, HELPER_RULES, HELPER_TYPES } from '../../data/helpers'
   import { itemName } from '../../data/items'
-  import { baseTravelMs, HOME, placeName, REGION_ORDER, REGIONS } from '../../data/world'
+  import { RECIPES, STATIONS } from '../../data/recipes'
+  import { unlockedRecipes } from '../../engine/crafting'
+  import { placeName, REGION_ORDER, REGIONS } from '../../data/world'
   import { placeOpen } from '../../engine/regions'
   import { formatDuration, formatNumber } from '../../engine/format'
-  import { supplyableItems, supplyHaul } from '../../engine/helpers'
+  import { brewCheck, helperFlightMs, supplyableItems, supplyHaul } from '../../engine/helpers'
   import { helperCapacity } from '../../engine/modifiers'
   import type { HelperState } from '../../engine/state'
   import ItemList from '../components/ItemList.svelte'
@@ -16,12 +18,35 @@
     REGION_ORDER.flatMap((id) => REGIONS[id].spots).filter((id) => placeOpen($game, id)),
   )
   const supplyItems = $derived(supplyableItems($game))
+  /** Recipes a brewer can be set to make (anything researched). */
+  const brewable = $derived(
+    Object.values(RECIPES).filter((recipe) => unlockedRecipes($game).has(recipe.id)),
+  )
+
+  const BREW_WAIT: Record<string, string> = {
+    'no-recipe': 'Resting: choose something to brew',
+    'not-built': 'Waiting: that station isn’t built yet',
+    enough: 'Resting: you have enough of it',
+    'station-busy': 'Waiting for a free station slot',
+    'missing-items': 'Waiting for ingredients',
+  }
+
+  function setBrew(helper: HelperState, recipeId: string | null, keep?: number) {
+    runtime.dispatch({ type: 'helpers/brew', helperId: helper.id, recipeId, keep })
+  }
 
   const hasSupply = $derived(helperCapacity($game, 'supply') > 0)
 
   function status(helper: HelperState): string {
     const where = helper.tripSpot ? placeName(helper.tripSpot) : ''
     const fetching = helper.tripItem ? ` for ${itemName(helper.tripItem)}` : ''
+    if (helper.type === 'brewer') {
+      if (helper.phase === 'gathering' && helper.tripItem) {
+        const recipe = RECIPES[helper.tripItem]
+        return `${STATIONS[recipe.station].verb}ing ${itemName(recipe.output.itemId)}`
+      }
+      return BREW_WAIT[brewCheck($game, helper)] ?? 'Getting ready'
+    }
     switch (helper.phase) {
       case 'idle':
         if (gathersAtSpot(helper.type)) return helper.task ? 'Getting ready' : 'Resting at home'
@@ -29,7 +54,9 @@
       case 'outbound':
         return `Flying to ${where}${fetching}`
       case 'gathering':
-        return `Gathering at ${where}${fetching}`
+        return helper.type === 'scout'
+          ? `Searching ${where} for trinkets`
+          : `Gathering at ${where}${fetching}`
       case 'returning':
         return `Flying home from ${where}`
       case 'unloading':
@@ -40,11 +67,13 @@
   /** How far through the current phase, 0 to 1. */
   function progress(helper: HelperState): number {
     const total =
-      helper.phase === 'gathering'
-        ? HELPER_RULES.gatherMs
-        : helper.tripSpot
-          ? (baseTravelMs(HOME, helper.tripSpot) ?? 1)
-          : 1
+      helper.type === 'brewer'
+        ? (RECIPES[helper.tripItem ?? '']?.durationMs ?? 1)
+        : helper.phase === 'gathering'
+          ? HELPER_RULES.gatherMs
+          : helper.tripSpot
+            ? helperFlightMs($game, helper, helper.tripSpot)
+            : 1
     if (helper.phase === 'idle' || helper.phase === 'unloading') return 0
     return 1 - helper.remainingMs / total
   }
@@ -81,9 +110,37 @@
                 <div class="bag"><ItemList items={helper.bag} /></div>
               {/if}
             </div>
-            {#if gathersAtSpot(helper.type)}
+            {#if helper.type === 'brewer'}
+              <div class="task">
+                <label class="task">
+                  <span>Brews</span>
+                  <select
+                    value={helper.task ?? ''}
+                    onchange={(e) => setBrew(helper, e.currentTarget.value || null)}
+                  >
+                    <option value="">Nothing (rest)</option>
+                    {#each brewable as recipe (recipe.id)}
+                      <option value={recipe.id}>
+                        {itemName(recipe.output.itemId)} ({STATIONS[recipe.station].name})
+                      </option>
+                    {/each}
+                  </select>
+                </label>
+                <label class="task">
+                  <span>Keep in storage</span>
+                  <select
+                    value={helper.keep ?? BREWER_KEEP.default}
+                    onchange={(e) => setBrew(helper, helper.task, Number(e.currentTarget.value))}
+                  >
+                    {#each BREWER_KEEP.choices as amount (amount)}
+                      <option value={amount}>{amount}</option>
+                    {/each}
+                  </select>
+                </label>
+              </div>
+            {:else if gathersAtSpot(helper.type)}
               <label class="task">
-                <span>Works at</span>
+                <span>{helper.type === 'scout' ? 'Searches' : 'Works at'}</span>
                 <select
                   value={helper.task ?? ''}
                   onchange={(e) =>

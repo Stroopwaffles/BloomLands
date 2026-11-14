@@ -133,6 +133,69 @@ const PLANT_LIST: PlantDef[] = [
     rarity: 'rare',
     yields: [{ itemId: 'raw-birch-catkins', amount: 1 }],
   },
+
+  // Swamp
+  {
+    id: 'plant-duckweed',
+    name: 'Duckweed',
+    toughness: 2,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-duckweed', amount: 3 }],
+  },
+  {
+    id: 'plant-reed',
+    tags: ['stalks'],
+    name: 'Reed',
+    toughness: 3,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-reed-stalks', amount: 2 }],
+  },
+  {
+    id: 'plant-cattail',
+    name: 'Cattail',
+    toughness: 4,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-cattail-fluff', amount: 2 }],
+  },
+  {
+    id: 'plant-marsh-marigold',
+    tags: ['petals'],
+    name: 'Marsh marigold',
+    toughness: 4,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-marigold-petals', amount: 2 }],
+  },
+  {
+    id: 'plant-bog-myrtle',
+    name: 'Bog myrtle',
+    toughness: 5,
+    rarity: 'uncommon',
+    yields: [{ itemId: 'raw-myrtle-leaves', amount: 2 }],
+  },
+  {
+    id: 'plant-water-lily',
+    tags: ['petals'],
+    name: 'Water lily',
+    toughness: 6,
+    rarity: 'uncommon',
+    yields: [{ itemId: 'raw-lily-petals', amount: 2 }],
+  },
+  {
+    id: 'plant-bog-orchid',
+    tags: ['petals'],
+    name: 'Bog orchid',
+    toughness: 8,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-orchid-petals', amount: 1 }],
+  },
+  // Swamp secret: Wisp Hollow
+  {
+    id: 'plant-wisp-lily',
+    name: 'Wisp lily',
+    toughness: 5,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-wisp-lily', amount: 1 }],
+  },
 ]
 
 export const PLANTS: Readonly<Record<string, PlantDef>> = Object.fromEntries(

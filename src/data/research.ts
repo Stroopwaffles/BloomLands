@@ -397,6 +397,86 @@ RESEARCH_LIST.push(
     rituals: ['ritual-plenty'],
     region: 'forest',
   },
+  {
+    id: 'research-reed-gate',
+    name: 'Rite of the Reed Gate',
+    branch: 'rites',
+    description: 'Loam and sunshine part the reeds. Performing it needs a Hedge Court.',
+    cost: [
+      { itemId: 'component-earth-loam', amount: 2 },
+      { itemId: 'component-sun-salve', amount: 1 },
+    ],
+    durationMs: 4 * MIN,
+    requires: ['research-loam', 'research-open-path'],
+    unlocks: [],
+    rituals: ['ritual-reed-gate'],
+    region: 'forest',
+  },
+)
+
+// Swamp (shown once the Swamp is open)
+RESEARCH_LIST.push(
+  {
+    id: 'research-reed-fiber',
+    name: 'Reed Spinning',
+    branch: 'refining',
+    description: 'Spin reed stalks into strong Reed Fiber.',
+    cost: [{ tag: 'stalks', amount: 6 }],
+    durationMs: 1 * MIN,
+    requires: ['research-spinning'],
+    unlocks: ['refined-reed-fiber'],
+    region: 'swamp',
+  },
+  {
+    id: 'research-duckweed',
+    name: 'Duckweed Pressing',
+    branch: 'refining',
+    description: 'Press duckweed into Dew Water, without waiting for the morning dew.',
+    cost: [{ itemId: 'raw-duckweed', amount: 6 }],
+    durationMs: 1 * MIN,
+    requires: ['research-pressing'],
+    unlocks: ['refined-dew-water-duckweed'],
+    region: 'swamp',
+  },
+  {
+    id: 'research-lily-oil',
+    name: 'Lily Oil',
+    branch: 'refining',
+    description: 'Press lily petals into oil, and dry orchid petals into a sweet essence.',
+    cost: [{ itemId: 'raw-lily-petals', amount: 4 }],
+    durationMs: 90 * SEC,
+    requires: ['research-pressing'],
+    unlocks: ['refined-lily-oil', 'refined-orchid-essence'],
+    region: 'swamp',
+  },
+  {
+    id: 'research-lily-balm',
+    name: 'Lily Balm',
+    branch: 'brewing',
+    description: 'Warm lily oil and petal paste into Lily Balm, the Swamp’s own magic.',
+    cost: [
+      { itemId: 'refined-lily-oil', amount: 2 },
+      { itemId: 'refined-petal-paste', amount: 2 },
+    ],
+    durationMs: 3 * MIN,
+    requires: ['research-lily-oil'],
+    unlocks: ['component-lily-balm'],
+    region: 'swamp',
+  },
+  {
+    id: 'research-waterstride',
+    name: 'Waterstride Philter',
+    branch: 'brewing',
+    description: 'A slippery potion for skimming over water. Herons find it very boring.',
+    cost: [
+      { itemId: 'component-lily-balm', amount: 1 },
+      { itemId: 'component-thistle-twine', amount: 1 },
+    ],
+    durationMs: 3 * MIN,
+    requires: ['research-lily-balm', 'research-twine'],
+    unlocks: ['potion-waterstride-philter'],
+    region: 'swamp',
+  },
 )
 
 export const RESEARCH: Readonly<Record<string, ResearchDef>> = Object.fromEntries(

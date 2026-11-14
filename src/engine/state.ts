@@ -106,6 +106,8 @@ export interface HelperState {
   tripItem: string | null
   /** What they're carrying home. */
   bag: Record<string, number>
+  /** Brewers: stop once storage holds this many of the recipe's result. */
+  keep?: number
 }
 
 /** A visiting trader's request: bring these items, get this reward. */

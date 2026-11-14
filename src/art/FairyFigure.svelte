@@ -92,6 +92,18 @@
       stroke={shade(outfitColor)}
       stroke-width="1.2"
     />
+  {:else if outfit === 'piece-lantern-bug-cloak'}
+    <path
+      d={`M${36 - w} 64 Q50 60 ${64 + w} 64 L${76 + w} 104 Q64 100 50 106 Q36 100 ${24 - w} 104 Z`}
+      fill={outfitColor}
+      stroke={shade(outfitColor)}
+      stroke-width="1.2"
+    />
+    <g fill="#e9ff9a" class="glow">
+      {#each [[30, 96], [38, 84], [64, 88], [70, 98], [56, 100]] as [cx, cy] (cx)}
+        <circle {cx} {cy} r="1.8" />
+      {/each}
+    </g>
   {/if}
 
   <!-- Legs and shoes -->
@@ -151,6 +163,13 @@
         stroke={shade('#f3f7fb')}
       />
       <circle cx="50" cy="69" r="2.4" />
+    {:else if outfit === 'piece-lantern-bug-cloak'}
+      <path
+        d={`M${41 - w} 67 Q50 64 ${59 + w} 67 L62 94 Q50 98 38 94 Z`}
+        fill="#cfe0c8"
+        stroke={shade('#cfe0c8')}
+      />
+      <circle cx="50" cy="70" r="3" fill="#e9ff9a" stroke="#9ab84a" />
     {:else}
       <path d={`M${40 - w} 66 Q50 62 ${60 + w} 66 L63 94 Q50 98 37 94 Z`} />
       <path d="M38.5 82 Q50 85 61.5 82" fill="none" />
@@ -255,6 +274,17 @@
       <path d="M34 34 L66 34 M31 38 L69 38 M38 28 L62 28" stroke-dasharray="2 2" fill="none" />
       <path d="M50 18 Q51 12 55 10" fill="none" stroke-width="2.2" stroke-linecap="round" />
     </g>
+  {:else if wardrobe.headpiece.pieceId === 'piece-lily-pad-hat'}
+    <g stroke={shade(wardrobe.headpiece.color)} stroke-width="1.2">
+      <path
+        d="M24 32 Q50 18 76 32 Q50 40 24 32 Z"
+        fill={wardrobe.headpiece.color}
+        stroke-linejoin="round"
+      />
+      <path d="M50 30 L62 24" fill="none" />
+      <circle cx="40" cy="27" r="3.4" fill="#f7c6d4" stroke="#c97a8c" stroke-width="0.8" />
+      <circle cx="40" cy="27" r="1.2" fill="#ffd23f" stroke="none" />
+    </g>
   {:else if wardrobe.headpiece.pieceId === 'piece-dewdrop-circlet'}
     <g fill={wardrobe.headpiece.color} stroke={shade(wardrobe.headpiece.color)} stroke-width="1">
       <path d="M33 34 Q50 24 67 34" fill="none" stroke-width="1.6" />
@@ -292,9 +322,20 @@
     }
   }
 
+  .glow {
+    animation: glow 2.4s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+    50% {
+      opacity: 0.4;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .animate,
-    .animate .wings {
+    .animate .wings,
+    .glow {
       animation: none;
     }
   }

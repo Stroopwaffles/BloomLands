@@ -4,7 +4,7 @@
   import { RECIPES, STATION_ORDER, STATIONS } from '../../data/recipes'
   import { formatDuration } from '../../engine/format'
   import { payingStock } from '../../engine/costs'
-  import { batchSizes, checkCraft, unlockedRecipes } from '../../engine/crafting'
+  import { batchSizes, checkCraft, stationInUse, unlockedRecipes } from '../../engine/crafting'
   import { stationBuilt, stationSlots } from '../../engine/modifiers'
   import CostList from '../components/CostList.svelte'
   import ProgressBar from '../components/ProgressBar.svelte'
@@ -37,10 +37,19 @@
         <Art id={`station-${stationId}`} size={44} />
         <h3>{STATIONS[stationId].name}</h3>
         {#if stationBuilt($game, stationId)}
-          <span class="slots">{station.jobs.length}/{stationSlots($game, stationId)} in use</span>
+          <span class="slots"
+            >{stationInUse($game, stationId)}/{stationSlots($game, stationId)} in use</span
+          >
         {/if}
       </header>
 
+      {#each $game.helpers.list.filter((h) => h.type === 'brewer' && h.phase === 'gathering' && h.tripItem && RECIPES[h.tripItem]?.station === stationId) as brewer (brewer.id)}
+        <ProgressBar
+          label={`${brewer.name} is ${STATIONS[stationId].verb.toLowerCase()}ing ${itemName(RECIPES[brewer.tripItem!].output.itemId)}`}
+          totalMs={RECIPES[brewer.tripItem!].durationMs}
+          remainingMs={brewer.remainingMs}
+        />
+      {/each}
       {#each station.jobs as job, i (i)}
         <ProgressBar
           label={`${STATIONS[stationId].verb}ing ${itemName(RECIPES[job.id].output.itemId)}${

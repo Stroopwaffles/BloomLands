@@ -1,13 +1,22 @@
 import { CREWS } from '../data/challenges'
 import { MOUNTS, mountBonusValue } from '../data/mounts'
-import { baseTravelMs, HOME, isSettlement, isSpiritPlace, isSpot, placeRegion } from '../data/world'
+import {
+  baseTravelMs,
+  HOME,
+  isSettlement,
+  isSpiritPlace,
+  isSpot,
+  placeRegion,
+  SPOTS,
+  WATER_FLIGHT_FACTOR,
+} from '../data/world'
 import { weatherFlightFactor } from './environment'
 import type { GameEvent } from './events'
 import { applyInstantEvents, rollFlightEvent, settleFlightEvent } from './flightEvents'
 import { placeOpen } from './regions'
 import { discoverSecret } from './secrets'
 import { depositSatchel, ensureSpot } from './gathering'
-import { hasQol, travelMultiplier, wingSpeed } from './modifiers'
+import { hasQol, hasWaterstride, travelMultiplier, wingSpeed } from './modifiers'
 import type { Random } from './rng'
 import { countItems, type GameState } from './state'
 
@@ -19,8 +28,17 @@ export function travelMs(state: GameState, from: string, to: string): number | n
     (base / wingSpeed(state)) *
       weatherFlightFactor(state, from, to) *
       travelMultiplier(state) *
-      mountHopFactor(state, from, to),
+      mountHopFactor(state, from, to) *
+      waterFactor(state, from, to),
   )
+}
+
+/** Open water is slow going, unless you ride a mount that swims or drank Waterstride. */
+export function waterFactor(state: GameState, from: string, to: string): number {
+  if (!SPOTS[to]?.water && !SPOTS[from]?.water) return 1
+  const riding = state.mounts.riding ? MOUNTS[state.mounts.riding] : null
+  if (riding?.swims || hasWaterstride(state)) return 1
+  return WATER_FLIGHT_FACTOR
 }
 
 /** Mounts like the flying squirrel make hops inside their own region quicker. */

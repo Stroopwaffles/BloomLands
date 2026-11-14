@@ -23,6 +23,14 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'raw-golden-caps': 30,
   'raw-inkcap': 35,
   'raw-birch-catkins': 35,
+  'raw-duckweed': 2,
+  'raw-reed-stalks': 3,
+  'raw-cattail-fluff': 4,
+  'raw-marigold-petals': 4,
+  'raw-myrtle-leaves': 7,
+  'raw-lily-petals': 9,
+  'raw-orchid-petals': 32,
+  'raw-wisp-lily': 40,
   // Refined
   'refined-petal-paste': 10,
   'refined-leaf-tea': 10,
@@ -33,6 +41,9 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'refined-spore-dust': 22,
   'refined-acorn-flour': 24,
   'refined-golden-spore': 45,
+  'refined-reed-fiber': 16,
+  'refined-lily-oil': 30,
+  'refined-orchid-essence': 40,
   // Components
   'component-sun-salve': 25,
   'component-calming-tea': 25,
@@ -41,12 +52,14 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'component-lucky-charm-dust': 55,
   'component-pest-smudge': 28,
   'component-earth-loam': 55,
+  'component-lily-balm': 50,
   // Potions
   'potion-greenthumb-brew': 45,
   'potion-quickwing-tonic': 50,
   'potion-deep-pockets-draught': 70,
   'potion-lucky-dew': 90,
   'potion-swiftroot-elixir': 95,
+  'potion-waterstride-philter': 100,
 }
 
 export interface TraderDef {

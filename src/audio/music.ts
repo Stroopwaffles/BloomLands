@@ -33,6 +33,8 @@ const minor = (root: number) => [root, root + 3, root + 7]
 const C_PENTA = [67, 69, 72, 74, 76, 79, 81, 84]
 /** D dorian pentatonic-ish (D F G A C): darker, woodier. */
 const D_DORIAN = [62, 65, 67, 69, 72, 74, 77, 79]
+/** F major pentatonic (F G A C D): warm, lazy, a little silly. */
+const F_PENTA = [65, 67, 69, 72, 74, 77, 79, 81]
 
 export const THEMES: Readonly<Record<string, ThemeDef>> = {
   meadow: {
@@ -94,6 +96,36 @@ export const THEMES: Readonly<Record<string, ThemeDef>> = {
     lead: 'sine',
     padCutoff: 800,
     sparkle: 0.4,
+  },
+  swamp: {
+    id: 'swamp',
+    bpm: 66,
+    chords: [
+      { root: 41, tones: major(53) },
+      { root: 38, tones: minor(50) },
+      { root: 46, tones: major(58) },
+      { root: 48, tones: major(60) },
+    ],
+    scale: F_PENTA,
+    density: 0.4,
+    lead: 'triangle',
+    padCutoff: 1400,
+    sparkle: 0.25,
+  },
+  'swamp-night': {
+    id: 'swamp-night',
+    bpm: 54,
+    chords: [
+      { root: 41, tones: major(53) },
+      { root: 46, tones: major(58) },
+      { root: 38, tones: minor(50) },
+      { root: 48, tones: major(60) },
+    ],
+    scale: F_PENTA,
+    density: 0.22,
+    lead: 'sine',
+    padCutoff: 850,
+    sparkle: 0.45,
   },
 }
 

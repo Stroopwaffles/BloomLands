@@ -342,4 +342,15 @@ export const ITEM_ART: Record<string, string> = {
 }
 
 /** Shared item templates, so later regions' icons match this set. */
-export const ITEM_TEMPLATES = { shade, symbol, bowl, bottle, jar, pouch, spool, cup, leafPile }
+export const ITEM_TEMPLATES = {
+  shade,
+  symbol,
+  bowl,
+  bottle,
+  jar,
+  pouch,
+  spool,
+  cup,
+  leafPile,
+  petalPile,
+}

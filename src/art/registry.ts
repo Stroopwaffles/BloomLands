@@ -6,6 +6,7 @@ import {
   FOREST_PLANT_ART,
 } from './library/forest'
 import { ITEM_ART } from './library/items'
+import { SWAMP_ITEM_ART, SWAMP_MISC_ART, SWAMP_PEOPLE_ART, SWAMP_PLANT_ART } from './library/swamp'
 import { MISC_ART } from './library/misc'
 import { PLANT_ART } from './library/plants'
 import { PEOPLE_ART } from './library/people'
@@ -32,6 +33,10 @@ export const ART_SVG: Record<string, string> = {
   ...FOREST_ITEM_ART,
   ...FOREST_PEOPLE_ART,
   ...FOREST_MISC_ART,
+  ...SWAMP_PLANT_ART,
+  ...SWAMP_ITEM_ART,
+  ...SWAMP_PEOPLE_ART,
+  ...SWAMP_MISC_ART,
 }
 
 /** Families of assets that share one drawing (e.g. every lodging upgrade uses the lodging icon). */

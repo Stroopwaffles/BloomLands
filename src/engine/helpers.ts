@@ -1,22 +1,37 @@
 import {
+  BREWER_KEEP,
   gathersAtSpot,
   HELPER_NAMES,
   HELPER_RULES,
   HELPER_TYPES,
   RARITY_HAUL_FACTOR,
+  SCOUT_RULES,
   type HelperType,
 } from '../data/helpers'
 import { ITEMS } from '../data/items'
 import { PLANTS } from '../data/plants'
+import { RECIPES } from '../data/recipes'
 import type { ItemStack } from '../data/types'
 import { baseTravelMs, HOME, isSettlement, SPOTS } from '../data/world'
 import { CAMP_RULES } from '../data/challenges'
 import { piratesInRegion } from './challenges'
+import { canPay, payCost } from './costs'
+import { stationInUse, unlockedRecipes } from './crafting'
+import { weatherIn } from './environment'
 import type { GameEvent } from './events'
 import { rollPlant } from './gathering'
 import { mountSpeed, spareMounts } from './mounts'
 import { placeOpen, spotWatched } from './regions'
-import { helperCapacity, helperCount, storageCapacity, storageUsed } from './modifiers'
+import {
+  helperCapacity,
+  helperCount,
+  helperTripMultiplier,
+  stationBuilt,
+  stationSlots,
+  storageCapacity,
+  storageUsed,
+  trinketChanceMultiplier,
+} from './modifiers'
 import type { Random } from './rng'
 import { addItems, countItems, type GameState, type HelperState } from './state'
 
@@ -56,6 +71,7 @@ export function recruitHelper(state: GameState, type: HelperType): GameEvent[] {
     tripSpot: null,
     tripItem: null,
     bag: {},
+    ...(type === 'brewer' ? { keep: BREWER_KEEP.default } : {}),
   }
   state.helpers.list.push(helper)
   return [{ type: 'recruited', helperId: id, helperType: type }]
@@ -74,6 +90,51 @@ export function assignHelper(
   }
   helper.task = spotId
   return []
+}
+
+/** Tells a brewer which recipe to make (null: rest) and how much of it to keep in storage. */
+export function setBrew(
+  state: GameState,
+  helperId: number,
+  recipeId: string | null,
+  keep?: number,
+): GameEvent[] {
+  const helper = state.helpers.list.find((h) => h.id === helperId)
+  if (!helper || helper.type !== 'brewer') return [{ type: 'blocked', reason: 'locked' }]
+  if (recipeId !== null && (!RECIPES[recipeId] || !unlockedRecipes(state).has(recipeId))) {
+    return [{ type: 'blocked', reason: 'locked' }]
+  }
+  helper.task = recipeId
+  if (keep !== undefined) helper.keep = Math.max(1, Math.floor(keep))
+  return []
+}
+
+export type BrewCheck =
+  'ok' | 'no-recipe' | 'not-built' | 'enough' | 'station-busy' | 'missing-items'
+
+/** Can this brewer start another batch right now? (Also explains why not, for the screen.) */
+export function brewCheck(state: GameState, helper: HelperState): BrewCheck {
+  const recipe = helper.task ? RECIPES[helper.task] : null
+  if (!recipe || !unlockedRecipes(state).has(recipe.id)) return 'no-recipe'
+  if (!stationBuilt(state, recipe.station)) return 'not-built'
+  const keep = helper.keep ?? BREWER_KEEP.default
+  if ((state.inventory[recipe.output.itemId] ?? 0) >= keep) return 'enough'
+  if (stationInUse(state, recipe.station) >= stationSlots(state, recipe.station)) {
+    return 'station-busy'
+  }
+  if (!canPay(state, recipe.inputs)) return 'missing-items'
+  return 'ok'
+}
+
+/** A brewer takes the ingredients and starts a batch at the station. */
+function startBrew(state: GameState, helper: HelperState): boolean {
+  if (brewCheck(state, helper) !== 'ok') return false
+  const recipe = RECIPES[helper.task!]
+  payCost(state, recipe.inputs)
+  helper.tripItem = recipe.id
+  helper.phase = 'gathering'
+  helper.remainingMs = recipe.durationMs
+  return true
 }
 
 export function setMinimum(state: GameState, itemId: string, amount: number): GameEvent[] {
@@ -149,9 +210,26 @@ function nextShortage(state: GameState): string | null {
 // ---------------------------------------------------------------------------------------------
 // Trips
 
+/** What a scout finds: trinkets from the spot (and the odd second one). */
+function scoutFinds(state: GameState, spotId: string, random: Random): ItemStack[] {
+  const trinkets = SPOTS[spotId].trinkets
+  if (trinkets.length === 0) return []
+  // Curios that make trinkets likelier help scouts too, in proportion.
+  const boost = trinketChanceMultiplier(state)
+  const found: ItemStack[] = []
+  if (random() < Math.min(1, SCOUT_RULES.trinketChance * boost)) {
+    found.push({ itemId: trinkets[Math.floor(random() * trinkets.length)], amount: 1 })
+    if (random() < Math.min(1, SCOUT_RULES.secondChance * boost)) {
+      found.push({ itemId: trinkets[Math.floor(random() * trinkets.length)], amount: 1 })
+    }
+  }
+  return found
+}
+
 /** What a helper brings back. Pirates camped in the region mean a smaller haul. */
 function gather(state: GameState, helper: HelperState, random: Random): ItemStack[] {
   const spotId = helper.tripSpot!
+  if (helper.type === 'scout') return scoutFinds(state, spotId, random)
   const share = piratesInRegion(state, SPOTS[spotId].regionId) ? CAMP_RULES.helperYield : 1
   if (helper.tripItem) {
     const amount = Math.max(1, Math.round(supplyHaul(helper.tripItem) * share))
@@ -167,9 +245,11 @@ function gather(state: GameState, helper: HelperState, random: Random): ItemStac
 function unload(state: GameState, helper: HelperState): boolean {
   let free = Math.max(0, storageCapacity(state) - storageUsed(state))
   for (const [itemId, amount] of Object.entries(helper.bag)) {
-    const take = Math.min(amount, free)
-    if (take <= 0) break
-    free -= take
+    // Trinkets are keepsakes and take no storage space.
+    const isTrinket = ITEMS[itemId]?.category === 'trinket'
+    const take = isTrinket ? amount : Math.min(amount, free)
+    if (take <= 0) continue
+    if (!isTrinket) free -= take
     addItems(state.inventory, itemId, take)
     addItems(helper.bag, itemId, -take)
   }
@@ -181,10 +261,12 @@ function unload(state: GameState, helper: HelperState): boolean {
  * helpers in order, fastest mount to the first helper.
  */
 export function helperFlightMs(state: GameState, helper: HelperState, spotId: string): number {
-  const base = baseTravelMs(HOME, spotId) ?? 0
+  // Muggy heat slows helpers down; the Reed Pipe speeds them up.
+  const weather = weatherIn(state, SPOTS[spotId]?.regionId ?? 'meadow').helperTrips ?? 1
+  const base = (baseTravelMs(HOME, spotId) ?? 0) * weather * helperTripMultiplier(state)
   const index = state.helpers.list.findIndex((h) => h.id === helper.id)
   const mountId = spareMounts(state)[index]
-  return mountId ? Math.ceil(base / mountSpeed(state, mountId)) : base
+  return Math.ceil(mountId ? base / mountSpeed(state, mountId) : base)
 }
 
 /** Picks the next trip for an idle helper. Returns false if there's nothing to do. */
@@ -210,7 +292,7 @@ function stepHelper(state: GameState, helper: HelperState, dtMs: number, random:
   // A small cap on phase changes per step keeps a misconfigured trip from looping forever.
   for (let guard = 0; guard < 20; guard++) {
     if (helper.phase === 'idle') {
-      if (!startTrip(state, helper)) return
+      if (!(helper.type === 'brewer' ? startBrew(state, helper) : startTrip(state, helper))) return
       continue
     }
     if (helper.phase === 'unloading') {
@@ -226,6 +308,18 @@ function stepHelper(state: GameState, helper: HelperState, dtMs: number, random:
       return
     }
     time -= helper.remainingMs
+    if (helper.type === 'brewer') {
+      // A batch is done: it goes straight into storage, like the player's own crafting.
+      const recipe = RECIPES[helper.tripItem ?? '']
+      if (recipe) {
+        addItems(state.inventory, recipe.output.itemId, recipe.output.amount)
+        state.stats.itemsCrafted += recipe.output.amount
+      }
+      helper.phase = 'idle'
+      helper.tripItem = null
+      helper.remainingMs = 0
+      continue
+    }
     if (helper.phase === 'outbound') {
       helper.phase = 'gathering'
       helper.remainingMs = HELPER_RULES.gatherMs

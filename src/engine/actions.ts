@@ -7,7 +7,7 @@ import type { GameEvent } from './events'
 import { depositSatchel, tapPlant } from './gathering'
 import { tapCreature } from './challenges'
 import { tapFlightEvent } from './flightEvents'
-import { assignHelper, recruitHelper, setMinimum } from './helpers'
+import { assignHelper, recruitHelper, setBrew, setMinimum } from './helpers'
 import { castSpell, performRitual } from './magic'
 import { dismissVillagerRequest, fulfillVillagerRequest } from './settlements'
 import { feedMount, levelUpMount, rideMount } from './mounts'
@@ -37,6 +37,7 @@ export type Action =
   | { type: 'upgrade/buy'; upgradeId: string }
   | { type: 'helpers/recruit'; helperType: HelperType }
   | { type: 'helpers/assign'; helperId: number; spotId: string | null }
+  | { type: 'helpers/brew'; helperId: number; recipeId: string | null; keep?: number }
   | { type: 'supply/setMinimum'; itemId: string; amount: number }
   | { type: 'creature/tap'; spotId: string }
   | { type: 'flight/tap' }
@@ -93,6 +94,8 @@ export function applyAction(
       return recruitHelper(state, action.helperType)
     case 'helpers/assign':
       return assignHelper(state, action.helperId, action.spotId)
+    case 'helpers/brew':
+      return setBrew(state, action.helperId, action.recipeId, action.keep)
     case 'supply/setMinimum':
       return setMinimum(state, action.itemId, action.amount)
     case 'creature/tap':

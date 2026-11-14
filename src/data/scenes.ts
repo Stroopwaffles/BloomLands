@@ -113,6 +113,47 @@ export const SCENES: Readonly<Record<string, SceneLayout>> = {
     camp: { x: 74, y: 78 },
     mount: { x: 50, y: 30 },
   },
+
+  // Swamp
+  'reeds-hollow': {
+    slots: [
+      { x: 12, y: 66 },
+      { x: 28, y: 84 },
+      { x: 44, y: 64 },
+      { x: 60, y: 86 },
+      { x: 76, y: 66 },
+      { x: 90, y: 84 },
+    ],
+    creature: { x: 88, y: 46 },
+    camp: { x: 76, y: 74 },
+    mount: { x: 50, y: 30 },
+  },
+  'lilypad-pools': {
+    slots: [
+      { x: 16, y: 72 },
+      { x: 32, y: 88 },
+      { x: 48, y: 70 },
+      { x: 64, y: 90 },
+      { x: 78, y: 72 },
+      { x: 90, y: 90 },
+    ],
+    creature: { x: 88, y: 44 },
+    camp: { x: 76, y: 80 },
+    mount: { x: 40, y: 52 },
+  },
+  'wisp-hollow': {
+    slots: [
+      { x: 50, y: 62 },
+      { x: 70, y: 70 },
+      { x: 66, y: 88 },
+      { x: 34, y: 88 },
+      { x: 30, y: 70 },
+      { x: 86, y: 86 },
+    ],
+    creature: { x: 12, y: 44 },
+    camp: { x: 30, y: 80 },
+    mount: { x: 84, y: 30 },
+  },
 }
 
 /** A plain layout for any spot without a hand-placed one. */

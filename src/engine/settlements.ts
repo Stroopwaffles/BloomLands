@@ -1,6 +1,7 @@
 import { BLOOM_REWARDS, SETTLEMENT_RULES, VILLAGERS } from '../data/bloom'
 import { SETTLEMENTS } from '../data/world'
 import { addBloom } from './bloom'
+import { settlementBloomMultiplier } from './modifiers'
 import { canPay, payCost } from './costs'
 import type { GameEvent } from './events'
 import type { Random } from './rng'
@@ -70,7 +71,11 @@ export function fulfillVillagerRequest(
   state.stats.villagersHelped++
   return [
     { type: 'villager-helped', settlementId, glimmers: request.glimmers },
-    ...addBloom(state, SETTLEMENTS[settlementId].regionId, BLOOM_REWARDS.settlementRequest),
+    ...addBloom(
+      state,
+      SETTLEMENTS[settlementId].regionId,
+      BLOOM_REWARDS.settlementRequest * settlementBloomMultiplier(state),
+    ),
   ]
 }
 

@@ -17,10 +17,11 @@ import {
   storageUsed,
   tagYieldBonus,
   trinketChanceMultiplier,
+  weatherLuckMultiplier,
 } from './modifiers'
 import { pickWeighted, type Random } from './rng'
 import { addItems, countItems, type GameState, type SlotState, type SpotState } from './state'
-import { spotWatched } from './regions'
+import { playerWatched } from './regions'
 import { startTravel } from './travel'
 
 /** Chance a harvest gives one extra of each material. Starting value for balancing. */
@@ -37,7 +38,7 @@ export function rollPlant(
   random: Random,
   luckMultiplier = 1,
   morningOk = true,
-  capsBoost = 1,
+  tagBoost?: { tag: string; multiplier: number },
 ): string {
   const spot = SPOTS[spotId]
   const plants = spot.plants.filter((id) => morningOk || !PLANTS[id].morningOnly)
@@ -47,7 +48,7 @@ export function rollPlant(
       const weight =
         RARITY_WEIGHT[rarity] *
         (rarity === 'common' ? 1 : luckMultiplier) *
-        (tags?.includes('caps') ? capsBoost : 1)
+        (tagBoost && tags?.includes(tagBoost.tag) ? tagBoost.multiplier : 1)
       return [id, weight] as const
     }),
     random,
@@ -61,9 +62,12 @@ function growSlot(state: GameState, slot: SlotState, spotId: string, random: Ran
   const plantId = rollPlant(
     spotId,
     random,
-    luck(state) * bloomLuck(state, regionId) * (weather.luck ?? 1),
+    luck(state) *
+      bloomLuck(state, regionId) *
+      (weather.luck ?? 1) *
+      weatherLuckMultiplier(state, weather.id),
     morningOk,
-    weather.capsBoost ?? 1,
+    weather.tagBoost,
   )
   slot.plantId = plantId
   slot.hp = PLANTS[plantId].toughness
@@ -114,9 +118,7 @@ export function tapPlant(
   const slot = state.spots[spotId]?.slots[slotIndex]
   if (!slot?.plantId) return [{ type: 'blocked', reason: 'no-plant' }]
   if (campBlocksSlot(state, spotId, slotIndex)) return [{ type: 'blocked', reason: 'camp' }]
-  if (spotWatched(state, spotId) && state.player.sneakMs <= 0) {
-    return [{ type: 'blocked', reason: 'watching' }]
-  }
+  if (playerWatched(state, spotId)) return [{ type: 'blocked', reason: 'watching' }]
 
   // Pests come off first, one per tap. Clearing them is tending, so it works with a full satchel.
   if ((slot.pests ?? 0) > 0) {

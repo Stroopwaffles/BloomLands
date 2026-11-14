@@ -3,14 +3,15 @@ import { REGIONS, REGION_ORDER, SPOTS, isSecret, placeRegion, HOME } from '../da
 import { rollWeather } from './environment'
 import type { GameEvent } from './events'
 import type { Random } from './rng'
+import { hasWaterstride } from './modifiers'
 import type { GameState } from './state'
 
-/** Regions the player has opened (design doc 3.12: a court rank plus the region's rite). */
 /** The newest region the player has opened (the menu shows and plays it). */
 export function latestRegion(state: GameState): string {
   return [...REGION_ORDER].reverse().find((id) => state.unlockedRegions.includes(id)) ?? 'meadow'
 }
 
+/** Regions the player has opened (design doc 3.12: a court rank plus the region's rite). */
 export function regionUnlocked(state: GameState, regionId: string): boolean {
   return state.unlockedRegions.includes(regionId)
 }
@@ -42,4 +43,14 @@ export function unlockRegion(state: GameState, regionId: string, random: Random)
 export function spotWatched(state: GameState, spotId: string): boolean {
   const creature = state.challenges.creatures[spotId]
   return !!creature && CREATURES[creature.creatureId]?.behavior === 'watches'
+}
+
+/**
+ * Is the player kept from gathering here by a watching creature? Hush Step sneaks past any of
+ * them; a Waterstride Philter is enough for the heron, who ignores anyone skimming the water.
+ */
+export function playerWatched(state: GameState, spotId: string): boolean {
+  if (!spotWatched(state, spotId) || state.player.sneakMs > 0) return false
+  const def = CREATURES[state.challenges.creatures[spotId].creatureId]
+  return !(def?.ignoresWaterstride && hasWaterstride(state))
 }

@@ -10,7 +10,7 @@
   import { isNight } from '../../engine/environment'
   import { pestAt } from '../../engine/challenges'
   import { campBlocksSlot, satchelFull } from '../../engine/gathering'
-  import { bloomLevel } from '../../engine/modifiers'
+  import { bloomLevel, hasWaterstride } from '../../engine/modifiers'
   import { wildMountAt } from '../../engine/mounts'
   import BloomMeter from '../components/BloomMeter.svelte'
   import Destinations from '../components/Destinations.svelte'
@@ -33,8 +33,15 @@
   const pest = $derived(pestAt(spotId))
   const watching = $derived(!!creature && CREATURES[creature.creatureId]?.behavior === 'watches')
   const sneaking = $derived($game.player.sneakMs > 0)
-  /** A watching creature (the owl) stops gathering here unless you sneak with Hush Step. */
-  const blocked = $derived(watching && !sneaking)
+  /** The heron ignores a fairy who drank a Waterstride Philter. */
+  const skimming = $derived(
+    !!creature &&
+      !!CREATURES[creature.creatureId]?.ignoresWaterstride &&
+      hasWaterstride($game) &&
+      !sneaking,
+  )
+  /** A watching creature (the owl, the heron) stops gathering here unless you get past it. */
+  const blocked = $derived(watching && !sneaking && !skimming)
   /** "a rabbit", "an owl" */
   const aName = (name: string) => `${/^[aeiou]/i.test(name) ? 'An' : 'A'} ${name.toLowerCase()}`
   /** Low bloom looks faded and grey; full bloom is in full color (design doc 7.3). */
@@ -212,7 +219,7 @@
         {#if def.behavior === 'watches'}
           <div
             class="creature watcher"
-            class:sneaking
+            class:sneaking={sneaking || skimming}
             style:left="{layout.creature.x}%"
             style:top="{layout.creature.y}%"
             role="img"
@@ -254,9 +261,17 @@
           {#if sneaking}
             Sneaking past the {CREATURES[creature.creatureId].name.toLowerCase()}... gather quietly
             ({Math.ceil($game.player.sneakMs / 1000)}s left).
+          {:else if skimming}
+            You skim the water so smoothly that the {CREATURES[
+              creature.creatureId
+            ].name.toLowerCase()} pays you no mind. Gather away! (Helpers still stay home.)
           {:else}
             {aName(CREATURES[creature.creatureId].name)} is watching this spot. Nobody can gather here
-            (helpers stay home) until you calm it, or sneak past with Hush Step.
+            (helpers stay home) until you calm it, or sneak past with Hush Step{CREATURES[
+              creature.creatureId
+            ].ignoresWaterstride
+              ? ' (or drink a Waterstride Philter)'
+              : ''}.
           {/if}
         </p>
       {:else if creature}

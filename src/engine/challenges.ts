@@ -96,7 +96,9 @@ export function advanceCreatures(state: GameState, dtMs: number, random: Random)
   if (challenges.nextCreatureMs > 0) return
   challenges.nextCreatureMs = between(random, CREATURE_RULES.minMs, CREATURE_RULES.maxMs)
   for (const def of Object.values(CREATURES)) {
-    const spots = visitedSpots(state, def.regionId).filter((id) => !challenges.creatures[id])
+    const spots = visitedSpots(state, def.regionId).filter(
+      (id) => !challenges.creatures[id] && (!def.spots || def.spots.includes(id)),
+    )
     if (spots.length === 0) continue
     const spotId = spots[Math.floor(random() * spots.length)]
     challenges.creatures[spotId] = {

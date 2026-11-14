@@ -40,7 +40,20 @@ export function clickPower(state: GameState): number {
   let power = state.player.clickPower
   for (const e of upgradeEffects(state)) if (e.kind === 'clickPower') power += e.amount
   for (const e of potionEffects(state)) if (e.kind === 'clickPower') power += e.amount
+  // Riding a mount like the frog in its home region gathers faster.
+  const id = state.mounts.riding
+  const mount = id ? MOUNTS[id] : null
+  if (id && mount && mount.bonus.kind === 'clickPower') {
+    if (placeRegion(state.player.place) === mount.regionId) {
+      power += mountBonusValue(mount, state.mounts.owned[id]?.level ?? 1)
+    }
+  }
   return power
+}
+
+/** A Waterstride Philter is active: no water slowdowns, and the heron lets you be. */
+export function hasWaterstride(state: GameState): boolean {
+  return potionEffects(state).some((e) => e.kind === 'waterstride')
 }
 
 /** Speed of the mount being ridden (1 if none). */
@@ -132,6 +145,29 @@ export function regionBloomMultiplier(state: GameState, regionId: string): numbe
   let value = 1
   for (const e of curioEffects(state)) {
     if (e.kind === 'regionBloom' && e.regionId === regionId) value *= e.multiplier
+  }
+  return value
+}
+
+/** Curios that raise the bloom from helping villagers (Mayor's Chain of Office). */
+export function settlementBloomMultiplier(state: GameState): number {
+  let value = 1
+  for (const e of curioEffects(state)) if (e.kind === 'settlementBloom') value *= e.multiplier
+  return value
+}
+
+/** Curios that shorten helpers' flights (Reed Pipe). */
+export function helperTripMultiplier(state: GameState): number {
+  let value = 1
+  for (const e of curioEffects(state)) if (e.kind === 'helperTrips') value *= e.multiplier
+  return value
+}
+
+/** Curios that make rarer plants likelier in some weather (Wisp Lantern in fog). */
+export function weatherLuckMultiplier(state: GameState, weather: string): number {
+  let value = 1
+  for (const e of curioEffects(state)) {
+    if (e.kind === 'weatherLuck' && e.weather === weather) value *= e.multiplier
   }
   return value
 }

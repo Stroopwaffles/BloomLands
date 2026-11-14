@@ -18,6 +18,7 @@ export interface SpellDef {
 export const REGION_SIGNATURE: Readonly<Record<string, string>> = {
   meadow: 'component-sun-salve',
   forest: 'component-earth-loam',
+  swamp: 'component-lily-balm',
 }
 
 /** Spells whose Sun Salve is swapped for the local region's signature component. */
@@ -70,7 +71,8 @@ export const SPELLS: Readonly<Record<string, SpellDef>> = {
   'spell-hush-step': {
     id: 'spell-hush-step',
     name: 'Hush Step',
-    description: 'Light as a seed: gather for two minutes without bothering a watching creature.',
+    description:
+      'Light as a seed: gather for two minutes without bothering a watching owl or heron.',
     target: 'sneak',
     cost: [
       { itemId: 'component-calming-tea', amount: 1 },
@@ -134,6 +136,17 @@ export const RITUALS: Readonly<Record<string, RitualDef>> = {
     effect: 'unlock-region',
     region: 'forest',
     cost: [{ itemId: 'component-sun-salve', amount: 2 }],
+  },
+  'ritual-reed-gate': {
+    id: 'ritual-reed-gate',
+    name: 'Rite of the Reed Gate',
+    description: 'Parts the reeds into the Swamp. Needs a Hedge Court.',
+    effect: 'unlock-region',
+    region: 'swamp',
+    cost: [
+      { itemId: 'component-earth-loam', amount: 2 },
+      { itemId: 'component-sun-salve', amount: 1 },
+    ],
   },
   'ritual-plenty': {
     id: 'ritual-plenty',

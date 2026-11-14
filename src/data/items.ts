@@ -23,6 +23,16 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'raw-inkcap', name: 'Inkcap', category: 'raw', tags: ['caps'] },
   { id: 'raw-birch-catkins', name: 'Silver catkins', category: 'raw', tags: ['fluff'] },
 
+  // Swamp raw materials
+  { id: 'raw-duckweed', name: 'Duckweed', category: 'raw' },
+  { id: 'raw-reed-stalks', name: 'Reed stalks', category: 'raw', tags: ['stalks'] },
+  { id: 'raw-cattail-fluff', name: 'Cattail fluff', category: 'raw', tags: ['fluff'] },
+  { id: 'raw-marigold-petals', name: 'Marigold petals', category: 'raw', tags: ['petals'] },
+  { id: 'raw-myrtle-leaves', name: 'Myrtle leaves', category: 'raw', tags: ['leaves'] },
+  { id: 'raw-lily-petals', name: 'Lily petals', category: 'raw', tags: ['petals'] },
+  { id: 'raw-orchid-petals', name: 'Orchid petals', category: 'raw', tags: ['petals'] },
+  { id: 'raw-wisp-lily', name: 'Wisp lily', category: 'raw' },
+
   // Refined materials (content doc → Recipe Tree → Tier 1)
   { id: 'refined-petal-paste', name: 'Petal Paste', category: 'refined' },
   { id: 'refined-leaf-tea', name: 'Leaf Tea', category: 'refined' },
@@ -33,6 +43,9 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'refined-spore-dust', name: 'Spore Dust', category: 'refined' },
   { id: 'refined-acorn-flour', name: 'Acorn Flour', category: 'refined' },
   { id: 'refined-golden-spore', name: 'Golden Spore', category: 'refined' },
+  { id: 'refined-reed-fiber', name: 'Reed Fiber', category: 'refined' },
+  { id: 'refined-lily-oil', name: 'Lily Oil', category: 'refined' },
+  { id: 'refined-orchid-essence', name: 'Orchid Essence', category: 'refined' },
 
   // Components (Tier 2)
   { id: 'component-sun-salve', name: 'Sun Salve', category: 'component' },
@@ -42,6 +55,7 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'component-sweet-bait', name: 'Sweet Bait', category: 'component' },
   { id: 'component-pest-smudge', name: 'Pest Smudge', category: 'component' },
   { id: 'component-earth-loam', name: 'Earth Loam', category: 'component' },
+  { id: 'component-lily-balm', name: 'Lily Balm', category: 'component' },
 
   // Potions
   { id: 'potion-greenthumb-brew', name: 'Greenthumb Brew', category: 'potion' },
@@ -49,6 +63,7 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'potion-deep-pockets-draught', name: 'Deep Pockets Draught', category: 'potion' },
   { id: 'potion-lucky-dew', name: 'Lucky Dew', category: 'potion' },
   { id: 'potion-swiftroot-elixir', name: 'Swiftroot Elixir', category: 'potion' },
+  { id: 'potion-waterstride-philter', name: 'Waterstride Philter', category: 'potion' },
 
   // Meadow trinkets
   { id: 'trinket-lost-button', name: 'Lost button', category: 'trinket', tags: ['trinket'] },
@@ -59,6 +74,11 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'trinket-glass-marble', name: 'Glass marble', category: 'trinket', tags: ['trinket'] },
   { id: 'trinket-brass-key', name: 'Brass key', category: 'trinket', tags: ['trinket'] },
   { id: 'trinket-ribbon-scrap', name: 'Ribbon scrap', category: 'trinket', tags: ['trinket'] },
+
+  // Swamp trinkets
+  { id: 'trinket-bottle-cap', name: 'Bottle cap', category: 'trinket', tags: ['trinket'] },
+  { id: 'trinket-fishing-fly', name: 'Fishing fly', category: 'trinket', tags: ['trinket'] },
+  { id: 'trinket-tiny-bell', name: 'Tiny bell', category: 'trinket', tags: ['trinket'] },
 ]
 
 export const ITEMS: Readonly<Record<string, ItemDef>> = Object.fromEntries(
