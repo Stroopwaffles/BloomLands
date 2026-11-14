@@ -124,7 +124,12 @@
       <span class="tag"
         >Release {GAME_VERSION.split('.').slice(0, 2).join('.')} · {RELEASE_NAME}</span
       >
-      <h1 class="logo">Bloom<br />Lands</h1>
+      <h1 class="logo">
+        <!-- The outline is drawn on a copy behind the letters, so it can't trace the seams
+             where a letter's strokes overlap (the d's bowl and stem). -->
+        <span class="logo-outline" aria-hidden="true">Bloom<br />Lands</span>
+        <span class="logo-fill">Bloom<br />Lands</span>
+      </h1>
       <p class="tagline" class:dark={scene.dark}>a cozy fairy court</p>
 
       {#if view === 'menu'}
@@ -308,12 +313,24 @@
     font-size: clamp(3.4rem, 9vw, 6.2rem);
     line-height: 0.92;
     letter-spacing: 0.01em;
+    display: grid;
+    filter: drop-shadow(0 4px 0 rgb(184 96 122 / 0.35)) drop-shadow(0 0 18px rgb(255 243 176 / 0.8));
+  }
+
+  .logo > span {
+    grid-area: 1 / 1;
+  }
+
+  .logo-outline {
+    color: #b8607a;
+    -webkit-text-stroke: 4px #b8607a;
+  }
+
+  .logo-fill {
     background: linear-gradient(180deg, #ffd1dd 0%, #f7a6bd 45%, #f2b45c 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    -webkit-text-stroke: 2px #b8607a;
-    filter: drop-shadow(0 4px 0 rgb(184 96 122 / 0.35)) drop-shadow(0 0 18px rgb(255 243 176 / 0.8));
   }
 
   .tagline {
