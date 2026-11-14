@@ -67,6 +67,18 @@ export const CHARACTERS: Readonly<Record<string, CharacterDef>> = {
     title: 'a newt musician',
     settlement: 'toad-village',
   },
+  'char-waxwick': {
+    id: 'char-waxwick',
+    name: 'Waxwick',
+    title: 'a worker-bee foreman',
+    settlement: 'combhaven',
+  },
+  'char-bumbleton': {
+    id: 'char-bumbleton',
+    name: 'Sir Bumbleton',
+    title: 'a retired (and very dramatic) bumblebee knight',
+    settlement: 'combhaven',
+  },
 }
 
 export const STORIES: Readonly<Record<string, StoryDef>> = {
@@ -401,6 +413,111 @@ export const STORIES: Readonly<Record<string, StoryDef>> = {
     ending: [
       'The first concert of the Mudwhistle Frog Choir! Nobody was in tune, and it was perfect.',
       'Take my first reed pipe. Play it for your helpers. They fly faster with a tune to hum.',
+    ],
+  },
+  'story-waxwick': {
+    id: 'story-waxwick',
+    characterId: 'char-waxwick',
+    curioId: 'curio-honeycomb-brooch',
+    chapters: [
+      {
+        lines: [
+          "Buzz! Hard hats on! Sorry, you don't have a hard hat. Stand behind the wax line.",
+          'The spring storm knocked out the whole east wing of the hive. We need comb. Lots of comb.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-honey', amount: 12 }],
+          label: 'Bring Waxwick 12 Honey',
+        },
+      },
+      {
+        lines: [
+          'Good honey. Now scaffolding. Reed fiber is light and strong. Swamp folk swear by it.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'refined-reed-fiber', amount: 3 }],
+          label: 'Bring Waxwick 3 Reed Fiber',
+        },
+      },
+      {
+        lines: [
+          'The workers are tired and grumpy. Help a few neighbors, and morale will lift itself.',
+        ],
+        task: {
+          kind: 'stat',
+          stat: 'villagersHelped',
+          amount: 3,
+          label: 'Help 3 villagers in Combhaven',
+        },
+      },
+      {
+        lines: [
+          'Last thing: the new wing is dark as a cellar. Candles, please. Beeswax, naturally.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'component-beeswax-candle', amount: 2 }],
+          label: 'Bring Waxwick 2 Beeswax Candles',
+        },
+      },
+    ],
+    ending: [
+      "The east wing is open, and it's the finest wax work in the Orchard, if I say so myself.",
+      "Take this brooch. Honeycomb packs tight: you'll be amazed what fits in your storeroom.",
+    ],
+  },
+  'story-bumbleton': {
+    id: 'story-bumbleton',
+    characterId: 'char-bumbleton',
+    curioId: 'curio-knights-pennant',
+    chapters: [
+      {
+        lines: [
+          'Halt! Who goes— oh, a fairy. Splendid. I am Sir Bumbleton, hero of a hundred battles.',
+          'I am writing my memoirs. Chapter one: the Siege of Cherry Hill. I need... reference petals.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-cherry-petals', amount: 8 }],
+          label: 'Bring Sir Bumbleton 8 Cherry petals',
+        },
+      },
+      {
+        lines: [
+          'Chapter two: the Great Beast Wars! I drove off a dozen monsters. Possibly two.',
+          'Remind me how it felt. Send a few big creatures packing, and report back.',
+        ],
+        task: {
+          kind: 'stat',
+          stat: 'creaturesShooed',
+          amount: 3,
+          label: 'Send away 3 large creatures',
+        },
+      },
+      {
+        lines: ['Chapter three: the Crabapple Catapult. Purely for historical accuracy.'],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-crabapples', amount: 4 }],
+          label: 'Bring Sir Bumbleton 4 Crabapples',
+        },
+      },
+      {
+        lines: [
+          'The final chapter: the Golden Quest. Every knight needs a treasure. Mine was pollen.',
+        ],
+        task: {
+          kind: 'bring',
+          items: [{ itemId: 'raw-golden-pollen', amount: 1 }],
+          label: 'Bring Sir Bumbleton 1 Golden pollen',
+        },
+      },
+    ],
+    ending: [
+      'It is finished! "The Legendary Adventures of Sir Bumbleton", in four thrilling volumes.',
+      'Carry my pennant, brave fairy. Any steed that flies under it flies a little faster.',
     ],
   },
 }

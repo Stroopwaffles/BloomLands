@@ -7,7 +7,7 @@ import type { ItemStack } from '../data/types'
 import { canPay, payCost } from './costs'
 import { unlockedRecipes } from './crafting'
 import type { GameEvent } from './events'
-import { stationBuilt, traderPayMultiplier } from './modifiers'
+import { stationBuilt, traderPayMultiplier, traderTrinketMultiplier } from './modifiers'
 import { openSpots } from './regions'
 import type { Random } from './rng'
 import { addItems, type GameState, type TradeRequest } from './state'
@@ -71,7 +71,7 @@ export function makeRequest(state: GameState, random: Random): TradeRequest {
   const { wants, value } = rollWants(state, random)
   const trinkets = Object.values(ITEMS).filter((item) => item.category === 'trinket')
   const trinketId =
-    random() < TRADER_RULES.trinketChance
+    random() < TRADER_RULES.trinketChance * traderTrinketMultiplier(state)
       ? trinkets[Math.floor(random() * trinkets.length)].id
       : null
   return {

@@ -22,6 +22,7 @@ export interface MountDef {
     | { kind: 'satchel'; amount: number; perLevel: number; label: string }
     | { kind: 'regionTravel'; multiplier: number; perLevel: number; label: string }
     | { kind: 'clickPower'; amount: number; perLevel: number; label: string }
+    | { kind: 'regionLuck'; multiplier: number; perLevel: number; label: string }
   /** Swims: no slowdown flying over open water. */
   swims?: boolean
   maxLevel: number
@@ -81,6 +82,26 @@ export const MOUNTS: Readonly<Record<string, MountDef>> = {
     maxLevel: 5,
     speedPerLevel: 0.05,
   },
+  'mount-hummingbird': {
+    id: 'mount-hummingbird',
+    name: 'Hummingbird',
+    regionId: 'orchard',
+    homeSpot: 'petalfall-rows',
+    description: 'Very fast, and has an eye for the rarest blossoms in the Orchard.',
+    wildLine: 'is darting between the blossoms.',
+    food: { itemId: 'raw-bee-balm-leaves', amount: 4 },
+    feedingsToBefriend: 5,
+    feedCooldownMs: 2 * 60_000,
+    speed: 1.6,
+    bonus: {
+      kind: 'regionLuck',
+      multiplier: 1.5,
+      perLevel: 0.1,
+      label: 'rarer plants grow more often in the Orchard',
+    },
+    maxLevel: 5,
+    speedPerLevel: 0.05,
+  },
 }
 
 /**
@@ -91,6 +112,7 @@ export function mountBonusValue(mount: MountDef, level: number): number {
   const b = mount.bonus
   if (b.kind === 'satchel') return b.amount + (level - 1) * b.perLevel
   if (b.kind === 'clickPower') return Math.floor(b.amount + (level - 1) * b.perLevel)
+  if (b.kind === 'regionLuck') return b.multiplier + (level - 1) * b.perLevel
   return Math.max(0.3, b.multiplier - (level - 1) * b.perLevel)
 }
 

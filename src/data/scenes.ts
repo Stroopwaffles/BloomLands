@@ -154,6 +154,60 @@ export const SCENES: Readonly<Record<string, SceneLayout>> = {
     camp: { x: 30, y: 80 },
     mount: { x: 84, y: 30 },
   },
+
+  // Blossom Orchard
+  'petalfall-rows': {
+    slots: [
+      { x: 14, y: 70 },
+      { x: 30, y: 86 },
+      { x: 46, y: 68 },
+      { x: 62, y: 88 },
+      { x: 78, y: 70 },
+      { x: 90, y: 86 },
+    ],
+    creature: { x: 88, y: 50 },
+    camp: { x: 76, y: 76 },
+    mount: { x: 50, y: 30 },
+  },
+  'old-pear': {
+    slots: [
+      { x: 16, y: 78 },
+      { x: 30, y: 90 },
+      { x: 70, y: 90 },
+      { x: 84, y: 78 },
+      { x: 44, y: 88 },
+      { x: 58, y: 80 },
+    ],
+    creature: { x: 12, y: 50 },
+    camp: { x: 78, y: 80 },
+    mount: { x: 70, y: 30 },
+  },
+  'royal-cell': {
+    slots: [
+      { x: 50, y: 62 },
+      { x: 30, y: 74 },
+      { x: 70, y: 74 },
+      { x: 20, y: 90 },
+      { x: 50, y: 90 },
+      { x: 80, y: 90 },
+    ],
+    creature: { x: 88, y: 50 },
+    camp: { x: 76, y: 80 },
+    mount: { x: 50, y: 28 },
+  },
+  'badgers-tunnel': {
+    slots: [
+      { x: 16, y: 80 },
+      { x: 32, y: 90 },
+      { x: 48, y: 78 },
+      { x: 64, y: 90 },
+      { x: 80, y: 80 },
+      { x: 92, y: 92 },
+    ],
+    creature: { x: 50, y: 52 },
+    camp: { x: 76, y: 82 },
+    mount: { x: 50, y: 34 },
+  },
 }
 
 /** A plain layout for any spot without a hand-placed one. */

@@ -198,6 +198,8 @@ export interface GameState {
     campMs: Record<string, number>
     nextCreatureMs: number
     nextCampMs: number
+    /** How many times each kind of creature has been calmed (some secrets need it). */
+    calmed: Record<string, number>
   }
   player: {
     /** Where the player is, or where they took off from while flying. 'home' or a spot ID. */
@@ -347,6 +349,7 @@ export function createNewGame(now: number): GameState {
       campMs: {},
       nextCreatureMs: 5 * 60_000,
       nextCampMs: 25 * 60_000,
+      calmed: {},
     },
     player: {
       place: HOME,

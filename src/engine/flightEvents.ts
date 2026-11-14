@@ -151,10 +151,14 @@ export function foilAmbush(state: GameState): GameEvent[] {
 export function settleFlightEvent(state: GameState, travel: TravelState, random: Random): void {
   const event = travel.event
   if (!event || event.resolved || event.kind !== 'ambush') return
+  const favorites = CREWS[event.crewId ?? '']?.steals ?? []
   for (let i = 0; i < FLIGHT_EVENT_RULES.ambushSteals; i++) {
-    const stealable = Object.keys(state.player.satchel).filter(
+    const carried = Object.keys(state.player.satchel).filter(
       (id) => ITEMS[id]?.category !== 'trinket',
     )
+    // Some crews go for their favorite things first (the Nectar Nabbers love honey and pollen).
+    const preferred = carried.filter((id) => favorites.includes(id))
+    const stealable = preferred.length > 0 ? preferred : carried
     if (stealable.length === 0) return
     addItems(state.player.satchel, stealable[Math.floor(random() * stealable.length)], -1)
   }

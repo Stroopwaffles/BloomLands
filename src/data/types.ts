@@ -117,6 +117,10 @@ export type SecretUnlock =
   | { kind: 'ritual'; hint: string }
   | { kind: 'story'; storyId: string; hint: string }
   | { kind: 'bloom'; level: number; hint: string }
+  /** Help a settlement's villagers this many times. */
+  | { kind: 'requests'; settlementId: string; count: number; hint: string }
+  /** Calm a creature this many times. */
+  | { kind: 'calmed'; creatureId: string; count: number; hint: string }
 
 export interface SettlementDef {
   id: string

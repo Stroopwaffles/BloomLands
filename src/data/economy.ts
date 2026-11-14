@@ -31,6 +31,15 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'raw-lily-petals': 9,
   'raw-orchid-petals': 32,
   'raw-wisp-lily': 40,
+  'raw-honey': 4,
+  'raw-apple-petals': 4,
+  'raw-cherry-petals': 5,
+  'raw-bee-balm-leaves': 8,
+  'raw-crabapples': 9,
+  'raw-golden-pollen': 35,
+  'raw-quince-petals': 38,
+  'raw-royal-jelly': 45,
+  'raw-truffle': 45,
   // Refined
   'refined-petal-paste': 10,
   'refined-leaf-tea': 10,
@@ -44,6 +53,8 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'refined-reed-fiber': 16,
   'refined-lily-oil': 30,
   'refined-orchid-essence': 40,
+  'refined-honey-syrup': 16,
+  'refined-pollen-gold': 45,
   // Components
   'component-sun-salve': 25,
   'component-calming-tea': 25,
@@ -53,6 +64,7 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'component-pest-smudge': 28,
   'component-earth-loam': 55,
   'component-lily-balm': 50,
+  'component-beeswax-candle': 60,
   // Potions
   'potion-greenthumb-brew': 45,
   'potion-quickwing-tonic': 50,

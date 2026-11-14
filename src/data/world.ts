@@ -81,6 +81,33 @@ const SPOT_LIST: SpotDef[] = [
     water: true,
   },
 
+  // Blossom Orchard
+  {
+    id: 'petalfall-rows',
+    name: 'Petalfall Rows',
+    regionId: 'orchard',
+    description: 'Long avenues of blossoming trees, where petals drift down like snow.',
+    plants: [
+      'plant-apple-blossom',
+      'plant-cherry-blossom',
+      'plant-bee-balm',
+      'plant-golden-pollen',
+    ],
+    slots: 6,
+    regrowMs: 28_000,
+    trinkets: ['trinket-seed-packet', 'trinket-sewing-needle'],
+  },
+  {
+    id: 'old-pear',
+    name: 'The Old Pear',
+    regionId: 'orchard',
+    description: 'A gnarled, ancient pear tree dripping with honeycomb and fallen fruit.',
+    plants: ['plant-honey-drip', 'plant-crabapple', 'plant-quince-blossom'],
+    slots: 6,
+    regrowMs: 30_000,
+    trinkets: ['trinket-copper-coin', 'trinket-seed-packet'],
+  },
+
   // Secret areas: hidden until unlocked, re-locked on prestige (design doc 3.12)
   {
     id: 'fairy-ring',
@@ -147,6 +174,46 @@ const SPOT_LIST: SpotDef[] = [
       unlock: { kind: 'bloom', level: 3, hint: 'Help the Swamp reach Budding bloom.' },
     },
   },
+  {
+    id: 'royal-cell',
+    name: 'The Royal Cell',
+    regionId: 'orchard',
+    description: 'The golden heart of Combhaven, where the queen keeps her court.',
+    plants: ['plant-royal-jelly', 'plant-honey-drip', 'plant-quince-blossom', 'plant-bee-balm'],
+    slots: 6,
+    regrowMs: 32_000,
+    trinkets: ['trinket-copper-coin', 'trinket-sewing-needle'],
+    secret: {
+      curioId: 'curio-queens-seal',
+      outfitId: 'outfit-honeycomb',
+      unlock: {
+        kind: 'requests',
+        settlementId: 'combhaven',
+        count: 5,
+        hint: "Help Combhaven's villagers 5 times.",
+      },
+    },
+  },
+  {
+    id: 'badgers-tunnel',
+    name: "Badger's Tunnel",
+    regionId: 'orchard',
+    description: 'The grumpy badger’s secret tunnel, cool and earthy, smelling of truffles.',
+    plants: ['plant-truffle', 'plant-crabapple', 'plant-honey-drip', 'plant-bee-balm'],
+    slots: 6,
+    regrowMs: 32_000,
+    trinkets: ['trinket-copper-coin', 'trinket-seed-packet'],
+    secret: {
+      curioId: 'curio-badgers-pocket-watch',
+      outfitId: 'outfit-burrower',
+      unlock: {
+        kind: 'calmed',
+        creatureId: 'badger',
+        count: 3,
+        hint: 'Calm the grumpy badger 3 times.',
+      },
+    },
+  },
 ]
 
 export const SPOTS: Readonly<Record<string, SpotDef>> = Object.fromEntries(
@@ -196,6 +263,18 @@ export const SETTLEMENTS: Readonly<Record<string, SettlementDef>> = {
       greeting: 'Welcome, dear. Mind the puddles, and the prices are very fair.',
     },
   },
+  combhaven: {
+    id: 'combhaven',
+    name: 'Combhaven',
+    regionId: 'orchard',
+    description: 'A bustling beehive town of honeybees, with hexagon streets and honey fountains.',
+    folk: 'honeybees',
+    shop: {
+      name: 'The Honey Pot',
+      keeper: 'Pollyanna',
+      greeting: 'Buzz buzz, busy busy! Everything fresh from the rows today.',
+    },
+  },
 }
 
 export interface SpiritPlaceDef {
@@ -227,6 +306,13 @@ export const SPIRIT_PLACES: Readonly<Record<string, SpiritPlaceDef>> = {
     regionId: 'swamp',
     description: 'A willow half under water, its branches trailing in the still pool.',
     spiritId: 'spirit-mirebelle',
+  },
+  'grafted-tree': {
+    id: 'grafted-tree',
+    name: 'The Grafted Tree',
+    regionId: 'orchard',
+    description: 'A single tree that grows every kind of fruit at once.',
+    spiritId: 'spirit-pome',
   },
 }
 
@@ -264,9 +350,19 @@ export const REGIONS: Readonly<Record<string, RegionDef>> = {
     sceneSpot: 'lilypad-pools',
     unlock: { rank: 2, ritualId: 'ritual-reed-gate' },
   },
+  orchard: {
+    id: 'orchard',
+    name: 'Blossom Orchard',
+    settlement: 'combhaven',
+    spiritPlace: 'grafted-tree',
+    secretSpots: ['royal-cell', 'badgers-tunnel'],
+    spots: ['petalfall-rows', 'old-pear'],
+    sceneSpot: 'petalfall-rows',
+    unlock: { rank: 3, ritualId: 'ritual-first-blossom' },
+  },
 }
 
-export const REGION_ORDER: readonly string[] = ['meadow', 'forest', 'swamp']
+export const REGION_ORDER: readonly string[] = ['meadow', 'forest', 'swamp', 'orchard']
 
 /** Every place you can fly to, in display order. */
 export function allPlaces(): string[] {

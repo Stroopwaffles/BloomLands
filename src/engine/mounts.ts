@@ -1,7 +1,7 @@
 import { levelUpFood, MOUNTS } from '../data/mounts'
 import { canPay, payCost } from './costs'
 import type { BlockedReason, GameEvent } from './events'
-import { stableCapacity } from './modifiers'
+import { mountSpeedMultiplier, stableCapacity } from './modifiers'
 import type { GameState } from './state'
 
 /**
@@ -98,7 +98,7 @@ export function levelUpMount(state: GameState, mountId: string): GameEvent[] {
 export function mountSpeed(state: GameState, mountId: string): number {
   const mount = MOUNTS[mountId]
   const level = state.mounts.owned[mountId]?.level ?? 1
-  return mount.speed + (level - 1) * mount.speedPerLevel
+  return (mount.speed + (level - 1) * mount.speedPerLevel) * mountSpeedMultiplier(state)
 }
 
 /** Mounts you own but aren't riding, fastest first. Helpers borrow these. */

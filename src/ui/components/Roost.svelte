@@ -16,7 +16,7 @@
   <p class="hint">
     {stableCapacity($game) === 0
       ? 'No mounts yet. Build a Roost, then befriend a wild mount (the bumblebee lives at Buttercup Rise).'
-      : 'Your roost is ready. Befriend the bumblebee at Buttercup Rise, the flying squirrel in the Forest, or the frog at the Lilypad Pools.'}
+      : 'Your roost is ready. Befriend the bumblebee at Buttercup Rise, the flying squirrel in the Forest, or the frog at the Lilypad Pools, or the hummingbird in Petalfall Rows.'}
   </p>
 {:else}
   <ul>

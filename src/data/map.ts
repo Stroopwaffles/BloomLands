@@ -48,4 +48,16 @@ export const MAP_ISLANDS: Readonly<Record<string, IslandDef>> = {
       'wisp-hollow': { x: 84, y: 52 },
     },
   },
+  orchard: {
+    color: '#f6d3df',
+    edge: '#d48aa6',
+    places: {
+      combhaven: { x: 30, y: 50 },
+      'petalfall-rows': { x: 60, y: 70 },
+      'old-pear': { x: 76, y: 44 },
+      'grafted-tree': { x: 50, y: 32 },
+      'royal-cell': { x: 18, y: 76 },
+      'badgers-tunnel': { x: 86, y: 74 },
+    },
+  },
 }

@@ -23,4 +23,5 @@ export const BLOCKED_TEXT: Record<BlockedReason, string> = {
   'not-morning': 'This rite only works in the morning.',
   watching: 'Something is watching this spot. Calm it, or sneak past with Hush Step.',
   'needs-rank': 'Your court needs a higher rank first.',
+  'calm-only': 'Too grumpy to shoo. Only a calming spell will do.',
 }

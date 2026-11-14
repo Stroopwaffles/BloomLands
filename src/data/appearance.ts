@@ -216,6 +216,30 @@ export const OUTFIT_PIECES: Readonly<Record<string, OutfitPiece>> = {
     slot: 'headpiece',
     color: '#6fae5f',
   },
+  'piece-honeycomb-crown': {
+    id: 'piece-honeycomb-crown',
+    name: 'Honeycomb crown',
+    slot: 'headpiece',
+    color: '#f2b23a',
+  },
+  'piece-honeycomb-gown': {
+    id: 'piece-honeycomb-gown',
+    name: 'Honeycomb gown',
+    slot: 'outfit',
+    color: '#f2c94f',
+  },
+  'piece-honeycomb-doublet': {
+    id: 'piece-honeycomb-doublet',
+    name: 'Honeycomb doublet',
+    slot: 'outfit',
+    color: '#f2c94f',
+  },
+  'piece-burrowers-waistcoat': {
+    id: 'piece-burrowers-waistcoat',
+    name: "Burrower's waistcoat",
+    slot: 'outfit',
+    color: '#8a6a44',
+  },
 }
 
 export interface OutfitSet {
@@ -258,6 +282,16 @@ export const OUTFIT_SETS: Readonly<Record<string, OutfitSet>> = {
     id: 'outfit-lantern-bug',
     name: 'Lantern-Bug set',
     pieces: ['piece-lantern-bug-cloak', 'piece-lily-pad-hat'],
+  },
+  'outfit-honeycomb': {
+    id: 'outfit-honeycomb',
+    name: 'Honeycomb set',
+    pieces: ['piece-honeycomb-crown', 'piece-honeycomb-gown', 'piece-honeycomb-doublet'],
+  },
+  'outfit-burrower': {
+    id: 'outfit-burrower',
+    name: "Burrower's set",
+    pieces: ['piece-burrowers-waistcoat'],
   },
 }
 

@@ -1,3 +1,4 @@
+import { curioOfflineMs } from './modifiers'
 import type { GameState } from './state'
 import { SYSTEMS, type System, type TickContext } from './systems'
 
@@ -13,7 +14,7 @@ export const OFFLINE_STEP_MS = 60_000
 export const BASE_OFFLINE_CAP_MS = 4 * HOUR_MS
 
 export function offlineCapMs(state: GameState): number {
-  return BASE_OFFLINE_CAP_MS + state.bonuses.offlineCapMs
+  return BASE_OFFLINE_CAP_MS + state.bonuses.offlineCapMs + curioOfflineMs(state)
 }
 
 export interface AdvanceReport {

@@ -121,6 +121,8 @@ export function tapCreature(state: GameState, spotId: string): GameEvent[] {
   if (CREATURES[creature.creatureId]?.behavior === 'watches') {
     return [{ type: 'blocked', reason: 'watching' }]
   }
+  // Some creatures are too grumpy to shoo (the badger): only a calming spell works.
+  if (CREATURES[creature.creatureId]?.calmOnly) return [{ type: 'blocked', reason: 'calm-only' }]
   state.stats.taps++
   creature.tapsLeft--
   if (creature.tapsLeft > 0) return [{ type: 'creature-tap', spotId, tapsLeft: creature.tapsLeft }]
@@ -136,6 +138,10 @@ export function sendCreatureAway(
   if (!creature) return [{ type: 'blocked', reason: 'no-target' }]
   delete state.challenges.creatures[spotId]
   state.stats.creaturesShooed++
+  if (how === 'calmed') {
+    const calmed = state.challenges.calmed
+    calmed[creature.creatureId] = (calmed[creature.creatureId] ?? 0) + 1
+  }
   return [{ type: 'creature-gone', spotId, creatureId: creature.creatureId, how }]
 }
 

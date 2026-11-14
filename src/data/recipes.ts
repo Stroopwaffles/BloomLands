@@ -204,6 +204,32 @@ const RECIPE_LIST: RecipeDef[] = [
     durationMs: 25 * SEC,
   },
 
+  // Orchard refining and components
+  {
+    id: 'refined-honey-syrup',
+    station: 'press',
+    inputs: [{ itemId: 'raw-honey', amount: 3 }],
+    output: { itemId: 'refined-honey-syrup', amount: 1 },
+    durationMs: 12 * SEC,
+  },
+  {
+    id: 'refined-pollen-gold',
+    station: 'mortar',
+    inputs: [{ itemId: 'raw-golden-pollen', amount: 1 }],
+    output: { itemId: 'refined-pollen-gold', amount: 1 },
+    durationMs: 20 * SEC,
+  },
+  {
+    id: 'component-beeswax-candle',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'refined-honey-syrup', amount: 1 },
+      { itemId: 'refined-reed-fiber', amount: 1 },
+    ],
+    output: { itemId: 'component-beeswax-candle', amount: 1 },
+    durationMs: 30 * SEC,
+  },
+
   // Potions (brewed in the cauldron)
   {
     id: 'potion-greenthumb-brew',

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { SPOTS } from '../data/world'
   import ForestBackdrop from './ForestBackdrop.svelte'
+  import OrchardBackdrop from './OrchardBackdrop.svelte'
   import SwampBackdrop from './SwampBackdrop.svelte'
 
   /**
@@ -43,6 +44,8 @@
     <ForestBackdrop {spotId} />
   {:else if region === 'swamp'}
     <SwampBackdrop {spotId} />
+  {:else if region === 'orchard'}
+    <OrchardBackdrop {spotId} />
   {:else if spotId === 'fairy-ring'}
     <rect width="160" height="100" fill="url(#sky-glade)" />
     <g fill="#7fae74" stroke="#5f8f58" stroke-width="0.6">

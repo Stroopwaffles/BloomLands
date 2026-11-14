@@ -19,6 +19,7 @@ export const REGION_SIGNATURE: Readonly<Record<string, string>> = {
   meadow: 'component-sun-salve',
   forest: 'component-earth-loam',
   swamp: 'component-lily-balm',
+  orchard: 'component-beeswax-candle',
 }
 
 /** Spells whose Sun Salve is swapped for the local region's signature component. */
@@ -146,6 +147,17 @@ export const RITUALS: Readonly<Record<string, RitualDef>> = {
     cost: [
       { itemId: 'component-earth-loam', amount: 2 },
       { itemId: 'component-sun-salve', amount: 1 },
+    ],
+  },
+  'ritual-first-blossom': {
+    id: 'ritual-first-blossom',
+    name: 'Rite of First Blossom',
+    description: 'Wakes the sleeping orchard. Needs a Bramble Court.',
+    effect: 'unlock-region',
+    region: 'orchard',
+    cost: [
+      { itemId: 'component-lily-balm', amount: 2 },
+      { itemId: 'component-sun-salve', amount: 2 },
     ],
   },
   'ritual-plenty': {

@@ -96,4 +96,30 @@ export const SPIRITS: Readonly<Record<string, SpiritDef>> = {
       },
     ],
   },
+  'spirit-pome': {
+    id: 'spirit-pome',
+    name: 'Grandmother Pome',
+    regionId: 'orchard',
+    place: 'grafted-tree',
+    sleeping: [
+      'The grafted tree rustles, and a smell of baked apples drifts by.',
+      '"Mm? Oh, dearie, I\'m still so drowsy. The Orchard needs tending before an old tree can wake."',
+    ],
+    awakening: [
+      'Every branch bursts into blossom at once: apple, cherry, pear and quince.',
+      '"There now, dearie. Look at it all, humming again. Come sit, there\'s always pie for you."',
+    ],
+    requirements: [
+      { kind: 'bloom', level: 2, label: 'Help the Orchard reach Sprouting bloom' },
+      { kind: 'story', storyId: 'story-waxwick', label: "Finish Waxwick's story" },
+      {
+        kind: 'offering',
+        items: [
+          { itemId: 'component-beeswax-candle', amount: 3 },
+          { itemId: 'refined-pollen-gold', amount: 1 },
+        ],
+        label: 'Offer 3 Beeswax Candles and 1 Pollen Gold',
+      },
+    ],
+  },
 }

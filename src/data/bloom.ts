@@ -48,6 +48,10 @@ export interface CurioDef {
     | { kind: 'settlementBloom'; multiplier: number }
     | { kind: 'helperTrips'; multiplier: number }
     | { kind: 'weatherLuck'; weather: string; multiplier: number }
+    | { kind: 'storage'; amount: number }
+    | { kind: 'mountSpeed'; multiplier: number }
+    | { kind: 'traderTrinkets'; multiplier: number }
+    | { kind: 'offlineCap'; ms: number }
 }
 
 /** Meadow curios (content doc → Curio Index). They last for the current run. */
@@ -112,6 +116,30 @@ export const CURIOS: Readonly<Record<string, CurioDef>> = {
     description: 'In fog, rarer plants grow twice as often.',
     effect: { kind: 'weatherLuck', weather: 'fog', multiplier: 2 },
   },
+  'curio-honeycomb-brooch': {
+    id: 'curio-honeycomb-brooch',
+    name: 'Honeycomb Brooch',
+    description: '+150 storage space.',
+    effect: { kind: 'storage', amount: 150 },
+  },
+  'curio-knights-pennant': {
+    id: 'curio-knights-pennant',
+    name: "Knight's Pennant",
+    description: 'Mounts fly 10% faster.',
+    effect: { kind: 'mountSpeed', multiplier: 1.1 },
+  },
+  'curio-queens-seal': {
+    id: 'curio-queens-seal',
+    name: "Queen's Seal",
+    description: 'Traders offer trinkets twice as often.',
+    effect: { kind: 'traderTrinkets', multiplier: 2 },
+  },
+  'curio-badgers-pocket-watch': {
+    id: 'curio-badgers-pocket-watch',
+    name: "Badger's Pocket Watch",
+    description: 'Progress while you are away is kept for 2 more hours.',
+    effect: { kind: 'offlineCap', ms: 2 * 60 * 60_000 },
+  },
 }
 
 export interface VillagerDef {
@@ -140,6 +168,11 @@ export const VILLAGERS: Readonly<Record<string, readonly VillagerDef[]>> = {
     },
     { id: 'villager-puddle', name: 'Puddle', title: 'a tadpole who wants to help' },
     { id: 'villager-lilywhite', name: 'Madame Lilywhite', title: 'the reed weaver' },
+  ],
+  combhaven: [
+    { id: 'villager-pollyanna', name: 'Pollyanna', title: 'who sorts the pollen' },
+    { id: 'villager-hexley', name: 'Hexley', title: 'the hexagon architect' },
+    { id: 'villager-mother-comb', name: 'Mother Comb', title: 'keeper of the honey vats' },
   ],
 }
 

@@ -62,7 +62,40 @@ function ridingSpeed(state: GameState): number {
   const mount = id ? MOUNTS[id] : null
   if (!id || !mount) return 1
   const level = state.mounts.owned[id]?.level ?? 1
-  return mount.speed + (level - 1) * mount.speedPerLevel
+  return (mount.speed + (level - 1) * mount.speedPerLevel) * mountSpeedMultiplier(state)
+}
+
+/** Curios that make mounts faster (Knight's Pennant). */
+export function mountSpeedMultiplier(state: GameState): number {
+  let value = 1
+  for (const e of curioEffects(state)) if (e.kind === 'mountSpeed') value *= e.multiplier
+  return value
+}
+
+/**
+ * Rarer plants grow more often in a mount's home region while you ride it there (the hummingbird
+ * in the Orchard).
+ */
+export function mountRegionLuck(state: GameState, regionId: string): number {
+  const id = state.mounts.riding
+  const mount = id ? MOUNTS[id] : null
+  if (!id || !mount || mount.bonus.kind !== 'regionLuck' || mount.regionId !== regionId) return 1
+  if (placeRegion(state.player.place) !== regionId) return 1
+  return mountBonusValue(mount, state.mounts.owned[id]?.level ?? 1)
+}
+
+/** Curios that make traders offer trinkets more often (Queen's Seal). */
+export function traderTrinketMultiplier(state: GameState): number {
+  let value = 1
+  for (const e of curioEffects(state)) if (e.kind === 'traderTrinkets') value *= e.multiplier
+  return value
+}
+
+/** Extra offline progress time from curios (Badger's Pocket Watch). */
+export function curioOfflineMs(state: GameState): number {
+  let ms = 0
+  for (const e of curioEffects(state)) if (e.kind === 'offlineCap') ms += e.ms
+  return ms
 }
 
 export function wingSpeed(state: GameState): number {
@@ -228,6 +261,7 @@ export function stableCapacity(state: GameState): number {
 export function storageCapacity(state: GameState): number {
   let capacity = state.storageCapacity
   for (const e of upgradeEffects(state)) if (e.kind === 'storage') capacity += e.amount
+  for (const e of curioEffects(state)) if (e.kind === 'storage') capacity += e.amount
   return capacity
 }
 

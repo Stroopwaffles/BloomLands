@@ -33,6 +33,17 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'raw-orchid-petals', name: 'Orchid petals', category: 'raw', tags: ['petals'] },
   { id: 'raw-wisp-lily', name: 'Wisp lily', category: 'raw' },
 
+  // Orchard raw materials
+  { id: 'raw-honey', name: 'Honey', category: 'raw' },
+  { id: 'raw-apple-petals', name: 'Apple petals', category: 'raw', tags: ['petals'] },
+  { id: 'raw-cherry-petals', name: 'Cherry petals', category: 'raw', tags: ['petals'] },
+  { id: 'raw-bee-balm-leaves', name: 'Bee balm leaves', category: 'raw', tags: ['leaves'] },
+  { id: 'raw-crabapples', name: 'Crabapples', category: 'raw', tags: ['fruit'] },
+  { id: 'raw-golden-pollen', name: 'Golden pollen', category: 'raw' },
+  { id: 'raw-quince-petals', name: 'Quince petals', category: 'raw', tags: ['petals'] },
+  { id: 'raw-royal-jelly', name: 'Royal jelly', category: 'raw' },
+  { id: 'raw-truffle', name: 'Truffle', category: 'raw' },
+
   // Refined materials (content doc → Recipe Tree → Tier 1)
   { id: 'refined-petal-paste', name: 'Petal Paste', category: 'refined' },
   { id: 'refined-leaf-tea', name: 'Leaf Tea', category: 'refined' },
@@ -46,6 +57,8 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'refined-reed-fiber', name: 'Reed Fiber', category: 'refined' },
   { id: 'refined-lily-oil', name: 'Lily Oil', category: 'refined' },
   { id: 'refined-orchid-essence', name: 'Orchid Essence', category: 'refined' },
+  { id: 'refined-honey-syrup', name: 'Honey Syrup', category: 'refined' },
+  { id: 'refined-pollen-gold', name: 'Pollen Gold', category: 'refined' },
 
   // Components (Tier 2)
   { id: 'component-sun-salve', name: 'Sun Salve', category: 'component' },
@@ -56,6 +69,7 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'component-pest-smudge', name: 'Pest Smudge', category: 'component' },
   { id: 'component-earth-loam', name: 'Earth Loam', category: 'component' },
   { id: 'component-lily-balm', name: 'Lily Balm', category: 'component' },
+  { id: 'component-beeswax-candle', name: 'Beeswax Candle', category: 'component' },
 
   // Potions
   { id: 'potion-greenthumb-brew', name: 'Greenthumb Brew', category: 'potion' },
@@ -79,6 +93,11 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'trinket-bottle-cap', name: 'Bottle cap', category: 'trinket', tags: ['trinket'] },
   { id: 'trinket-fishing-fly', name: 'Fishing fly', category: 'trinket', tags: ['trinket'] },
   { id: 'trinket-tiny-bell', name: 'Tiny bell', category: 'trinket', tags: ['trinket'] },
+
+  // Orchard trinkets
+  { id: 'trinket-copper-coin', name: 'Copper coin', category: 'trinket', tags: ['trinket'] },
+  { id: 'trinket-sewing-needle', name: 'Sewing needle', category: 'trinket', tags: ['trinket'] },
+  { id: 'trinket-seed-packet', name: 'Seed packet', category: 'trinket', tags: ['trinket'] },
 ]
 
 export const ITEMS: Readonly<Record<string, ItemDef>> = Object.fromEntries(

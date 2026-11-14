@@ -18,6 +18,7 @@ import {
   tagYieldBonus,
   trinketChanceMultiplier,
   weatherLuckMultiplier,
+  mountRegionLuck,
 } from './modifiers'
 import { pickWeighted, type Random } from './rng'
 import { addItems, countItems, type GameState, type SlotState, type SpotState } from './state'
@@ -68,7 +69,8 @@ export function plantWeights(state: GameState, spotId: string): [string, number]
     luck(state) *
     bloomLuck(state, regionId) *
     (weather.luck ?? 1) *
-    weatherLuckMultiplier(state, weather.id)
+    weatherLuckMultiplier(state, weather.id) *
+    mountRegionLuck(state, regionId)
   return SPOTS[spotId].plants
     .filter((id) => morningOk || !PLANTS[id].morningOnly)
     .map((id) => {
@@ -152,7 +154,11 @@ export function tapPlant(
   // Harvest
   const plantId = slot.plantId
   const bonus = random() < BONUS_MATERIAL_CHANCE
-  const extra = (bonus ? 1 : 0) + tagYieldBonus(state, PLANTS[plantId].tags)
+  // A blossom wind (and the like) blows in an extra of some kinds of plant.
+  const weatherYield = weatherIn(state, SPOTS[spotId].regionId).tagYield
+  const windfall =
+    weatherYield && PLANTS[plantId].tags?.includes(weatherYield.tag) ? weatherYield.amount : 0
+  const extra = (bonus ? 1 : 0) + tagYieldBonus(state, PLANTS[plantId].tags) + windfall
   const items: ItemStack[] = PLANTS[plantId].yields.map(({ itemId, amount }) => ({
     itemId,
     amount: amount + extra,

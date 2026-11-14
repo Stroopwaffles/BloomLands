@@ -477,6 +477,63 @@ RESEARCH_LIST.push(
     unlocks: ['potion-waterstride-philter'],
     region: 'swamp',
   },
+  {
+    id: 'research-first-blossom',
+    name: 'Rite of First Blossom',
+    branch: 'rites',
+    description:
+      'Balm and sunshine wake the sleeping orchard. Performing it needs a Bramble Court.',
+    cost: [
+      { itemId: 'component-lily-balm', amount: 2 },
+      { itemId: 'component-sun-salve', amount: 1 },
+    ],
+    durationMs: 5 * MIN,
+    requires: ['research-lily-balm', 'research-reed-gate'],
+    unlocks: [],
+    rituals: ['ritual-first-blossom'],
+    region: 'swamp',
+  },
+)
+
+// Blossom Orchard (shown once the Orchard is open)
+RESEARCH_LIST.push(
+  {
+    id: 'research-honey-syrup',
+    name: 'Honey Syrup',
+    branch: 'refining',
+    description: 'Press honeycomb into a thick golden syrup.',
+    cost: [{ itemId: 'raw-honey', amount: 6 }],
+    durationMs: 1 * MIN,
+    requires: ['research-pressing'],
+    unlocks: ['refined-honey-syrup'],
+    region: 'orchard',
+  },
+  {
+    id: 'research-pollen-gold',
+    name: 'Pollen Gold',
+    branch: 'refining',
+    description: 'Grind golden pollen into shimmering Pollen Gold.',
+    cost: [{ itemId: 'raw-golden-pollen', amount: 1 }],
+    durationMs: 90 * SEC,
+    requires: ['research-grinding'],
+    unlocks: ['refined-pollen-gold'],
+    region: 'orchard',
+  },
+  {
+    id: 'research-beeswax',
+    name: 'Beeswax Candles',
+    branch: 'brewing',
+    description:
+      'Dip reed wicks in warm honey wax: the Orchard’s own magic, and a light for dark places.',
+    cost: [
+      { itemId: 'refined-honey-syrup', amount: 2 },
+      { itemId: 'refined-reed-fiber', amount: 2 },
+    ],
+    durationMs: 4 * MIN,
+    requires: ['research-honey-syrup', 'research-reed-fiber'],
+    unlocks: ['component-beeswax-candle'],
+    region: 'orchard',
+  },
 )
 
 export const RESEARCH: Readonly<Record<string, ResearchDef>> = Object.fromEntries(

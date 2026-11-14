@@ -73,6 +73,12 @@
       fall: ['#e2a34a', '#c9763a', '#9cc46a', '#d9b44f'],
       leaves: true,
     },
+    orchard: {
+      spot: 'petalfall-rows',
+      glow: 'rgb(255 228 200 / 0.55)',
+      fall: ['#fbe3ea', '#f7a6c0', '#ffffff', '#f6c0a8'],
+      leaves: false,
+    },
     swamp: {
       spot: 'lilypad-pools',
       glow: 'rgb(214 240 234 / 0.5)',

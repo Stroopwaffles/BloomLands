@@ -23,6 +23,7 @@ export type BlockedReason =
   | 'not-morning'
   | 'watching'
   | 'needs-rank'
+  | 'calm-only'
 
 /**
  * Things that just happened, returned by actions so the screen can react (floating numbers,

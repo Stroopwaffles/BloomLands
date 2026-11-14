@@ -223,14 +223,14 @@
 
       {#if creature}
         {@const def = CREATURES[creature.creatureId]}
-        {#if def.behavior === 'watches'}
+        {#if def.behavior === 'watches' || def.calmOnly}
           <div
             class="creature watcher"
             class:sneaking={sneaking || skimming}
             style:left="{layout.creature.x}%"
             style:top="{layout.creature.y}%"
             role="img"
-            aria-label={`A ${def.name.toLowerCase()} is watching`}
+            aria-label={`A ${def.name.toLowerCase()} is ${def.calmOnly ? 'digging here' : 'watching'}`}
           >
             <span class="art"><Art id={`creature-${creature.creatureId}`} size={120} /></span>
           </div>
@@ -287,6 +287,11 @@
               ? ' (or drink a Waterstride Philter)'
               : ''}.
           {/if}
+        </p>
+      {:else if creature && CREATURES[creature.creatureId]?.calmOnly}
+        <p class="note trouble">
+          {aName(CREATURES[creature.creatureId].name)} is digging up the plants! It's far too grumpy to
+          shoo: only a Lullaby will calm it.
         </p>
       {:else if creature}
         <p class="note trouble">

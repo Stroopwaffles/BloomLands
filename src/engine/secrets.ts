@@ -25,7 +25,11 @@ export function advanceSecrets(state: GameState): void {
     const met =
       unlock.kind === 'story'
         ? state.stories[unlock.storyId]?.complete === true
-        : bloomLevel(state, spot.regionId) >= unlock.level
+        : unlock.kind === 'requests'
+          ? (state.settlements[unlock.settlementId]?.filled ?? 0) >= unlock.count
+          : unlock.kind === 'calmed'
+            ? (state.challenges.calmed[unlock.creatureId] ?? 0) >= unlock.count
+            : bloomLevel(state, spot.regionId) >= unlock.level
     if (met) state.inbox.push(...unlockSecret(state, spot.id))
   }
 }

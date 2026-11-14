@@ -163,6 +163,44 @@
         stroke={shade('#f3f7fb')}
       />
       <circle cx="50" cy="69" r="2.4" />
+    {:else if outfit === 'piece-honeycomb-gown'}
+      <path d={`M${40 - w} 66 Q50 62 ${60 + w} 66 L71 104 Q50 110 29 104 Z`} />
+      <g fill="none" stroke={shade(outfitColor, 0.8)} stroke-width="0.9" opacity="0.9">
+        {#each [[42, 78], [50, 82], [58, 78], [38, 92], [46, 96], [54, 96], [62, 92]] as [cx, cy] (`${cx}-${cy}`)}
+          <polygon
+            points={`${cx - 3},${cy} ${cx - 1.5},${cy - 2.6} ${cx + 1.5},${cy - 2.6} ${cx + 3},${cy} ${cx + 1.5},${cy + 2.6} ${cx - 1.5},${cy + 2.6}`}
+          />
+        {/each}
+      </g>
+      <path d="M40 70 Q50 74 60 70" fill="none" stroke="#a87e1a" stroke-width="1.6" />
+    {:else if outfit === 'piece-honeycomb-doublet'}
+      <path d={`M${39 - w} 66 Q50 62 ${61 + w} 66 L64 96 Q50 100 36 96 Z`} />
+      <path d="M50 66 L50 96" fill="none" stroke="#a87e1a" stroke-width="1.4" />
+      <g fill="#a87e1a" stroke="none">
+        <circle cx="50" cy="74" r="1.3" /><circle cx="50" cy="82" r="1.3" /><circle
+          cx="50"
+          cy="90"
+          r="1.3"
+        />
+      </g>
+      <g fill="none" stroke={shade(outfitColor, 0.8)} stroke-width="0.9">
+        {#each [[42, 76], [58, 76], [42, 88], [58, 88]] as [cx, cy] (`${cx}-${cy}`)}
+          <polygon
+            points={`${cx - 3},${cy} ${cx - 1.5},${cy - 2.6} ${cx + 1.5},${cy - 2.6} ${cx + 3},${cy} ${cx + 1.5},${cy + 2.6} ${cx - 1.5},${cy + 2.6}`}
+          />
+        {/each}
+      </g>
+    {:else if outfit === 'piece-burrowers-waistcoat'}
+      <path
+        d={`M${40 - w} 66 Q50 62 ${60 + w} 66 L63 94 Q50 98 37 94 Z`}
+        fill="#e9d6bd"
+        stroke={shade('#e9d6bd')}
+      />
+      <path d={`M${40 - w} 66 L46 66 L48 94 L37 94 Z`} />
+      <path d={`M${60 + w} 66 L54 66 L52 94 L63 94 Z`} />
+      <circle cx="44" cy="76" r="1.2" fill="#f2c94f" stroke="none" />
+      <circle cx="44" cy="84" r="1.2" fill="#f2c94f" stroke="none" />
+      <path d="M54 80 Q58 82 60 78" fill="none" stroke="#a87e1a" stroke-width="1" />
     {:else if outfit === 'piece-lantern-bug-cloak'}
       <path
         d={`M${41 - w} 67 Q50 64 ${59 + w} 67 L62 94 Q50 98 38 94 Z`}
@@ -273,6 +311,21 @@
       <path d="M28 40 Q28 20 50 18 Q72 20 72 40 Q50 34 28 40 Z" fill={wardrobe.headpiece.color} />
       <path d="M34 34 L66 34 M31 38 L69 38 M38 28 L62 28" stroke-dasharray="2 2" fill="none" />
       <path d="M50 18 Q51 12 55 10" fill="none" stroke-width="2.2" stroke-linecap="round" />
+    </g>
+  {:else if wardrobe.headpiece.pieceId === 'piece-honeycomb-crown'}
+    <g
+      fill={wardrobe.headpiece.color}
+      stroke={shade(wardrobe.headpiece.color)}
+      stroke-width="1"
+      stroke-linejoin="round"
+    >
+      {#each [36, 43, 50, 57, 64] as x (x)}
+        {@const y = x === 50 ? 20 : x === 43 || x === 57 ? 23 : 27}
+        <polygon
+          points={`${x - 3.6},${y} ${x - 1.8},${y - 3.2} ${x + 1.8},${y - 3.2} ${x + 3.6},${y} ${x + 1.8},${y + 3.2} ${x - 1.8},${y + 3.2}`}
+        />
+      {/each}
+      <circle cx="50" cy="20" r="1.4" fill="#fff3b0" stroke="none" />
     </g>
   {:else if wardrobe.headpiece.pieceId === 'piece-lily-pad-hat'}
     <g stroke={shade(wardrobe.headpiece.color)} stroke-width="1.2">

@@ -196,6 +196,75 @@ const PLANT_LIST: PlantDef[] = [
     rarity: 'rare',
     yields: [{ itemId: 'raw-wisp-lily', amount: 1 }],
   },
+
+  // Blossom Orchard
+  {
+    id: 'plant-honey-drip',
+    name: 'Honey drip',
+    toughness: 3,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-honey', amount: 2 }],
+  },
+  {
+    id: 'plant-apple-blossom',
+    tags: ['petals', 'blossoms'],
+    name: 'Apple blossom',
+    toughness: 4,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-apple-petals', amount: 2 }],
+  },
+  {
+    id: 'plant-cherry-blossom',
+    tags: ['petals', 'blossoms'],
+    name: 'Cherry blossom',
+    toughness: 5,
+    rarity: 'common',
+    yields: [{ itemId: 'raw-cherry-petals', amount: 2 }],
+  },
+  {
+    id: 'plant-bee-balm',
+    name: 'Bee balm',
+    toughness: 5,
+    rarity: 'uncommon',
+    yields: [{ itemId: 'raw-bee-balm-leaves', amount: 2 }],
+  },
+  {
+    id: 'plant-crabapple',
+    name: 'Fallen crabapple',
+    toughness: 6,
+    rarity: 'uncommon',
+    yields: [{ itemId: 'raw-crabapples', amount: 2 }],
+  },
+  {
+    id: 'plant-golden-pollen',
+    name: 'Golden pollen',
+    toughness: 1,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-golden-pollen', amount: 1 }],
+  },
+  {
+    id: 'plant-quince-blossom',
+    tags: ['petals', 'blossoms'],
+    name: 'Quince blossom',
+    toughness: 8,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-quince-petals', amount: 1 }],
+  },
+  // Orchard secrets
+  {
+    id: 'plant-royal-jelly',
+    name: 'Royal jelly',
+    toughness: 5,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-royal-jelly', amount: 1 }],
+  },
+  {
+    id: 'plant-truffle',
+    name: 'Truffle',
+    toughness: 6,
+    rarity: 'rare',
+    yields: [{ itemId: 'raw-truffle', amount: 1 }],
+  },
 ]
 
 export const PLANTS: Readonly<Record<string, PlantDef>> = Object.fromEntries(

@@ -14,6 +14,9 @@ export type WeatherKind =
   | 'fog'
   | 'drizzle'
   | 'muggy'
+  | 'blossom-wind'
+  | 'spring-shower'
+  | 'late-frost'
 
 export interface WeatherDef {
   id: WeatherKind
@@ -38,6 +41,8 @@ export interface WeatherDef {
   tagBoost?: { tag: string; multiplier: number }
   /** Multiplies helpers' flight times in the region (muggy heat makes them dawdle). */
   helperTrips?: number
+  /** Harvests of plants with this tag give extra (a blossom wind blows in bonus petals). */
+  tagYield?: { tag: string; amount: number }
 }
 
 export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
@@ -142,6 +147,37 @@ export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
     dewAllDay: false,
     helperTrips: 1.3,
   },
+  'blossom-wind': {
+    id: 'blossom-wind',
+    name: 'Blossom wind',
+    description: 'Drifting petals: every petal plant gives one extra when harvested.',
+    weight: 35,
+    regrowth: 1,
+    flightHome: 0.9,
+    flightAway: 1.1,
+    dewAllDay: false,
+    tagYield: { tag: 'petals', amount: 1 },
+  },
+  'spring-shower': {
+    id: 'spring-shower',
+    name: 'Spring shower',
+    description: 'Slower flights, but everything regrows faster.',
+    weight: 35,
+    regrowth: 1.3,
+    flightHome: 1.2,
+    flightAway: 1.2,
+    dewAllDay: true,
+  },
+  'late-frost': {
+    id: 'late-frost',
+    name: 'Late frost',
+    description: 'A nip in the air: plants regrow more slowly.',
+    weight: 25,
+    regrowth: 0.75,
+    flightHome: 1,
+    flightAway: 1,
+    dewAllDay: false,
+  },
 }
 
 /** Which weather each region gets. */
@@ -149,6 +185,7 @@ export const REGION_WEATHER: Readonly<Record<string, readonly WeatherKind[]>> = 
   meadow: ['sunshine', 'breeze', 'light-rain'],
   forest: ['mist', 'rain', 'falling-leaves'],
   swamp: ['fog', 'drizzle', 'muggy'],
+  orchard: ['blossom-wind', 'spring-shower', 'late-frost'],
 }
 
 export const WEATHER_RULES = {
@@ -176,6 +213,7 @@ export const PESTS: Readonly<Record<string, PestDef>> = {
   meadow: { id: 'aphid', name: 'aphids', tag: 'petals' },
   forest: { id: 'beetle', name: 'beetles', tag: 'caps' },
   swamp: { id: 'slug', name: 'slugs', tag: 'petals' },
+  orchard: { id: 'caterpillar', name: 'caterpillars', tag: 'blossoms' },
 }
 
 export interface CreatureDef {
@@ -197,6 +235,8 @@ export interface CreatureDef {
   spots?: string[]
   /** A Waterstride Philter lets you gather under its nose (the heron ignores you). */
   ignoresWaterstride?: boolean
+  /** Too grumpy to shoo: only a calming spell sends it away. */
+  calmOnly?: boolean
 }
 
 export const CREATURES: Readonly<Record<string, CreatureDef>> = {
@@ -229,6 +269,16 @@ export const CREATURES: Readonly<Record<string, CreatureDef>> = {
     spots: ['lilypad-pools'],
     ignoresWaterstride: true,
   },
+  badger: {
+    id: 'badger',
+    name: 'Grumpy badger',
+    regionId: 'orchard',
+    behavior: 'eats',
+    taps: 0,
+    eatEveryMs: 20_000,
+    staysMs: 3 * 60_000,
+    calmOnly: true,
+  },
 }
 
 /** How long Hush Step lets you gather under a watching creature's nose. */
@@ -247,6 +297,8 @@ export interface CrewDef {
   description: string
   /** What the crew says after each Parley; the last one wins them over. */
   parleyLines: string[]
+  /** Items they go for first when an ambush succeeds. */
+  steals?: string[]
 }
 
 export const CREWS: Readonly<Record<string, CrewDef>> = {
@@ -281,6 +333,18 @@ export const CREWS: Readonly<Record<string, CrewDef>> = {
       '"Ahoy! Er, I mean, ARR!" The captain bails out his leaf boat and takes the treat.',
       '"Them Corsairs say you\'re soft. We say soft is nice. Have you seen how damp it is out here?"',
       '"Hoist the lily pad! The Buccaneers sail for your court now. Mind the puddles."',
+    ],
+  },
+  'nectar-nabbers': {
+    id: 'nectar-nabbers',
+    name: 'The Nectar Nabbers',
+    regionId: 'orchard',
+    description: 'Sticky-fingered pirate fairies who steal honey and pollen from satchels.',
+    steals: ['raw-honey', 'raw-golden-pollen', 'refined-honey-syrup', 'refined-pollen-gold'],
+    parleyLines: [
+      '"Is that... honey cake? We were only borrowing the honey. Forever. But still."',
+      '"The Buccaneers say you share. Nobody shares in the Orchard. It\'s very confusing."',
+      '"Fine! The Nabbers will nab for you instead. Sweetest deal we ever made."',
     ],
   },
 }
@@ -355,6 +419,21 @@ export const REGION_FLIGHT_EVENTS: Readonly<Record<string, RegionFlightEvents>> 
       thanks: 'The courier thanks you',
       art: 'villager-chestnut',
       glimmers: 20,
+    },
+  },
+  orchard: {
+    weights: { ambush: 30, windfall: 30, traveler: 15, gust: 25 },
+    windfall: {
+      itemId: 'raw-apple-petals',
+      text: 'Apple-blossom petals swirl past!',
+      art: 'raw-apple-petals',
+      max: 4,
+    },
+    traveler: {
+      text: 'A young bee is lost on her very first flight.',
+      thanks: 'The young bee thanks you',
+      art: 'villager-pollyanna',
+      glimmers: 30,
     },
   },
   swamp: {
