@@ -596,4 +596,10 @@
       display: none;
     }
   }
+
+  /* Night: the purple message box dims to match the night theme. */
+  :global([data-theme='night']) .message {
+    background: var(--rite-bg);
+    color: var(--ink);
+  }
 </style>

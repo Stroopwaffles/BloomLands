@@ -364,4 +364,18 @@
       transition: none;
     }
   }
+
+  /* Night: the crossing note and Spirit Path legs dim to match the night theme. */
+  :global([data-theme='night']) .crossing {
+    background: var(--surface);
+  }
+
+  :global([data-theme='night']) .leg.path {
+    background: #3a3070;
+    border-color: #6a5aa8;
+  }
+
+  :global([data-theme='night']) .leg.path.now {
+    background: #6a5aa8;
+  }
 </style>

@@ -725,4 +725,34 @@
     color: var(--leaf-deep);
     font-weight: 700;
   }
+
+  /* Night: the light pastel chips and pins dim to match the night theme. */
+  :global([data-theme='night']) .effect {
+    background: rgb(255 255 255 / 0.08);
+  }
+
+  :global([data-theme='night']) .effect.slow {
+    background: #5a2e44;
+  }
+
+  :global([data-theme='night']) .effect.fast {
+    background: #2e4a3a;
+  }
+
+  :global([data-theme='night']) .status.warn {
+    color: #f29a8e;
+  }
+
+  :global([data-theme='night']) .home .pin {
+    background: #4a2e48;
+  }
+
+  :global([data-theme='night']) .settlement .pin {
+    background: #4a3a2a;
+  }
+
+  :global([data-theme='night']) .spirit .pin,
+  :global([data-theme='night']) .secret .pin {
+    background: #3a3070;
+  }
 </style>

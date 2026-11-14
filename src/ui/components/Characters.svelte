@@ -268,4 +268,14 @@
     background: var(--surface);
     color: var(--ink);
   }
+
+  /* Night: the quest requirements box dims to match the night theme. */
+  :global([data-theme='night']) .task {
+    background: var(--rite-bg);
+    border-color: #7a66c0;
+  }
+
+  :global([data-theme='night']) .bar div {
+    background: #8f7ad8;
+  }
 </style>
