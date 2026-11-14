@@ -2,7 +2,18 @@
   import Art from '../../art/Art.svelte'
   import { RITUALS } from '../../data/magic'
   import { payingStock } from '../../engine/costs'
-  import { checkRitual, knownRituals, ritualDone } from '../../engine/magic'
+  import {
+    checkRitual,
+    clearSkyChoices,
+    knownRituals,
+    riteRegions,
+    ritualCost,
+    ritualDone,
+  } from '../../engine/magic'
+  import { WEATHER, type WeatherKind } from '../../data/challenges'
+  import { REGIONS } from '../../data/world'
+  import { BLOOMCALL } from '../../data/magic'
+  import { formatDuration } from '../../engine/format'
   import { hasFeature } from '../../engine/modifiers'
   import { rootSongPreview } from '../../engine/prestige'
   import { COURT_RANKS } from '../../data/economy'
@@ -16,13 +27,39 @@
   const rituals = $derived(knownRituals($game).filter((id) => !ritualDone($game, id)))
   const completed = $derived(knownRituals($game).filter((id) => ritualDone($game, id)))
 
+  /** For rites performed on a region: the region (and, for Clear Skies, the weather) chosen. */
+  let regionChoice = $state<Record<string, string>>({})
+  let weatherChoice = $state<Record<string, WeatherKind>>({})
+
+  function regionFor(ritualId: string): string | undefined {
+    const options = riteRegions($game, ritualId)
+    const chosen = regionChoice[ritualId]
+    return chosen && options.includes(chosen) ? chosen : options[0]
+  }
+
+  function weatherFor(ritualId: string, regionId: string | undefined): WeatherKind | undefined {
+    if (!regionId) return undefined
+    const options = clearSkyChoices(regionId)
+    const chosen = weatherChoice[ritualId]
+    return chosen && options.includes(chosen) ? chosen : options[0]
+  }
+
   /** The Root Song Ritual starts a new run, so it asks first. */
   let confirming = $state(false)
   const preview = $derived(rootSongPreview($game))
 
   function perform(ritualId: string) {
-    if (RITUALS[ritualId].effect === 'root-song') confirming = true
-    else runtime.dispatch({ type: 'ritual/perform', ritualId })
+    if (RITUALS[ritualId].effect === 'root-song') {
+      confirming = true
+      return
+    }
+    const regionId = regionFor(ritualId)
+    runtime.dispatch({
+      type: 'ritual/perform',
+      ritualId,
+      regionId,
+      weather: weatherFor(ritualId, regionId),
+    })
   }
 
   function sing() {
@@ -44,12 +81,49 @@
     <ul>
       {#each rituals as ritualId (ritualId)}
         {@const ritual = RITUALS[ritualId]}
-        {@const check = checkRitual($game, ritualId)}
+        {@const regionId = regionFor(ritualId)}
+        {@const weather = weatherFor(ritualId, regionId)}
+        {@const check = checkRitual($game, ritualId, regionId, weather)}
         <li>
           <div>
             <strong>{ritual.name}</strong>
             <span class="desc">{ritual.description}</span>
-            <CostList cost={ritual.cost} stock={payingStock($game)} />
+            {#if ritual.targetsRegion}
+              <div class="choices">
+                <label>
+                  Region
+                  <select
+                    value={regionId}
+                    onchange={(e) => (regionChoice[ritualId] = e.currentTarget.value)}
+                  >
+                    {#each riteRegions($game, ritualId) as id (id)}
+                      <option value={id}>{REGIONS[id].name}</option>
+                    {/each}
+                  </select>
+                </label>
+                {#if ritual.effect === 'clear-skies' && regionId}
+                  <label>
+                    Weather
+                    <select
+                      value={weather}
+                      onchange={(e) =>
+                        (weatherChoice[ritualId] = e.currentTarget.value as WeatherKind)}
+                    >
+                      {#each clearSkyChoices(regionId) as kind (kind)}
+                        <option value={kind}>{WEATHER[kind].name}</option>
+                      {/each}
+                    </select>
+                  </label>
+                {/if}
+              </div>
+              {#if ritual.effect === 'bloomcall' && regionId && $game.bloomcalls[regionId]}
+                <span class="desc">
+                  Bloomcall is already ringing there: {formatDuration($game.bloomcalls[regionId])}
+                  left (another adds {formatDuration(BLOOMCALL.durationMs)}).
+                </span>
+              {/if}
+            {/if}
+            <CostList cost={ritualCost($game, ritualId, regionId)} stock={payingStock($game)} />
             {#if ritual.rank}
               <span class="desc rank" class:short={check === 'needs-rank'}>
                 Needs a {COURT_RANKS[ritual.rank].name}.
@@ -112,6 +186,35 @@
 <style>
   .rank {
     font-weight: 700;
+  }
+
+  .choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 4px 0;
+  }
+
+  .choices label {
+    display: inline-flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .choices select {
+    width: auto;
+    min-width: 150px;
+    min-height: 40px;
+    padding: 0 8px;
+    border: 2px solid #a78bfa;
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.9rem;
   }
 
   .rank.short {

@@ -2,7 +2,7 @@ import { advanceCamps, advanceCreatures, advancePests, advanceSneak } from '../c
 import { advanceSecrets } from '../secrets'
 import { advanceMountRegions } from '../regions'
 import { advanceMoonTimers } from '../moon'
-import { advanceTime, advanceWeather } from '../environment'
+import { advanceBloomcalls, advanceTime, advanceWeather } from '../environment'
 import { regrowSpots } from '../gathering'
 import { stateRandom } from '../rng'
 import { advanceTravel } from '../travel'
@@ -14,6 +14,7 @@ export const environmentSystem: System = {
   update(state, dtMs) {
     advanceTime(state, dtMs)
     advanceWeather(state, dtMs, stateRandom(state))
+    advanceBloomcalls(state, dtMs)
   },
 }
 

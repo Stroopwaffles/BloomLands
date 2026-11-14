@@ -62,7 +62,7 @@ export type GameEvent =
   | { type: 'camp-cleared'; spotId: string; crewId: string }
   | { type: 'flight-event'; result: string }
   | { type: 'spell-cast'; spellId: string }
-  | { type: 'ritual-performed'; ritualId: string }
+  | { type: 'ritual-performed'; ritualId: string; regionId?: string }
   | { type: 'bloom'; regionId: string; amount: number; levelUp: boolean }
   | { type: 'curio'; curioId: string }
   | { type: 'villager-helped'; settlementId: string; glimmers: number }

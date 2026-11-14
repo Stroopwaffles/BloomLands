@@ -198,6 +198,8 @@ export const GLADE_ITEM_ART: Record<string, string> = {
   'refined-moonlight-tincture': bottle('#fff3c4', 'star', 'tall'),
   'component-moon-draught': bottle('#8a9ad8', 'star', 'flask'),
   'component-starlight-lens': starLens,
+  'component-everbloom-essence': halo(50, 64, 28, '#c8f0b0') + bottle('#9ccc72', 'leaf', 'flask'),
+  'potion-moonsight': bottle('#b8c4f0', 'star', 'round'),
   'trinket-pearl': pearl,
   'trinket-silver-spoon': silverSpoon,
   'trinket-music-box-key': musicBoxKey,

@@ -21,7 +21,7 @@ import {
   mountRegionLuck,
 } from './modifiers'
 import { pickWeighted, type Random } from './rng'
-import { plantEase, weatherCleared } from './modifiers'
+import { bloomcallLuck, plantEase, weatherCleared } from './modifiers'
 import { addItems, countItems, type GameState, type SlotState, type SpotState } from './state'
 import { playerWatched } from './regions'
 import { rollScoutSecret } from './secrets'
@@ -72,7 +72,8 @@ export function plantWeights(state: GameState, spotId: string): [string, number]
     bloomLuck(state, regionId) *
     (weatherCleared(state, weather.id) ? Math.max(1, weather.luck ?? 1) : (weather.luck ?? 1)) *
     weatherLuckMultiplier(state, weather.id) *
-    mountRegionLuck(state, regionId)
+    mountRegionLuck(state, regionId) *
+    bloomcallLuck(state, regionId)
   return SPOTS[spotId].plants
     .filter((id) => morningOk || !PLANTS[id].morningOnly)
     .map((id) => {

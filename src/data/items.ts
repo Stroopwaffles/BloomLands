@@ -117,6 +117,7 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'component-moon-draught', name: 'Moon Draught', category: 'component' },
   { id: 'component-starlight-lens', name: 'Starlight Lens', category: 'component' },
   { id: 'component-wind-silk', name: 'Wind Silk', category: 'component' },
+  { id: 'component-everbloom-essence', name: 'Everbloom Essence', category: 'component' },
 
   // Potions
   { id: 'potion-greenthumb-brew', name: 'Greenthumb Brew', category: 'potion' },
@@ -126,6 +127,8 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'potion-swiftroot-elixir', name: 'Swiftroot Elixir', category: 'potion' },
   { id: 'potion-waterstride-philter', name: 'Waterstride Philter', category: 'potion' },
   { id: 'potion-glowlight', name: 'Glowlight Potion', category: 'potion' },
+  { id: 'potion-moonsight', name: 'Moonsight Potion', category: 'potion' },
+  { id: 'potion-featherfall', name: 'Featherfall Tonic', category: 'potion' },
 
   // Meadow trinkets
   { id: 'trinket-lost-button', name: 'Lost button', category: 'trinket', tags: ['trinket'] },

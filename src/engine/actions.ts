@@ -56,7 +56,7 @@ export type Action =
   | { type: 'creature/tap'; spotId: string }
   | { type: 'flight/tap' }
   | { type: 'spell/cast'; spellId: string }
-  | { type: 'ritual/perform'; ritualId: string }
+  | { type: 'ritual/perform'; ritualId: string; regionId?: string; weather?: WeatherKind }
   | { type: 'villager/fulfill'; settlementId: string; requestId: number }
   | { type: 'villager/dismiss'; settlementId: string; requestId: number }
   | { type: 'story/advance'; storyId: string }
@@ -131,7 +131,7 @@ export function applyAction(
     case 'spell/cast':
       return castSpell(state, action.spellId)
     case 'ritual/perform':
-      return performRitual(state, action.ritualId)
+      return performRitual(state, action.ritualId, action.regionId, action.weather)
     case 'rootsong/buy':
       return buyRootUpgrade(state, action.upgradeId)
     case 'star/catch':

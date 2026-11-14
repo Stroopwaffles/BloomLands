@@ -180,6 +180,7 @@ export const SKY_ITEM_ART: Record<string, string> = {
   'refined-storm-vial': bottle('#6a78c8', 'star', 'tall'),
   'refined-aurora-dye': bowl('#9cf0c4', 'star'),
   'component-wind-silk': windSilk,
+  'potion-featherfall': bottle('#cfe8fa', 'leaf', 'tall'),
   'trinket-golden-feather': goldenFeather,
   'trinket-kite-string': kiteString,
   'trinket-brass-gear': brassGear,

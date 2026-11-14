@@ -8,6 +8,7 @@
   import { SPOTS } from '../../data/world'
   import type { GameEvent } from '../../engine/events'
   import { isNight } from '../../engine/environment'
+  import { formatDuration } from '../../engine/format'
   import { pestAt } from '../../engine/challenges'
   import { campBlocksSlot, satchelFull } from '../../engine/gathering'
   import {
@@ -329,6 +330,13 @@
     </div>
 
     <div class="below">
+      {#if spotDef && $game.bloomcalls[spotDef.regionId]}
+        <p class="note stars-note">
+          Bloomcall is ringing here: rare plants are twice as likely ({formatDuration(
+            $game.bloomcalls[spotDef.regionId],
+          )} left).
+        </p>
+      {/if}
       {#if starfall}
         <p class="note stars-note">Stars are falling! Tap them as they fall to catch a gift.</p>
       {/if}

@@ -11,7 +11,7 @@ import {
   WATER_FLIGHT_FACTOR,
 } from '../data/world'
 import { dayPhase, describeWeather, weatherIn } from './environment'
-import { hasWaterstride, travelMultiplier, wingSpeed } from './modifiers'
+import { hasWaterstride, travelMultiplier, wingSpeed, weatherCleared, windproof } from './modifiers'
 import { spiritAwake } from './spirits'
 import type { GameState } from './state'
 
@@ -114,12 +114,15 @@ export function legEffects(
   if (leg.regionId === SPIRIT_PATH) return []
   const effects: LegEffect[] = []
   const weather = weatherIn(state, leg.regionId)
-  const factor =
+  let factor =
     heading === 'home'
       ? weather.flightHome
       : heading === 'away'
         ? weather.flightAway
         : (weather.flightHome + weather.flightAway) / 2
+  // Relics like Mist-Walker's Moss lift a weather's slowdown; Featherfall lifts every one.
+  if (weatherCleared(state, weather.id)) factor = 1
+  if (windproof(state)) factor = Math.min(1, factor)
   if (factor !== 1) {
     effects.push({ label: describeWeather(weather, dayPhase(state)).name, factor })
   }

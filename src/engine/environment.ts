@@ -11,7 +11,7 @@ import { DAY_MS, NIGHTFALL_MS, PHASE_STARTS, type DayPhase } from '../data/time'
 import { HOME, placeRegion } from '../data/world'
 import { pickWeighted, type Random } from './rng'
 import type { GameState } from './state'
-import { dewAllDay, morningWeather, weatherCleared } from './modifiers'
+import { dewAllDay, morningWeather, weatherCleared, windproof } from './modifiers'
 
 // ---------------------------------------------------------------------------------------------
 // Day and night
@@ -114,6 +114,14 @@ export function rollWeather(
   return { kind, remainingMs }
 }
 
+/** Bloomcalls wear off. */
+export function advanceBloomcalls(state: GameState, dtMs: number): void {
+  for (const [regionId, ms] of Object.entries(state.bloomcalls)) {
+    if (ms - dtMs > 0) state.bloomcalls[regionId] = ms - dtMs
+    else delete state.bloomcalls[regionId]
+  }
+}
+
 export function advanceWeather(state: GameState, dtMs: number, random: Random): void {
   for (const [regionId, weather] of Object.entries(state.weather)) {
     weather.remainingMs -= dtMs
@@ -127,9 +135,14 @@ export function advanceWeather(state: GameState, dtMs: number, random: Random): 
 export function weatherFlightFactor(state: GameState, from: string, to: string): number {
   const weather = weatherIn(state, regionOf(to === HOME ? from : to))
   if (weatherCleared(state, weather.id)) return 1
-  if (to === HOME) return weather.flightHome
-  if (from === HOME) return weather.flightAway
-  return (weather.flightHome + weather.flightAway) / 2
+  const factor =
+    to === HOME
+      ? weather.flightHome
+      : from === HOME
+        ? weather.flightAway
+        : (weather.flightHome + weather.flightAway) / 2
+  // Featherfall: weather can still help, but never slows you.
+  return windproof(state) ? Math.min(1, factor) : factor
 }
 
 /** Can plants that only grow in the morning grow right now in this region? */

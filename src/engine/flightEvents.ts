@@ -1,3 +1,4 @@
+import { windproof } from './modifiers'
 import {
   CREWS,
   FLIGHT_EVENT_RULES,
@@ -74,7 +75,8 @@ export function applyInstantEvents(state: GameState, random: Random): void {
   const travel = state.player.travel
   const event = activeFlightEvent(state)
   if (!travel || !event || event.kind !== 'gust') return
-  const tailwind = random() < 0.5
+  // Featherfall turns every gust into a tailwind.
+  const tailwind = windproof(state) || random() < 0.5
   reshapeFlight(travel, tailwind ? FLIGHT_EVENT_RULES.tailwind : FLIGHT_EVENT_RULES.headwind)
   event.resolved = true
   event.tailwind = tailwind

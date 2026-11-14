@@ -1,8 +1,18 @@
-import { CREATURES } from '../data/challenges'
-import { PLENTY, REGION_SIGNATURE, REGIONAL_SPELLS, RITUALS, SPELLS } from '../data/magic'
+import { CREATURES, REGION_WEATHER, type WeatherKind } from '../data/challenges'
+import {
+  BLOOMCALL,
+  CLEAR_SKIES,
+  PLENTY,
+  REGION_SIGNATURE,
+  REGIONAL_SPELLS,
+  RENEWAL,
+  RITUALS,
+  SPELLS,
+} from '../data/magic'
 import type { CostEntry } from '../data/types'
 import { RESEARCH } from '../data/research'
 import { clearCamp, clearPests, parley, pestsAt, sendCreatureAway, sneak } from './challenges'
+import { addBloom } from './bloom'
 import { canPay, payCost } from './costs'
 import { isMorning, turnSky } from './environment'
 import type { BlockedReason, GameEvent } from './events'
@@ -159,7 +169,35 @@ export function ritualDone(state: GameState, ritualId: string): boolean {
   return false
 }
 
-export function checkRitual(state: GameState, ritualId: string): 'ok' | BlockedReason {
+/** Regions a region-targeted rite can be performed on. */
+export function riteRegions(state: GameState, ritualId: string): string[] {
+  if (!RITUALS[ritualId]?.targetsRegion) return []
+  // The Glade's moon keeps its own time: Clear Skies can't change it.
+  return state.unlockedRegions.filter(
+    (id) => !(RITUALS[ritualId].effect === 'clear-skies' && id === 'glade'),
+  )
+}
+
+/** Weather Clear Skies can bring to a region. */
+export function clearSkyChoices(regionId: string): WeatherKind[] {
+  return regionId === 'glade' ? [] : [...(REGION_WEATHER[regionId] ?? [])]
+}
+
+/** What a rite costs, here and now: Renewal asks one more signature for each repeat this run. */
+export function ritualCost(state: GameState, ritualId: string, regionId?: string): CostEntry[] {
+  const ritual = RITUALS[ritualId]
+  if (!ritual) return []
+  if (ritual.effect !== 'renewal' || !regionId) return ritual.cost
+  const signature = REGION_SIGNATURE[regionId] ?? REGION_SIGNATURE.meadow
+  return [...ritual.cost, { itemId: signature, amount: 1 + (state.renewals[regionId] ?? 0) }]
+}
+
+export function checkRitual(
+  state: GameState,
+  ritualId: string,
+  regionId?: string,
+  weather?: WeatherKind,
+): 'ok' | BlockedReason {
   if (!RITUALS[ritualId] || !knownRituals(state).includes(ritualId)) return 'locked'
   if (!hasFeature(state, 'ritual-circle')) return 'no-circle'
   if (state.player.travel || state.player.place !== 'home') return 'not-home'
@@ -171,16 +209,27 @@ export function checkRitual(state: GameState, ritualId: string): 'ok' | BlockedR
   const region = RITUALS[ritualId].region
   if (region && courtRank(state) < (REGIONS[region].unlock?.rank ?? 0)) return 'needs-rank'
   if (courtRank(state) < (RITUALS[ritualId].rank ?? 0)) return 'needs-rank'
-  if (!canPay(state, RITUALS[ritualId].cost)) return 'missing-items'
+  if (RITUALS[ritualId].targetsRegion) {
+    if (!regionId || !riteRegions(state, ritualId).includes(regionId)) return 'no-target'
+    if (RITUALS[ritualId].effect === 'clear-skies') {
+      if (!weather || !clearSkyChoices(regionId).includes(weather)) return 'no-target'
+    }
+  }
+  if (!canPay(state, ritualCost(state, ritualId, regionId))) return 'missing-items'
   return 'ok'
 }
 
 /** Performs a ritual at the Ritual Circle at home. */
-export function performRitual(state: GameState, ritualId: string): GameEvent[] {
-  const check = checkRitual(state, ritualId)
+export function performRitual(
+  state: GameState,
+  ritualId: string,
+  regionId?: string,
+  weather?: WeatherKind,
+): GameEvent[] {
+  const check = checkRitual(state, ritualId, regionId, weather)
   if (check !== 'ok') return [{ type: 'blocked', reason: check }]
   const ritual = RITUALS[ritualId]
-  payCost(state, ritual.cost)
+  payCost(state, ritualCost(state, ritualId, regionId))
   state.stats.ritualsPerformed++
   switch (ritual.effect) {
     case 'turn-to-day':
@@ -203,6 +252,18 @@ export function performRitual(state: GameState, ritualId: string): GameEvent[] {
       ]
     case 'root-song':
       return [{ type: 'ritual-performed', ritualId }, ...performPrestige(state)]
+    case 'renewal':
+      state.renewals[regionId!] = (state.renewals[regionId!] ?? 0) + 1
+      return [
+        { type: 'ritual-performed', ritualId, regionId },
+        ...addBloom(state, regionId!, RENEWAL.bloom),
+      ]
+    case 'bloomcall':
+      state.bloomcalls[regionId!] = (state.bloomcalls[regionId!] ?? 0) + BLOOMCALL.durationMs
+      return [{ type: 'ritual-performed', ritualId, regionId }]
+    case 'clear-skies':
+      state.weather[regionId!] = { kind: weather!, remainingMs: CLEAR_SKIES.durationMs }
+      return [{ type: 'ritual-performed', ritualId, regionId }]
   }
   return [{ type: 'ritual-performed', ritualId }]
 }

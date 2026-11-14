@@ -56,6 +56,20 @@
           color: '#f2c45c',
           grand: true,
         }
+      case 'renewal':
+        return {
+          line: 'Everbloom pours into the land: it blooms brighter!',
+          color: '#9ccc72',
+          grand: false,
+        }
+      case 'bloomcall':
+        return {
+          line: 'A soft bell rings: rare plants stir beneath the ground.',
+          color: '#f2c45c',
+          grand: false,
+        }
+      case 'clear-skies':
+        return { line: 'The sky listens, and the weather turns.', color: '#8ac4f0', grand: false }
       case 'plenty':
         return {
           line: 'Every plant stirs: growth quickens for ten minutes.',

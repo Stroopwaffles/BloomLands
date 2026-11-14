@@ -191,6 +191,10 @@ export interface GameState {
   unlockedRegions: string[]
   /** Time left on the Rite of Plenty. */
   plentyMs: number
+  /** Rites of Renewal performed this run, by region (each asks a little more). */
+  renewals: Record<string, number>
+  /** Time left on Bloomcall, by region. */
+  bloomcalls: Record<string, number>
   challenges: {
     /** Large creatures, by the spot they're visiting. */
     creatures: Record<string, CreatureState>
@@ -370,6 +374,8 @@ export function createNewGame(now: number): GameState {
     },
     unlockedRegions: ['meadow'],
     plentyMs: 0,
+    renewals: {},
+    bloomcalls: {},
     challenges: {
       creatures: {},
       camps: {},

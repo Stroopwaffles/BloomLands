@@ -5,7 +5,7 @@ import { HELPER_RULES, PIRATES_PER_CREW, type HelperType } from '../data/helpers
 import { itemHasTag } from '../data/items'
 import { POTIONS } from '../data/recipes'
 import type { PotionEffect, StationId } from '../data/types'
-import { PLENTY } from '../data/magic'
+import { BLOOMCALL, PLENTY } from '../data/magic'
 import { MOUNTS, mountBonusValue } from '../data/mounts'
 import { STARTING_STATIONS, UPGRADES, type QolId, type UpgradeEffect } from '../data/upgrades'
 import { HOME, REGIONS, SETTLEMENTS, SPIRIT_PLACES, SPOTS } from '../data/world'
@@ -74,7 +74,7 @@ export function clickPower(state: GameState): number {
 
 /** Light for dark regions: a Glowlight Potion, or riding a mount that glows. */
 export function hasLight(state: GameState): boolean {
-  if (potionEffects(state).some((e) => e.kind === 'light')) return true
+  if (potionEffects(state).some((e) => e.kind === 'light' || e.kind === 'moonsight')) return true
   const id = state.mounts.riding
   return !!(id && MOUNTS[id]?.light)
 }
@@ -274,7 +274,26 @@ export function dewAllDay(state: GameState): boolean {
 
 /** This weather has lost its downsides (Mist-Walker's Moss, Riddle Shell). */
 export function weatherCleared(state: GameState, weather: string): boolean {
+  // A Moonsight Potion sees through fog, mist and new-moon darkness.
+  if (
+    MOONSIGHT_CLEARS.includes(weather) &&
+    potionEffects(state).some((e) => e.kind === 'moonsight')
+  ) {
+    return true
+  }
   return curioEffects(state).some((e) => e.kind === 'clearWeather' && e.weather === weather)
+}
+
+const MOONSIGHT_CLEARS = ['fog', 'mist', 'new-moon']
+
+/** Featherfall: wind and weather never slow your flights. */
+export function windproof(state: GameState): boolean {
+  return potionEffects(state).some((e) => e.kind === 'featherfall')
+}
+
+/** Bloomcall makes rare plants likelier in a region for a while. */
+export function bloomcallLuck(state: GameState, regionId: string): number {
+  return (state.bloomcalls[regionId] ?? 0) > 0 ? BLOOMCALL.luck : 1
 }
 
 /** Weather a relic brings to a region every morning (Blossom Fan), if any. */

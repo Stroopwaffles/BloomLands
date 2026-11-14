@@ -45,6 +45,10 @@ export type PotionEffect =
   | { kind: 'waterstride' }
   /** Glowlight: light to visit dark places (the Caves) before they're lit for good. */
   | { kind: 'light' }
+  /** Moonsight: see through fog, mist and darkness (light for the Caves too). */
+  | { kind: 'moonsight' }
+  /** Featherfall: wind and weather never slow your flights, and gusts never blow you back. */
+  | { kind: 'featherfall' }
 
 export interface PotionDef {
   /** The potion's item ID. */

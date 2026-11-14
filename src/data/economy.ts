@@ -106,6 +106,7 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'component-moon-draught': 80,
   'component-starlight-lens': 130,
   'component-wind-silk': 130,
+  'component-everbloom-essence': 150,
   // Potions
   'potion-greenthumb-brew': 45,
   'potion-quickwing-tonic': 50,
@@ -114,6 +115,8 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
   'potion-swiftroot-elixir': 95,
   'potion-waterstride-philter': 100,
   'potion-glowlight': 110,
+  'potion-moonsight': 140,
+  'potion-featherfall': 160,
 }
 
 /** Settlement shops. Starting values for balancing. */

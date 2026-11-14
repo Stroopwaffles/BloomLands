@@ -362,6 +362,18 @@ const RECIPE_LIST: RecipeDef[] = [
     durationMs: 45 * SEC,
   },
 
+  {
+    id: 'component-everbloom-essence',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'component-sun-salve', amount: 1 },
+      { itemId: 'component-earth-loam', amount: 1 },
+      { itemId: 'component-moon-draught', amount: 1 },
+    ],
+    output: { itemId: 'component-everbloom-essence', amount: 1 },
+    durationMs: 50 * SEC,
+  },
+
   // Potions (brewed in the cauldron)
   {
     id: 'potion-greenthumb-brew',
@@ -433,6 +445,26 @@ const RECIPE_LIST: RecipeDef[] = [
     output: { itemId: 'potion-glowlight', amount: 1 },
     durationMs: 40 * SEC,
   },
+  {
+    id: 'potion-moonsight',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'component-moon-draught', amount: 1 },
+      { itemId: 'component-crystal-focus', amount: 1 },
+    ],
+    output: { itemId: 'potion-moonsight', amount: 1 },
+    durationMs: 50 * SEC,
+  },
+  {
+    id: 'potion-featherfall',
+    station: 'cauldron',
+    inputs: [
+      { itemId: 'component-wind-silk', amount: 1 },
+      { itemId: 'refined-fluff-thread', amount: 1 },
+    ],
+    output: { itemId: 'potion-featherfall', amount: 1 },
+    durationMs: 50 * SEC,
+  },
 ]
 
 export const RECIPES: Readonly<Record<string, RecipeDef>> = Object.fromEntries(
@@ -484,6 +516,18 @@ const POTION_LIST: PotionDef[] = [
     effect: { kind: 'light' },
     durationMs: 10 * MIN,
     description: 'Light to visit the Caves before the Lantern Rite',
+  },
+  {
+    id: 'potion-moonsight',
+    effect: { kind: 'moonsight' },
+    durationMs: 10 * MIN,
+    description: 'See through fog, mist and new-moon darkness; light for the Caves too',
+  },
+  {
+    id: 'potion-featherfall',
+    effect: { kind: 'featherfall' },
+    durationMs: 10 * MIN,
+    description: 'Wind and weather never slow your flights',
   },
 ]
 

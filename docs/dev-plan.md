@@ -476,7 +476,20 @@ Each region milestone adds that region's content, art, mount, creature, pirate c
 - **Lodging:** Cloud Loft (+2 gatherers), Wind-Chime Tower (+1 scout), Sky Vault (+800 storage).
 - **Polish:** long routes now read "via the Forest, the Swamp and the Caves".
 - **Art and sound:** isle backdrops whose sky follows the weather (storm clouds, rain and lightning, a rainbow, rising updrafts, an aurora, drifting cloud-scrolls), all the new plants, items, people, creatures, curios and both outfits, a bright menu scene, and two tracks ("Nimbusrest" and "Above the Clouds").
-- **Not in this milestone (content doc extras):** the Featherfall Tonic and the Rite of Clear Skies.
+- The content doc's leftover extras came in v0.8.1 (below).
+
+#### Content-doc extras (v0.8.1)
+
+The recipes and rites the content doc lists that M15 and M16 left out:
+
+- **Everbloom Essence** (cauldron: Sun Salve, Earth Loam and Moon Draught), researched in the Glade.
+- **Rite of Renewal:** a region you choose gains 20 bloom. It needs Everbloom plus that region's signature, one more each time it's done in a run (`state.renewals`).
+- **Bloomcall:** rare plants twice as likely in a region you choose for 10 minutes (Lucky Charm Dust and Everbloom). A note shows on that region's spots while it rings.
+- **Rite of Clear Skies:** choose a region's weather for 15 minutes (Wind Silk and Crystal Focus). Not the Glade: the moon keeps its own time.
+- **Moonsight Potion** (Moon Draught and Crystal Focus, 10 minutes): fog, mist and new-moon darkness lose their downsides, and it counts as light for the Caves.
+- **Featherfall Tonic** (Wind Silk and Fluff Thread, 10 minutes): weather never slows a flight (it can still speed one up), and every gust is a tailwind.
+- Region rites have a region picker (and a weather picker for Clear Skies) at the Ritual Circle, with costs that update as you choose.
+- **Fix:** route breakdowns now leave out a slowdown a relic has lifted (Mist-Walker's Moss).
 
 ---
 

@@ -142,6 +142,9 @@ export type RitualEffect =
   | 'unlock-region'
   | 'plenty'
   | 'root-song'
+  | 'renewal'
+  | 'bloomcall'
+  | 'clear-skies'
 
 export interface RitualDef {
   id: string
@@ -159,7 +162,16 @@ export interface RitualDef {
   fullMoonOnly?: boolean
   /** For 'open-secret' rites: which secret area opens. */
   secret?: string
+  /** Performed on a region the player chooses (Renewal, Bloomcall, Clear Skies). */
+  targetsRegion?: boolean
 }
+
+/** Rite of Renewal: bloom gained, and the extra signature component each repeat asks for. */
+export const RENEWAL = { bloom: 20 }
+/** Bloomcall: how long it lasts and how much likelier rare plants are. */
+export const BLOOMCALL = { durationMs: 10 * 60_000, luck: 2 }
+/** Rite of Clear Skies: how long the chosen weather lasts. */
+export const CLEAR_SKIES = { durationMs: 15 * 60_000 }
 
 /** Rite of Plenty: how long it lasts and how much faster plants regrow. */
 export const PLENTY = { durationMs: 10 * 60_000, regrowth: 1.5 }
@@ -246,6 +258,38 @@ export const RITUALS: Readonly<Record<string, RitualDef>> = {
     fullMoonOnly: true,
     cost: [
       { itemId: 'component-moon-draught', amount: 1 },
+      { itemId: 'component-crystal-focus', amount: 1 },
+    ],
+  },
+  'ritual-renewal': {
+    id: 'ritual-renewal',
+    name: 'Rite of Renewal',
+    description:
+      'Raises the bloom of a region you choose. Each time in a run asks one more of its signature.',
+    effect: 'renewal',
+    targetsRegion: true,
+    cost: [{ itemId: 'component-everbloom-essence', amount: 1 }],
+  },
+  'ritual-bloomcall': {
+    id: 'ritual-bloomcall',
+    name: 'Bloomcall',
+    description: 'For ten minutes, rare plants are twice as likely in a region you choose.',
+    effect: 'bloomcall',
+    targetsRegion: true,
+    cost: [
+      { itemId: 'component-lucky-charm-dust', amount: 1 },
+      { itemId: 'component-everbloom-essence', amount: 1 },
+    ],
+  },
+  'ritual-clear-skies': {
+    id: 'ritual-clear-skies',
+    name: 'Rite of Clear Skies',
+    description:
+      "Choose a region's weather for fifteen minutes (not the Glade: the moon keeps its own time).",
+    effect: 'clear-skies',
+    targetsRegion: true,
+    cost: [
+      { itemId: 'component-wind-silk', amount: 1 },
       { itemId: 'component-crystal-focus', amount: 1 },
     ],
   },
