@@ -93,17 +93,24 @@ export function castSpell(state: GameState, spellId: string): GameEvent[] {
   }
 }
 
+/** A one-time rite whose work is done (its region is open, or its secret revealed). */
+export function ritualDone(state: GameState, ritualId: string): boolean {
+  const ritual = RITUALS[ritualId]
+  if (!ritual) return false
+  if (ritual.effect === 'open-fairy-ring') return state.secrets.includes('fairy-ring')
+  if (ritual.effect === 'unlock-region' && ritual.region)
+    return regionUnlocked(state, ritual.region)
+  return false
+}
+
 export function checkRitual(state: GameState, ritualId: string): 'ok' | BlockedReason {
   if (!RITUALS[ritualId] || !knownRituals(state).includes(ritualId)) return 'locked'
   if (!hasFeature(state, 'ritual-circle')) return 'no-circle'
   if (state.player.travel || state.player.place !== 'home') return 'not-home'
   if (RITUALS[ritualId].morningOnly && !isMorning(state)) return 'not-morning'
-  if (ritualId === 'ritual-dawn' && state.secrets.includes('fairy-ring')) return 'already-done'
+  if (ritualDone(state, ritualId)) return 'already-done'
   const region = RITUALS[ritualId].region
-  if (region) {
-    if (regionUnlocked(state, region)) return 'already-done'
-    if (courtRank(state) < (REGIONS[region].unlock?.rank ?? 0)) return 'needs-rank'
-  }
+  if (region && courtRank(state) < (REGIONS[region].unlock?.rank ?? 0)) return 'needs-rank'
   if (!canPay(state, RITUALS[ritualId].cost)) return 'missing-items'
   return 'ok'
 }

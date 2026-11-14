@@ -263,6 +263,11 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - **Minimum stock panel:** shows the expected haul ("about 6 per trip", "about 1 every 9 trips"), or why an item can't be fetched now. Suppliers don't set out for items they can't find.
 - Tuning is in `SUPPLY_RULES` (helpers.ts).
 
+### Rites: finished rites hidden, full-screen scene (v0.3.14)
+
+- **Finished rites:** one-time rites whose work is done (their region is open, or the Fairy Ring revealed) are no longer offered at the Ritual Circle. They're listed under "Completed" (`ritualDone`), and repeating one is blocked without cost. Turning and Plenty stay repeatable.
+- **Full-screen scene:** every rite plays one. A glowing circle draws itself, with spinning runes, a star and rising sparkles, then the rite's name and what it did. Region and Fairy Ring rites are "grand": longer, larger, and in the region's colors. Tap to skip, and reduced motion shows a still version.
+
 ### Backlog (asked for, not scheduled yet)
 
 - Nothing waiting.

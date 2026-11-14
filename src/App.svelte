@@ -12,6 +12,7 @@
   import BuffBar from './ui/components/BuffBar.svelte'
   import Notices from './ui/components/Notices.svelte'
   import SatchelButton from './ui/components/SatchelButton.svelte'
+  import RiteOverlay from './ui/components/RiteOverlay.svelte'
   import SkyBadge from './ui/components/SkyBadge.svelte'
   import DebugPanel from './ui/DebugPanel.svelte'
   import { debugEnabled, runtime } from './ui/game'
@@ -115,6 +116,7 @@
 
     <WelcomeBack />
     <Notices />
+    <RiteOverlay />
   {/key}
 {/if}
 {#if debugEnabled}<DebugPanel />{/if}

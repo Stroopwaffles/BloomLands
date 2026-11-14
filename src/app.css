@@ -42,6 +42,7 @@
   --screen-bg: linear-gradient(#1f1c40, #28304f);
   /* Buttons that can't be pressed yet. */
   --disabled: #4a4570;
+  --rite-bg: #352d68;
   color-scheme: dark;
 }
 

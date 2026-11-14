@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { SNEAK_MS } from '../src/data/challenges'
 import { applyAction } from '../src/engine/actions'
-import { spellCost } from '../src/engine/magic'
+import { ritualDone, spellCost } from '../src/engine/magic'
 import { courtRank, satchelCapacity } from '../src/engine/modifiers'
 import { advanceSecrets } from '../src/engine/secrets'
 import { latestRegion, placeOpen } from '../src/engine/regions'
@@ -180,5 +180,27 @@ describe('the newest region', () => {
   it('is the Meadow at first and the Forest once its path opens (menu scene and music)', () => {
     expect(latestRegion(createNewGame(START))).toBe('meadow')
     expect(latestRegion(inForest())).toBe('forest')
+  })
+})
+
+describe('finished rites', () => {
+  it('a one-time rite is done once its region is open, and cannot be repeated', () => {
+    const state = readyForForest()
+    expect(ritualDone(state, 'ritual-open-path')).toBe(false)
+    applyAction(state, { type: 'ritual/perform', ritualId: 'ritual-open-path' })
+    expect(ritualDone(state, 'ritual-open-path')).toBe(true)
+    state.inventory['component-sun-salve'] = 5
+    const before = state.inventory['component-sun-salve']
+    expect(applyAction(state, { type: 'ritual/perform', ritualId: 'ritual-open-path' })).toEqual([
+      { type: 'blocked', reason: 'already-done' },
+    ])
+    expect(state.inventory['component-sun-salve']).toBe(before)
+  })
+
+  it('repeatable rites are never done', () => {
+    const state = readyForForest()
+    for (const id of ['ritual-turning-day', 'ritual-turning-night', 'ritual-plenty']) {
+      expect(ritualDone(state, id)).toBe(false)
+    }
   })
 })

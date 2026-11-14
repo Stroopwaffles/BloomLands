@@ -2,7 +2,7 @@
   import Art from '../../art/Art.svelte'
   import { RITUALS } from '../../data/magic'
   import { payingStock } from '../../engine/costs'
-  import { checkRitual, knownRituals } from '../../engine/magic'
+  import { checkRitual, knownRituals, ritualDone } from '../../engine/magic'
   import { hasFeature } from '../../engine/modifiers'
   import CostList from './CostList.svelte'
   import { runtime } from '../game'
@@ -10,7 +10,9 @@
 
   const { game } = runtime
   const built = $derived(hasFeature($game, 'ritual-circle'))
-  const rituals = $derived(knownRituals($game))
+  /** Rites that can still do something; one-time rites that are done move to a short list. */
+  const rituals = $derived(knownRituals($game).filter((id) => !ritualDone($game, id)))
+  const completed = $derived(knownRituals($game).filter((id) => ritualDone($game, id)))
 </script>
 
 <section class="panel">
@@ -20,7 +22,7 @@
   </header>
   {#if !built}
     <p class="hint">Not built yet. Build it from the Upgrades tab.</p>
-  {:else if rituals.length === 0}
+  {:else if rituals.length === 0 && completed.length === 0}
     <p class="hint">No rites known yet. Research them in the Rites branch.</p>
   {:else}
     <ul>
@@ -44,15 +46,26 @@
         </li>
       {/each}
     </ul>
+    {#if completed.length > 0}
+      <p class="done">
+        Completed: {completed.map((id) => RITUALS[id].name).join(', ')} ✓
+      </p>
+    {/if}
   {/if}
 </section>
 
 <style>
+  .done {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.75;
+  }
+
   .panel {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    background: #f1ecff;
+    background: var(--rite-bg, #f1ecff);
     border: 2px solid #a78bfa;
     border-radius: 20px;
     padding: 16px;
