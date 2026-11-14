@@ -49,11 +49,12 @@
     {#each [1, -1] as side (side)}
       <g transform={side === -1 ? 'translate(100 0) scale(-1 1)' : undefined}>
         {#if look.wings === 'butterfly'}
-          <ellipse cx="30" cy="54" rx="20" ry="14" transform="rotate(-30 30 54)" />
-          <ellipse cx="34" cy="76" rx="12" ry="9" transform="rotate(25 34 76)" />
+          <!-- Forewing tips reach up and out; hindwings droop below. Roots meet at the back. -->
+          <ellipse cx="30" cy="54" rx="20" ry="14" transform="rotate(30 30 54)" />
+          <ellipse cx="34" cy="76" rx="12" ry="9" transform="rotate(-25 34 76)" />
         {:else if look.wings === 'dragonfly'}
-          <ellipse cx="27" cy="57" rx="24" ry="6" transform="rotate(-18 27 57)" />
-          <ellipse cx="29" cy="69" rx="20" ry="5" transform="rotate(14 29 69)" />
+          <ellipse cx="27" cy="57" rx="24" ry="6" transform="rotate(18 27 57)" />
+          <ellipse cx="29" cy="69" rx="20" ry="5" transform="rotate(-14 29 69)" />
         {:else if look.wings === 'moth'}
           <path d="M50 62 Q20 30 10 54 Q14 72 50 68 Z" />
           <path d="M50 68 Q24 78 30 92 Q44 90 50 72 Z" />

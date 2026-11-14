@@ -4,7 +4,8 @@
   import { isNight } from './engine/environment'
   import { startSound } from './ui/sound'
   import Art from './art/Art.svelte'
-  import { HOME, isSettlement, isSpiritPlace, placeRegion, REGION_ORDER } from './data/world'
+  import { HOME, isSettlement, isSpiritPlace, placeRegion } from './data/world'
+  import { latestRegion } from './engine/regions'
   import { formatNumber } from './engine/format'
   import { COURT_RANKS } from './data/economy'
   import { courtRank, satchelCapacity, trinketCount } from './engine/modifiers'
@@ -47,13 +48,11 @@
   })
 
   /** The newest region the player has opened (the menu plays its music). */
-  const latestRegion = $derived(
-    [...REGION_ORDER].reverse().find((id) => $game.unlockedRegions.includes(id)) ?? 'meadow',
-  )
+  const newestRegion = $derived(latestRegion($game))
   /** Music follows where you are (or where you're flying to), and day or night. */
   const musicTheme = $derived(
     screen === 'title'
-      ? themeFor(latestRegion, false)
+      ? themeFor(newestRegion, false)
       : themeFor(placeRegion($game.player.travel?.to ?? $game.player.place), isNight($game)),
   )
   $effect(() => music.play(musicTheme))

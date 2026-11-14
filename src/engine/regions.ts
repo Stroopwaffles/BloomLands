@@ -1,11 +1,16 @@
 import { CREATURES } from '../data/challenges'
-import { REGIONS, SPOTS, isSecret, placeRegion, HOME } from '../data/world'
+import { REGIONS, REGION_ORDER, SPOTS, isSecret, placeRegion, HOME } from '../data/world'
 import { rollWeather } from './environment'
 import type { GameEvent } from './events'
 import type { Random } from './rng'
 import type { GameState } from './state'
 
 /** Regions the player has opened (design doc 3.12: a court rank plus the region's rite). */
+/** The newest region the player has opened (the menu shows and plays it). */
+export function latestRegion(state: GameState): string {
+  return [...REGION_ORDER].reverse().find((id) => state.unlockedRegions.includes(id)) ?? 'meadow'
+}
+
 export function regionUnlocked(state: GameState, regionId: string): boolean {
   return state.unlockedRegions.includes(regionId)
 }

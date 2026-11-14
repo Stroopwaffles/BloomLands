@@ -4,7 +4,7 @@ import { applyAction } from '../src/engine/actions'
 import { spellCost } from '../src/engine/magic'
 import { courtRank, satchelCapacity } from '../src/engine/modifiers'
 import { advanceSecrets } from '../src/engine/secrets'
-import { placeOpen } from '../src/engine/regions'
+import { latestRegion, placeOpen } from '../src/engine/regions'
 import { researchStatus } from '../src/engine/research'
 import { createNewGame, type GameState } from '../src/engine/state'
 import { travelMs } from '../src/engine/travel'
@@ -173,5 +173,12 @@ describe('Forest secrets', () => {
     state.bloom.forest = 999
     advanceSecrets(state)
     expect(state.secrets).toEqual([])
+  })
+})
+
+describe('the newest region', () => {
+  it('is the Meadow at first and the Forest once its path opens (menu scene and music)', () => {
+    expect(latestRegion(createNewGame(START))).toBe('meadow')
+    expect(latestRegion(inForest())).toBe('forest')
   })
 })

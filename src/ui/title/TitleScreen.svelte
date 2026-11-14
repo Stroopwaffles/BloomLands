@@ -13,6 +13,7 @@
   import { REGIONS } from '../../data/world'
   import { formatDuration } from '../../engine/format'
   import { bloomLevel, courtRank } from '../../engine/modifiers'
+  import { latestRegion } from '../../engine/regions'
   import { GAME_VERSION } from '../../engine/version'
   import { runtime } from '../game'
   import CreditsPanel from './CreditsPanel.svelte'
@@ -55,25 +56,46 @@
     onPlay()
   }
 
+  /** How the menu looks for each region: the newest region the save has opened is shown. */
+  const TITLE_SCENES: Record<
+    string,
+    { spot: string; glow: string; fall: string[]; leaves: boolean }
+  > = {
+    meadow: {
+      spot: 'buttercup-rise',
+      glow: 'rgb(255 231 160 / 0.55)',
+      fall: ['#f7b7c8', '#ffffff', '#ffd94f', '#cdbbf5'],
+      leaves: false,
+    },
+    forest: {
+      spot: 'mossy-stump-ring',
+      glow: 'rgb(255 244 190 / 0.45)',
+      fall: ['#e2a34a', '#c9763a', '#9cc46a', '#d9b44f'],
+      leaves: true,
+    },
+  }
+  const scene = $derived((hasSave && TITLE_SCENES[latestRegion($game)]) || TITLE_SCENES.meadow)
+
   const petals = Array.from({ length: 14 }, (_, i) => ({
     left: (i * 37) % 100,
     delay: (i * 0.9) % 7,
     duration: 7 + ((i * 13) % 6),
-    hue: ['#f7b7c8', '#ffffff', '#ffd94f', '#cdbbf5'][i % 4],
+    index: i,
   }))
 </script>
 
 <div class="title-screen">
   <div class="scene" aria-hidden="true">
-    <SceneBackdrop spotId="buttercup-rise" weather="sunshine" />
-    <div class="golden"></div>
+    <SceneBackdrop spotId={scene.spot} weather="sunshine" />
+    <div class="golden" style:--glow={scene.glow}></div>
     {#each petals as p, i (i)}
       <span
         class="petal-fall"
+        class:leaf={scene.leaves}
         style:left="{p.left}%"
         style:animation-delay="{p.delay}s"
         style:animation-duration="{p.duration}s"
-        style:--hue={p.hue}
+        style:--hue={scene.fall[p.index % scene.fall.length]}
       ></span>
     {/each}
   </div>
@@ -175,7 +197,7 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(circle at 70% 35%, rgb(255 231 160 / 0.55), transparent 55%),
+      radial-gradient(circle at 70% 35%, var(--glow), transparent 55%),
       linear-gradient(rgb(255 236 214 / 0.25), rgb(255 247 232 / 0.55));
   }
 
@@ -188,6 +210,13 @@
     background: var(--hue);
     border: 1px solid rgb(201 122 140 / 0.4);
     animation: fall linear infinite;
+  }
+
+  .petal-fall.leaf {
+    width: 14px;
+    height: 10px;
+    border-radius: 0 80% 0 80%;
+    border-color: rgb(110 82 52 / 0.4);
   }
 
   @keyframes fall {

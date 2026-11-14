@@ -199,10 +199,14 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - **Background music** composed as it plays (pads, bass and a repeating music-box melody). Each region has its own key, chords and pace, with a calmer night version; it crossfades as you travel. The menu plays the newest unlocked region's music.
 - **Settings:** music volume and sound volume (Off–100%), plus a mute button in the game header. Audio starts on the first tap (browser rule) and pauses while the tab is hidden.
 
+### Polish (v0.2.2)
+
+- **Menu background by region:** the title screen shows the newest region the save has unlocked (Meadow: Buttercup Rise with falling petals; Forest: the Mossy Stump Ring with falling leaves). New regions add an entry to `TITLE_SCENES` in TitleScreen.svelte. The engine helper `latestRegion` also picks the menu music.
+- **Fix: butterfly and dragonfly wings:** each wing part was tilted the wrong way. Forewings now reach up and out and hindwings droop below.
+
 ### Backlog (asked for, not scheduled yet)
 
-- **Menu background by region:** the title screen's background changes to the newest region the player has unlocked in their save.
-- **Fix: butterfly and dragonfly wings** on the player's fairy draw wrong; their individual wing parts look upside down.
+- Nothing waiting.
 
 ### Phase 2: The Full Game
 
