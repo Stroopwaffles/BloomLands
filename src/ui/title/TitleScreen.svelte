@@ -59,7 +59,7 @@
   /** How the menu looks for each region: the newest region the save has opened is shown. */
   const TITLE_SCENES: Record<
     string,
-    { spot: string; glow: string; fall: string[]; leaves: boolean }
+    { spot: string; glow: string; fall: string[]; leaves: boolean; dark?: boolean }
   > = {
     meadow: {
       spot: 'buttercup-rise',
@@ -78,6 +78,7 @@
       glow: 'rgb(142 224 240 / 0.35)',
       fall: ['#7fe0b0', '#8ee0f0', '#c8b8f0', '#e6ff8a'],
       leaves: false,
+      dark: true,
     },
     orchard: {
       spot: 'petalfall-rows',
@@ -105,7 +106,7 @@
 <div class="title-screen">
   <div class="scene" aria-hidden="true">
     <SceneBackdrop spotId={scene.spot} weather="sunshine" />
-    <div class="golden" style:--glow={scene.glow}></div>
+    <div class="golden" class:dark={scene.dark} style:--glow={scene.glow}></div>
     {#each petals as p, i (i)}
       <span
         class="petal-fall"
@@ -124,7 +125,7 @@
         >Release {GAME_VERSION.split('.').slice(0, 2).join('.')} · {RELEASE_NAME}</span
       >
       <h1 class="logo">Bloom<br />Lands</h1>
-      <p class="tagline">a cozy fairy court</p>
+      <p class="tagline" class:dark={scene.dark}>a cozy fairy court</p>
 
       {#if view === 'menu'}
         <nav class="menu" aria-label="Main menu">
@@ -185,7 +186,7 @@
     </div>
   </div>
 
-  <footer>
+  <footer class:dark={scene.dark}>
     <p class="ai">This game was made entirely with AI.</p>
     <p>Bloom Lands · v{GAME_VERSION}</p>
   </footer>
@@ -219,6 +220,22 @@
     background:
       radial-gradient(circle at 70% 35%, var(--glow), transparent 55%),
       linear-gradient(rgb(255 236 214 / 0.25), rgb(255 247 232 / 0.55));
+  }
+
+  /* Dark scenes (the Caves) keep their darkness: just a soft glow, no warm wash. */
+  .golden.dark {
+    background:
+      radial-gradient(circle at 70% 35%, var(--glow), transparent 55%),
+      linear-gradient(rgb(20 18 40 / 0.1), rgb(20 18 40 / 0.35));
+  }
+
+  footer.dark {
+    color: #e4dcf2;
+  }
+
+  .tagline.dark {
+    color: #b8f0d8;
+    text-shadow: 0 1px 6px rgb(0 0 0 / 0.5);
   }
 
   .petal-fall {

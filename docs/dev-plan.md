@@ -385,6 +385,41 @@ Each region milestone adds that region's content, art, mount, creature, pirate c
   - Heart Nectar and the Glowlight Potion are left for M13, where the Caves give them a use.
   - Pome's relics come with prestige (M14).
 
+#### M13 status: complete — Release 0.5 "Caves" (version 0.5.0)
+
+- **Light to enter:** a Bramble Court plus the **Lantern Rite** (2 Beeswax Candles and 1 Lily Balm) lights the Caves for good. Before that, a **Glowlight Potion** (Beeswax Candle and Dew Water, 10 minutes) or riding the glowworm lets a Bramble Court visit (`regionReachable`). The region is set up on first arrival (`ensureRegion`). Glowlight, the Lantern Rite and Heart Nectar are researched in the Orchard.
+- **Places:** Glimmerdeep (moles, with The Lantern Store), the Fungus Gallery, the Crystal Seam, and the Echo Pool (Old Quartz, who echoes).
+- **Plants and items:**
+  - Cave moss, pale root, glowcap, ghost orchid, crystal shard, starfungus and geode, plus star crystal and sunshaft fern in the secret areas.
+  - Glow Spores and Crystal Powder (any crystals).
+  - **Glow Ink,** the Caves' signature, so Parley and Kindred Call use it there.
+  - Crystal Focus, Heart Nectar, and the Glowlight Potion.
+  - Three trinkets: an old iron key, a glass lens, a silver ring.
+- **Underground events instead of weather:**
+  - Drip season: crystals 2.5× likelier.
+  - Still air: rare finds 1.6× likelier.
+  - Rumbles: rockfalls can block a spot. The rubble is dug through with 8 taps and clears by itself after 90 seconds.
+- **Challenges:**
+  - **The spider** webs over a spot. Gathering and helpers stop, and Hush Step can't get you past. Clear it with 10 taps, the new **Web Unweave** spell (Glow Ink) or Lullaby. Lullaby doesn't work on rubble.
+  - Silverfish infest fungi.
+  - The Stalactite Smugglers go for your crystals first.
+  - The interface uses night colors whenever you're in the Caves.
+- **People:**
+  - Digby Loamsworth, building a lift to the surface (Brass Spyglass: scouts find trinkets 50% more often).
+  - Lumen, a shy glowworm (Nightlight Jar: the Caves' spiders, rockfalls and smugglers turn up half as often). Finishing Lumen's story brings the wild glowworm.
+  - Old Quartz.
+  - Three Glimmerdeep villagers.
+- **Mount:** the glowworm (cave moss, at the Fungus Gallery). It counts as light, and adds click power in the Caves.
+- **Secret areas:**
+  - **The Sunken Geode** is found by a **scout**: a 12% chance on each search of a Caves spot, or very rarely from a rare harvest there. It has the Heartstone (+10% bloom everywhere), star crystal, and the Crystal set (diadem and geode mantle).
+  - **The Surface Lift** opens when Digby's story is finished. It has the Miner's Lamp (+1 click power in the Caves), sunshaft fern, and the Miner's set (overalls and lamp helmet).
+- **Lodging:** Glowworm Lantern (+1 mount), Lookout Tower (+1 scout), Crystal Vault (+500 storage).
+- **Art and sound:**
+  - Cave backdrops for all four spots, with stalactites, glowing fungi, crystal walls, dripping water and the lift's sunbeam.
+  - Moles and Lumen, Old Quartz, the spider, the rockfall, silverfish, the Smugglers and their stalactite camp, the glowworm, curios, the spell, and the new outfits.
+  - "Glimmerdeep" (A minor) and "Echoes" (a waltz) music.
+  - A dark menu scene.
+
 ---
 
 ## 4. How We Work Each Milestone

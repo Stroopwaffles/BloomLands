@@ -83,7 +83,7 @@
 {:else}
   <!-- The Fungus Gallery: glowing mushrooms all along the cavern walls. -->
   {#each glows as [x, y, c] (x)}
-    <circle cx={x} cy={y} r="12" fill={c} opacity="0.18" class="glow" />
+    <circle cx={x} cy={y} r="14" fill="url(#cave-glow)" class="glow" />
     <path d="M{x - 3} {y + 4} Q{x} {y - 6} {x + 3} {y + 4} Z" fill={c} />
     <rect x={x - 0.6} y={y + 4} width="1.2" height="4" fill="#e6e2f0" />
   {/each}
