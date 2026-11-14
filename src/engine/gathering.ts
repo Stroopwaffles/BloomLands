@@ -194,6 +194,31 @@ export function packSatchel(state: GameState, itemId: string, amount: number): G
 }
 
 /**
+ * Moves some of one item from the satchel into storage, as much as fits (trinkets always fit).
+ * Only works at home.
+ */
+export function storeItems(state: GameState, itemId: string, amount: number): GameEvent[] {
+  const { player } = state
+  if (player.travel) return [{ type: 'blocked', reason: 'flying' }]
+  if (player.place !== 'home') return [{ type: 'blocked', reason: 'not-home' }]
+  const have = player.satchel[itemId] ?? 0
+  if (amount < 1 || have < 1) return [{ type: 'blocked', reason: 'missing-items' }]
+  const isTrinket = ITEMS[itemId]?.category === 'trinket'
+  const free = Math.max(0, storageCapacity(state) - storageUsed(state))
+  const take = Math.min(amount, have, isTrinket ? amount : free)
+  if (take <= 0) return [{ type: 'blocked', reason: 'storage-full' }]
+  addItems(player.satchel, itemId, -take)
+  addItems(state.inventory, itemId, take)
+  return [
+    {
+      type: 'deposit',
+      items: [{ itemId, amount: take }],
+      leftOver: countItems(player.satchel),
+    },
+  ]
+}
+
+/**
  * Moves the satchel into home storage, as much as fits. Trinkets take no space. Whatever
  * doesn't fit stays in the satchel. Only works at home.
  */

@@ -1,6 +1,6 @@
 import type { Rarity } from './types'
 
-export type HelperType = 'gatherer' | 'supply' | 'pirate' | 'brewer' | 'scout'
+export type HelperType = 'gatherer' | 'supply' | 'pirate' | 'brewer' | 'scout' | 'peddler'
 
 export interface HelperTypeDef {
   id: HelperType
@@ -56,6 +56,15 @@ export const HELPER_TYPES: Readonly<Record<HelperType, HelperTypeDef>> = {
     baseCost: 100,
     unlockHint: "Build a Scout's Perch at home first (Upgrades).",
   },
+  peddler: {
+    id: 'peddler',
+    name: 'Peddler',
+    description:
+      'Takes anything above the storage limits you set to the nearest village shop, sells it, and brings the Glimmers home.',
+    accessory: 'coin purse',
+    baseCost: 110,
+    unlockHint: 'Build a Market Stall at home first (Upgrades).',
+  },
 }
 
 export const HELPER_TYPE_ORDER: readonly HelperType[] = [
@@ -63,6 +72,7 @@ export const HELPER_TYPE_ORDER: readonly HelperType[] = [
   'supply',
   'brewer',
   'scout',
+  'peddler',
   'pirate',
 ]
 
@@ -73,6 +83,9 @@ export function gathersAtSpot(type: HelperType): boolean {
 
 /** Brewers: how much of their recipe's result they keep in storage, by default and as choices. */
 export const BREWER_KEEP = { default: 10, choices: [5, 10, 25, 50] }
+
+/** Peddlers: how much they carry to market per trip, and how long selling takes. */
+export const PEDDLER_RULES = { haul: 20, sellMs: 20_000 }
 
 /** Scouts: chances per trip of finding a trinket, and of finding a second one. */
 export const SCOUT_RULES = { trinketChance: 0.6, secondChance: 0.2 }

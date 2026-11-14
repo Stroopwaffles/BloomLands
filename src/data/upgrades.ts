@@ -283,6 +283,17 @@ const UPGRADE_LIST: UpgradeDef[] = [
     courtPoints: 2,
   },
   {
+    id: 'lodging-market-stall',
+    name: 'Market Stall',
+    category: 'lodging',
+    description: 'A little stall by the door, for a peddler who sells what you have too much of.',
+    glimmers: 300,
+    items: [{ itemId: 'refined-petal-paste', amount: 3 }],
+    requires: ['lodging-mouse-bunks'],
+    effect: { kind: 'helpers', helper: 'peddler', amount: 1 },
+    courtPoints: 2,
+  },
+  {
     id: 'lodging-reed-loft',
     name: 'Reed Loft',
     category: 'lodging',

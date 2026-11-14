@@ -55,6 +55,8 @@ const bandana = `<path d="M30 36 Q50 22 70 36 Q50 30 30 36 Z" fill="#c23a4c" str
 
 const ladle = `<g transform="translate(68 70) rotate(20)"><path d="M0 -18 L0 4" stroke="#a8875d" stroke-width="2.6" stroke-linecap="round"/><path d="M-7 4 Q0 14 7 4 Z" fill="#c9cdd6" stroke="#8f96a6" stroke-width="1.6"/></g>`
 const goggles = `<path d="M28 38 Q50 30 72 38" fill="none" stroke="#7a5a44" stroke-width="3"/><g stroke="#8f5426" stroke-width="2"><circle cx="41" cy="36" r="6.5" fill="#bfe8ff"/><circle cx="59" cy="36" r="6.5" fill="#bfe8ff"/></g><path d="M38 33 l3 -2 M56 33 l3 -2" stroke="white" stroke-width="1.6" stroke-linecap="round"/>`
+const peddlerCap = `<path d="M32 34 Q50 18 68 34 Z" fill="#6e8f4a" stroke="#4a6630" stroke-width="1.6"/><path d="M66 33 L78 36 L66 37 Z" fill="#4a6630"/><circle cx="50" cy="22" r="2.6" fill="#f2c94f"/>`
+const coinPurse = `<g transform="translate(66 74)"><path d="M-9 -4 Q-12 10 0 12 Q12 10 9 -4 Z" fill="#c97a3a" stroke="#8f5426" stroke-width="1.6"/><path d="M-9 -4 Q0 -9 9 -4" fill="none" stroke="#8f5426" stroke-width="2"/><circle cx="-4" cy="-10" r="4" fill="#f2c94f" stroke="#a87e1a" stroke-width="1.2"/><circle cx="4" cy="-12" r="3.4" fill="#f2c94f" stroke="#a87e1a" stroke-width="1.2"/></g>`
 const glasses = `<g fill="none" stroke="#8f6a3a" stroke-width="1.6"><circle cx="42" cy="44" r="5.5"/><circle cx="58" cy="44" r="5.5"/><path d="M47.5 44 L52.5 44"/></g>`
 const scroll = `<g transform="translate(70 76) rotate(-20)"><rect x="-6" y="-12" width="12" height="24" rx="3" fill="#fbf1e2" stroke="#c9a77f" stroke-width="1.6"/><path d="M-3 -6 L3 -6 M-3 0 L3 0 M-3 6 L1 6" stroke="#c9a77f" stroke-width="1.2"/></g>`
 const apron = `<path d="M38 66 L62 66 L64 88 Q50 92 36 88 Z" fill="#ffffff" stroke="#d9cfe0" stroke-width="1.6"/><circle cx="50" cy="76" r="3" fill="#f05a6a"/>`
@@ -191,6 +193,7 @@ export const PEOPLE_ART: Record<string, string> = {
   'helper-pirate': mouse({ fur: '#a9a3b8', top: bandana }),
   'helper-brewer': mouse({ fur: '#d2ae88', wear: apron, front: ladle }),
   'helper-scout': mouse({ fur: '#b49a7c', top: goggles }),
+  'helper-peddler': mouse({ fur: '#c7a07a', top: peddlerCap, front: coinPurse }),
 
   // Thimblewick folk
   'char-pip': mouse({ fur: '#b9b2ad', top: glasses, front: scroll }),

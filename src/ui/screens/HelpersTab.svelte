@@ -1,13 +1,27 @@
 <script lang="ts">
   import Art from '../../art/Art.svelte'
-  import { BREWER_KEEP, gathersAtSpot, HELPER_RULES, HELPER_TYPES } from '../../data/helpers'
+  import {
+    BREWER_KEEP,
+    gathersAtSpot,
+    HELPER_RULES,
+    HELPER_TYPES,
+    PEDDLER_RULES,
+  } from '../../data/helpers'
   import { itemName } from '../../data/items'
   import { RECIPES, STATIONS } from '../../data/recipes'
   import { unlockedRecipes } from '../../engine/crafting'
   import { placeName, REGION_ORDER, REGIONS } from '../../data/world'
   import { placeOpen } from '../../engine/regions'
   import { formatDuration, formatNumber } from '../../engine/format'
-  import { brewCheck, helperFlightMs, supplyableItems, supplyHaul } from '../../engine/helpers'
+  import {
+    brewCheck,
+    helperFlightMs,
+    nearestMarket,
+    supplyableItems,
+    supplyHaul,
+    surplus,
+  } from '../../engine/helpers'
+  import { sellPrice } from '../../engine/shop'
   import { helperCapacity } from '../../engine/modifiers'
   import type { HelperState } from '../../engine/state'
   import ItemList from '../components/ItemList.svelte'
@@ -36,6 +50,18 @@
   }
 
   const hasSupply = $derived(helperCapacity($game, 'supply') > 0)
+  const hasPeddler = $derived(helperCapacity($game, 'peddler') > 0)
+  /** Items that can have a storage limit: anything stored, or already limited. */
+  const limitItems = $derived(
+    [...new Set([...Object.keys($game.inventory), ...Object.keys($game.supply.maximums)])]
+      .filter((id) => sellPrice(id) > 0)
+      .sort((a, b) => itemName(a).localeCompare(itemName(b))),
+  )
+  const market = $derived(nearestMarket($game))
+
+  function setMaximum(itemId: string, amount: number) {
+    runtime.dispatch({ type: 'storage/setMaximum', itemId, amount })
+  }
 
   function status(helper: HelperState): string {
     const where = helper.tripSpot ? placeName(helper.tripSpot) : ''
@@ -46,6 +72,21 @@
         return `${STATIONS[recipe.station].verb}ing ${itemName(recipe.output.itemId)}`
       }
       return BREW_WAIT[brewCheck($game, helper)] ?? 'Getting ready'
+    }
+    if (helper.type === 'peddler') {
+      const load = Object.entries(helper.bag)
+        .map(([id, n]) => `${n} ${itemName(id)}`)
+        .join(', ')
+      switch (helper.phase) {
+        case 'idle':
+          return 'Resting: nothing is over its storage limit'
+        case 'outbound':
+          return `Taking ${load} to ${where}`
+        case 'gathering':
+          return `Selling at ${where}`
+        default:
+          return `Bringing home ${helper.purse ?? 0} Glimmers`
+      }
     }
     switch (helper.phase) {
       case 'idle':
@@ -70,7 +111,9 @@
       helper.type === 'brewer'
         ? (RECIPES[helper.tripItem ?? '']?.durationMs ?? 1)
         : helper.phase === 'gathering'
-          ? HELPER_RULES.gatherMs
+          ? helper.type === 'peddler'
+            ? PEDDLER_RULES.sellMs
+            : HELPER_RULES.gatherMs
           : helper.tripSpot
             ? helperFlightMs($game, helper, helper.tripSpot)
             : 1
@@ -161,6 +204,63 @@
         {/each}
       </ul>
     {/if}
+  </section>
+
+  <section class="panel">
+    <h3>Storage limits</h3>
+    {#if hasPeddler}
+      <p class="note">
+        Peddlers sell anything above its limit at {market
+          ? placeName(market)
+          : 'the nearest village'},
+        {PEDDLER_RULES.haul} at a time, and bring the Glimmers home. 0 means no limit.
+      </p>
+    {:else}
+      <p class="note">
+        Build a Market Stall (Upgrades tab) and recruit a peddler to sell what you have too much of.
+        You can set limits already. 0 means no limit.
+      </p>
+    {/if}
+    {#if limitItems.length === 0}
+      <p class="note">Nothing in storage yet.</p>
+    {/if}
+    <ul class="minimums">
+      {#each limitItems as itemId (itemId)}
+        {@const maximum = $game.supply.maximums[itemId] ?? 0}
+        {@const stock = $game.inventory[itemId] ?? 0}
+        {@const over = surplus($game, itemId)}
+        <li class:low={over > 0}>
+          <Art id={itemId} size={30} />
+          <div class="item">
+            <strong>{itemName(itemId)}</strong>
+            <span>
+              {formatNumber(stock)} in storage{over > 0 ? ` · ${formatNumber(over)} to sell` : ''}
+            </span>
+          </div>
+          <div class="stepper">
+            <button
+              type="button"
+              aria-label={`Lower limit for ${itemName(itemId)}`}
+              disabled={maximum === 0}
+              onclick={() => setMaximum(itemId, Math.max(0, maximum - 10))}>−</button
+            >
+            <input
+              type="number"
+              min="0"
+              step="10"
+              value={maximum}
+              aria-label={`Storage limit for ${itemName(itemId)}`}
+              onchange={(e) => setMaximum(itemId, Number(e.currentTarget.value))}
+            />
+            <button
+              type="button"
+              aria-label={`Raise limit for ${itemName(itemId)}`}
+              onclick={() => setMaximum(itemId, maximum + 10)}>+</button
+            >
+          </div>
+        </li>
+      {/each}
+    </ul>
   </section>
 
   <section class="panel">

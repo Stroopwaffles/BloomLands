@@ -249,6 +249,12 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 - **Court scene:** shown in moonlight.
 - **Setting:** "Night colors: At night / Never". The title menu always uses day colors.
 
+### Satchel, storage and peddlers (v0.3.11 to v0.3.12)
+
+- **At home:** every satchel item has Store 1 / All (plus "Put everything in storage"), and every stored item has +1 / Pack to put it back in the satchel (for example, to sell at a shop).
+- **Storage limits** (Helpers tab): set the most of any item to keep in storage, where 0 means no limit.
+- **Peddler helper** (Market Stall lodging: 300 Glimmers, 3 Petal Paste, needs Mouse Bunks): takes whatever is furthest over its limit, up to 20 at a time, to the nearest open village shop. They sell it at the shop's price (half its worth) and bring the Glimmers home. They keep working offline.
+
 ### Backlog (asked for, not scheduled yet)
 
 - Nothing waiting.

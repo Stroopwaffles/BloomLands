@@ -1,6 +1,7 @@
 import {
   BREWER_KEEP,
   gathersAtSpot,
+  PEDDLER_RULES,
   HELPER_NAMES,
   HELPER_RULES,
   HELPER_TYPES,
@@ -12,7 +13,7 @@ import { ITEMS } from '../data/items'
 import { PLANTS } from '../data/plants'
 import { RECIPES } from '../data/recipes'
 import type { ItemStack } from '../data/types'
-import { baseTravelMs, HOME, isSettlement, SPOTS } from '../data/world'
+import { baseTravelMs, HOME, isSettlement, placeRegion, SETTLEMENTS, SPOTS } from '../data/world'
 import { CAMP_RULES } from '../data/challenges'
 import { piratesInRegion } from './challenges'
 import { canPay, payCost } from './costs'
@@ -23,6 +24,7 @@ import { rollPlant } from './gathering'
 import { mountSpeed, spareMounts } from './mounts'
 import { placeOpen, spotWatched } from './regions'
 import { routeOf } from './route'
+import { sellPrice } from './shop'
 import {
   helperCapacity,
   helperCount,
@@ -125,6 +127,74 @@ export function brewCheck(state: GameState, helper: HelperState): BrewCheck {
   }
   if (!canPay(state, recipe.inputs)) return 'missing-items'
   return 'ok'
+}
+
+/** Sets the most of an item to keep in storage (0 = no limit). Peddlers sell anything above it. */
+export function setMaximum(state: GameState, itemId: string, amount: number): GameEvent[] {
+  if (!ITEMS[itemId] || sellPrice(itemId) <= 0) return [{ type: 'blocked', reason: 'locked' }]
+  const value = Math.max(0, Math.floor(amount))
+  if (value > 0) state.supply.maximums[itemId] = value
+  else delete state.supply.maximums[itemId]
+  return []
+}
+
+/** How far above its storage limit an item is (0 if it has no limit or is under it). */
+export function surplus(state: GameState, itemId: string): number {
+  const max = state.supply.maximums[itemId]
+  if (!max) return 0
+  return Math.max(0, (state.inventory[itemId] ?? 0) - max)
+}
+
+/** The item furthest above its limit, if any. */
+function nextSurplus(state: GameState): string | null {
+  let best: string | null = null
+  let bestOver = 0
+  for (const itemId of Object.keys(state.supply.maximums)) {
+    const over = surplus(state, itemId)
+    if (over > bestOver) {
+      best = itemId
+      bestOver = over
+    }
+  }
+  return best
+}
+
+/** The village shop nearest home (among open regions), where peddlers sell. */
+export function nearestMarket(state: GameState): string | null {
+  let best: string | null = null
+  let bestMs = Infinity
+  for (const id of Object.keys(SETTLEMENTS)) {
+    if (!placeOpen(state, id)) continue
+    const ms = routeOf(state, HOME, id)?.baseMs ?? Infinity
+    if (ms < bestMs) {
+      best = id
+      bestMs = ms
+    }
+  }
+  return best
+}
+
+/** A peddler packs the biggest surplus (up to a haul) and heads for market. */
+function startPeddling(state: GameState, helper: HelperState): boolean {
+  const itemId = nextSurplus(state)
+  const market = nearestMarket(state)
+  if (!itemId || !market) return false
+  const amount = Math.min(surplus(state, itemId), PEDDLER_RULES.haul)
+  addItems(state.inventory, itemId, -amount)
+  addItems(helper.bag, itemId, amount)
+  helper.tripSpot = market
+  helper.tripItem = itemId
+  helper.phase = 'outbound'
+  helper.remainingMs = helperFlightMs(state, helper, market)
+  return true
+}
+
+/** At the shop: everything in the bag is sold, and the Glimmers go in the purse. */
+function sellBag(helper: HelperState): void {
+  let glimmers = 0
+  for (const [itemId, amount] of Object.entries(helper.bag)) glimmers += sellPrice(itemId) * amount
+  helper.bag = {}
+  helper.purse = (helper.purse ?? 0) + glimmers
 }
 
 /** A brewer takes the ingredients and starts a batch at the station. */
@@ -263,7 +333,7 @@ function unload(state: GameState, helper: HelperState): boolean {
  */
 export function helperFlightMs(state: GameState, helper: HelperState, spotId: string): number {
   // Muggy heat slows helpers down; the Reed Pipe speeds them up.
-  const weather = weatherIn(state, SPOTS[spotId]?.regionId ?? 'meadow').helperTrips ?? 1
+  const weather = weatherIn(state, placeRegion(spotId)).helperTrips ?? 1
   // Helpers take the Spirit Path too, when it's quicker.
   const route = routeOf(state, HOME, spotId)?.baseMs ?? baseTravelMs(HOME, spotId) ?? 0
   const base = route * weather * helperTripMultiplier(state)
@@ -295,7 +365,24 @@ function stepHelper(state: GameState, helper: HelperState, dtMs: number, random:
   // A small cap on phase changes per step keeps a misconfigured trip from looping forever.
   for (let guard = 0; guard < 20; guard++) {
     if (helper.phase === 'idle') {
-      if (!(helper.type === 'brewer' ? startBrew(state, helper) : startTrip(state, helper))) return
+      const started =
+        helper.type === 'brewer'
+          ? startBrew(state, helper)
+          : helper.type === 'peddler'
+            ? startPeddling(state, helper)
+            : startTrip(state, helper)
+      if (!started) return
+      continue
+    }
+    if (helper.phase === 'unloading' && helper.type === 'peddler') {
+      const glimmers = helper.purse ?? 0
+      state.resources.glimmers += glimmers
+      state.stats.glimmersEarned += glimmers
+      helper.purse = 0
+      helper.phase = 'idle'
+      helper.tripSpot = null
+      helper.tripItem = null
+      state.stats.helperTrips++
       continue
     }
     if (helper.phase === 'unloading') {
@@ -325,10 +412,14 @@ function stepHelper(state: GameState, helper: HelperState, dtMs: number, random:
     }
     if (helper.phase === 'outbound') {
       helper.phase = 'gathering'
-      helper.remainingMs = HELPER_RULES.gatherMs
+      helper.remainingMs = helper.type === 'peddler' ? PEDDLER_RULES.sellMs : HELPER_RULES.gatherMs
     } else if (helper.phase === 'gathering') {
-      for (const { itemId, amount } of gather(state, helper, random)) {
-        addItems(helper.bag, itemId, amount)
+      if (helper.type === 'peddler') {
+        sellBag(helper)
+      } else {
+        for (const { itemId, amount } of gather(state, helper, random)) {
+          addItems(helper.bag, itemId, amount)
+        }
       }
       helper.phase = 'returning'
       helper.remainingMs = helperFlightMs(state, helper, helper.tripSpot!)

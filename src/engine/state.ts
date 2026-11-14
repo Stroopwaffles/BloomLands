@@ -114,6 +114,8 @@ export interface HelperState {
   bag: Record<string, number>
   /** Brewers: stop once storage holds this many of the recipe's result. */
   keep?: number
+  /** Peddlers: Glimmers from this trip's sales, carried home. */
+  purse?: number
 }
 
 /** A satchel sent home by the Acorn Post. */
@@ -244,6 +246,8 @@ export interface GameState {
   supply: {
     /** Minimum stock levels by item ID. Supply helpers fetch anything below its minimum. */
     minimums: Record<string, number>
+    /** Most of each item to keep in storage. Peddlers sell anything above it. */
+    maximums: Record<string, number>
   }
   /** Parcels on their way home by the Acorn Post. */
   post: {
@@ -393,6 +397,7 @@ export function createNewGame(now: number): GameState {
     },
     supply: {
       minimums: {},
+      maximums: {},
     },
     post: {
       parcels: [],

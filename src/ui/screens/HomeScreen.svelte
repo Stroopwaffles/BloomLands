@@ -100,7 +100,26 @@
         <section class="panel">
           <h2>Satchel</h2>
           {#if carrying > 0}
-            <ItemList items={$game.player.satchel} />
+            <ItemList items={$game.player.satchel}>
+              {#snippet action(itemId: string, amount: number)}
+                <span class="pack">
+                  <button
+                    type="button"
+                    aria-label={`Put 1 ${itemName(itemId)} in storage`}
+                    onclick={() => runtime.dispatch({ type: 'satchel/store', itemId, amount: 1 })}
+                    >Store 1</button
+                  >
+                  {#if amount > 1}
+                    <button
+                      type="button"
+                      aria-label={`Put all ${itemName(itemId)} in storage`}
+                      onclick={() => runtime.dispatch({ type: 'satchel/store', itemId, amount })}
+                      >All</button
+                    >
+                  {/if}
+                </span>
+              {/snippet}
+            </ItemList>
             <button
               type="button"
               class="primary"

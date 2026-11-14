@@ -4,7 +4,9 @@ import { PLANTS } from '../src/data/plants'
 import { SETTLEMENTS } from '../src/data/world'
 import { applyAction } from '../src/engine/actions'
 import { buyPrice, sellPrice, shopStock } from '../src/engine/shop'
-import { createNewGame, type GameState } from '../src/engine/state'
+import { createNewGame, type GameState, type HelperState } from '../src/engine/state'
+import { advanceHelpers } from '../src/engine/helpers'
+import { PEDDLER_RULES } from '../src/data/helpers'
 
 const START = 1_700_000_000_000
 
@@ -129,5 +131,75 @@ describe('packing the satchel at home', () => {
     const before = state.resources.glimmers
     applyAction(state, { type: 'shop/sell', itemId: 'trinket-thimble', amount: 1 })
     expect(state.resources.glimmers).toBe(before + sellPrice('trinket-thimble'))
+  })
+})
+
+describe('storing chosen satchel items', () => {
+  it('stores some or all of one item, as much as storage holds', () => {
+    const state = createNewGame(START)
+    state.player.satchel = { 'raw-daisy-petals': 6, 'raw-clover-leaves': 2 }
+    applyAction(state, { type: 'satchel/store', itemId: 'raw-daisy-petals', amount: 1 })
+    expect(state.inventory['raw-daisy-petals']).toBe(1)
+    expect(state.player.satchel['raw-daisy-petals']).toBe(5)
+    applyAction(state, { type: 'satchel/store', itemId: 'raw-daisy-petals', amount: 5 })
+    expect(state.player.satchel['raw-daisy-petals']).toBeUndefined()
+    expect(state.player.satchel['raw-clover-leaves']).toBe(2)
+    state.storageCapacity = 7
+    state.player.satchel['raw-daisy-petals'] = 4
+    applyAction(state, { type: 'satchel/store', itemId: 'raw-daisy-petals', amount: 4 })
+    expect(state.inventory['raw-daisy-petals']).toBe(7)
+    expect(state.player.satchel['raw-daisy-petals']).toBe(3)
+    expect(
+      applyAction(state, { type: 'satchel/store', itemId: 'raw-daisy-petals', amount: 1 }),
+    ).toEqual([{ type: 'blocked', reason: 'storage-full' }])
+  })
+})
+
+describe('peddlers', () => {
+  function market(): { state: GameState; peddler: HelperState } {
+    const state = createNewGame(START)
+    state.upgrades.push('lodging-mouse-bunks', 'lodging-market-stall')
+    state.inventory = { 'refined-petal-paste': 50, 'raw-clover-leaves': 5 }
+    const peddler: HelperState = {
+      id: 1,
+      type: 'peddler',
+      name: 'Test',
+      task: null,
+      phase: 'idle',
+      remainingMs: 0,
+      tripSpot: null,
+      tripItem: null,
+      bag: {},
+    }
+    state.helpers.list.push(peddler)
+    return { state, peddler }
+  }
+
+  it('rest until something is over its storage limit', () => {
+    const { state, peddler } = market()
+    advanceHelpers(state, 60_000, Math.random)
+    expect(peddler.phase).toBe('idle')
+    expect(state.inventory['refined-petal-paste']).toBe(50)
+  })
+
+  it('sell everything above the limit at the nearest shop, a haul at a time', () => {
+    const { state, peddler } = market()
+    applyAction(state, { type: 'storage/setMaximum', itemId: 'refined-petal-paste', amount: 20 })
+    advanceHelpers(state, 1, Math.random)
+    expect(peddler.tripSpot).toBe('thimblewick')
+    expect(peddler.bag['refined-petal-paste']).toBe(PEDDLER_RULES.haul)
+    expect(state.inventory['refined-petal-paste']).toBe(30)
+    for (let i = 0; i < 20; i++) advanceHelpers(state, 60_000, Math.random)
+    expect(state.inventory['refined-petal-paste']).toBe(20)
+    expect(state.resources.glimmers).toBe(30 * sellPrice('refined-petal-paste'))
+    expect(peddler.phase).toBe('idle')
+    expect(state.inventory['raw-clover-leaves']).toBe(5)
+  })
+
+  it('a limit of 0 means no limit', () => {
+    const { state } = market()
+    applyAction(state, { type: 'storage/setMaximum', itemId: 'refined-petal-paste', amount: 20 })
+    applyAction(state, { type: 'storage/setMaximum', itemId: 'refined-petal-paste', amount: 0 })
+    expect(state.supply.maximums['refined-petal-paste']).toBeUndefined()
   })
 })
