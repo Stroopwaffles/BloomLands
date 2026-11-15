@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { PRESET_SLOTS, type HelperPreset } from '../../engine/comforts'
   import Art from '../../art/Art.svelte'
   import {
     BREWER_KEEP,
@@ -10,7 +11,7 @@
   import { itemName } from '../../data/items'
   import { RECIPES, STATIONS } from '../../data/recipes'
   import { unlockedRecipes } from '../../engine/crafting'
-  import { placeName, REGION_ORDER, REGIONS } from '../../data/world'
+  import { isSpot, placeName, REGION_ORDER, REGIONS } from '../../data/world'
   import { placeOpen } from '../../engine/regions'
   import { formatDuration, formatNumber } from '../../engine/format'
   import {
@@ -23,7 +24,7 @@
     surplus,
   } from '../../engine/helpers'
   import { sellPrice } from '../../engine/shop'
-  import { helperCapacity } from '../../engine/modifiers'
+  import { hasQol, helperCapacity } from '../../engine/modifiers'
   import type { HelperState } from '../../engine/state'
   import ItemList from '../components/ItemList.svelte'
   import { runtime } from '../game'
@@ -140,9 +141,49 @@
   function setMinimum(itemId: string, amount: number) {
     runtime.dispatch({ type: 'supply/setMinimum', itemId, amount })
   }
+
+  /** "3 gathering: Buttercup Rise, Fernshade Floor…" */
+  function presetSummary(preset: HelperPreset): string {
+    const places = preset.jobs.flatMap((j) => (j.task && isSpot(j.task) ? [placeName(j.task)] : []))
+    const unique = [...new Set(places)]
+    return `${preset.jobs.length} helpers${unique.length ? `: ${unique.slice(0, 3).join(', ')}${unique.length > 3 ? '…' : ''}` : ''}`
+  }
 </script>
 
 <div class="helpers">
+  {#if hasQol($game, 'helper-presets') && $game.helpers.list.length > 0}
+    <section class="panel ledger">
+      <h3>Helper Ledger</h3>
+      <p class="note">Save everyone's jobs, and put them back in one tap.</p>
+      <div class="slots">
+        {#each Array.from({ length: PRESET_SLOTS }, (_, i) => i) as slot (slot)}
+          {@const preset = $game.preferences.helperPresets[slot]}
+          <div class="slot">
+            <strong>Set {slot + 1}</strong>
+            <span class="summary">
+              {preset ? presetSummary(preset) : 'Empty'}
+            </span>
+            <div class="slot-buttons">
+              <button
+                type="button"
+                onclick={() => runtime.dispatch({ type: 'helpers/savePreset', slot })}
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                disabled={!preset}
+                onclick={() => runtime.dispatch({ type: 'helpers/applyPreset', slot })}
+              >
+                Use
+              </button>
+            </div>
+          </div>
+        {/each}
+      </div>
+    </section>
+  {/if}
+
   <section class="panel">
     <h3>Your helpers</h3>
     {#if $game.helpers.list.length === 0}
@@ -494,5 +535,51 @@
     font: inherit;
     font-weight: 700;
     user-select: text;
+  }
+
+  .ledger {
+    grid-column: 1 / -1;
+  }
+
+  .slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+  }
+
+  .slot {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px;
+    border-radius: 14px;
+    background: var(--surface);
+  }
+
+  .summary {
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+
+  .slot-buttons {
+    display: flex;
+    gap: 6px;
+  }
+
+  .slot-buttons button {
+    min-height: 40px;
+    padding: 0 14px;
+    border: 2px solid var(--leaf);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .slot-buttons button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 </style>

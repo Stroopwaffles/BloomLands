@@ -6,6 +6,7 @@
   import { formatDuration, formatNumber } from '../../engine/format'
   import { checkTrade } from '../../engine/traders'
   import CostList from './CostList.svelte'
+  import PinButton from './PinButton.svelte'
   import { runtime } from '../game'
   import { BLOCKED_TEXT } from '../messages'
 
@@ -62,6 +63,7 @@
           >
             Not today
           </button>
+          <PinButton kind="trader" requestId={request.id} />
         </div>
       </li>
     {/each}

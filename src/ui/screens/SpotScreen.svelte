@@ -19,6 +19,7 @@
   } from '../../engine/modifiers'
   import { wildMountAt } from '../../engine/mounts'
   import { spotEvent } from '../../engine/specialEvents'
+  import RequestBoard from '../components/RequestBoard.svelte'
   import { EVENT_BASES, EVENTS } from '../../data/events'
   import { helpersAt } from '../../engine/helpers'
   import BloomMeter from '../components/BloomMeter.svelte'
@@ -343,6 +344,7 @@
     </div>
 
     <div class="below">
+      <RequestBoard />
       {#if eventId}
         <p class="note stars-note">
           Everything you gather here goes straight to the pantry at {EVENT_BASES[

@@ -581,9 +581,16 @@ The recipes and rites the content doc lists that M15 and M16 left out:
 - **The whole game:** runs 2–5 take 4–6 days each, about 26 days to the ending. Each run earns about 150 Root Song (780 by the ending, enough for about 40% of the upgrade tiers).
 
 **Left for 1.0:**
-- The remaining quality-of-life upgrades from the design: helper presets, recipe favorites and search, and a request tracker.
 - A final art pass.
 - Your playtest notes.
+
+#### M18 (part 2): the last quality-of-life upgrades (version 0.12.0)
+
+Three new Comforts. Like every Comfort, each is bought once and kept forever (`engine/comforts.ts`):
+
+- **Recipe Book** (200 Glimmers): a search box in the Workshop filters every station's recipes by name, and a star on each recipe keeps favorites at the top. Favorites last through prestige (`preferences.favorites`).
+- **Request Board** (250): a 📌 Pin button on trader and villager requests. Pinned requests, and what they still need (storage and satchel both count), show on the Court tab and on every harvesting spot. Filled or expired requests drop off by themselves. Pins belong to the run.
+- **Helper Ledger** (300): three slots on the Helpers tab. "Save" stores every helper's job, and "Use" puts them back: the first gatherer gets the first saved gatherer's job, and so on. Brewers get their recipe and keep-amount back. Jobs at places that aren't open this run are skipped. Saved sets last through prestige (`preferences.helperPresets`).
 
 ---
 

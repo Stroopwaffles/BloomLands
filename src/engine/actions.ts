@@ -1,6 +1,7 @@
 import { buyRootUpgrade } from './prestige'
 import { catchStar, chooseMoon } from './moon'
 import { readLetters } from './ending'
+import { applyPreset, savePreset, toggleFavorite, toggleTracked } from './comforts'
 import { craftEventRecipe, endEvent, startEvent } from './specialEvents'
 import type { WeatherKind } from '../data/challenges'
 import { drinkPotion } from './buffs'
@@ -36,6 +37,10 @@ export type Action =
   | { type: 'rootsong/buy'; upgradeId: string }
   | { type: 'star/catch' }
   | { type: 'captain/read' }
+  | { type: 'recipe/favorite'; recipeId: string }
+  | { type: 'request/track'; kind: 'trader' | 'villager'; requestId: number; settlementId?: string }
+  | { type: 'helpers/savePreset'; slot: number }
+  | { type: 'helpers/applyPreset'; slot: number }
   | { type: 'moon/choose'; phase: WeatherKind }
   | { type: 'gather/tap'; spotId: string; slot: number }
   | { type: 'satchel/deposit' }
@@ -143,6 +148,18 @@ export function applyAction(
       return catchStar(state, random)
     case 'captain/read':
       return readLetters(state)
+    case 'recipe/favorite':
+      return toggleFavorite(state, action.recipeId)
+    case 'request/track':
+      return toggleTracked(state, {
+        kind: action.kind,
+        requestId: action.requestId,
+        settlementId: action.settlementId,
+      })
+    case 'helpers/savePreset':
+      return savePreset(state, action.slot)
+    case 'helpers/applyPreset':
+      return applyPreset(state, action.slot)
     case 'moon/choose':
       return chooseMoon(state, action.phase, random)
     case 'villager/fulfill':

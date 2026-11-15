@@ -28,6 +28,7 @@
   import WorkshopTab from './WorkshopTab.svelte'
   import RootSongTab from './RootSongTab.svelte'
   import CaptainLetters from '../components/CaptainLetters.svelte'
+  import RequestBoard from '../components/RequestBoard.svelte'
   import { captainJoined } from '../../engine/ending'
 
   const { game } = runtime
@@ -121,6 +122,8 @@
           <h2>Visitors</h2>
           <TraderRequests />
         </section>
+
+        <RequestBoard />
 
         <CaptainLetters />
 

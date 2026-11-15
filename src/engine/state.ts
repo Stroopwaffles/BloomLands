@@ -11,6 +11,7 @@ import type { ItemStack, StationId } from '../data/types'
 import type { GameEvent } from './events'
 import { HOME } from '../data/world'
 import { GAME_VERSION, SAVE_VERSION } from './version'
+import type { HelperPreset, TrackedRequest } from './comforts'
 
 /** One plant slot in a harvesting spot. */
 export interface SlotState {
@@ -346,6 +347,13 @@ export interface GameState {
     /** Each event's pantry: its materials and makings, by item ID. */
     stores: Record<string, Record<string, number>>
   }
+  /** Player preferences that last through prestige: favorite recipes, saved helper jobs. */
+  preferences: {
+    favorites: string[]
+    helperPresets: (HelperPreset | null)[]
+  }
+  /** Requests pinned on the Request Board (this run). */
+  tracked: TrackedRequest[]
   /** Permanent or run bonuses that engine rules read. Filled in by later systems. */
   bonuses: {
     /** Extra offline progress allowed on top of the base 4 hours. */
@@ -469,6 +477,8 @@ export function createNewGame(now: number): GameState {
       nextArrivalMs: 20_000,
       nextRequestId: 1,
     },
+    preferences: { favorites: [], helperPresets: [] },
+    tracked: [],
     specialEvents: {
       active: null,
       nightsWithout: 0,

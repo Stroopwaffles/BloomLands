@@ -1,4 +1,5 @@
 <script lang="ts">
+  import PinButton from './PinButton.svelte'
   import Art from '../../art/Art.svelte'
   import { BLOOM_REWARDS, VILLAGERS } from '../../data/bloom'
   import { payingStock } from '../../engine/costs'
@@ -62,6 +63,7 @@
           >
             Not now
           </button>
+          <PinButton kind="villager" requestId={request.id} {settlementId} />
         </div>
       </li>
     {/each}

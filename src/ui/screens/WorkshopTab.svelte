@@ -5,7 +5,7 @@
   import { formatDuration } from '../../engine/format'
   import { payingStock } from '../../engine/costs'
   import { batchSizes, checkCraft, stationInUse, unlockedRecipes } from '../../engine/crafting'
-  import { stationBuilt, stationSlots } from '../../engine/modifiers'
+  import { hasQol, stationBuilt, stationSlots } from '../../engine/modifiers'
   import CostList from '../components/CostList.svelte'
   import ProgressBar from '../components/ProgressBar.svelte'
   import RitualCircle from '../components/RitualCircle.svelte'
@@ -16,17 +16,39 @@
   const { game } = runtime
 
   const unlocked = $derived(unlockedRecipes($game))
+  /** The Recipe Book: search by name, favorites first. */
+  const book = $derived(hasQol($game, 'recipe-book'))
+  let query = $state('')
+  const favorites = $derived($game.preferences.favorites)
   const recipesByStation = $derived(
     Object.fromEntries(
       STATION_ORDER.map((stationId) => [
         stationId,
-        Object.values(RECIPES).filter((r) => r.station === stationId && unlocked.has(r.id)),
+        Object.values(RECIPES)
+          .filter((r) => r.station === stationId && unlocked.has(r.id))
+          .filter(
+            (r) =>
+              !book ||
+              !query.trim() ||
+              itemName(r.output.itemId).toLowerCase().includes(query.trim().toLowerCase()),
+          )
+          .sort((a, b) =>
+            book ? Number(favorites.includes(b.id)) - Number(favorites.includes(a.id)) : 0,
+          ),
       ]),
     ),
   )
 </script>
 
-<div class="lock-bar"><SatchelLock /></div>
+<div class="lock-bar">
+  {#if book}
+    <label class="search">
+      <span>Recipe Book</span>
+      <input type="search" placeholder="Search recipes…" bind:value={query} />
+    </label>
+  {/if}
+  <SatchelLock />
+</div>
 
 <div class="stations">
   {#each STATION_ORDER as stationId (stationId)}
@@ -63,7 +85,11 @@
       {#if !stationBuilt($game, stationId)}
         <p class="hint">Not built yet. Build it from the Upgrades tab.</p>
       {:else if recipes.length === 0}
-        <p class="hint">No recipes yet. Research unlocks them.</p>
+        <p class="hint">
+          {book && query.trim()
+            ? 'No recipes here match your search.'
+            : 'No recipes yet. Research unlocks them.'}
+        </p>
       {:else}
         <ul class="recipes">
           {#each recipes as recipe (recipe.id)}
@@ -71,6 +97,18 @@
               <div class="output">
                 <Art id={recipe.output.itemId} size={36} />
                 <div>
+                  {#if book}
+                    <button
+                      type="button"
+                      class="star"
+                      class:on={favorites.includes(recipe.id)}
+                      aria-pressed={favorites.includes(recipe.id)}
+                      aria-label={`${favorites.includes(recipe.id) ? 'Unstar' : 'Star'} ${itemName(recipe.output.itemId)}`}
+                      onclick={() =>
+                        runtime.dispatch({ type: 'recipe/favorite', recipeId: recipe.id })}
+                      >{favorites.includes(recipe.id) ? '★' : '☆'}</button
+                    >
+                  {/if}
                   <strong>{itemName(recipe.output.itemId)}</strong>
                   {#if recipe.output.amount > 1}× {recipe.output.amount}{/if}
                   <span class="time">{formatDuration(recipe.durationMs)}</span>
@@ -107,6 +145,10 @@
   }
 
   .lock-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
     margin-bottom: 12px;
     padding: 6px 14px;
     background: var(--cream-deep);
@@ -211,5 +253,39 @@
   button:disabled {
     background: var(--disabled, #c9c2b8);
     cursor: not-allowed;
+  }
+
+  .search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .search input {
+    min-height: 40px;
+    min-width: 220px;
+    padding: 0 12px;
+    border: 2px solid var(--honey);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+  }
+
+  .star {
+    min-height: 0 !important;
+    padding: 0 4px !important;
+    border: none !important;
+    background: none !important;
+    color: #c9a24a !important;
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .star.on {
+    color: #f2b23a !important;
   }
 </style>

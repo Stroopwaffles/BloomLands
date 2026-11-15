@@ -1,7 +1,16 @@
 import type { HelperType } from './helpers'
 import type { CostEntry, StationId } from './types'
 
-export type QolId = 'auto-deposit' | 'auto-return' | 'return-trip' | 'bulk-craft' | 'clock' | 'post'
+export type QolId =
+  | 'auto-deposit'
+  | 'auto-return'
+  | 'return-trip'
+  | 'bulk-craft'
+  | 'clock'
+  | 'post'
+  | 'recipe-book'
+  | 'request-tracker'
+  | 'helper-presets'
 
 export type UpgradeEffect =
   | { kind: 'station'; station: StationId }
@@ -629,6 +638,40 @@ const UPGRADE_LIST: UpgradeDef[] = [
     items: [trinkets(2)],
     requires: [],
     effect: { kind: 'qol', qol: 'post' },
+    courtPoints: 0,
+  },
+  {
+    id: 'qol-recipe-book',
+    name: 'Recipe Book',
+    category: 'comfort',
+    description: 'Search your recipes in the Workshop, and star favorites to keep them on top.',
+    glimmers: 200,
+    items: [trinkets(1)],
+    requires: [],
+    effect: { kind: 'qol', qol: 'recipe-book' },
+    courtPoints: 0,
+  },
+  {
+    id: 'qol-request-tracker',
+    name: 'Request Board',
+    category: 'comfort',
+    description:
+      'Pin trader and villager requests: what they still need shows on your court and while you gather.',
+    glimmers: 250,
+    items: [trinkets(1)],
+    requires: [],
+    effect: { kind: 'qol', qol: 'request-tracker' },
+    courtPoints: 0,
+  },
+  {
+    id: 'qol-helper-presets',
+    name: 'Helper Ledger',
+    category: 'comfort',
+    description: 'Save up to three sets of helper jobs, and switch between them in one tap.',
+    glimmers: 300,
+    items: [trinkets(2)],
+    requires: [],
+    effect: { kind: 'qol', qol: 'helper-presets' },
     courtPoints: 0,
   },
 ]
