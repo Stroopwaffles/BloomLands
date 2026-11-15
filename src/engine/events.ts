@@ -81,6 +81,9 @@ export type GameEvent =
   | { type: 'region-unlocked'; regionId: string }
   | { type: 'prestige'; run: number; rootSong: number }
   | { type: 'captain-letter'; index: number }
+  | { type: 'event-started'; eventId: string }
+  | { type: 'event-ended'; eventId: string; sentHome: boolean }
+  | { type: 'event-crafted'; recipeId: string }
   | { type: 'captain-joined' }
   /** The ending plays: it shows the court as it was when the last Root Song was sung. */
   | { type: 'ending'; rank: number; helpers: string[] }

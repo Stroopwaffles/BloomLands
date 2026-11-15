@@ -1,6 +1,7 @@
 import { buyRootUpgrade } from './prestige'
 import { catchStar, chooseMoon } from './moon'
 import { readLetters } from './ending'
+import { craftEventRecipe, endEvent, startEvent } from './specialEvents'
 import type { WeatherKind } from '../data/challenges'
 import { drinkPotion } from './buffs'
 import { equipPiece, finishCreating, recolorSlot, setLook } from './character'
@@ -76,6 +77,8 @@ export type Action =
   | { type: 'debug/setClickPower'; value: number }
   | { type: 'debug/completeResearch' }
   | { type: 'debug/traderNow' }
+  | { type: 'debug/eventNow'; eventId: string }
+  | { type: 'event/craft'; recipeId: string }
   | { type: 'debug/challengesNow' }
 
 /** Applies an action and returns what happened, for the screen to show. */
@@ -187,6 +190,12 @@ export function applyAction(
     case 'debug/traderNow':
       state.traders.nextArrivalMs = 0
       return []
+    case 'debug/eventNow':
+      return state.specialEvents.active
+        ? endEvent(state)
+        : startEvent(state, action.eventId, random)
+    case 'event/craft':
+      return craftEventRecipe(state, action.recipeId)
     case 'debug/challengesNow':
       state.challenges.nextCreatureMs = 0
       state.challenges.nextCampMs = 0

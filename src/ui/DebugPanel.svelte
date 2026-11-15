@@ -113,6 +113,12 @@
         <button type="button" onclick={() => runtime.dispatch({ type: 'debug/completeResearch' })}>
           Finish research
         </button>
+        <button
+          type="button"
+          onclick={() => runtime.dispatch({ type: 'debug/eventNow', eventId: 'blood-moon' })}
+        >
+          Start / end a Blood Moon
+        </button>
         <button type="button" onclick={() => runtime.dispatch({ type: 'debug/traderNow' })}>
           Trader now
         </button>

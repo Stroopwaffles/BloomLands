@@ -25,6 +25,7 @@ import { bloomcallLuck, plantEase, weatherCleared } from './modifiers'
 import { addItems, countItems, type GameState, type SlotState, type SpotState } from './state'
 import { playerWatched } from './regions'
 import { rollScoutSecret } from './secrets'
+import { eventStore, spotEvent } from './specialEvents'
 import { startTravel } from './travel'
 
 /** Chance a harvest gives one extra of each material. Starting value for balancing. */
@@ -147,7 +148,9 @@ export function tapPlant(
     return [{ type: 'pest-cleared', spotId, slot: slotIndex, pestsLeft: slot.pests }]
   }
 
-  if (satchelFull(state)) return [{ type: 'blocked', reason: 'satchel-full' }]
+  // In an event region, harvests go straight to the event's pantry: the satchel isn't used.
+  const eventId = spotEvent(spotId)
+  if (!eventId && satchelFull(state)) return [{ type: 'blocked', reason: 'satchel-full' }]
 
   state.stats.taps++
   const damage = clickPower(state)
@@ -169,7 +172,8 @@ export function tapPlant(
     itemId,
     amount: amount + extra,
   }))
-  for (const { itemId, amount } of items) addItems(player.satchel, itemId, amount)
+  const into = eventId ? eventStore(state, eventId) : player.satchel
+  for (const { itemId, amount } of items) addItems(into, itemId, amount)
 
   let trinketId: string | null = null
   const trinkets = SPOTS[spotId].trinkets

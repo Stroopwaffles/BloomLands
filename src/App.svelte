@@ -4,7 +4,16 @@
   import { isNight } from './engine/environment'
   import { startSound } from './ui/sound'
   import Art from './art/Art.svelte'
-  import { HOME, isSettlement, isSpiritPlace, placeRegion, REGIONS } from './data/world'
+  import {
+    HOME,
+    isEventBase,
+    isSettlement,
+    isSpiritPlace,
+    placeRegion,
+    REGIONS,
+  } from './data/world'
+  import EventBaseScreen from './ui/screens/EventBaseScreen.svelte'
+  import EventBadge from './ui/components/EventBadge.svelte'
   import { latestRegion } from './engine/regions'
   import { formatNumber } from './engine/format'
   import { COURT_RANKS } from './data/economy'
@@ -83,6 +92,7 @@
       >
       <h1>Bloom Lands</h1>
       <SkyBadge />
+      <EventBadge />
       <button
         type="button"
         class="mute-button"
@@ -123,6 +133,8 @@
         <SettlementScreen />
       {:else if isSpiritPlace($game.player.place)}
         <SpiritScreen />
+      {:else if isEventBase($game.player.place)}
+        <EventBaseScreen />
       {:else}
         <SpotScreen />
       {/if}

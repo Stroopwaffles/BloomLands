@@ -14,6 +14,8 @@ import { TRACKS, type TrackDef } from './tracks'
 export function themeFor(regionId: string, night: boolean): string {
   const id = night ? `${regionId}-night` : regionId
   if (TRACKS[id]) return id
+  // A region with one track plays it day and night (the Crimson Vale).
+  if (TRACKS[regionId]) return regionId
   return night ? 'meadow-night' : 'meadow'
 }
 

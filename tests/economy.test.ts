@@ -33,7 +33,11 @@ function home(overrides: Partial<Pick<GameState, 'inventory' | 'upgrades'>> = {}
 describe('data', () => {
   it('prices every raw material and craftable item', () => {
     for (const plant of Object.values(PLANTS)) {
-      for (const y of plant.yields) expect(ITEM_VALUES[y.itemId], y.itemId).toBeGreaterThan(0)
+      for (const y of plant.yields) {
+        // Event materials never reach the main economy (they live in an event pantry).
+        if (ITEMS[y.itemId]?.category === 'event') continue
+        expect(ITEM_VALUES[y.itemId], y.itemId).toBeGreaterThan(0)
+      }
     }
     for (const recipe of Object.values(RECIPES)) {
       expect(ITEM_VALUES[recipe.output.itemId], recipe.id).toBeGreaterThan(0)

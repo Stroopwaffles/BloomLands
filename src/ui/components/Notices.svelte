@@ -2,6 +2,7 @@
   import Art from '../../art/Art.svelte'
   import { RESEARCH } from '../../data/research'
   import { itemName } from '../../data/items'
+  import { EVENTS } from '../../data/events'
   import { settings } from '../settings.svelte'
   import { onMount } from 'svelte'
   import { BLOOM_LEVELS, CURIOS } from '../../data/bloom'
@@ -103,6 +104,13 @@
         ]
       case 'moon-chosen':
         return ['The moon turns at your locket’s bidding.', false]
+      case 'event-started':
+        return [EVENTS[event.eventId]?.rises ?? 'Something strange is happening…', true]
+      case 'event-ended':
+        return [
+          `${EVENTS[event.eventId]?.sets ?? 'The event is over.'}${event.sentHome ? ' You find yourself safely home.' : ''}`,
+          true,
+        ]
       case 'captain-letter':
         return ['A letter from Captain Mallow has arrived at your court!', true]
       case 'captain-joined':
@@ -137,6 +145,14 @@
   onMount(() =>
     runtime.onEvents((events) => {
       showWork(events)
+      for (const e of events) {
+        if (e.type !== 'event-started' || !settings.desktopAlerts || !document.hidden) continue
+        if (typeof Notification === 'undefined' || Notification.permission !== 'granted') continue
+        new Notification('Bloom Lands', {
+          body: EVENTS[e.eventId]?.rises,
+          tag: 'bloom-lands-event',
+        })
+      }
       for (const event of events) {
         const notice = describe(event)
         if (notice) show(...notice)

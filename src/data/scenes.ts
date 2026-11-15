@@ -371,6 +371,46 @@ const HAND_PLACED: Readonly<Record<string, SceneLayout>> = {
     camp: { x: 76, y: 82 },
     mount: { x: 30, y: 32 },
   },
+  // The Crimson Vale
+  'graveblossom-garden': {
+    slots: [
+      { x: 14, y: 80 },
+      { x: 30, y: 68 },
+      { x: 46, y: 84 },
+      { x: 62, y: 68 },
+      { x: 78, y: 82 },
+      { x: 90, y: 66 },
+    ],
+    creature: { x: 50, y: 40 },
+    camp: { x: 76, y: 70 },
+    mount: { x: 30, y: 36 },
+  },
+  'thornwood-hollow': {
+    slots: [
+      { x: 14, y: 72 },
+      { x: 30, y: 86 },
+      { x: 46, y: 70 },
+      { x: 62, y: 86 },
+      { x: 78, y: 72 },
+      { x: 90, y: 88 },
+    ],
+    creature: { x: 54, y: 40 },
+    camp: { x: 76, y: 78 },
+    mount: { x: 70, y: 32 },
+  },
+  'bat-belfry': {
+    slots: [
+      { x: 16, y: 82 },
+      { x: 32, y: 70 },
+      { x: 50, y: 86 },
+      { x: 66, y: 70 },
+      { x: 82, y: 84 },
+      { x: 92, y: 70 },
+    ],
+    creature: { x: 50, y: 34 },
+    camp: { x: 76, y: 82 },
+    mount: { x: 30, y: 32 },
+  },
 }
 
 /**

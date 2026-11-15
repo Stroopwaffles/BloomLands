@@ -28,6 +28,7 @@ export type WeatherKind =
   | 'storm'
   | 'rainbow'
   | 'updraft'
+  | 'blood-moon'
 
 export interface WeatherDef {
   id: WeatherKind
@@ -316,6 +317,18 @@ export const WEATHER: Readonly<Record<WeatherKind, WeatherDef>> = {
     flightAway: 0.6,
     dewAllDay: false,
   },
+  // The Crimson Vale, under its Blood Moon.
+  'blood-moon': {
+    id: 'blood-moon',
+    name: 'Blood moon',
+    description: 'The moon hangs huge and red. Something rustles in the dark… rare blooms stir.',
+    weight: 1,
+    regrowth: 1.2,
+    flightHome: 1,
+    flightAway: 1,
+    dewAllDay: false,
+    luck: 1.3,
+  },
 }
 
 /** The Glade's moon goes round in this order; a waxing or waning moon may become a starfall. */
@@ -347,6 +360,7 @@ export const REGION_WEATHER: Readonly<Record<string, readonly WeatherKind[]>> = 
   caves: ['drip-season', 'rumbles', 'still-air'],
   glade: MOON_CYCLE,
   sky: ['storm', 'rainbow', 'updraft'],
+  'crimson-vale': ['blood-moon'],
 }
 
 export const WEATHER_RULES = {
@@ -489,6 +503,16 @@ export const CREATURES: Readonly<Record<string, CreatureDef>> = {
     staysMs: 3 * 60_000,
     gentlerAfter: 'story-vesper',
     tapVerb: 'shoo the moths',
+  },
+  'bat-swarm': {
+    id: 'bat-swarm',
+    name: 'Bat swarm',
+    regionId: 'crimson-vale',
+    behavior: 'eats',
+    taps: 8,
+    eatEveryMs: 25_000,
+    staysMs: 3 * 60_000,
+    tapVerb: 'shoo the bats',
   },
   hawk: {
     id: 'hawk',

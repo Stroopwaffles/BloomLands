@@ -31,6 +31,9 @@ export function regionUnlocked(state: GameState, regionId: string): boolean {
  * also while the player has light and the court has the rank its rite needs.
  */
 export function regionReachable(state: GameState, regionId: string): boolean {
+  // An event region is open exactly while its event lasts.
+  const event = REGIONS[regionId]?.event
+  if (event) return state.specialEvents.active?.id === event
   if (regionUnlocked(state, regionId)) return true
   const region = REGIONS[regionId]
   if (!region?.needsLight || !region.unlock) return false
@@ -68,8 +71,10 @@ export function advanceMountRegions(state: GameState, random: Random): void {
 export function ensureRegion(state: GameState, regionId: string, random: Random): void {
   const region = REGIONS[regionId]
   if (!region) return
-  state.settlements[region.settlement] ??= { requests: [], nextArrivalMs: 60_000, filled: 0 }
   if (!state.weather[regionId]) state.weather[regionId] = rollWeather(regionId, random)
+  // Event regions have no village and no bloom: just their spots and their mini base.
+  if (region.event) return
+  state.settlements[region.settlement] ??= { requests: [], nextArrivalMs: 60_000, filled: 0 }
   if (state.bloom[regionId] === undefined) state.bloom[regionId] = startingBloom(state, regionId)
 }
 
@@ -109,7 +114,9 @@ export function placeOpen(state: GameState, placeId: string): boolean {
 
 /** Harvesting spots the player can reach, in display order. */
 export function openSpots(state: GameState): string[] {
+  // Event spots aren't part of the main game (traders never ask for their plants).
   return Object.values(REGIONS)
+    .filter((r) => !r.event)
     .flatMap((r) => [...r.spots, ...r.secretSpots])
     .filter((id) => SPOTS[id] && placeOpen(state, id))
 }

@@ -331,6 +331,21 @@ export interface GameState {
     /** The bonus run reached the final court rank: the game is finished. */
     finale?: boolean
   }
+  /**
+   * Special events (the Blood Moon). Kept through prestige: pantries carry over between events.
+   */
+  specialEvents: {
+    /** The event happening now, if any. */
+    active: { id: string; remainingMs: number } | null
+    /** Nightfalls since an event last began (each one makes the next a little likelier). */
+    nightsWithout: number
+    /** Whether it was night at the last tick (to spot nightfall). */
+    wasNight: boolean
+    /** How many times each event has happened. */
+    seen: Record<string, number>
+    /** Each event's pantry: its materials and makings, by item ID. */
+    stores: Record<string, Record<string, number>>
+  }
   /** Permanent or run bonuses that engine rules read. Filled in by later systems. */
   bonuses: {
     /** Extra offline progress allowed on top of the base 4 hours. */
@@ -453,6 +468,13 @@ export function createNewGame(now: number): GameState {
       requests: [],
       nextArrivalMs: 20_000,
       nextRequestId: 1,
+    },
+    specialEvents: {
+      active: null,
+      nightsWithout: 0,
+      wasNight: false,
+      seen: {},
+      stores: {},
     },
     prestige: {
       run: 1,

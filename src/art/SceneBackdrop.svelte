@@ -4,6 +4,7 @@
   import CavesBackdrop from './CavesBackdrop.svelte'
   import GladeBackdrop from './GladeBackdrop.svelte'
   import SkyBackdrop from './SkyBackdrop.svelte'
+  import CrimsonBackdrop from './CrimsonBackdrop.svelte'
   import OrchardBackdrop from './OrchardBackdrop.svelte'
   import SwampBackdrop from './SwampBackdrop.svelte'
 
@@ -55,6 +56,8 @@
     <GladeBackdrop {spotId} {weather} />
   {:else if region === 'sky'}
     <SkyBackdrop {spotId} {weather} />
+  {:else if region === 'crimson-vale'}
+    <CrimsonBackdrop {spotId} />
   {:else if spotId === 'fairy-ring'}
     <rect width="160" height="100" fill="url(#sky-glade)" />
     <g fill="#7fae74" stroke="#5f8f58" stroke-width="0.6">
@@ -199,7 +202,7 @@
   {/if}
 
   <!-- The Glade has its own twilight sky and moon. -->
-  {#if night && region !== 'glade'}
+  {#if night && region !== 'glade' && region !== 'crimson-vale'}
     <rect width="160" height="100" fill="#1e1b4b" opacity="0.5" />
     <circle cx="130" cy="16" r="6" fill="#fff3b0" />
     <circle cx="133" cy="14" r="5.5" fill="#3a3670" />

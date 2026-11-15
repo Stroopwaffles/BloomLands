@@ -18,6 +18,8 @@
     satchelOverload,
   } from '../../engine/modifiers'
   import { wildMountAt } from '../../engine/mounts'
+  import { spotEvent } from '../../engine/specialEvents'
+  import { EVENT_BASES, EVENTS } from '../../data/events'
   import { helpersAt } from '../../engine/helpers'
   import BloomMeter from '../components/BloomMeter.svelte'
   import Destinations from '../components/Destinations.svelte'
@@ -30,9 +32,12 @@
 
   const spotId = $derived($game.player.place)
   const spotDef = $derived(SPOTS[spotId])
+  /** A special event's spot (the Crimson Vale): harvests go to the event's pantry. */
+  const eventId = $derived(spotEvent(spotId))
   const spot = $derived($game.spots[spotId])
   const layout = $derived(SCENES[spotId] ?? DEFAULT_SCENE)
-  const full = $derived(satchelFull($game))
+  // Event spots fill the event's pantry, so a full satchel doesn't matter there.
+  const full = $derived(!eventId && satchelFull($game))
   const over = $derived(satchelOverload($game))
   const mountAway = $derived(satchelMountAway($game))
   const creature = $derived($game.challenges.creatures[spotId])
@@ -209,7 +214,15 @@
       <div class="me"><Art id="char-fairy" size={64} /></div>
       <div class="title">
         <h2>{spotDef.name}</h2>
-        <div class="meter"><BloomMeter regionId={spotDef.regionId} compact /></div>
+        {#if eventId}
+          <p class="event-clock">
+            {EVENTS[eventId].name} · sets in {formatDuration(
+              $game.specialEvents.active?.remainingMs ?? 0,
+            )}
+          </p>
+        {:else}
+          <div class="meter"><BloomMeter regionId={spotDef.regionId} compact /></div>
+        {/if}
       </div>
       <Destinations />
     </header>
@@ -330,6 +343,13 @@
     </div>
 
     <div class="below">
+      {#if eventId}
+        <p class="note stars-note">
+          Everything you gather here goes straight to the pantry at {EVENT_BASES[
+            EVENTS[eventId].baseId
+          ].name}, not your satchel. Take it to the Countess's cauldron before the moon sets!
+        </p>
+      {/if}
       {#if spotDef && $game.bloomcalls[spotDef.regionId]}
         <p class="note stars-note">
           Bloomcall is ringing here: rare plants are twice as likely ({formatDuration(
@@ -340,7 +360,9 @@
       {#if starfall}
         <p class="note stars-note">Stars are falling! Tap them as they fall to catch a gift.</p>
       {/if}
-      {#if over > 0}
+      {#if eventId}
+        <!-- The satchel isn't used here. -->
+      {:else if over > 0}
         <p class="note full" role="status">
           Your satchel is over-full by {over}: {mountAway ?? 'your Deep Pockets Draught wore off'}.
           Nothing is lost, but you can't gather until you unpack, sell, or send some home{mountAway
@@ -465,6 +487,12 @@
 
   h2 {
     margin: 0;
+  }
+
+  .event-clock {
+    margin: 4px 0 0;
+    font-weight: 700;
+    color: #ff8a9a;
   }
 
   .meter {

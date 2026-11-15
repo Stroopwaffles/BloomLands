@@ -96,4 +96,14 @@ export const MAP_ISLANDS: Readonly<Record<string, IslandDef>> = {
       'cloud-archive': { x: 18, y: 76 },
     },
   },
+  'crimson-vale': {
+    color: '#5a1a2a',
+    edge: '#2a0a14',
+    places: {
+      'moonless-manor': { x: 50, y: 32 },
+      'graveblossom-garden': { x: 26, y: 62 },
+      'thornwood-hollow': { x: 74, y: 62 },
+      'bat-belfry': { x: 50, y: 80 },
+    },
+  },
 }

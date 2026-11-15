@@ -15,6 +15,8 @@
   import SpellButtons from './SpellButtons.svelte'
   import {
     HOME,
+    EVENT_REGIONS,
+    isEventBase,
     isSettlement,
     isSpiritPlace,
     placeName,
@@ -44,11 +46,18 @@
 
   /** Open regions, then the next closed one (drawn in fog). */
   const nextLocked = $derived(REGION_ORDER.find((id) => !regionReachable($game, id)) ?? null)
-  const islands = $derived(
-    REGION_ORDER.filter(
+  /** A special event's region joins the map, at the far edge, while the event lasts. */
+  const eventIslands = $derived(
+    Object.values(EVENT_REGIONS)
+      .filter((r) => regionReachable($game, r.id) && MAP_ISLANDS[r.id])
+      .map((r) => r.id),
+  )
+  const islands = $derived([
+    ...REGION_ORDER.filter(
       (id) => (regionReachable($game, id) || id === nextLocked) && MAP_ISLANDS[id],
     ),
-  )
+    ...eventIslands,
+  ])
   const total = $derived(islands.length * 100)
 
   /** A place's position on the whole map, in map units (100 per island). */
@@ -88,9 +97,10 @@
     return Object.keys(MAP_ISLANDS[regionId].places).filter((id) => placeOpen($game, id))
   }
 
-  type Kind = 'home' | 'settlement' | 'spirit' | 'secret' | 'spot'
+  type Kind = 'home' | 'settlement' | 'spirit' | 'secret' | 'spot' | 'base'
   function kindOf(placeId: string): Kind {
     if (placeId === HOME) return 'home'
+    if (isEventBase(placeId)) return 'base'
     if (isSettlement(placeId)) return 'settlement'
     if (isSpiritPlace(placeId)) return 'spirit'
     if (SPOTS[placeId]?.secret) return 'secret'
@@ -102,6 +112,7 @@
     spirit: "Spirit's resting place",
     secret: 'Secret place',
     spot: 'Harvesting spot',
+    base: 'Mini base',
   }
 
   /** Spirit Path lines: from home to every awakened spirit's resting place. */
@@ -265,7 +276,7 @@
               onclick={(e) => onKeyClick(e, placeId)}
             >
               <span class="pin" aria-hidden="true">
-                {#if kind === 'home'}⌂{:else if kind === 'settlement'}⌂⌂{:else if kind === 'spirit'}✦{:else if kind === 'secret'}✧{:else}❦{/if}
+                {#if kind === 'home'}⌂{:else if kind === 'settlement'}⌂⌂{:else if kind === 'spirit'}✦{:else if kind === 'secret'}✧{:else if kind === 'base'}♜{:else}❦{/if}
               </span>
               {#if placeId === here}
                 <span class="you" aria-hidden="true"><Art id="char-fairy" size={26} /></span>
@@ -590,6 +601,12 @@
   .spirit .pin {
     border-color: #9a86cf;
     background: #f1ecff;
+  }
+
+  .base .pin {
+    border-color: #b0243e;
+    background: #3a0e1e;
+    color: #ffd6dc;
   }
 
   .secret .pin {

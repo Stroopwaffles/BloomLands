@@ -77,6 +77,18 @@ const ITEM_LIST: ItemDef[] = [
   { id: 'raw-prism-petals', name: 'Prism petals', category: 'raw' },
   { id: 'raw-whisperleaf', name: 'Whisperleaf', category: 'raw', tags: ['leaves'] },
 
+  // Blood Moon materials: they go straight to the Moonless Manor's pantry
+  { id: 'event-bloodrose-petals', name: 'Bloodrose petals', category: 'event' },
+  { id: 'event-grave-moss', name: 'Grave moss', category: 'event' },
+  { id: 'event-nightshade', name: 'Nightshade berries', category: 'event' },
+  { id: 'event-ghostcap', name: 'Ghostcaps', category: 'event' },
+  { id: 'event-batwing-fronds', name: 'Batwing fronds', category: 'event' },
+  { id: 'event-widows-lace', name: "Widow's lace", category: 'event' },
+  { id: 'event-moonblood', name: 'Moonblood', category: 'event' },
+  { id: 'event-bloodrose-essence', name: 'Bloodrose Essence', category: 'event' },
+  { id: 'event-shadow-silk', name: 'Shadow Silk', category: 'event' },
+  { id: 'event-ghostlight-wax', name: 'Ghostlight Wax', category: 'event' },
+
   // Refined materials (content doc → Recipe Tree → Tier 1)
   { id: 'refined-petal-paste', name: 'Petal Paste', category: 'refined' },
   { id: 'refined-leaf-tea', name: 'Leaf Tea', category: 'refined' },

@@ -49,9 +49,14 @@ function hopLeg(from: string, to: string): RouteLeg {
 function directLegs(from: string, to: string): RouteLeg[] | null {
   const base = baseTravelMs(from, to)
   if (base === null) return null
+  if (placeRegion(from) === placeRegion(to)) return [hopLeg(from, to)]
+  // An event region lies just beyond the edge of the map: one flight from anywhere.
+  if (REGIONS[placeRegion(from)]?.event || REGIONS[placeRegion(to)]?.event) {
+    const eventRegion = REGIONS[placeRegion(to)]?.event ? placeRegion(to) : placeRegion(from)
+    return [{ regionId: eventRegion, baseMs: base, hop: false }]
+  }
   const a = REGION_ORDER.indexOf(placeRegion(from))
   const b = REGION_ORDER.indexOf(placeRegion(to))
-  if (a === b) return [hopLeg(from, to)]
   const step = b > a ? 1 : -1
   const regions: string[] = []
   for (let i = a; i !== b + step; i += step) regions.push(REGION_ORDER[i])

@@ -481,6 +481,56 @@ const PLANT_LIST: PlantDef[] = [
     rarity: 'rare',
     yields: [{ itemId: 'raw-whisperleaf', amount: 1 }],
   },
+  // The Crimson Vale (Blood Moon only)
+  {
+    id: 'plant-bloodrose',
+    name: 'Bloodrose',
+    toughness: 7,
+    rarity: 'common',
+    yields: [{ itemId: 'event-bloodrose-petals', amount: 2 }],
+  },
+  {
+    id: 'plant-grave-moss',
+    name: 'Grave moss',
+    toughness: 5,
+    rarity: 'common',
+    yields: [{ itemId: 'event-grave-moss', amount: 2 }],
+  },
+  {
+    id: 'plant-nightshade',
+    name: 'Nightshade',
+    toughness: 6,
+    rarity: 'common',
+    yields: [{ itemId: 'event-nightshade', amount: 2 }],
+  },
+  {
+    id: 'plant-ghostcap',
+    name: 'Ghostcap',
+    toughness: 6,
+    rarity: 'common',
+    yields: [{ itemId: 'event-ghostcap', amount: 2 }],
+  },
+  {
+    id: 'plant-batwing-fern',
+    name: 'Batwing fern',
+    toughness: 8,
+    rarity: 'uncommon',
+    yields: [{ itemId: 'event-batwing-fronds', amount: 2 }],
+  },
+  {
+    id: 'plant-widows-lace',
+    name: "Widow's lace",
+    toughness: 9,
+    rarity: 'uncommon',
+    yields: [{ itemId: 'event-widows-lace', amount: 1 }],
+  },
+  {
+    id: 'plant-moonblood-lily',
+    name: 'Moonblood lily',
+    toughness: 12,
+    rarity: 'rare',
+    yields: [{ itemId: 'event-moonblood', amount: 1 }],
+  },
 ]
 
 export const PLANTS: Readonly<Record<string, PlantDef>> = Object.fromEntries(

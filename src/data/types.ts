@@ -1,6 +1,6 @@
 export type Rarity = 'common' | 'uncommon' | 'rare' | 'very-rare'
 
-export type ItemCategory = 'raw' | 'refined' | 'component' | 'potion' | 'trinket'
+export type ItemCategory = 'raw' | 'refined' | 'component' | 'potion' | 'trinket' | 'event'
 
 export interface ItemDef {
   /** Stable ID, also used as the art ID for the item's icon. */
@@ -171,4 +171,6 @@ export interface RegionDef {
   needsLight?: boolean
   /** Always dark (the Caves, the twilight Glade): the interface uses its night colors there. */
   dark?: boolean
+  /** Only open while this special event lasts (the Crimson Vale and the Blood Moon). */
+  event?: string
 }

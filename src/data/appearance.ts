@@ -318,6 +318,42 @@ export const OUTFIT_PIECES: Readonly<Record<string, OutfitPiece>> = {
     slot: 'headpiece',
     color: '#e2e6f0',
   },
+  'piece-bloodrose-gown': {
+    id: 'piece-bloodrose-gown',
+    name: 'Bloodrose gown',
+    slot: 'outfit',
+    color: '#9a1f3a',
+  },
+  'piece-thorn-crown': {
+    id: 'piece-thorn-crown',
+    name: 'Crown of thorns',
+    slot: 'headpiece',
+    color: '#2a1a2a',
+  },
+  'piece-gravewalker-coat': {
+    id: 'piece-gravewalker-coat',
+    name: 'Gravewalker coat',
+    slot: 'outfit',
+    color: '#3a4a3e',
+  },
+  'piece-raven-hat': {
+    id: 'piece-raven-hat',
+    name: 'Raven hat',
+    slot: 'headpiece',
+    color: '#24202e',
+  },
+  'piece-vampire-cape': {
+    id: 'piece-vampire-cape',
+    name: 'Vampire cape',
+    slot: 'outfit',
+    color: '#1e1424',
+  },
+  'piece-batwing-circlet': {
+    id: 'piece-batwing-circlet',
+    name: 'Bat-wing circlet',
+    slot: 'headpiece',
+    color: '#3a2a44',
+  },
 }
 
 export interface OutfitSet {
@@ -400,6 +436,22 @@ export const OUTFIT_SETS: Readonly<Record<string, OutfitSet>> = {
     id: 'outfit-sky-scholar',
     name: "Sky Scholar's set",
     pieces: ['piece-sky-scholar-robes', 'piece-star-circlet'],
+  },
+  // Blood Moon outfits (made at the Moonless Manor)
+  'outfit-crimson-rose': {
+    id: 'outfit-crimson-rose',
+    name: 'Crimson Rose set',
+    pieces: ['piece-bloodrose-gown', 'piece-thorn-crown'],
+  },
+  'outfit-gravewalker': {
+    id: 'outfit-gravewalker',
+    name: 'Gravewalker set',
+    pieces: ['piece-gravewalker-coat', 'piece-raven-hat'],
+  },
+  'outfit-vampire': {
+    id: 'outfit-vampire',
+    name: "Vampire's Regalia",
+    pieces: ['piece-vampire-cape', 'piece-batwing-circlet'],
   },
 }
 

@@ -1,5 +1,6 @@
 import { advanceCamps, advanceCreatures, advancePests, advanceSneak } from '../challenges'
 import { advanceSecrets } from '../secrets'
+import { advanceSpecialEvents } from '../specialEvents'
 import { advanceMountRegions } from '../regions'
 import { advanceFinale } from '../ending'
 import { advanceMoonTimers } from '../moon'
@@ -12,9 +13,10 @@ import type { System } from './types'
 /** The clock turns and the weather changes. Runs first so everything else sees the new time. */
 export const environmentSystem: System = {
   id: 'environment',
-  update(state, dtMs) {
+  update(state, dtMs, ctx) {
     advanceTime(state, dtMs)
     advanceWeather(state, dtMs, stateRandom(state))
+    advanceSpecialEvents(state, dtMs, stateRandom(state), ctx.offline)
     advanceBloomcalls(state, dtMs)
   },
 }

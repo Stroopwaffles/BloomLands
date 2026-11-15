@@ -1,6 +1,6 @@
 import { CREATURES } from '../data/challenges'
 import { FLIGHT_EVENT_RULES } from '../data/challenges'
-import { HOME, isSettlement, isSpiritPlace, isSpot, placeRegion } from '../data/world'
+import { HOME, isEventBase, isSettlement, isSpiritPlace, isSpot, placeRegion } from '../data/world'
 import type { GameEvent } from './events'
 import { applyInstantEvents, flightSpeed, rollFlightEvent, settleFlightEvent } from './flightEvents'
 import { ensureRegion, grounded, placeOpen } from './regions'
@@ -38,7 +38,7 @@ export function startTravel(
 ): GameEvent[] {
   const { player } = state
   if (player.travel) return [{ type: 'blocked', reason: 'flying' }]
-  if (to !== HOME && !isSpot(to) && !isSettlement(to) && !isSpiritPlace(to)) {
+  if (to !== HOME && !isSpot(to) && !isSettlement(to) && !isSpiritPlace(to) && !isEventBase(to)) {
     return [{ type: 'blocked', reason: 'not-here' }]
   }
   if (!placeOpen(state, to)) return [{ type: 'blocked', reason: 'locked' }]

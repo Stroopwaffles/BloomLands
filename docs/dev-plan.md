@@ -523,6 +523,34 @@ The recipes and rites the content doc lists that M15 and M16 left out:
   - "Workshop and research notices" turns the in-game notices on or off.
   - "Alerts while away" (off by default) sends a desktop notification while the game is open in the background. It asks the browser for permission when you turn it on, and explains if the browser blocks it.
 
+#### Special events: the Blood Moon (v0.10.0)
+
+**The framework** (`data/events.ts`, `engine/specialEvents.ts`). It's built so more events can be added later. A special event is a rare, limited-time happening:
+
+- It may begin at **nightfall**, during live play only, never while the game is closed. Each night it doesn't, the chance grows (`chance` plus `pityPerNight` for every night missed).
+- While it lasts, its **event region** joins the map at the far edge, one flight from anywhere (`RegionDef.event`, `EVENT_REGIONS`, `EVENT_FLIGHT_MS`). A glowing badge in the header counts down.
+- When it ends, the region fades. Anyone still inside is carried safely home.
+- **Nothing leaks into the main game.**
+  - Everything gathered in an event region goes straight to the event's **pantry** (`specialEvents.stores`), never the satchel.
+  - Traders, helpers and supply never use event spots.
+  - Event items have their own category (`event`) and aren't priced in the main economy.
+- Each event has a **mini base** (`EVENT_BASES`) with its own host and workshop. Its recipes (`EVENT_RECIPES`) turn pantry materials into event makings and **outfits**, which are kept forever.
+- Pantries, outfits and event history all last through prestige.
+
+**The Blood Moon** (from a Hearthling court on; 12% a night plus 6% for each night missed; lasts 40 minutes). It opens **the Crimson Vale**, a spooky vampire-fairy region under a huge red moon, with bats, gravestones, thorns and fog. The interface uses its night colors there.
+
+- **Spots:** Graveblossom Garden, Thornwood Hollow, and the Bat Belfry.
+- **Plants:**
+  - Bloodrose, grave moss, nightshade, ghostcap and batwing fern.
+  - Widow's lace, which is uncommon.
+  - The moonblood lily, which is rare.
+- **Trouble:** a bat swarm, which only appears during the event.
+- **The Moonless Manor** is the mini base, kept by **Countess Nocturna**. Her cauldron makes things instantly from the pantry:
+  - **Makings:** Bloodrose Essence, Shadow Silk and Ghostlight Wax.
+  - **Outfits:** three sets to wear: the **Crimson Rose** set (bloodrose gown and crown of thorns), the **Gravewalker** set (ghostlit coat and raven hat), and **Vampire's Regalia** (cape and bat-wing circlet, which needs moonblood).
+- **Music:** "The Moonless Manor", a slow minor waltz.
+- **Notices** announce when an event begins and ends, with an optional desktop alert. The debug panel can start or end a Blood Moon.
+
 ---
 
 ## 4. How We Work Each Milestone

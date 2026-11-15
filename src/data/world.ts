@@ -1,3 +1,4 @@
+import { EVENT_BASES } from './events'
 import type { RegionDef, SettlementDef, SpotDef } from './types'
 
 /** How many plants grow at a harvesting spot at once (the scene is a wide panorama). */
@@ -186,6 +187,39 @@ const SPOT_LIST: SpotDef[] = [
     slots: SLOTS_PER_SPOT,
     regrowMs: 38_000,
     trinkets: ['trinket-brass-gear', 'trinket-golden-feather'],
+  },
+
+  // The Crimson Vale (only during a Blood Moon). Everything gathered here goes to the
+  // Moonless Manor's pantry, never into the satchel.
+  {
+    id: 'graveblossom-garden',
+    name: 'Graveblossom Garden',
+    regionId: 'crimson-vale',
+    description: 'A forgotten graveyard where blood-red roses grow between the stones.',
+    plants: ['plant-bloodrose', 'plant-grave-moss', 'plant-nightshade', 'plant-widows-lace'],
+    slots: SLOTS_PER_SPOT,
+    regrowMs: 22_000,
+    trinkets: [],
+  },
+  {
+    id: 'thornwood-hollow',
+    name: 'Thornwood Hollow',
+    regionId: 'crimson-vale',
+    description: 'A black wood of twisted thorns. Something with red eyes watches from the dark.',
+    plants: ['plant-batwing-fern', 'plant-ghostcap', 'plant-nightshade', 'plant-widows-lace'],
+    slots: SLOTS_PER_SPOT,
+    regrowMs: 22_000,
+    trinkets: [],
+  },
+  {
+    id: 'bat-belfry',
+    name: 'The Bat Belfry',
+    regionId: 'crimson-vale',
+    description: 'A cracked bell tower full of bats. The rarest blooms grow in its shadow.',
+    plants: ['plant-batwing-fern', 'plant-ghostcap', 'plant-moonblood-lily', 'plant-bloodrose'],
+    slots: SLOTS_PER_SPOT,
+    regrowMs: 26_000,
+    trinkets: [],
   },
 
   // Secret areas: hidden until unlocked, re-locked on prestige (design doc 3.12)
@@ -563,7 +597,7 @@ export const SPIRIT_PLACES: Readonly<Record<string, SpiritPlaceDef>> = {
 // ---------------------------------------------------------------------------------------------
 // Regions (content doc → Recipe Tree → region unlocks)
 
-export const REGIONS: Readonly<Record<string, RegionDef>> = {
+const MAIN_REGIONS: Record<string, RegionDef> = {
   meadow: {
     id: 'meadow',
     name: 'Meadow',
@@ -639,6 +673,25 @@ export const REGIONS: Readonly<Record<string, RegionDef>> = {
   },
 }
 
+/** Regions that only open during a special event (not part of the main map's order). */
+export const EVENT_REGIONS: Readonly<Record<string, RegionDef>> = {
+  'crimson-vale': {
+    id: 'crimson-vale',
+    name: 'Crimson Vale',
+    settlement: 'moonless-manor',
+    spiritPlace: '',
+    secretSpots: [],
+    spots: ['graveblossom-garden', 'thornwood-hollow', 'bat-belfry'],
+    sceneSpot: 'graveblossom-garden',
+    unlock: null,
+    dark: true,
+    event: 'blood-moon',
+  },
+}
+
+/** Every region: the main seven, then the event regions. */
+export const REGIONS: Readonly<Record<string, RegionDef>> = { ...MAIN_REGIONS, ...EVENT_REGIONS }
+
 export const REGION_ORDER: readonly string[] = [
   'meadow',
   'forest',
@@ -676,6 +729,16 @@ export function isSpiritPlace(placeId: string): boolean {
   return placeId in SPIRIT_PLACES
 }
 
+/** A special event's mini base (the Moonless Manor). */
+export function isEventBase(placeId: string): boolean {
+  return placeId in EVENT_BASES
+}
+
+/** True for places in a region that only opens during a special event. */
+export function inEventRegion(placeId: string): boolean {
+  return !!REGIONS[placeRegion(placeId)]?.event
+}
+
 /** The region a place belongs to. Home sits at the edge of the Meadow. */
 export function placeRegion(placeId: string): string {
   if (placeId === HOME) return 'meadow'
@@ -683,6 +746,7 @@ export function placeRegion(placeId: string): string {
     SPOTS[placeId]?.regionId ??
     SETTLEMENTS[placeId]?.regionId ??
     SPIRIT_PLACES[placeId]?.regionId ??
+    EVENT_BASES[placeId]?.regionId ??
     'meadow'
   )
 }
@@ -723,8 +787,16 @@ export const WATER_FLIGHT_FACTOR = 1.4
 /** A flight along the Spirit Path, between home and awakened spirits' resting places. */
 export const SPIRIT_PATH_MS = 6_000
 
+/** A flight into (or out of) an event region: it lies just beyond the edge of the map. */
+export const EVENT_FLIGHT_MS = 20_000
+
 export function baseTravelMs(from: string, to: string): number | null {
   if (from === to) return null
+  const eventA = !!REGIONS[placeRegion(from)]?.event
+  const eventB = !!REGIONS[placeRegion(to)]?.event
+  if (eventA || eventB) {
+    return eventA && eventB && placeRegion(from) === placeRegion(to) ? HOP_MS : EVENT_FLIGHT_MS
+  }
   const route = ROUTES[`${from}|${to}`] ?? ROUTES[`${to}|${from}`]
   if (route !== undefined) return route
   const a = REGION_ORDER.indexOf(placeRegion(from))
@@ -736,6 +808,10 @@ export function baseTravelMs(from: string, to: string): number | null {
 export function placeName(placeId: string): string {
   if (placeId === HOME) return 'Home'
   return (
-    SPOTS[placeId]?.name ?? SETTLEMENTS[placeId]?.name ?? SPIRIT_PLACES[placeId]?.name ?? placeId
+    SPOTS[placeId]?.name ??
+    SETTLEMENTS[placeId]?.name ??
+    SPIRIT_PLACES[placeId]?.name ??
+    EVENT_BASES[placeId]?.name ??
+    placeId
   )
 }

@@ -102,6 +102,7 @@ export function performPrestige(state: GameState): GameEvent[] {
   fresh.outfits = state.outfits
   fresh.stats = state.stats
   fresh.supply = state.supply
+  fresh.specialEvents = state.specialEvents
   // Comforts are quality-of-life upgrades: once bought, they're kept forever.
   fresh.upgrades = state.upgrades.filter((id) => UPGRADES[id]?.category === 'comfort')
   fresh.prestige = {

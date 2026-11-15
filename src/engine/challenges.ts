@@ -8,7 +8,7 @@ import {
   SNEAK_MS,
 } from '../data/challenges'
 import { PLANTS } from '../data/plants'
-import { SPOTS } from '../data/world'
+import { REGIONS, SPOTS } from '../data/world'
 import { BLOOM_REWARDS } from '../data/bloom'
 import { addBloom } from './bloom'
 import { recordCrewWon } from './ending'
@@ -100,6 +100,9 @@ export function advanceCreatures(state: GameState, dtMs: number, random: Random)
   for (const def of Object.values(CREATURES)) {
     // A spirit's relic can make a creature a friend for good.
     if (creatureAtPeace(state, def.id)) continue
+    // Event creatures (the bats) only turn up while their event lasts.
+    const event = REGIONS[def.regionId]?.event
+    if (event && state.specialEvents.active?.id !== event) continue
     // Some only turn up in certain weather (a rockfall needs rumbles).
     if (def.weather && state.weather[def.regionId]?.kind !== def.weather) continue
     // Curios like the Nightlight Jar make a region's troubles rarer.
