@@ -47,7 +47,7 @@ describe('the Fairy Ring', () => {
     expect(state.curios).toContain('curio-pocket-sundial')
     expect(state.outfits).toContain('outfit-dewdrop')
     expect(state.inbox.map((e) => e.type)).toEqual(['secret', 'curio', 'outfit'])
-    expect(state.spots['fairy-ring'].slots).toHaveLength(6)
+    expect(state.spots['fairy-ring'].slots).toHaveLength(9)
   })
 
   it("isn't somewhere supply helpers go", () => {

@@ -19,7 +19,10 @@ export interface SceneLayout {
   mount: Point
 }
 
-export const SCENES: Readonly<Record<string, SceneLayout>> = {
+import { SLOTS_PER_SPOT } from './world'
+
+/** The hand-placed layouts, from when spots had six plants in a narrower scene. */
+const HAND_PLACED: Readonly<Record<string, SceneLayout>> = {
   'buttercup-rise': {
     slots: [
       { x: 13, y: 74 },
@@ -369,6 +372,25 @@ export const SCENES: Readonly<Record<string, SceneLayout>> = {
     mount: { x: 30, y: 32 },
   },
 }
+
+/**
+ * Spreads a layout across the wide scene: the plants stand evenly from edge to edge, keeping the
+ * hand-placed rhythm of front and back rows (each spot's own pattern of heights, repeated).
+ */
+function spread(layout: SceneLayout, count = SLOTS_PER_SPOT): SceneLayout {
+  const first = 6
+  const last = 94
+  const step = (last - first) / (count - 1)
+  const slots = Array.from({ length: count }, (_, i) => ({
+    x: Math.round((first + i * step) * 10) / 10,
+    y: layout.slots[i % layout.slots.length].y,
+  }))
+  return { ...layout, slots }
+}
+
+export const SCENES: Readonly<Record<string, SceneLayout>> = Object.fromEntries(
+  Object.entries(HAND_PLACED).map(([id, layout]) => [id, spread(layout)]),
+)
 
 /** A plain layout for any spot without a hand-placed one. */
 export const DEFAULT_SCENE: SceneLayout = SCENES['buttercup-rise']

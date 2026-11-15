@@ -286,6 +286,10 @@ export function regrowSpots(state: GameState, dtMs: number, random: Random): voi
       weatherIn(state, regionId).regrowth *
       bloomRegrowth(state, regionId) *
       boostRegrowth(state)
+    // Spots visited before they had room for more plants grow the new ones in, as usual.
+    while (spot.slots.length < SPOTS[spotId].slots) {
+      spot.slots.push({ plantId: null, hp: 0, regrowMs: SPOTS[spotId].regrowMs })
+    }
     for (const slot of spot.slots) {
       if (slot.plantId) continue
       slot.regrowMs -= growth

@@ -70,7 +70,8 @@
 <style>
   .plant-spot {
     position: absolute;
-    width: 18%;
+    /* A share of the wide scene's width (the same size as 18% of the old 16:10 scene). */
+    width: 13.5%;
     transform: translate(-50%, -96%);
     display: flex;
     justify-content: center;

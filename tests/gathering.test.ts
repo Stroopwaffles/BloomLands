@@ -175,7 +175,7 @@ describe('travel', () => {
     advance(state, START + 8_000)
     expect(state.player.travel).toBeNull()
     expect(state.player.place).toBe('buttercup-rise')
-    expect(state.spots['buttercup-rise'].slots).toHaveLength(6)
+    expect(state.spots['buttercup-rise'].slots).toHaveLength(9)
   })
 
   it('lands while the game is closed', () => {
@@ -236,5 +236,20 @@ describe('depositing', () => {
       reason: 'not-here',
     })
     expect(state.player.satchel).toEqual({ 'raw-clover-leaves': 2 })
+  })
+})
+
+describe('more plants per spot', () => {
+  it('spots visited before they grew nine plants grow the new ones in', async () => {
+    const { regrowSpots } = await import('../src/engine/gathering')
+    const { createNewGame } = await import('../src/engine/state')
+    const state = createNewGame(0)
+    state.spots['buttercup-rise'] = {
+      slots: Array.from({ length: 6 }, () => ({ plantId: 'plant-clover', hp: 2, regrowMs: 0 })),
+    }
+    regrowSpots(state, 1000, () => 0.5)
+    expect(state.spots['buttercup-rise'].slots).toHaveLength(9)
+    regrowSpots(state, 60_000, () => 0.5)
+    expect(state.spots['buttercup-rise'].slots.every((s) => s.plantId)).toBe(true)
   })
 })

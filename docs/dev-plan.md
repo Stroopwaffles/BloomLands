@@ -511,6 +511,11 @@ The recipes and rites the content doc lists that M15 and M16 left out:
   - **Start a brand-new game** (asks first) wipes everything, prestige included.
   - The Root Song tab can replay the ending and reopen the final screen.
 
+#### Wider scenes, more plants (v0.9.1)
+
+- The harvesting scene is a wide **21:10 panorama** (up to 1400px, still capped by screen height). Plants, creatures, camps, mounts and helpers are sized as a share of its width, so they stay the same size as before.
+- Every spot grows **9 plants** instead of 6 (`SLOTS_PER_SPOT`). Each spot's hand-placed front and back rows are spread evenly across the wider scene (`spread` in `scenes.ts`). Spots from older saves grow the extra plants in as usual.
+
 ---
 
 ## 4. How We Work Each Milestone

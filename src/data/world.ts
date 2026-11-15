@@ -1,5 +1,8 @@
 import type { RegionDef, SettlementDef, SpotDef } from './types'
 
+/** How many plants grow at a harvesting spot at once (the scene is a wide panorama). */
+export const SLOTS_PER_SPOT = 9
+
 /** The player's home. Not a harvesting spot, but a place you can fly to. It sits in the Meadow. */
 export const HOME = 'home'
 
@@ -20,7 +23,7 @@ const SPOT_LIST: SpotDef[] = [
       'plant-morning-dew',
       'plant-four-leaf-clover',
     ],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 20_000,
     trinkets: ['trinket-lost-button', 'trinket-thimble'],
   },
@@ -30,7 +33,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'meadow',
     description: 'A breezy hollow where dandelion seeds float.',
     plants: ['plant-dandelion', 'plant-wild-strawberry', 'plant-morning-dew'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 25_000,
     trinkets: ['trinket-glass-bead', 'trinket-lost-button'],
   },
@@ -42,7 +45,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'forest',
     description: 'The cool forest floor under the ferns. Mushrooms and moss.',
     plants: ['plant-moss', 'plant-fern', 'plant-button-mushroom', 'plant-red-cap'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 26_000,
     trinkets: ['trinket-glass-marble', 'trinket-brass-key'],
   },
@@ -53,7 +56,7 @@ const SPOT_LIST: SpotDef[] = [
     description:
       "A ring of old stumps in a sunbeam clearing. Berries, acorns, the Forest's treasures.",
     plants: ['plant-bilberry', 'plant-acorn', 'plant-moss', 'plant-golden-chanterelle'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 30_000,
     trinkets: ['trinket-ribbon-scrap', 'trinket-brass-key'],
   },
@@ -65,7 +68,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'swamp',
     description: 'A dense bed of reeds and cattails along the bank.',
     plants: ['plant-reed', 'plant-cattail', 'plant-marsh-marigold', 'plant-bog-myrtle'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 28_000,
     trinkets: ['trinket-bottle-cap', 'trinket-fishing-fly'],
   },
@@ -75,7 +78,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'swamp',
     description: 'Open water dotted with lilies. Easier to reach with the frog.',
     plants: ['plant-duckweed', 'plant-water-lily', 'plant-bog-orchid'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 30_000,
     trinkets: ['trinket-tiny-bell', 'trinket-bottle-cap'],
     water: true,
@@ -93,7 +96,7 @@ const SPOT_LIST: SpotDef[] = [
       'plant-bee-balm',
       'plant-golden-pollen',
     ],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 28_000,
     trinkets: ['trinket-seed-packet', 'trinket-sewing-needle'],
   },
@@ -103,7 +106,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'orchard',
     description: 'A gnarled, ancient pear tree dripping with honeycomb and fallen fruit.',
     plants: ['plant-honey-drip', 'plant-crabapple', 'plant-quince-blossom'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 30_000,
     trinkets: ['trinket-copper-coin', 'trinket-seed-packet'],
   },
@@ -121,7 +124,7 @@ const SPOT_LIST: SpotDef[] = [
       'plant-ghost-orchid',
       'plant-starfungus',
     ],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 30_000,
     trinkets: ['trinket-iron-key', 'trinket-glass-lens'],
   },
@@ -131,7 +134,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'caves',
     description: 'A wall of crystals and geodes. Very tough, very valuable.',
     plants: ['plant-crystal-shard', 'plant-geode', 'plant-cave-moss'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 34_000,
     trinkets: ['trinket-silver-ring', 'trinket-glass-lens'],
   },
@@ -148,7 +151,7 @@ const SPOT_LIST: SpotDef[] = [
       'plant-moonpetal',
       'plant-midnight-rose',
     ],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 30_000,
     trinkets: ['trinket-pearl', 'trinket-silver-spoon'],
   },
@@ -158,7 +161,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'glade',
     description: 'A slow stream reflecting the moon, with ferns and moonbeams to catch.',
     plants: ['plant-starmoss', 'plant-moonbeam', 'plant-silverleaf-fern', 'plant-moonpetal'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 32_000,
     trinkets: ['trinket-music-box-key', 'trinket-pearl'],
   },
@@ -170,7 +173,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'sky',
     description: 'Stepped gardens of flowers growing on clouds.',
     plants: ['plant-skybell', 'plant-rainbow-moss', 'plant-cloudbloom', 'plant-aurora-blossom'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 34_000,
     trinkets: ['trinket-golden-feather', 'trinket-kite-string'],
   },
@@ -180,7 +183,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'sky',
     description: 'Cliffs where the wind sings through the stone. Tough, rare plants.',
     plants: ['plant-sunpetal', 'plant-wind-thistle', 'plant-thunder-lily', 'plant-rainbow-moss'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 38_000,
     trinkets: ['trinket-brass-gear', 'trinket-golden-feather'],
   },
@@ -192,7 +195,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'meadow',
     description: 'A circle of mushrooms that only shows itself after a rite performed at dawn.',
     plants: ['plant-ringcap', 'plant-clover', 'plant-daisy', 'plant-morning-dew'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 30_000,
     trinkets: ['trinket-glass-bead', 'trinket-thimble'],
     secret: {
@@ -207,7 +210,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'forest',
     description: "Old Burdock's secret reading room, inside a fallen log lined with mossy shelves.",
     plants: ['plant-inkcap', 'plant-fern', 'plant-moss', 'plant-button-mushroom'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 32_000,
     trinkets: ['trinket-brass-key', 'trinket-glass-marble'],
     secret: {
@@ -226,7 +229,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'forest',
     description: 'A silver-birch glade the Forest only shows to those who have helped it bloom.',
     plants: ['plant-birch-catkin', 'plant-bilberry', 'plant-fern', 'plant-golden-chanterelle'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 32_000,
     trinkets: ['trinket-ribbon-scrap', 'trinket-glass-marble'],
     secret: {
@@ -241,7 +244,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'swamp',
     description: "A hidden pool the will-o'-wisps lead you to, once the Swamp is blooming.",
     plants: ['plant-wisp-lily', 'plant-water-lily', 'plant-cattail', 'plant-duckweed'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 32_000,
     trinkets: ['trinket-tiny-bell', 'trinket-fishing-fly'],
     water: true,
@@ -257,7 +260,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'orchard',
     description: 'The golden heart of Combhaven, where the queen keeps her court.',
     plants: ['plant-royal-jelly', 'plant-honey-drip', 'plant-quince-blossom', 'plant-bee-balm'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 32_000,
     trinkets: ['trinket-copper-coin', 'trinket-sewing-needle'],
     secret: {
@@ -277,7 +280,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'orchard',
     description: 'The grumpy badger’s secret tunnel, cool and earthy, smelling of truffles.',
     plants: ['plant-truffle', 'plant-crabapple', 'plant-honey-drip', 'plant-bee-balm'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 32_000,
     trinkets: ['trinket-copper-coin', 'trinket-seed-packet'],
     secret: {
@@ -297,7 +300,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'caves',
     description: 'A hidden hollow inside one enormous geode, glittering in every color.',
     plants: ['plant-star-crystal', 'plant-geode', 'plant-crystal-shard', 'plant-ghost-orchid'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 34_000,
     trinkets: ['trinket-silver-ring', 'trinket-glass-lens'],
     secret: {
@@ -318,7 +321,7 @@ const SPOT_LIST: SpotDef[] = [
     description:
       "Digby's lift shaft, where a beam of sunlight lets surface plants grow underground.",
     plants: ['plant-sunshaft-fern', 'plant-clover', 'plant-daisy', 'plant-cave-moss'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 30_000,
     trinkets: ['trinket-iron-key', 'trinket-lost-button'],
     secret: {
@@ -333,7 +336,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'glade',
     description: 'A deep well of night sky where fallen stars come to rest.',
     plants: ['plant-stardust-bloom', 'plant-moonbeam', 'plant-moonpetal', 'plant-midnight-rose'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 34_000,
     trinkets: ['trinket-pearl', 'trinket-music-box-key'],
     secret: {
@@ -357,7 +360,7 @@ const SPOT_LIST: SpotDef[] = [
       'plant-evening-primrose',
       'plant-starmoss',
     ],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 30_000,
     trinkets: ['trinket-silver-spoon', 'trinket-music-box-key'],
     secret: {
@@ -372,7 +375,7 @@ const SPOT_LIST: SpotDef[] = [
     regionId: 'sky',
     description: 'A garden at the top of the sky, where the aurora touches down to bloom.',
     plants: ['plant-prism-blossom', 'plant-aurora-blossom', 'plant-skybell', 'plant-sunpetal'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 38_000,
     trinkets: ['trinket-golden-feather', 'trinket-brass-gear'],
     secret: {
@@ -388,7 +391,7 @@ const SPOT_LIST: SpotDef[] = [
     description:
       'A library of cloud-scrolls drifting in the wind, where the sky remembers everything.',
     plants: ['plant-whisperleaf', 'plant-cloudbloom', 'plant-rainbow-moss', 'plant-wind-thistle'],
-    slots: 6,
+    slots: SLOTS_PER_SPOT,
     regrowMs: 34_000,
     trinkets: ['trinket-kite-string', 'trinket-brass-gear'],
     secret: {

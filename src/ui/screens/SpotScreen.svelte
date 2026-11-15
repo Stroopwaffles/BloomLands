@@ -474,10 +474,13 @@
 
   .scene {
     position: relative;
-    /* Fill the width, but never so tall that the controls below fall off a tablet screen. */
-    width: min(100%, 1100px, calc((100vh - 200px) * 1.6));
+    /*
+     * A wide panorama: fill the width, but never so tall that the controls below fall off a
+     * tablet screen. Things inside are sized as a share of this width.
+     */
+    width: min(100%, 1400px, calc((100vh - 200px) * 2.1));
     margin: 0 auto;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 21 / 10;
     border-radius: 28px;
     overflow: hidden;
     border: 3px solid #cfe3b8;
@@ -496,7 +499,7 @@
 
   .camp {
     position: absolute;
-    width: 30%;
+    width: 23%;
     transform: translate(-50%, -80%);
     pointer-events: none;
   }
@@ -549,7 +552,7 @@
 
   .worker {
     position: absolute;
-    width: 8%;
+    width: 6%;
     min-width: 34px;
     transform: translate(-50%, -100%);
     display: flex;
@@ -613,7 +616,7 @@
 
   .mount {
     position: absolute;
-    width: 11%;
+    width: 8.5%;
     transform: translate(-50%, -50%);
     animation: hover 2.4s ease-in-out infinite;
     pointer-events: none;
@@ -627,7 +630,7 @@
 
   .creature {
     position: absolute;
-    width: 15%;
+    width: 11.5%;
     min-width: 56px;
     padding: 0;
     transform: translate(-50%, -92%);
