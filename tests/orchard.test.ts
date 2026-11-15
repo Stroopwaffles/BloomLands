@@ -21,7 +21,7 @@ function readyForOrchard(): GameState {
   state.research.completed.push('research-first-blossom')
   state.inventory = { 'component-lily-balm': 2, 'component-sun-salve': 2 }
   // Helpers count toward the court: enough of them for a Bramble Court.
-  for (let id = 1; id <= 15; id++) {
+  for (let id = 1; id <= 18; id++) {
     state.helpers.list.push({ id, type: 'gatherer', name: 'H', task: null } as HelperState)
   }
   return state

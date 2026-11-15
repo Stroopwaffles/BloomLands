@@ -85,7 +85,8 @@ export function gathersAtSpot(type: HelperType): boolean {
 export const BREWER_KEEP = { default: 10, choices: [5, 10, 25, 50] }
 
 /** Peddlers: how much they carry to market per trip, and how long selling takes. */
-export const PEDDLER_RULES = { haul: 20, sellMs: 20_000 }
+/** Peddlers carry a load to the nearest shop and keep a small share for their trouble. */
+export const PEDDLER_RULES = { haul: 15, sellMs: 20_000, share: 0.7 }
 
 /** Scouts: chances per trip of finding a trinket, and of finding a second one. */
 export const SCOUT_RULES = { trinketChance: 0.6, secondChance: 0.2 }

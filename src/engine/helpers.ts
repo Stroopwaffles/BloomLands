@@ -202,7 +202,7 @@ function sellBag(helper: HelperState): void {
   let glimmers = 0
   for (const [itemId, amount] of Object.entries(helper.bag)) glimmers += sellPrice(itemId) * amount
   helper.bag = {}
-  helper.purse = (helper.purse ?? 0) + glimmers
+  helper.purse = (helper.purse ?? 0) + Math.floor(glimmers * PEDDLER_RULES.share)
 }
 
 /** A brewer takes the ingredients and starts a batch at the station. */

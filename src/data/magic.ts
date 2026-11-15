@@ -164,6 +164,8 @@ export interface RitualDef {
   secret?: string
   /** Performed on a region the player chooses (Renewal, Bloomcall, Clear Skies). */
   targetsRegion?: boolean
+  /** A region that must be open first (the Root Song needs the Sky Isles). */
+  requiresRegion?: string
 }
 
 /** Rite of Renewal: bloom gained, and the extra signature component each repeat asks for. */
@@ -309,7 +311,8 @@ export const RITUALS: Readonly<Record<string, RitualDef>> = {
     description:
       'Gives the land Root Song and begins a new run. Your fairy, outfits, Comforts, relics and Root Song stay; everything else starts over.',
     effect: 'root-song',
-    rank: 4,
+    rank: 5,
+    requiresRegion: 'sky',
     cost: [{ itemId: 'component-harmony-blend', amount: 1 }],
   },
   'ritual-turning-night': {

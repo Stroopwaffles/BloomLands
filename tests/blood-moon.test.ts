@@ -123,7 +123,8 @@ describe('the Crimson Vale and the Moonless Manor', () => {
     state.upgrades.push('lodging-ritual-circle')
     state.research.completed.push('research-root-song')
     state.inventory['component-harmony-blend'] = 1
-    for (let id = 10; id < 40; id++) {
+    state.unlockedRegions.push('sky')
+    for (let id = 10; id < 50; id++) {
       state.helpers.list.push({ id, type: 'gatherer', name: 'H', task: null } as HelperState)
     }
     applyAction(state, { type: 'ritual/perform', ritualId: 'ritual-root-song' })

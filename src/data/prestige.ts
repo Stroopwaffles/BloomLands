@@ -53,8 +53,8 @@ export type BonusEffect =
   | { kind: 'lodgingCost'; multiplier: number }
 
 export const PRESTIGE_RULES = {
-  /** Blossom Court (index into COURT_RANKS). */
-  requiredRank: 4,
+  /** Moon Court (index into COURT_RANKS), with the Sky Isles reached: every run sees all seven regions. */
+  requiredRank: 5,
   /** Root Song earned: one per this many bloom points, summed over every region. */
   bloomPerSong: 10,
   perRank: 3,

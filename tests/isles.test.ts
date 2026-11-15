@@ -16,7 +16,7 @@ const START = 1_700_000_000_000
 function moonCourt(): GameState {
   const state = createNewGame(START)
   state.unlockedRegions.push('forest', 'swamp', 'orchard', 'caves', 'glade')
-  for (let id = 1; id <= 40; id++) {
+  for (let id = 1; id <= 44; id++) {
     state.helpers.list.push({ id, type: 'gatherer', name: 'H', task: null } as HelperState)
   }
   return state

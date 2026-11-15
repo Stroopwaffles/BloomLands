@@ -242,7 +242,7 @@ Gathering itself does **not** raise bloom (for now).
 
 **When the player can prestige (decided):**
 - Prestige is performed as the **Root Song Ritual**, which must be **unlocked through research**, **and**
-- the court must reach a **required court rank**: **Blossom Court** (rank 5 of 7).
+- the court must reach a **required court rank**: **Moon Court** (rank 6 of 7), **and** the **Sky Isles** must be reached, so every run sees all seven regions (decided in M18).
 
 **Root Song earned** is based on total bloom across all regions, plus bonuses for court rank and completed storylines. Exact numbers are set during balancing.
 

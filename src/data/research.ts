@@ -665,7 +665,7 @@ RESEARCH_LIST.push(
     name: 'Root Song Ritual',
     branch: 'rites',
     description:
-      'Sing the land a song of its roots: it heals, and a new run begins. Learns Harmony Blend too. Performing it needs a Blossom Court.',
+      'Sing the land a song of its roots: it heals, and a new run begins. Learns Harmony Blend too. Performing it needs a Moon Court and the Sky Isles.',
     cost: [
       { itemId: 'component-glow-ink', amount: 2 },
       { itemId: 'component-heart-nectar', amount: 1 },

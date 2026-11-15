@@ -24,7 +24,7 @@ function readyForCaves(): GameState {
   state.unlockedRegions.push('forest', 'swamp', 'orchard')
   state.research.completed.push('research-lantern-rite')
   state.inventory = { 'component-beeswax-candle': 2, 'component-lily-balm': 1 }
-  for (let id = 1; id <= 15; id++) {
+  for (let id = 1; id <= 18; id++) {
     state.helpers.list.push({ id, type: 'gatherer', name: 'H', task: null } as HelperState)
   }
   return state

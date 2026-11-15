@@ -210,6 +210,8 @@ export function checkRitual(
   const region = RITUALS[ritualId].region
   if (region && courtRank(state) < (REGIONS[region].unlock?.rank ?? 0)) return 'needs-rank'
   if (courtRank(state) < (RITUALS[ritualId].rank ?? 0)) return 'needs-rank'
+  const needsRegion = RITUALS[ritualId].requiresRegion
+  if (needsRegion && !regionUnlocked(state, needsRegion)) return 'needs-region'
   if (RITUALS[ritualId].targetsRegion) {
     if (!regionId || !riteRegions(state, ritualId).includes(regionId)) return 'no-target'
     if (RITUALS[ritualId].effect === 'clear-skies') {

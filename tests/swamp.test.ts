@@ -31,6 +31,8 @@ function readyForSwamp(): GameState {
     'lodging-storeroom-2',
     'lodging-press',
     'lodging-spinning-wheel',
+    'lodging-supply-nook',
+    'lodging-mouse-bunks-2',
   )
   state.unlockedRegions.push('forest')
   state.research.completed.push('research-reed-gate')

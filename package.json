@@ -1,7 +1,7 @@
 {
   "name": "bloom-lands",
   "private": true,
-  "version": "0.10.0",
+  "version": "0.11.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -13,7 +13,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "verify": "npm run check && npm run lint && npm run format:check && npm run test && npm run build"
+    "verify": "npm run check && npm run lint && npm run format:check && npm run test && npm run build",
+    "balance": "vitest run --config vitest.sim.config.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -69,7 +69,9 @@ describe('settlement shops', () => {
     applyAction(state, { type: 'shop/sell', itemId: 'potion-lucky-dew', amount: 1 })
     applyAction(state, { type: 'shop/sell', itemId: 'trinket-thimble', amount: 1 })
     expect(state.player.satchel).toEqual({})
-    expect(sellPrice('raw-golden-caps')).toBe(Math.floor(ITEM_VALUES['raw-golden-caps'] / 2))
+    expect(sellPrice('raw-golden-caps')).toBe(
+      Math.floor(ITEM_VALUES['raw-golden-caps'] * SHOP_RULES.sellRate),
+    )
     expect(state.resources.glimmers).toBe(
       100 +
         sellPrice('raw-golden-caps') * 2 +
@@ -188,10 +190,13 @@ describe('peddlers', () => {
     advanceHelpers(state, 1, Math.random)
     expect(peddler.tripSpot).toBe('thimblewick')
     expect(peddler.bag['refined-petal-paste']).toBe(PEDDLER_RULES.haul)
-    expect(state.inventory['refined-petal-paste']).toBe(30)
+    expect(state.inventory['refined-petal-paste']).toBe(50 - PEDDLER_RULES.haul)
     for (let i = 0; i < 20; i++) advanceHelpers(state, 60_000, Math.random)
     expect(state.inventory['refined-petal-paste']).toBe(20)
-    expect(state.resources.glimmers).toBe(30 * sellPrice('refined-petal-paste'))
+    // Two hauls (15 and 15), the peddler keeping a small share of each.
+    const haul = (n: number) =>
+      Math.floor(n * sellPrice('refined-petal-paste') * PEDDLER_RULES.share)
+    expect(state.resources.glimmers).toBe(haul(15) + haul(15))
     expect(peddler.phase).toBe('idle')
     expect(state.inventory['raw-clover-leaves']).toBe(5)
   })

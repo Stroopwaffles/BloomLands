@@ -39,8 +39,8 @@
           ? ` · ${prestige.rootSongEarned} earned in all`
           : ''}.
         {#if prestige.run === 1}
-          Reach a {COURT_RANKS[PRESTIGE_RULES.requiredRank].name}, research the Root Song Ritual
-          (Rites) and brew a Harmony Blend to sing it. Right now it would give
+          Reach a {COURT_RANKS[PRESTIGE_RULES.requiredRank].name} and the Sky Isles, research the Root
+          Song Ritual (Rites) and brew a Harmony Blend to sing it. Right now it would give
           <strong>{preview.total}</strong> Root Song.
         {:else}
           Singing again now would give <strong>{preview.total}</strong> Root Song.

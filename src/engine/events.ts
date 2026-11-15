@@ -31,6 +31,7 @@ export type BlockedReason =
   | 'cooling-down'
   | 'storm'
   | 'bonus-run'
+  | 'needs-region'
 
 /**
  * Things that just happened, returned by actions so the screen can react (floating numbers,

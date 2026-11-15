@@ -29,6 +29,7 @@ export const BLOCKED_TEXT: Record<BlockedReason, string> = {
   'not-full-moon': 'This rite only works under a full moon in the Glade.',
   'no-stars': 'No stars are falling right now.',
   'cooling-down': 'Not just yet. Try again a little later.',
+  'needs-region': 'First reach the Sky Isles.',
   'bonus-run':
     'This is your bonus run: the Root Song has been sung for the last time. Grow your court to its final rank!',
   storm:

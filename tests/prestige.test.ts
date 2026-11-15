@@ -20,7 +20,8 @@ function readyToSing(): GameState {
   state.upgrades.push('lodging-ritual-circle', 'qol-auto-deposit')
   state.research.completed.push('research-root-song')
   state.inventory['component-harmony-blend'] = 1
-  for (let id = 1; id <= 30; id++) {
+  state.unlockedRegions.push('sky')
+  for (let id = 1; id <= 44; id++) {
     state.helpers.list.push({ id, type: 'gatherer', name: 'H', task: null } as HelperState)
   }
   state.bloom.meadow = 120
@@ -35,7 +36,7 @@ function sing(state: GameState) {
 }
 
 describe('the Root Song Ritual', () => {
-  it('needs the research, a Blossom Court and a Harmony Blend', () => {
+  it('needs the research, a Moon Court, the Sky Isles and a Harmony Blend', () => {
     const state = readyToSing()
     expect(courtRank(state)).toBeGreaterThanOrEqual(4)
     expect(checkRitual(state, 'ritual-root-song')).toBe('ok')
@@ -44,6 +45,9 @@ describe('the Root Song Ritual', () => {
     const fresh = readyToSing()
     fresh.inventory = {}
     expect(checkRitual(fresh, 'ritual-root-song')).toBe('missing-items')
+    const grounded = readyToSing()
+    grounded.unlockedRegions = grounded.unlockedRegions.filter((r) => r !== 'sky')
+    expect(checkRitual(grounded, 'ritual-root-song')).toBe('needs-region')
   })
 
   it('starts a new run, keeping what lasts and earning Root Song', () => {

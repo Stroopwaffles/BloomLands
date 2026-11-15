@@ -125,8 +125,13 @@
             {/if}
             <CostList cost={ritualCost($game, ritualId, regionId)} stock={payingStock($game)} />
             {#if ritual.rank}
-              <span class="desc rank" class:short={check === 'needs-rank'}>
-                Needs a {COURT_RANKS[ritual.rank].name}.
+              <span
+                class="desc rank"
+                class:short={check === 'needs-rank' || check === 'needs-region'}
+              >
+                Needs a {COURT_RANKS[ritual.rank].name}{ritual.requiresRegion
+                  ? ` and the ${REGIONS[ritual.requiresRegion].name}`
+                  : ''}.
               </span>
             {/if}
           </div>

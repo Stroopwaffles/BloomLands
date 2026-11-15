@@ -22,7 +22,8 @@ function readyToSing(run: number): GameState {
   state.upgrades.push('lodging-ritual-circle')
   state.research.completed.push('research-root-song')
   state.inventory['component-harmony-blend'] = 1
-  for (let id = 1; id <= 30; id++) {
+  state.unlockedRegions.push('sky')
+  for (let id = 1; id <= 44; id++) {
     state.helpers.list.push({ id, type: 'gatherer', name: 'H', task: null } as HelperState)
   }
   return state
@@ -68,7 +69,7 @@ describe('the ending', () => {
     expect(sing(fourth).some((e) => e.type === 'ending')).toBe(false)
     const fifth = readyToSing(5)
     const events = sing(fifth)
-    expect(events.find((e) => e.type === 'ending')).toMatchObject({ rank: 4 })
+    expect(events.find((e) => e.type === 'ending')).toMatchObject({ rank: 5 })
     expect(fifth.prestige.run).toBe(6)
     expect(fifth.prestige.endingSeen).toBe(true)
   })

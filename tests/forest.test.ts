@@ -19,6 +19,7 @@ function readyForForest(): GameState {
     'lodging-roost',
     'lodging-mouse-bunks',
     'lodging-storeroom-1',
+    'lodging-press',
   )
   state.research.completed.push('research-open-path')
   state.inventory = { 'component-sun-salve': 4 }

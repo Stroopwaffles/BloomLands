@@ -276,7 +276,7 @@ Each milestone ends in something you can play or see. Art uses placeholders unti
 
 ### Backlog (asked for, not scheduled yet)
 
-- **Revisit the prestige requirements.** The Glade and the Root Song Ritual both need a Blossom Court, so a player can prestige before ever seeing the Glade.
+- Nothing waiting.
 
 ### Phase 2: The Full Game
 
@@ -550,6 +550,40 @@ The recipes and rites the content doc lists that M15 and M16 left out:
   - **Outfits:** three sets to wear: the **Crimson Rose** set (bloodrose gown and crown of thorns), the **Gravewalker** set (ghostlit coat and raven hat), and **Vampire's Regalia** (cape and bat-wing circlet, which needs moonblood).
 - **Music:** "The Moonless Manor", a slow minor waltz.
 - **Notices** announce when an event begins and ends, with an optional desktop alert. The debug panel can start or end a Blood Moon.
+
+#### M18 (part 1): balancing (version 0.11.0)
+
+**Targets (decided):** a first run takes **about a week** (8–12 hours of active play over several days), and each later run is a little quicker.
+
+**Prestige:** the Root Song Ritual now needs a **Moon Court and the Sky Isles**, so every run sees all seven regions.
+
+**The balance simulator:**
+- `src/sim/bot.ts` is a headless bot that plays the real engine like an eager, sensible player:
+  - It works backward from its goals (the next region's rite, spirit offerings, stories, the blue jay, the Root Song) through recipes to the raw plants it needs.
+  - It plans research toward rites and missing recipes, saves up for the upgrades that matter (storage when full, the Peddler's stall, the rank the next region needs), and recruits gatherers.
+  - It gathers, helps villagers and traders, and sells surplus.
+- It plays 90 minutes a day; the rest of each day counts as time away, with the offline cap.
+- **Run it** with `npm run balance` (`SIM_RUNS=5` for the whole game, `SIM_MINUTES` for session length). It writes a milestone timeline and a daily trace (Glimmers, court points, storage, what's blocking, income by source) to `sim/report.txt`.
+- `tests/sim.test.ts` keeps the bot working (a first day reaches the Forest).
+
+**What it found, and the tuning:**
+
+| | Before | After |
+|---|---|---|
+| Rank thresholds (Hearthling to Grand) | 6, 16, 30, 50, 75, 100 | 8, 20, 36, 58, 86, 120 |
+| Shops pay, as a share of an item's worth | 50% | 35% |
+| The Peddler's load | 20 | 15 |
+| The Peddler's cut of each sale | none | 30% |
+| First run (once the bot played sensibly) | 5 days | 6 days, 8.2 hours of play |
+
+- Selling was the Glimmer engine. The Peddler alone sold helpers' hauls for 10,000–15,000 Glimmers a day, more than everything costs, so the late game raced past every gate.
+- **The first run now:** Forest on day 1, Swamp day 2, Orchard day 3, Caves and Glade day 4, Sky Isles day 5, Root Song day 6. The bot is more efficient than a person, so a real first run lands at about a week.
+- **The whole game:** runs 2–5 take 4–6 days each, about 26 days to the ending. Each run earns about 150 Root Song (780 by the ending, enough for about 40% of the upgrade tiers).
+
+**Left for 1.0:**
+- The remaining quality-of-life upgrades from the design: helper presets, recipe favorites and search, and a request tracker.
+- A final art pass.
+- Your playtest notes.
 
 ---
 

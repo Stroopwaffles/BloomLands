@@ -122,7 +122,7 @@ export const ITEM_VALUES: Readonly<Record<string, number>> = {
 /** Settlement shops. Starting values for balancing. */
 export const SHOP_RULES = {
   /** Shops pay this share of an item's worth (traders pay 1.5×, so requests stay better). */
-  sellRate: 0.5,
+  sellRate: 0.35,
   /** Shops charge this many times an item's worth. */
   buyRate: 2,
   /** What a trinket is worth to a shop. */
@@ -181,10 +181,10 @@ export interface CourtRankDef {
 /** Court ranks (design doc 3.10). Thresholds are starting values for balancing. */
 export const COURT_RANKS: readonly CourtRankDef[] = [
   { name: 'Wanderer', points: 0 },
-  { name: 'Hearthling', points: 6 },
-  { name: 'Hedge Court', points: 16 },
-  { name: 'Bramble Court', points: 30 },
-  { name: 'Blossom Court', points: 50 },
-  { name: 'Moon Court', points: 75 },
-  { name: 'Grand Court', points: 100 },
+  { name: 'Hearthling', points: 8 },
+  { name: 'Hedge Court', points: 20 },
+  { name: 'Bramble Court', points: 36 },
+  { name: 'Blossom Court', points: 58 },
+  { name: 'Moon Court', points: 86 },
+  { name: 'Grand Court', points: 120 },
 ]
