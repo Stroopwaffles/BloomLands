@@ -4,6 +4,29 @@
   import type { Settings } from '../settingsData'
 
   const VOLUMES = [0, 25, 50, 75, 100]
+
+  /** Desktop alerts need the browser's permission first. */
+  const alertsSupported = typeof Notification !== 'undefined'
+  let alertNote = $state('')
+
+  async function setDesktopAlerts(on: boolean) {
+    alertNote = ''
+    if (!on) {
+      updateSettings({ desktopAlerts: false })
+      return
+    }
+    const permission =
+      Notification.permission === 'default'
+        ? await Notification.requestPermission()
+        : Notification.permission
+    if (permission === 'granted') {
+      updateSettings({ desktopAlerts: true })
+    } else {
+      updateSettings({ desktopAlerts: false })
+      alertNote =
+        'Your browser is blocking notifications for this site. You can allow them in its site settings.'
+    }
+  }
 </script>
 
 <h2>Settings</h2>
@@ -39,6 +62,38 @@
       onPick={(id) => updateSettings({ nightTheme: id as Settings['nightTheme'] })}
     />
   </section>
+  <section>
+    <h3>Workshop and research notices</h3>
+    <p class="hint">A note pops up when research or a workshop job finishes.</p>
+    <Choices
+      label="Workshop and research notices"
+      options={[
+        { id: 'on', name: 'On' },
+        { id: 'off', name: 'Off' },
+      ]}
+      value={settings.workNotices ? 'on' : 'off'}
+      onPick={(id) => updateSettings({ workNotices: id === 'on' })}
+    />
+  </section>
+  {#if alertsSupported}
+    <section>
+      <h3>Alerts while away</h3>
+      <p class="hint">
+        A desktop notification when research or a workshop job finishes while the game is open in
+        the background.
+      </p>
+      <Choices
+        label="Alerts while away"
+        options={[
+          { id: 'on', name: 'On' },
+          { id: 'off', name: 'Off' },
+        ]}
+        value={settings.desktopAlerts ? 'on' : 'off'}
+        onPick={(id) => setDesktopAlerts(id === 'on')}
+      />
+      {#if alertNote}<p class="hint">{alertNote}</p>{/if}
+    </section>
+  {/if}
   <section>
     <h3>Reduced motion</h3>
     <Choices

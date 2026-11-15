@@ -23,6 +23,10 @@ export interface Settings {
   muted: boolean
   /** 'auto' switches the interface to soft night colors while it's night in the game. */
   nightTheme: 'auto' | 'off'
+  /** A notice when research or a workshop job finishes. */
+  workNotices: boolean
+  /** Also a desktop notification for those while the game is in the background. */
+  desktopAlerts: boolean
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -35,6 +39,8 @@ export const DEFAULT_SETTINGS: Settings = {
   soundVolume: 75,
   muted: false,
   nightTheme: 'auto',
+  workNotices: true,
+  desktopAlerts: false,
 }
 
 export const SETTINGS_KEY = 'bloomlands.settings'
@@ -49,6 +55,8 @@ export const SETTING_CHOICES = {
   soundVolume: [0, 25, 50, 75, 100],
   muted: [true, false],
   nightTheme: ['auto', 'off'],
+  workNotices: [true, false],
+  desktopAlerts: [true, false],
 } as const satisfies { [K in keyof Settings]: readonly Settings[K][] }
 
 /** Reads settings from stored text, keeping only valid values and filling in defaults. */

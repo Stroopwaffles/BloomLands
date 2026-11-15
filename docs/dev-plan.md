@@ -516,6 +516,13 @@ The recipes and rites the content doc lists that M15 and M16 left out:
 - The harvesting scene is a wide **21:10 panorama** (up to 1400px, still capped by screen height). Plants, creatures, camps, mounts and helpers are sized as a share of its width, so they stay the same size as before.
 - Every spot grows **9 plants** instead of 6 (`SLOTS_PER_SPOT`). Each spot's hand-placed front and back rows are spread evenly across the wider scene (`spread` in `scenes.ts`). Spots from older saves grow the extra plants in as usual.
 
+#### Workshop and research notices (v0.9.2)
+
+- Finished research and workshop jobs post `research-done` and `craft-done` events. A notice pops up with a little picture: "Research complete: Pressing", "Workshop finished: 4 Petal Paste". Jobs that finish together, or while you were away, share one notice.
+- **Settings:**
+  - "Workshop and research notices" turns the in-game notices on or off.
+  - "Alerts while away" (off by default) sends a desktop notification while the game is open in the background. It asks the browser for permission when you turn it on, and explains if the browser blocks it.
+
 ---
 
 ## 4. How We Work Each Milestone

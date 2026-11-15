@@ -55,4 +55,5 @@ export function advanceResearch(state: GameState, dtMs: number): void {
   if (current.remainingMs > 0) return
   state.research.completed.push(current.id)
   state.research.current = null
+  state.inbox.push({ type: 'research-done', researchId: current.id })
 }

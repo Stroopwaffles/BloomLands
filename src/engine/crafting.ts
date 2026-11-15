@@ -84,6 +84,12 @@ export function advanceStations(state: GameState, dtMs: number): void {
       if (echo > 0 && stateRandom(state)() < echo) amount *= 2
       addItems(state.inventory, recipe.output.itemId, amount)
       state.stats.itemsCrafted += amount
+      state.inbox.push({
+        type: 'craft-done',
+        recipeId: job.id,
+        itemId: recipe.output.itemId,
+        amount,
+      })
     }
     station.jobs = station.jobs.filter((job) => job.remainingMs > 0)
   }

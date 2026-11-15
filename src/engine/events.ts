@@ -53,6 +53,10 @@ export type GameEvent =
   | { type: 'packed'; itemId: string; amount: number }
   | { type: 'craft-start'; recipeId: string; count: number }
   | { type: 'research-start'; researchId: string }
+  /** Research finished (from a tick). */
+  | { type: 'research-done'; researchId: string }
+  /** A workshop job finished: its results are in storage (from a tick). */
+  | { type: 'craft-done'; recipeId: string; itemId: string; amount: number }
   | { type: 'drink'; potionId: string }
   | { type: 'trade-filled'; requestId: number; glimmers: number; trinketId: string | null }
   | { type: 'upgrade-bought'; upgradeId: string; rankUp: boolean }

@@ -1,4 +1,8 @@
 <script lang="ts">
+  import Art from '../../art/Art.svelte'
+  import { RESEARCH } from '../../data/research'
+  import { itemName } from '../../data/items'
+  import { settings } from '../settings.svelte'
   import { onMount } from 'svelte'
   import { BLOOM_LEVELS, CURIOS } from '../../data/bloom'
   import { RELICS, ROOT_UPGRADES } from '../../data/prestige'
@@ -12,16 +16,55 @@
     id: number
     text: string
     big: boolean
+    /** Workshop and research news, with a little picture. */
+    work?: string
   }
 
   const { game } = runtime
   let notices = $state<Notice[]>([])
   let nextId = 0
 
-  function show(text: string, big = false) {
+  function show(text: string, big = false, work?: string) {
     const id = nextId++
-    notices.push({ id, text, big })
-    setTimeout(() => (notices = notices.filter((n) => n.id !== id)), big ? 5000 : 2600)
+    notices.push({ id, text, big, work })
+    const ms = work ? 4200 : big ? 5000 : 2600
+    setTimeout(() => (notices = notices.filter((n) => n.id !== id)), ms)
+  }
+
+  /**
+   * Research and workshop news. Jobs that finish together (or while you were away) share one
+   * note. While the game is in the background, a desktop notification too, if the player asked.
+   */
+  function showWork(events: GameEvent[]) {
+    const research = events.flatMap((e) => (e.type === 'research-done' ? [e.researchId] : []))
+    const crafted: Record<string, number> = {}
+    for (const e of events) {
+      if (e.type === 'craft-done') crafted[e.itemId] = (crafted[e.itemId] ?? 0) + e.amount
+    }
+    const made = Object.entries(crafted)
+    const notes: { text: string; art: string }[] = []
+    for (const id of research) {
+      const node = RESEARCH[id]
+      const art = node?.unlocks[0] ?? node?.spells?.[0] ?? 'feature-ritual-circle'
+      notes.push({ text: `Research complete: ${node?.name ?? id}`, art })
+    }
+    if (made.length > 0) {
+      const list = made.map(([itemId, n]) => `${n} ${itemName(itemId)}`).join(', ')
+      notes.push({ text: `Workshop finished: ${list}`, art: made[0][0] })
+    }
+    if (notes.length === 0) return
+    if (settings.workNotices) for (const n of notes) show(n.text, false, n.art)
+    if (
+      settings.desktopAlerts &&
+      document.hidden &&
+      typeof Notification !== 'undefined' &&
+      Notification.permission === 'granted'
+    ) {
+      new Notification('Bloom Lands', {
+        body: notes.map((n) => n.text).join(' · '),
+        tag: 'bloom-lands-work',
+      })
+    }
   }
 
   function describe(event: GameEvent): [string, boolean] | null {
@@ -93,6 +136,7 @@
 
   onMount(() =>
     runtime.onEvents((events) => {
+      showWork(events)
       for (const event of events) {
         const notice = describe(event)
         if (notice) show(...notice)
@@ -103,7 +147,10 @@
 
 <div class="notices" aria-live="polite">
   {#each notices as notice (notice.id)}
-    <p class:big={notice.big}>{notice.text}</p>
+    <p class:big={notice.big} class:work={!!notice.work}>
+      {#if notice.work}<Art id={notice.work} size={26} />{/if}
+      {notice.text}
+    </p>
   {/each}
 </div>
 
@@ -130,6 +177,15 @@
     font-weight: 700;
     box-shadow: 0 4px 12px rgb(90 67 82 / 0.15);
     animation: rise 0.3s ease-out;
+  }
+
+  p.work {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 16px 4px 8px;
+    border-color: var(--honey);
+    max-width: min(560px, 92vw);
   }
 
   p.big {
