@@ -615,6 +615,10 @@ These are the last items from the content doc's Asset List:
 
 Village banners now sit in the same 900px centered column as the village panels instead of spanning the full screen width.
 
+### v0.13.2: a tidier upgrades tab
+
+Upgrades now stack in full-width rows by what they are for: Helper Quarters, Workshop, Storerooms, Stables, Gear and Comforts (Lodging is split up by room type). Each row shows what is ready to buy first, folds locked upgrades into a "Coming later" list, and shows owned ones as small chips, with an owned count in the header.
+
 ---
 
 ## 4. How We Work Each Milestone

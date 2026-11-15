@@ -1,5 +1,5 @@
 /** The game's version, shown in the UI and stored in saves. */
-export const GAME_VERSION = '0.13.1'
+export const GAME_VERSION = '0.13.2'
 
 /** The name of the current release, shown on the title screen. */
 export const RELEASE_NAME = 'In Balance'
