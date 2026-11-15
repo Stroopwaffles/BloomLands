@@ -199,5 +199,6 @@ export const TAG_NAMES: Readonly<Record<string, string>> = {
   fluff: 'Fluff',
   stalks: 'Stalks',
   crystals: 'Crystals',
+  moonflowers: 'Moonflowers',
   trinket: 'Trinkets',
 }

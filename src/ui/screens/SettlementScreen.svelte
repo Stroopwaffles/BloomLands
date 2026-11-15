@@ -1,5 +1,7 @@
 <script lang="ts">
   import Art from '../../art/Art.svelte'
+  import VillageScene from '../../art/VillageScene.svelte'
+  import { isNight } from '../../engine/environment'
   import { HELPER_TYPE_ORDER, HELPER_TYPES } from '../../data/helpers'
   import { SETTLEMENTS } from '../../data/world'
   import { formatNumber } from '../../engine/format'
@@ -27,6 +29,12 @@
       </div>
       <Destinations />
     </header>
+
+    <VillageScene
+      settlementId={settlement.id}
+      night={isNight($game)}
+      weather={$game.weather[settlement.regionId]?.kind}
+    />
 
     <ShopPanel settlementId={settlement.id} />
 

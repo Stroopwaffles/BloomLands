@@ -581,7 +581,6 @@ The recipes and rites the content doc lists that M15 and M16 left out:
 - **The whole game:** runs 2–5 take 4–6 days each, about 26 days to the ending. Each run earns about 150 Root Song (780 by the ending, enough for about 40% of the upgrade tiers).
 
 **Left for 1.0:**
-- A final art pass.
 - Your playtest notes.
 
 #### M18 (part 2): the last quality-of-life upgrades (version 0.12.0)
@@ -591,6 +590,26 @@ Three new Comforts. Like every Comfort, each is bought once and kept forever (`e
 - **Recipe Book** (200 Glimmers): a search box in the Workshop filters every station's recipes by name, and a star on each recipe keeps favorites at the top. Favorites last through prestige (`preferences.favorites`).
 - **Request Board** (250): a 📌 Pin button on trader and villager requests. Pinned requests, and what they still need (storage and satchel both count), show on the Court tab and on every harvesting spot. Filled or expired requests drop off by themselves. Pins belong to the run.
 - **Helper Ledger** (300): three slots on the Helpers tab. "Save" stores every helper's job, and "Use" puts them back: the first gatherer gets the first saved gatherer's job, and so on. Brewers get their recipe and keep-amount back. Jobs at places that aren't open this run are skipped. Saved sets last through prestige (`preferences.helperPresets`).
+
+#### M18 (part 3): the final art pass (version 0.13.0)
+
+These are the last items from the content doc's Asset List:
+
+- **The court in seven stages**, one per rank (`CourtScene`), each adding to the last:
+  1. Wanderer: a leaf lean-to.
+  2. Hearthling: a stump cottage.
+  3. Hedge Court: a chimney and a flowering hedge.
+  4. Bramble Court: a mushroom-roofed second room.
+  5. Blossom Court: a blossom tree and bunting.
+  6. Moon Court: a moon tower and lanterns.
+  7. Grand Court: banners, a golden arch, a second tower and a warm glow.
+- **Village scenes** for all seven settlements (`VillageScene`, at the top of each village), in each folk's style: thatched mouse cottages with a washing line, squirrel dreys up an oak with rope bridges, toad huts on stilts with lily-pad roofs, honeycomb houses and a hive, mole burrows with lanterns and a rail cart, firefly lanterns in a weeping willow, and cloud houses tethered to floating rocks.
+- **Spirit places** now show their region's scenery softly behind the spirit.
+- **Weather overlays** for the rest of the weather: petals in a blossom wind, a spring shower, glittering late frost, dust falling during the Caves' rumbles, and glowing motes in still air.
+- **Navigation icons** on the home tabs: Court (a crown), Workshop, Research (a book), Helpers, Upgrades, Wardrobe (a dress) and Root Song.
+- **The last tag icons:** stalks, crystals and moonflowers. "Moonflowers" also got its proper name in cost lists.
+- A test now checks that everything the screens draw has finished art: tags, stations, spells, traders, flight events, relics, the event host and outfits, and the tab icons.
+- **Also fixed:** the shop's note now says it pays about a third of an item's worth (since the balance change).
 
 ---
 

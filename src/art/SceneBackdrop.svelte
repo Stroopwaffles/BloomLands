@@ -16,7 +16,14 @@
     spotId,
     night = false,
     weather = 'sunshine',
-  }: { spotId: string; night?: boolean; weather?: string } = $props()
+    bottom = false,
+  }: {
+    spotId: string
+    night?: boolean
+    weather?: string
+    /** Keep the ground in view when the frame is very wide (village banners). */
+    bottom?: boolean
+  } = $props()
 
   const region = $derived(SPOTS[spotId]?.regionId ?? 'meadow')
 
@@ -24,7 +31,12 @@
     points.map(([x, y]) => ({ x, y, color }))
 </script>
 
-<svg class="backdrop" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+<svg
+  class="backdrop"
+  viewBox="0 0 160 100"
+  preserveAspectRatio={bottom ? 'xMidYMax slice' : 'xMidYMid slice'}
+  aria-hidden="true"
+>
   <defs>
     <linearGradient id="sky-day" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#bfe4ff" />
@@ -142,7 +154,7 @@
   {#if weather === 'rain'}
     <rect width="160" height="100" fill="#6f8aa0" opacity="0.2" />
   {/if}
-  {#if weather === 'light-rain' || weather === 'rain' || weather === 'drizzle'}
+  {#if weather === 'light-rain' || weather === 'rain' || weather === 'drizzle' || weather === 'spring-shower'}
     <g class="rain" stroke="#8fb3d6" stroke-width="0.5" stroke-linecap="round" opacity="0.8">
       {#each Array.from({ length: weather === 'rain' ? 60 : weather === 'drizzle' ? 22 : 34 }, (_, i) => i) as i (i)}
         <line
@@ -198,6 +210,49 @@
       <path d="M10 30 q12 -4 24 0 q6 2 10 -1" />
       <path d="M90 40 q14 -4 28 0 q6 2 10 -1" />
       <path d="M40 56 q10 -3 20 0" />
+    </g>
+  {:else if weather === 'blossom-wind'}
+    <!-- Petals swirling on the wind. -->
+    <g class="leaves">
+      {#each [[18, 12, '#f7b7c8'], [46, 30, '#ffffff'], [78, 8, '#f7a6c0'], [104, 26, '#fbe3ea'], [134, 10, '#f7b7c8'], [62, 48, '#ffffff'], [120, 44, '#f7a6c0'], [150, 30, '#fbe3ea']] as [x, y, c], i (i)}
+        <ellipse
+          cx={x}
+          cy={y}
+          rx="1.8"
+          ry="1.1"
+          fill={c as string}
+          stroke="#d98aa4"
+          stroke-width="0.2"
+          style:--d="{i * 0.6}s"
+        />
+      {/each}
+    </g>
+  {:else if weather === 'late-frost'}
+    <!-- A cold blue tint and frost glittering on everything. -->
+    <rect width="160" height="100" fill="#dfeefa" opacity="0.28" />
+    <g class="twinkle-frost" fill="#ffffff">
+      {#each [[14, 70], [40, 84], [66, 62], [92, 88], [118, 66], [144, 82], [30, 52], [104, 48]] as [x, y], i (i)}
+        <path
+          d="M{x} {y - 2} L{x + 0.5} {y - 0.5} L{x + 2} {y} L{x + 0.5} {y + 0.5} L{x} {y + 2} L{x -
+            0.5} {y + 0.5} L{x - 2} {y} L{x - 0.5} {y - 0.5} Z"
+          style:--d="{(i % 4) * 0.5}s"
+        />
+      {/each}
+    </g>
+  {:else if weather === 'rumbles'}
+    <!-- Dust and pebbles shaking loose from the ceiling. -->
+    <g class="dust" fill="#a89ab8">
+      {#each [[24, 0], [58, 1.1], [96, 0.4], [130, 1.8], [146, 0.9]] as [x, d] (x)}
+        <circle cx={x} cy="4" r="0.9" style:--d="{d}s" />
+      {/each}
+    </g>
+  {:else if weather === 'still-air'}
+    <!-- Glowing motes hanging in the still air. -->
+    <g class="motes" fill="#c8f0d0">
+      {#each [[20, 40], [48, 30], [80, 46], [112, 34], [140, 44], [64, 58], [124, 60]] as [x, y], i (i)}
+        <circle cx={x} cy={y} r="0.9" style:--d="{i * 0.5}s" />
+        <circle cx={x} cy={y} r="2.6" opacity="0.25" style:--d="{i * 0.5}s" />
+      {/each}
     </g>
   {/if}
 
@@ -307,7 +362,52 @@
     }
   }
 
+  .twinkle-frost path {
+    animation: frost 2.4s ease-in-out infinite;
+    animation-delay: var(--d);
+  }
+
+  @keyframes frost {
+    50% {
+      opacity: 0.2;
+    }
+  }
+
+  .dust circle {
+    animation: dust 2.6s ease-in infinite;
+    animation-delay: var(--d);
+  }
+
+  @keyframes dust {
+    from {
+      transform: translateY(0);
+      opacity: 0;
+    }
+    15% {
+      opacity: 1;
+    }
+    to {
+      transform: translateY(60px);
+      opacity: 0;
+    }
+  }
+
+  .motes circle {
+    animation: mote 4s ease-in-out infinite;
+    animation-delay: var(--d);
+  }
+
+  @keyframes mote {
+    50% {
+      transform: translateY(-3px);
+      opacity: 0.4;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    .twinkle-frost path,
+    .dust circle,
+    .motes circle,
     .drift,
     .rain,
     .breeze,

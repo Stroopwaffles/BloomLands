@@ -81,7 +81,7 @@
           </button>
         {/if}
       </div>
-      <p class="sub">The shop buys anything in your satchel, at half its worth.</p>
+      <p class="sub">The shop buys anything in your satchel, at about a third of its worth.</p>
       {#if carried.length === 0}
         <p class="empty">Your satchel is empty.</p>
       {:else}

@@ -16,6 +16,7 @@ import {
 import { SWAMP_ITEM_ART, SWAMP_MISC_ART, SWAMP_PEOPLE_ART, SWAMP_PLANT_ART } from './library/swamp'
 import { MISC_ART } from './library/misc'
 import { PRESTIGE_ART } from './library/prestige'
+import { UI_ART } from './library/ui'
 import { BLOODMOON_ITEM_ART, BLOODMOON_MISC_ART, BLOODMOON_PLANT_ART } from './library/bloodmoon'
 import { SKY_ITEM_ART, SKY_MISC_ART, SKY_PEOPLE_ART, SKY_PLANT_ART } from './library/sky'
 import { GLADE_ITEM_ART, GLADE_MISC_ART, GLADE_PEOPLE_ART, GLADE_PLANT_ART } from './library/glade'
@@ -68,6 +69,7 @@ export const ART_SVG: Record<string, string> = {
   ...BLOODMOON_ITEM_ART,
   ...BLOODMOON_MISC_ART,
   ...PRESTIGE_ART,
+  ...UI_ART,
 }
 
 /** Families of assets that share one drawing (e.g. every lodging upgrade uses the lodging icon). */

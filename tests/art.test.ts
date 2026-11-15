@@ -1,3 +1,11 @@
+import { TAG_NAMES } from '../src/data/items'
+import { STATIONS } from '../src/data/recipes'
+import { SPELLS } from '../src/data/magic'
+import { TRADERS } from '../src/data/economy'
+import { REGION_FLIGHT_EVENTS } from '../src/data/challenges'
+import { RELIC_LIST } from '../src/data/prestige'
+import { EVENT_BASES, EVENT_RECIPES } from '../src/data/events'
+import { OUTFIT_SETS } from '../src/data/appearance'
 import { describe, expect, it } from 'vitest'
 import { CURIOS, VILLAGERS } from '../src/data/bloom'
 import { CREATURES, CREWS, PESTS } from '../src/data/challenges'
@@ -40,6 +48,32 @@ describe('art registry', () => {
       ...Object.keys(HELPER_TYPES).map((type) => `helper-${type}`),
     ]
     for (const id of ids) expect(ART_SVG[id], id).toBeTruthy()
+  })
+
+  it('draws everything else the screens show: tags, stations, spells, traders, events, relics, tabs', () => {
+    const ids = [
+      ...Object.keys(TAG_NAMES).map((t) => `tag-${t}`),
+      ...Object.keys(STATIONS).map((s) => `station-${s}`),
+      ...Object.keys(SPELLS),
+      ...TRADERS.map((t) => t.id),
+      ...Object.values(REGION_FLIGHT_EVENTS).flatMap((e) => [e.windfall.art, e.traveler.art]),
+      'event-snag',
+      'event-wisp',
+      ...RELIC_LIST.map((r) => r.id),
+      'relic-unknown',
+      ...Object.values(EVENT_BASES).map((b) => b.host.id),
+      ...EVENT_RECIPES.map((r) =>
+        'itemId' in r.output ? r.output.itemId : OUTFIT_SETS[r.output.outfitId].pieces[0],
+      ),
+      'char-captain-mallow',
+      'icon-court',
+      'icon-research',
+      'icon-wardrobe',
+      'icon-root-song',
+      'icon-lodging',
+      'feature-ritual-circle',
+    ]
+    for (const id of ids) expect(ART_SVG[resolveArtId(id)], id).toBeTruthy()
   })
 
   it('follows family aliases', () => {

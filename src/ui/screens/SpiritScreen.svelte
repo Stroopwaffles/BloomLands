@@ -1,7 +1,9 @@
 <script lang="ts">
   import Art from '../../art/Art.svelte'
+  import SceneBackdrop from '../../art/SceneBackdrop.svelte'
+  import { isNight } from '../../engine/environment'
   import { SPIRITS } from '../../data/spirits'
-  import { SPIRIT_PLACES } from '../../data/world'
+  import { REGIONS, SPIRIT_PLACES } from '../../data/world'
   import { payingStock } from '../../engine/costs'
   import {
     checkSpirit,
@@ -52,6 +54,15 @@
     </header>
 
     <section class="spirit">
+      <!-- The spirit's own region, softly behind it. -->
+      <div class="scenery" aria-hidden="true">
+        <SceneBackdrop
+          spotId={REGIONS[spirit.regionId]?.sceneSpot ?? 'buttercup-rise'}
+          night={isNight($game)}
+          weather={$game.weather[spirit.regionId]?.kind}
+          bottom
+        />
+      </div>
       <div class="glow" class:awake aria-hidden="true">
         <Art id={spirit.id} size={150} />
       </div>
@@ -234,7 +245,20 @@
     opacity: 0.8;
   }
 
+  .scenery {
+    position: absolute;
+    inset: 0;
+    opacity: 0.32;
+    pointer-events: none;
+  }
+
+  .spirit > :not(.scenery) {
+    position: relative;
+  }
+
   .spirit {
+    position: relative;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;

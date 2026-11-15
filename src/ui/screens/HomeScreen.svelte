@@ -1,4 +1,5 @@
 <script lang="ts">
+  import Art from '../../art/Art.svelte'
   import CourtScene from '../../art/CourtScene.svelte'
   import { countItems } from '../../engine/state'
   import Destinations from '../components/Destinations.svelte'
@@ -35,14 +36,14 @@
   const carrying = $derived(countItems($game.player.satchel))
 
   type Tab = 'court' | 'workshop' | 'research' | 'helpers' | 'upgrades' | 'wardrobe' | 'rootsong'
-  const ALL_TABS: { id: Tab; label: string }[] = [
-    { id: 'court', label: 'Court' },
-    { id: 'workshop', label: 'Workshop' },
-    { id: 'research', label: 'Research' },
-    { id: 'helpers', label: 'Helpers' },
-    { id: 'upgrades', label: 'Upgrades' },
-    { id: 'wardrobe', label: 'Wardrobe' },
-    { id: 'rootsong', label: 'Root Song' },
+  const ALL_TABS: { id: Tab; label: string; icon: string }[] = [
+    { id: 'court', label: 'Court', icon: 'icon-court' },
+    { id: 'workshop', label: 'Workshop', icon: 'station-mortar' },
+    { id: 'research', label: 'Research', icon: 'icon-research' },
+    { id: 'helpers', label: 'Helpers', icon: 'helper-gatherer' },
+    { id: 'upgrades', label: 'Upgrades', icon: 'icon-lodging' },
+    { id: 'wardrobe', label: 'Wardrobe', icon: 'icon-wardrobe' },
+    { id: 'rootsong', label: 'Root Song', icon: 'icon-root-song' },
   ]
   /** The Root Song tab shows once prestige is in sight: a relic, the rite, or a later run. */
   const showRootSong = $derived(
@@ -80,6 +81,7 @@
         aria-pressed={tab === t.id}
         onclick={() => (tab = t.id)}
       >
+        <span class="tab-icon" aria-hidden="true"><Art id={t.icon} size={22} /></span>
         {t.label}
         {#if t.id === 'workshop' && busyStations > 0}<span class="dot">{busyStations}</span>{/if}
         {#if t.id === 'research' && $game.research.current}<span class="dot">1</span>{/if}
@@ -454,5 +456,11 @@
     .court-layout {
       grid-template-columns: 1fr;
     }
+  }
+
+  .tab-icon {
+    display: inline-flex;
+    vertical-align: middle;
+    margin-right: 4px;
   }
 </style>
