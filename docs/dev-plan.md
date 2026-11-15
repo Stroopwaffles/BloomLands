@@ -611,6 +611,10 @@ These are the last items from the content doc's Asset List:
 - A test now checks that everything the screens draw has finished art: tags, stations, spells, traders, flight events, relics, the event host and outfits, and the tab icons.
 - **Also fixed:** the shop's note now says it pays about a third of an item's worth (since the balance change).
 
+### v0.13.1: centered village banners
+
+Village banners now sit in the same 900px centered column as the village panels instead of spanning the full screen width.
+
 ---
 
 ## 4. How We Work Each Milestone

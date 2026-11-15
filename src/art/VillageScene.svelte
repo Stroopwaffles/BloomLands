@@ -209,7 +209,9 @@
   .village {
     position: relative;
     aspect-ratio: 3 / 1;
-    max-height: 300px;
+    /* The same width as the village's panels, and centered like them. */
+    max-width: 900px;
+    margin: 0 auto 16px;
     border-radius: 22px;
     overflow: hidden;
     border: 2px solid var(--honey);
